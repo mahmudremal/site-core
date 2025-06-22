@@ -1,0 +1,64 @@
+{
+    "type": "object",
+    "properties": {
+      "pluginId": {
+        "type": "string",
+        "description": "Unique identifier for the plugin being activated."
+      },
+      "pluginName": {
+        "type": "string",
+        "description": "Name of the activated plugin."
+      },
+      "version": {
+        "type": "string",
+        "description": "Version of the plugin that has been activated."
+      },
+      "activationTimestamp": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Timestamp of when the plugin was activated."
+      },
+      "userFeedback": {
+        "type": "object",
+        "properties": {
+          "rating": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "Rating given by the user for the plugin activation (1 to 5)."
+          },
+          "comments": {
+            "type": "string",
+            "description": "Comments or feedback provided by the user regarding the plugin."
+          }
+        },
+        "required": ["rating"]
+      },
+      "actions": {
+        "type": "object",
+        "properties": {
+          "sendThankYouEmail": {
+            "type": "boolean",
+            "description": "Indicates if a thank-you email should be sent to the user after activation."
+          },
+          "logFeedback": {
+            "type": "boolean",
+            "description": "Indicates if the feedback should be logged for future analysis."
+          },
+          "notifyAdmin": {
+            "type": "boolean",
+            "description": "Indicates if the admin should be notified about the activation review."
+          }
+        },
+        "required": ["sendThankYouEmail", "logFeedback"]
+      }
+    },
+    "required": [
+      "pluginId",
+      "pluginName",
+      "version",
+      "activationTimestamp",
+      "userFeedback",
+      "actions"
+    ]
+}

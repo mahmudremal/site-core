@@ -1,0 +1,77 @@
+{
+    "type": "object",
+    "properties": {
+      "formId": {
+        "type": "string",
+        "description": "Unique identifier for the form being submitted."
+      },
+      "entry": {
+        "type": "object",
+        "properties": {
+          "submittedFields": {
+            "type": "object",
+            "description": "Key-value pairs of submitted form fields.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of when the form was submitted."
+          }
+        },
+        "required": ["submittedFields", "timestamp"]
+      },
+      "formDescription": {
+        "type": "string",
+        "description": "A brief description of the form's purpose, which helps analyze the entry."
+      },
+      "analysis": {
+        "type": "object",
+        "properties": {
+          "entryValidity": {
+            "type": "boolean",
+            "description": "Indicates if the entry is valid based on form rules."
+          },
+          "purposeAnalysis": {
+            "type": "string",
+            "description": "Analysis result determining the purpose of the form based on the entry."
+          },
+          "feedback": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Feedback on the entry for further action or user guidance."
+          }
+        },
+        "required": ["entryValidity", "purposeAnalysis"]
+      },
+      "actions": {
+        "type": "object",
+        "properties": {
+          "sendEmailNotification": {
+            "type": "boolean",
+            "description": "Indicates if an email notification should be sent upon submission."
+          },
+          "redirectUrl": {
+            "type": "string",
+            "description": "URL to redirect the user after form submission, if applicable."
+          },
+          "displayMessage": {
+            "type": "string",
+            "description": "Message to display to the user after form submission."
+          }
+        },
+        "required": ["sendEmailNotification"]
+      }
+    },
+    "required": [
+      "formId",
+      "entry",
+      "formDescription",
+      "analysis",
+      "actions"
+    ]
+}

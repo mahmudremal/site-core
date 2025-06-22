@@ -1,0 +1,9 @@
+{
+    "name": "com.yournativeapp",
+    "description": "Native Host for CPU Temperature",
+    "path": "C:\\path\\to\\your\\python.exe 'C:\\Users\\Lenovo\\Local Sites\\tools4everyone\\app\\public\\wp-content\\plugins\\partnership-manager\\src\\js\\tasks\\native\\cpu_temp.py'",
+    "type": "stdio",
+    "allowed_origins": [
+        "*"
+    ]
+}

@@ -1,0 +1,57 @@
+{
+    "type": "object",
+    "properties": {
+      "commentId": {
+        "type": "string",
+        "example": "abc123"
+      },
+      "author": {
+        "type": "string",
+        "example": "John Doe"
+      },
+      "content": {
+        "type": "string",
+        "example": "This is a great post! I really enjoyed reading it."
+      },
+      "status": {
+        "type": "string",
+        "enum": ["approve", "unapprove", "spam", "trash"],
+        "example": "approve"
+      },
+      "needsEditing": {
+        "type": "boolean",
+        "example": true
+      },
+      "editedContent": {
+        "type": "string",
+        "example": "This is an outstanding post! I really loved reading it."
+      },
+      "replyRequired": {
+        "type": "boolean",
+        "example": false
+      },
+      "replyContent": {
+        "type": "string",
+        "example": "Thank you for your comment! We appreciate your feedback."
+      },
+      "spamReasons": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "example": ["contains links", "offensive language"]
+      },
+      "createdAt": {
+        "type": "string",
+        "format": "date-time",
+        "example": "2025-05-07T12:00:00Z"
+      }
+    },
+    "required": [
+      "commentId",
+      "author",
+      "content",
+      "status",
+      "createdAt"
+    ]
+}

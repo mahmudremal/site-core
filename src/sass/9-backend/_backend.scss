@@ -1,0 +1,121 @@
+html {
+    margin-top: 0 !important;
+    body {
+        visibility: hidden;
+        .partnershipapp {
+            visibility: visible;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        
+            --brand: #E03C33;
+            
+            /* Brand Base Color */
+            --bs-primary: #E03C33;
+
+            /* Button Colors */
+            --bs-btn-color: #fff;
+            --bs-btn-bg: #E03C33;
+            --bs-btn-border-color: #E03C33;
+            --bs-btn-hover-color: #fff;
+            --bs-btn-hover-bg: #c5322b;
+            --bs-btn-hover-border-color: #b82f29;
+            --bs-btn-focus-shadow-rgb: 224, 60, 51;
+            --bs-btn-active-color: #fff;
+            --bs-btn-active-bg: #b82f29;
+            --bs-btn-active-border-color: #a32a25;
+            --bs-btn-disabled-color: #fff;
+            --bs-btn-disabled-bg: #E03C33;
+            --bs-btn-disabled-border-color: #E03C33;
+
+            /* Link Colors */
+            --bs-link-color: #E03C33;
+            --bs-link-hover-color: #b82f29;
+
+            /* Form Control */
+            --bs-form-control-focus-border-color: #E03C33;
+            --bs-form-control-focus-box-shadow: 0 0 0 0.25rem rgba(224, 60, 51, 0.25);
+
+            /* Alerts */
+            --bs-alert-primary-color: #fff;
+            --bs-alert-primary-bg: #E03C33;
+            --bs-alert-primary-border: #c5322b;
+
+            /* Badges */
+            --bs-badge-color: #fff;
+            --bs-badge-bg: #E03C33;
+
+            /* Progress Bars */
+            --bs-progress-bar-bg: #E03C33;
+
+            /* Custom primary color scale */
+            --primary-50:  #FFEAEA;
+            --primary-100: #FFC9C5;
+            --primary-200: #FFA29D;
+            --primary-300: #FF7B74;
+            --primary-400: #FF5F57;
+            --primary-500: #E03C33;
+            --primary-600: #C2342C;
+            --primary-700: #A42D26;
+            --primary-800: #86261F;
+            --primary-900: #601A15;
+        
+            .btn-primary {
+                --bs-btn-color: #fff;
+                --bs-btn-bg: #E03C33;
+                --bs-btn-border-color: #E03C33;
+                --bs-btn-hover-color: #fff;
+                --bs-btn-hover-bg: #c5322b;
+                --bs-btn-hover-border-color: #b82f29;
+                --bs-btn-focus-shadow-rgb: 224, 60, 51; /* rgb of your brand color */
+                --bs-btn-active-color: #fff;
+                --bs-btn-active-bg: #b82f29;
+                --bs-btn-active-border-color: #a32a25;
+                --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+                --bs-btn-disabled-color: #fff;
+                --bs-btn-disabled-bg: #E03C33;
+                --bs-btn-disabled-border-color: #E03C33;
+            }
+        }
+    }
+}
+body .sidebar-menu li.dropdown > a::after {
+    content: none !important;
+}
+body .sidebar-menu li.dropdown > a {
+    display: grid;
+    grid-gap: 12px;
+    transition: all .4s ease;
+    grid-template-columns: 24px 1fr 24px;
+}
+body .sidebar-menu li.dropdown.open > a > svg.lucide:last-child {
+    transform: rotate(90deg);
+}
+.navbar-header [data-theme-toggle]::after {
+    content: none;
+}
+div#page > #header, div#page > #header + hr {
+    display: none;
+}
+.sidebar.active:not(:hover) .sidebar-menu .dropdown > a > svg:last-child {
+    display: none;
+}
+body .form-check.style-check .form-check-input::after {
+    width: 100%;
+    content: "";
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg fill='%23fff' viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E%3Cpath d='M760 380.4l-61.6-61.6-263.2 263.1-109.6-109.5L264 534l171.2 171.2L760 380.4z'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
+}
+body .input-group .btn,
+body .input-group .btn:focus {
+    z-index: unset;
+}
+
+button.rsw-btn {
+    text-align: center;
+}
+.comments-list-item * {
+    white-space: unset !important;
+}

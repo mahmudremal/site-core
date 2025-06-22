@@ -1,0 +1,19 @@
+@use "../0-settings/variables";
+
+.home-page-wrap {
+	.entry-content {
+
+		> * {
+			margin: variables.$margin-top auto variables.$margin-bottom auto;
+		}
+
+		> *:not(.alignfull) {
+			max-width: variables.$site_width;
+			padding: 0 variables.$padding-right 0 variables.$padding-left;
+		}
+
+		> .alignwide {
+			max-width: variables.$wide_width;
+		}
+	}
+}

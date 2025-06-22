@@ -1,0 +1,88 @@
+{
+    "type": "object",
+    "properties": {
+      "orderId": {
+        "type": "string",
+        "description": "Unique identifier for the WooCommerce order associated with the completed payment."
+      },
+      "paymentDetails": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Total amount charged for the payment."
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency code for the payment (e.g., USD, EUR)."
+          },
+          "paymentMethod": {
+            "type": "string",
+            "description": "The method used for the payment (e.g., credit card, PayPal)."
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "Unique identifier for the payment transaction."
+          }
+        },
+        "required": ["amount", "currency", "paymentMethod", "transactionId"]
+      },
+      "customerDetails": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the customer who made the payment."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address of the customer."
+          }
+        },
+        "required": ["name", "email"]
+      },
+      "actions": {
+        "type": "object",
+        "properties": {
+          "sendEmailToCustomer": {
+            "type": "boolean",
+            "description": "Indicates if a confirmation email should be sent to the customer."
+          },
+          "notifyAdmin": {
+            "type": "boolean",
+            "description": "Indicates if the admin should be notified about the completed payment."
+          },
+          "emailContent": {
+            "type": "object",
+            "properties": {
+              "customerEmail": {
+                "type": "string",
+                "description": "Content of the email to be sent to the customer."
+              },
+              "adminEmail": {
+                "type": "string",
+                "description": "Content of the email to be sent to the admin."
+              },
+              "supplierEmail": {
+                "type": "string",
+                "description": "Content of the email to be sent to the supplier."
+              },
+              "shopManagerEmail": {
+                "type": "string",
+                "description": "Content of the email to be sent to the shop manager."
+              }
+            },
+            "required": ["customerEmail", "adminEmail", "supplierEmail", "shopManagerEmail"]
+          }
+        },
+        "required": ["sendEmailToCustomer", "notifyAdmin"]
+      }
+    },
+    "required": [
+      "orderId",
+      "paymentDetails",
+      "customerDetails",
+      "actions"
+    ]
+}

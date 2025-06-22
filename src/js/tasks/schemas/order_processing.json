@@ -1,0 +1,159 @@
+{
+    "type": "object",
+    "properties": {
+      "orderId": {
+        "type": "string",
+        "description": "Unique identifier for the WooCommerce order."
+      },
+      "customerDetails": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the customer."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address of the customer."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact phone number of the customer."
+          },
+          "shippingAddress": {
+            "type": "object",
+            "properties": {
+              "addressLine1": {
+                "type": "string",
+                "description": "First line of the shipping address."
+              },
+              "addressLine2": {
+                "type": "string",
+                "description": "Second line of the shipping address, if applicable."
+              },
+              "city": {
+                "type": "string",
+                "description": "City for shipping."
+              },
+              "state": {
+                "type": "string",
+                "description": "State or region for shipping."
+              },
+              "postalCode": {
+                "type": "string",
+                "description": "Postal or ZIP code."
+              },
+              "country": {
+                "type": "string",
+                "description": "Country for shipping."
+              }
+            },
+            "required": ["addressLine1", "city", "state", "postalCode", "country"]
+          }
+        },
+        "required": ["name", "email", "shippingAddress"]
+      },
+      "orderItems": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "productId": {
+              "type": "string",
+              "description": "Identifier for the product."
+            },
+            "quantity": {
+              "type": "integer",
+              "description": "Quantity of the product ordered."
+            },
+            "price": {
+              "type": "number",
+              "description": "Price of the product."
+            }
+          },
+          "required": ["productId", "quantity", "price"]
+        }
+      },
+      "paymentDetails": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": "string",
+            "description": "Payment method used for the order."
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "Unique transaction identifier for payment."
+          }
+        },
+        "required": ["method", "transactionId"]
+      },
+      "analysis": {
+        "type": "object",
+        "properties": {
+          "isAddressCorrected": {
+            "type": "boolean",
+            "description": "Flag indicating if any address corrections were made."
+          },
+          "addressCorrections": {
+            "type": "object",
+            "properties": {
+              "correctedAddressLine1": {
+                "type": "string",
+                "description": "Corrected first line of the shipping address, if applicable."
+              },
+              "correctedCity": {
+                "type": "string",
+                "description": "Corrected city name, if applicable."
+              },
+              "correctedPostalCode": {
+                "type": "string",
+                "description": "Corrected postal or ZIP code, if applicable."
+              }
+            }
+          },
+          "feedback": {
+            "type": "string",
+            "description": "Notes or feedback generated from the order analysis."
+          }
+        }
+      },
+      "actions": {
+        "type": "object",
+        "properties": {
+          "sendEmailToCustomer": {
+            "type": "boolean",
+            "description": "Indicates if an email should be sent to the customer regarding their order."
+          },
+          "sendEmailToAdmin": {
+            "type": "boolean",
+            "description": "Indicates if an email should be sent to the admin with special fields."
+          },
+          "emailContent": {
+            "type": "object",
+            "properties": {
+              "customerEmail": {
+                "type": "string",
+                "description": "Content of the email to be sent to the customer."
+              },
+              "adminEmail": {
+                "type": "string",
+                "description": "Content of the email to be sent to the admin."
+              }
+            },
+            "required": ["customerEmail", "adminEmail"]
+          }
+        },
+        "required": ["sendEmailToCustomer", "sendEmailToAdmin"]
+      }
+    },
+    "required": [
+      "orderId",
+      "customerDetails",
+      "orderItems",
+      "paymentDetails",
+      "analysis",
+      "actions"
+    ]
+}

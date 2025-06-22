@@ -1,0 +1,90 @@
+{
+    "type": "object",
+    "properties": {
+      "orderId": {
+        "type": "string",
+        "description": "Unique identifier for the WooCommerce order."
+      },
+      "newStatus": {
+        "type": "string",
+        "enum": ["pending", "processing", "completed", "cancelled", "failed", "refunded"],
+        "description": "The new status to assign to the order."
+      },
+      "customerDetails": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the customer."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address of the customer."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact phone number of the customer."
+          }
+        },
+        "required": ["name", "email"]
+      },
+      "orderSummary": {
+        "type": "object",
+        "properties": {
+          "itemsCount": {
+            "type": "integer",
+            "description": "Total number of items in the order."
+          },
+          "totalAmount": {
+            "type": "number",
+            "description": "Total amount for the order, including taxes and shipping."
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency code for the order (e.g., USD, EUR)."
+          }
+        },
+        "required": ["itemsCount", "totalAmount", "currency"]
+      },
+      "statusChangeReason": {
+        "type": "string",
+        "description": "Reason for the status change, if applicable."
+      },
+      "actions": {
+        "type": "object",
+        "properties": {
+          "sendEmailToCustomer": {
+            "type": "boolean",
+            "description": "Indicates if an email notification should be sent to the customer about the status update."
+          },
+          "notifyAdmin": {
+            "type": "boolean",
+            "description": "Indicates if the admin should be notified about the status change."
+          },
+          "emailContent": {
+            "type": "object",
+            "properties": {
+              "customerEmail": {
+                "type": "string",
+                "description": "Content of the email to send to the customer."
+              },
+              "adminEmail": {
+                "type": "string",
+                "description": "Content of the email to send to the admin."
+              }
+            },
+            "required": ["customerEmail", "adminEmail"]
+          }
+        },
+        "required": ["sendEmailToCustomer", "notifyAdmin"]
+      }
+    },
+    "required": [
+      "orderId",
+      "newStatus",
+      "customerDetails",
+      "orderSummary",
+      "actions"
+    ]
+  }

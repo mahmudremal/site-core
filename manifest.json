@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Headless CMS Suite",
+  "version": "1.0.0",
+  "description": "Headless cms suite browser extension made for wordpress multi-purpose.",
+  "background": {
+    "service_worker": "src/js/tasks/aicg.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "dist/icons/brand/favicon-32x32.png"
+  },
+  "permissions": [
+    "storage",
+    "notifications",
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>"
+  ],
+  "host_permissions": [
+    "*://*/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["http://abas.com/"],
+      "js": ["dist/js/sw.js"]
+    }
+  ],
+  "icons": {
+    "32": "dist/icons/brand/favicon-32x32.png",
+    "192": "dist/icons/brand/android-chrome-192x192.png",
+    "512": "dist/icons/brand/android-chrome-512x512.png"
+  },
+  "notification": {
+    "default_title": "New Form Submission",
+    "default_icon": "dist/icons/brand/favicon-32x32.png"
+  }
+}
