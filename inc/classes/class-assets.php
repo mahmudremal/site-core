@@ -63,7 +63,7 @@ class Assets {
 		// wp_register_style('site-core-admin', WP_SITECORE_BUILD_CSS_URI . '/admin.css', [], $this->filemtime(WP_SITECORE_BUILD_CSS_DIR_PATH . '/admin.css'), 'all');
 		// wp_register_script('site-core-admin', WP_SITECORE_BUILD_JS_URI . '/admin.js', [], $this->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/admin.js'), true);
 		// wp_register_script('site-core-setting', WP_SITECORE_BUILD_JS_URI . '/setting.js', [], $this->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/setting.js'), true);
-		// wp_localize_script('site-core-admin', 'partnershipmangConfig', apply_filters('partnershipmang/siteconfig', []));
+		// wp_localize_script('site-core-admin', 'siteCoreConfig', apply_filters('partnershipmang/siteconfig', []));
 		// if ($curr_page == 'settings_page_site-core') {
 		// 	wp_enqueue_script('site-core-setting');
 		// }
@@ -97,6 +97,7 @@ class Assets {
 			'logout_url'		=> wp_logout_url(),
 			'loggedin'			=> is_user_logged_in(),
 			'buildPath'  		=> WP_SITECORE_BUILD_URI,
+			'appURI'			=> WP_SITECORE_DIR_URI,
 			'i18n'				=> [],
 			// 'locale'			=> get_user_meta(get_current_user_id(), 'partnership_dashboard_locale', true), // get_user_locale(),
 			'user_id'			=> get_current_user_id(),

@@ -7,12 +7,12 @@ import { tailwind_install } from '@js/utils';
 
 class Backend {
 	constructor() {
-		this.config = window?.partnershipmangConfig??{};
+		this.config = window?.siteCoreConfig??{};
 		this.ajaxUrl = this.config?.ajaxUrl??'';
 		this.ajaxNonce = this.config?.ajax_nonce??'';
 		var i18n = this.config?.i18n??{};
 		this.i18n = {submit: 'Submit', ...i18n};
-		// window.partnershipmangConfig = null;
+		// window.siteCoreConfig = null;
 		this.setup_hooks();
 	}
 	setup_hooks() {

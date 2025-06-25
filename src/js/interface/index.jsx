@@ -6,7 +6,7 @@ import { __ } from '@js/utils';
 
 class Tasks {
 	constructor() {
-		this.config = window?.partnershipmangConfig??{};
+		this.config = window?.siteCoreConfig??{};
 		this.ajaxUrl = this.config?.ajaxUrl??'';
 		this.ajaxNonce = this.config?.ajax_nonce??'';
 		var i18n = this.config?.i18n??{};

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { app_url } from '@functions';
 
 const LoadStyles = () => {
   useEffect(() => {
@@ -18,13 +19,14 @@ const LoadStyles = () => {
       "/dist/library/css/prism.css",
       "/dist/library/css/file-upload.css",
       "/dist/library/css/audioplayer.css",
-      "/dist/library/css/style.css"
+      "/dist/library/css/style.css",
+      "/styling.css"
     ];
 
     stylesheets.forEach((stylesheet) => {
       const link = document.createElement("link");
       link.rel = "stylesheet";
-      link.href = stylesheet;
+      link.href = app_url(stylesheet);
       document.head.appendChild(link);
       return () => {
         document.head.removeChild(link);

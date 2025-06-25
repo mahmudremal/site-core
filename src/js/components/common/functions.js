@@ -45,7 +45,7 @@ export const app_url = (url) => {
     if (url.startsWith('/')) {
         url = url.substring(1);
     }
-    return `${partnershipmangConfig.buildPath}/${url}`
+    return `${siteCoreConfig?.appURI}/${url}`
 }
 
 export const get_page = () => {
@@ -58,7 +58,7 @@ export const request_headers = () => {
     return {
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${partnershipmangConfig.ajax_nonce}`
+            'Authorization': `Bearer ${siteCoreConfig.ajax_nonce}`
         }
     }
 }

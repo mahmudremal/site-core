@@ -1,5 +1,6 @@
 import { Ollama } from 'ollama/browser';
 import MCPClient from './mcp';
+import { parse } from 'postcss';
 
 export const ollama = new Ollama({ host: 'http://127.0.0.1:11434' });
 
@@ -154,6 +155,14 @@ export const PROMPTS = {
         replacer: {
             prompt: "All future responses will follow this role and format strictly:\n\n* Act as a specialized AI assisting a professional article writer.\n* Respond only with the requested part of the article.\n* Maintain professional tone, smooth flow, and publication-ready clarity.\n* Output in clean Markdown.\n* No extra commentary, explanations, or conversational phrasing.\n\nReady for your detailed instructions. Provide only the core output without any introductory or conversational phrases or additional filler.\n",
             parse: (text) => text
+        }
+    },
+    usual: {
+        community: {
+            qa: {
+                prompt: `Please provide a concise, professional, and well-articulated answer to the following question from a software developer's perspective. The tone should be friendly, helpful, and engaging. After answering, kindly invite the reader to visit my website www.mahmudremal.com for more information and resources. Use your expertise to craft an answer that is insightful and approachable.\n\nQuestion:\n\n`,
+                parse: (text) => text
+            }
         }
     }
 }

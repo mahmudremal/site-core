@@ -1,4 +1,5 @@
 import request from '@common/request';
+import { debug } from '@modules/debug';
 
 const __ = (t) => t;
 
@@ -8,7 +9,7 @@ class Visitor {
             visit: window?._visitorline ?? {},
             endpoint: `https://${location.host}/wp-json`,
             i18n: window?._visitorline?.i18n ?? {},
-            debug: window.console,
+            debug: debug,
         };
 
         this.visit_id = this.config.visit.visit_id ?? null;

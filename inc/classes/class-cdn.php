@@ -139,7 +139,14 @@ class Cdn {
 				[
 					'id' 					=> 'cdn-delocals',
 					'label'					=> __('Delete File', 'site-core'),
-					'description'			=> __('Delete files instantly after sending to cdn. This will also delete all resized images from .', 'site-core'),
+					'description'			=> __('Delete attachment files thubmnails instantly after sending to cdn.', 'site-core'),
+					'type'					=> 'checkbox',
+					'default'				=> false
+				],
+				[
+					'id' 					=> 'cdn-delocal-mainfile',
+					'label'					=> __('Delete Main File', 'site-core'),
+					'description'			=> __('Delete the main attachment file besides thumbnails.', 'site-core'),
 					'type'					=> 'checkbox',
 					'default'				=> false
 				],
@@ -336,7 +343,7 @@ class Cdn {
         $base_path = trailingslashit($upload_dir['basedir']);
 
         // Delete main file if it exists
-        if (file_exists($file_path)) {
+        if (apply_filters('pm_project/system/isactive', 'cdn-delocal-mainfile') && file_exists($file_path)) {
             @unlink($file_path);
         }
 

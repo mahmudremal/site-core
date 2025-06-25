@@ -20,6 +20,9 @@ class Project {
 	 */
 	protected function __construct() {
 		// Load class instances.
+
+		Hunts::get_instance();
+		
 		Cdn::get_instance();
 		Apps::get_instance();
 		Task::get_instance();
@@ -54,7 +57,7 @@ class Project {
 		Translations::get_instance();
 		Notifications::get_instance();
 		Instant_Images::get_instance();
-
+			// 
 			Payment_Tap::get_instance();
 			Payment_Tabby::get_instance();
 			Payment_Stripe::get_instance();
