@@ -2,7 +2,7 @@
 /**
  * CDN media library
  *
- * @package PartnershipManager
+ * @package SiteCore
  */
 namespace SITE_CORE\inc;
 use SITE_CORE\inc\Traits\Singleton;
@@ -37,6 +37,11 @@ class Cdn {
         add_filter('wp_update_attachment_metadata', [$this, 'wp_update_attachment_metadata'], 10, 2);
         add_filter('intermediate_image_sizes_advanced', [$this, 'intermediate_image_sizes_advanced'], 10, 3);
 
+        add_filter('handle_bulk_actions-upload', [$this, 'handle_bulk_send_to_cdn_action'], 10, 3);
+        add_filter('bulk_actions-upload', [$this, 'add_bulk_send_to_cdn_action']);
+        add_action('admin_notices', [$this, 'cdn_bulk_action_admin_notice']);
+
+        add_action('wp_get_attachment_image_attributes', [$this, 'wp_get_attachment_image_attributes'], 10, 3);
     }
 
     public function get_cdn_host() {
@@ -324,8 +329,7 @@ class Cdn {
             'h' => $dimensions['height'],
             'fit' => 'cover'
         ]);
-        // print_r($url);wp_die();
-
+        // 
         return $url ? [$url, $dimensions['width'], $dimensions['height'], true] : $image;
     }
 
@@ -409,7 +413,7 @@ class Cdn {
         if ($this->get_cdn_host() === 'media') {return $actions;}
         $_already = get_post_meta(get_the_ID(), '_cdn_link', true);
         if (!empty($_already)) {return $actions;}
-        $actions['send_to_cdn'] = sprintf('<a href="%s" aria-label="%s" data-post_id="%s">%s</a>', '#', __('Send to CDN', 'domain'), esc_attr(get_the_ID()), esc_html(sprintf(__('Send to %s', 'domain'), apply_filters('pm_project/system/getoption', 'cdn-provider', 'media'))));
+        $actions['send_to_cdn'] = sprintf('<a href="%s" aria-label="%s" data-post_id="%s">%s</a>', '#', __('Send to CDN', 'site-core'), esc_attr(get_the_ID()), esc_html(sprintf(__('Send to %s', 'site-core'), apply_filters('pm_project/system/getoption', 'cdn-provider', 'media'))));
         return $actions;
     }
 
@@ -431,8 +435,78 @@ class Cdn {
     }
     
 	public function admin_enqueue_scripts($curr_page) {
+        if (apply_filters('pm_project/system/isactive', 'cdn-paused')) {return;}
+        if ($this->get_cdn_host() === 'media') {return;}
         // if ($curr_page != 'settings_page_site-core') {return;}
         wp_enqueue_script('site-core-cdn', WP_SITECORE_BUILD_JS_URI . '/cdn.js', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/cdn.js'), true);
     }
+
+    
+    public function add_bulk_send_to_cdn_action($bulk_actions) {
+        if (apply_filters('pm_project/system/isactive', 'cdn-paused')) {return $bulk_actions;}
+        if ($this->get_cdn_host() === 'media') {return $bulk_actions;}
+        $bulk_actions['send_to_cdn'] = __('Send to CDN', 'site-core');
+        return $bulk_actions;
+    }
+    public function handle_bulk_send_to_cdn_action($redirect_to, $action, $post_ids) {
+        if (apply_filters('pm_project/system/isactive', 'cdn-paused')) {return $redirect_to;}
+        if ($this->get_cdn_host() === 'media') {return $redirect_to;}
+        if ($action !== 'send_to_cdn') {
+            return $redirect_to;
+        }
+
+        if (empty($post_ids)) {
+            return $redirect_to;
+        }
+
+        $processed_count = 0;
+        foreach ($post_ids as $post_id) {
+            if (wp_attachment_is_image($post_id) || get_post_type($post_id) === 'attachment') {
+                $file_path = get_attached_file($post_id);
+                $_exists = get_post_meta($post_id, '_cdn_link', true);
+                if ($file_path && !$_exists) {
+                    $processed_count++;
+                    $this->handle_upload($post_id);
+                }
+            }
+        }
+        $redirect_to = add_query_arg('sent_to_cdn', $processed_count, $redirect_to);
+        return $redirect_to;
+    }
+    public function cdn_bulk_action_admin_notice() {
+        if (apply_filters('pm_project/system/isactive', 'cdn-paused')) {return;}
+        if ($this->get_cdn_host() === 'media') {return;}
+        if (!empty($_REQUEST['sent_to_cdn'])) {
+            $sent_count = intval($_REQUEST['sent_to_cdn']);
+            printf(
+                '<div class="notice notice-success"><p>%s</p></div>', 
+                sprintf(__('%d file(s) have been sent to CDN.', 'site-core'), $sent_count)
+            );
+        }
+    }
+
+    public function wp_get_attachment_image_attributes($attr, $attachment, $size) {
+        if (apply_filters('pm_project/system/isactive', 'cdn-paused')) {return $attr;}
+        if ($this->get_cdn_host() === 'media') {return $attr;}
+        $image_id = $attachment->ID;
+        if (empty($attr['src'])) {return $attr;}
+        if (!empty($attr['srcset'])) {return $attr;}
+        // $image_sizes = get_intermediate_image_sizes();
+        $metadata = wp_get_attachment_metadata($image_id);
+        $sources = [];
+        foreach ($metadata['sizes'] as $size_key => $size) {
+            if (empty($size['width']) || empty($size['height'])) {continue;}
+            $image = $this->wp_get_attachment_image_src(null, $image_id, [$size['width'], $size['height']]);
+            if (!$image) {continue;}
+            $sources[] = $image[0] . ' ' . $size['width'] . 'w';
+        }
+        if (!empty($sources)) {
+            $attr['srcset'] = implode(', ', $sources);
+        }
+        // print_r($attr);wp_die('Remal Mahmud');
+        return $attr;
+    }
+
+
     
 }

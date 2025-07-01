@@ -22,7 +22,7 @@
  *
  * If you specifically need multiple objects, then use a normal class.
  *
- * @package PartnershipManager
+ * @package SiteCore
  */
 
 namespace SITE_CORE\inc\Traits;

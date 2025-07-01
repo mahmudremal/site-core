@@ -4,6 +4,8 @@ import { __ } from '../utils';
 import axios from 'axios';
 import request from '@common/request';
 
+const blankFilters = {type: 'photos', order: 'desc', colors: '', term: '', category: '', orientation: '', source: 'wordpress', page: 1, content_filter: 'low', version: '7.0.2'};
+
 export default function InstantImage() {
   const tabs = [
     { name: __('Unsplash'), key: 'unsplash' },
@@ -12,7 +14,6 @@ export default function InstantImage() {
     { name: __('Pexels'), key: 'pexels' },
     { name: __('Giphy'), key: 'giphy' },
   ];
-  const blankFilters = {type: '', order: '', colors: '', search: '', category: '', orientation: '', source: 'wordpress', page: 1};
 
   const [editInfo, setEditInfo] = useState(null);
   const [activeTab, setActiveTab] = useState('unsplash');
@@ -21,55 +22,15 @@ export default function InstantImage() {
   const [uploading, setUploading] = useState(null);
   const [filters, setFilters] = useState(blankFilters);
 
-  const buildUrl = () => {
-    const base = 'https://proxy.getinstantimages.com/api/';
-    const version = '&version=7.0.2';
-
-    if (activeTab === 'unsplash') {
-      return `${base}unsplash?type=photos&content_filter=low&page=${filters.page}${version}`;
-    }
-    if (activeTab === 'openverse') {
-      return `${base}openverse?type=photos&source=${filters.source}${version}`;
-    }
-    if (activeTab === 'pixabay') {
-      return `${base}pixabay?type=photos&safesearch=true&page=${filters.page}` +
-        `${filters.order ? `&order=${filters.order}` : ''}` +
-        `${filters.type ? `&type=${filters.type}` : ''}` +
-        `${filters.category ? `&category=${filters.category}` : ''}` +
-        `${filters.colors ? `&colors=${filters.colors}` : ''}` +
-        `${filters.orientation ? `&orientation=${filters.orientation}` : ''}${version}`;
-    }
-    if (activeTab === 'pexels') {
-      if (filters.search) {
-        return `${base}pexels?type=search&page=${filters.page}&term=${encodeURIComponent(filters.search)}` +
-          `${filters.orientation ? `&orientation=${filters.orientation}` : ''}${version}`;
-      }
-      return `${base}pexels?type=photos&page=${filters.page}${version}`;
-    }
-    if (activeTab === 'giphy') {
-      return `${base}giphy?type=photos&page=${filters.page}${version}`;
-    }
-    return '';
-  };
-
   const fetchImages = async () => {
     setLoading(true);
-    try {
-      const data = await request(buildUrl());
-      setImages(data.photos || data.results || []);
-    } catch (err) {
-      console.error('Failed to fetch images', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchImages();
-  }, [activeTab, filters]);
-
-  const handleFilterChange = (field, value) => {
-    setFilters(prev => ({ ...prev, [field]: value, page: 1 }));
+    const request_url = `https://proxy.getinstantimages.com/api/${activeTab}?${Object.keys(filters).filter(k => filters[k]).map(k => `${k}=${filters[k]}`).join('&')}`;;
+    console.log('Function called', request_url);
+    request(request_url)
+    .then(res => res)
+    .then(data => setImages(data.photos || data.results || []))
+    .catch(err => console.error('Failed to fetch images', err))
+    .finally(() => setLoading(false));
   };
 
   const upload_image = async (e, img) => {
@@ -106,14 +67,22 @@ export default function InstantImage() {
           'Content-Type': 'multipart/form-data'
         }
       })
-      .then(res => {
-        const data = res.data;
+      .then(({ data }) => {
         // wp.media.frame.close();
         // wp.media.frame.open();
-        console.log(data);
-        const folder = document.querySelector('.media-menu-item#menu-item-browse');
-        if (!folder || folder.nodeType) {return;}
-        folder.click();
+        // const folder = document.querySelector('.media-menu-item#menu-item-browse');
+        // if (!folder || folder.nodeType) {return;}
+        // folder.click();
+        // 
+        const mediaFrame = wp.media.frame;
+        if (!mediaFrame) return;
+        const attachment = wp.media.model.Attachment.get(data.attachment_id);
+        attachment.fetch().then(() => {
+          const state = mediaFrame.state();
+          state.set('selection', new wp.media.model.Selection([attachment]));
+          mediaFrame.trigger('select');
+        });
+        // 
       })
       .catch(error => console.error('Error uploading image:', error))
     })
@@ -121,10 +90,15 @@ export default function InstantImage() {
     .finally(() => setUploading(null));
   }
 
+  useEffect(() => {
+    const timerId = setTimeout(() => fetchImages(), 1000);
+    return () => clearTimeout(timerId);
+  }, [filters, activeTab]);
+
   return (
     <div className="xpo_p-4">
       <div className="xpo_flex xpo_flex-wrap xpo_gap-3 xpo_items-center xpo_justify-between">
-        <h2 className="xpo_text-xl xpo_font-bold xpo_mb-4">{__('Instant Image')}</h2>
+        <h2 className="xpo_text-xl xpo_font-bold xpo_mb-4">{__('Instant Images')}</h2>
         <div className="xpo_flex xpo_xpo_border-b xpo_mb-4">
           {tabs.map(tab => (
             <button
@@ -145,15 +119,15 @@ export default function InstantImage() {
         <input
           type="text"
           placeholder="Search..."
-          value={filters.search}
-          onChange={e => handleFilterChange('search', e.target.value)}
+          value={filters.term}
+          onChange={e => setFilters(prev => ({ ...prev, type: 'search', term: e.target.value, page: 1 }))}
           className="xpo_input xpo_border xpo_p-2 xpo_w-full"
         />
 
         {activeTab === 'openverse' && (
           <select
             value={filters.source}
-            onChange={e => handleFilterChange('source', e.target.value)}
+            onChange={e => setFilters(prev => ({ ...prev, source: e.target.value, page: 1 }))}
             className="xpo_select xpo_border xpo_p-2 xpo_w-full"
           >
             {['wordpress','flickr','nasa','spacex','wikimedia'].map(opt => (
@@ -166,7 +140,7 @@ export default function InstantImage() {
           <>
             <select
               value={filters.order}
-              onChange={e => handleFilterChange('order', e.target.value)}
+              onChange={e => setFilters(prev => ({ ...prev, order: e.target.value, page: 1 }))}
               className="xpo_select xpo_border xpo_p-2 xpo_w-full"
             >
               <option value="">Order: Popular</option>
@@ -174,7 +148,7 @@ export default function InstantImage() {
             </select>
             <select
               value={filters.type}
-              onChange={e => handleFilterChange('type', e.target.value)}
+              onChange={e => setFilters(prev => ({ ...prev, type: e.target.value, page: 1 }))}
               className="xpo_select xpo_border xpo_p-2 xpo_w-full"
             >
               <option value="">Type: All</option>
@@ -183,7 +157,7 @@ export default function InstantImage() {
             </select>
             <select
               value={filters.category}
-              onChange={e => handleFilterChange('category', e.target.value)}
+              onChange={e => setFilters(prev => ({ ...prev, category: e.target.value, page: 1 }))}
               className="xpo_select xpo_border xpo_p-2 xpo_w-full"
             >
               <option value="">Category: All</option>
@@ -193,7 +167,7 @@ export default function InstantImage() {
             </select>
             <select
               value={filters.colors}
-              onChange={e => handleFilterChange('colors', e.target.value)}
+              onChange={e => setFilters(prev => ({ ...prev, colors: e.target.value, page: 1 }))}
               className="xpo_select xpo_border xpo_p-2 xpo_w-full"
             >
               <option value="">Colors: All</option>
@@ -208,7 +182,7 @@ export default function InstantImage() {
         {(activeTab === 'pexels' || activeTab === 'unsplash' || activeTab === 'openverse') && (
           <select
             value={filters.orientation}
-            onChange={e => handleFilterChange('orientation', e.target.value)}
+            onChange={e => setFilters(prev => ({ ...prev, orientation: e.target.value, page: 1 }))}
             className="xpo_select xpo_border xpo_p-2 xpo_w-full"
           >
             <option value="">Orientation: All</option>
@@ -235,9 +209,9 @@ export default function InstantImage() {
                 alt={img.alt || img.caption || img.title || ''}
                 className="xpo_w-full xpo_object-cover xpo_rounded"
                 src={img.url || img.src?.medium || img.src?.original || img.src || img.urls?.thumb || img.images?.img || img.full}
-                style={{aspectRatio: img.dimensions.replace('x', '/')}}
+                style={{aspectRatio: img.dimensions ? img.dimensions.replace('x', '/') : 'unset'}}
               />
-              <div className="xpo_absolute xpo_h-full xpo_w-full xpo_bg-gray-500/45 xpo_opacity-0 hover:xpo_opacity-100 group-hover:xpo_opacity-100 xpo_top-0 xpo_left-0 xpo_transition-opacity xpo_duration-300">
+              <div className={`xpo_absolute xpo_h-full xpo_w-full xpo_bg-gray-500/45 xpo_opacity-0 hover:xpo_opacity-100 group-hover:xpo_opacity-100 xpo_top-0 xpo_left-0 xpo_transition-opacity xpo_duration-300 ${uploading?.id == img.id ? 'xpo_opacity-100' : ''}`}>
                 {img?.user ? (
                   <a
                     target="_blank"
@@ -386,16 +360,12 @@ export default function InstantImage() {
           <button
             onClick={() => setFilters(prev => ({...prev, page: Math.max(prev.page - 1, 1)}))}
             className="xpo_button xpo_px-4 xpo_py-2 xpo_bg-gray-200 xpo_rounded hover:xpo_bg-gray-300"
-          >
-            {__('Previous')}
-          </button>
+          >{__('Previous')}</button>
         )}
         <button
           onClick={() => setFilters(prev => ({...prev, page: prev.page + 1}))}
           className="xpo_button xpo_px-4 xpo_py-2 xpo_bg-primary-500 xpo_text-white xpo_rounded hover:xpo_bg-primary-600"
-        >
-          {__('Next')}
-        </button>
+        >{__('Next')}</button>
       </div>
     </div>
   );

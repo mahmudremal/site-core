@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Monitoring Client</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .toast-enter{transform:translateY(-100%);opacity:0}.toast-enter-active{transition:transform .5s,opacity .5s;transform:translateY(0);opacity:1}.toast-exit{transform:translateY(0);opacity:1}.toast-exit-active{transition:transform .5s,opacity .5s;transform:translateY(-100%);opacity:0}
+    body{background:linear-gradient(to right,#4facfe,#00f2fe);font-family:'Inter',sans-serif}
+    h1,h2{color:#1a202c}
+    #userTable th{background-color:#f7fafc;color:#2d3748;font-weight:600}
+    #userTable td{background-color:#edf2f7}
+    button{transition:transform .2s ease-in-out}
+    button:hover{transform:scale(1.05)}
+    #streamType{background-color:#edf2f7;color:#2d3748}
+    #toastContainer{background:rgba(0,0,0,0.7);padding:10px;border-radius:8px;color:white}
+    .container{box-shadow:0 4px 6px rgba(0,0,0,0.1);border-radius:8px;background:white;padding:20px}
+    #chartContainer{border:2px solid #e2e8f0}
+    #streamLive {max-height: 200px;width: 100%;}
+
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-900">
+  <div id="toastContainer" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50"></div>
+  <div class="container mx-auto p-4">
+    <h1 class="text-4xl font-extrabold text-center mb-6">Health Monitoring Client</h1>
+    <div id="userManagement" class="mb-8">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-3xl font-semibold">User Management</h2>
+        <button id="showTableBtn" class="hidden bg-blue-600 text-white px-6 py-2 rounded shadow-lg">Show Users</button>
+      </div>
+      <div id="userTableContainer" class="bg-white shadow-lg rounded-lg p-6">
+        <table id="userTable" class="min-w-full border-collapse rounded-lg overflow-hidden">
+          <thead>
+            <tr>
+              <th class="border p-3">First Name</th>
+              <th class="border p-3">Last Name</th>
+              <th class="border p-3">Email</th>
+              <th class="border p-3">Phone</th>
+              <th class="border p-3">Action</th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody"></tbody>
+        </table>
+        <button id="createUserBtn" class="mt-6 bg-green-600 text-white px-6 py-2 rounded shadow-lg">Create New User</button>
+      </div>
+    </div>
+    <div id="chartContainer" class="hidden bg-white shadow-lg rounded-lg p-6 mb-8">
+      <canvas id="healthChart"></canvas>
+      <button id="closeChartBtn" class="mt-6 bg-red-600 text-white px-6 py-2 rounded shadow-lg">Close Chart</button>
+    </div>
+    <div id="streamSection" class="bg-white shadow-lg rounded-lg p-6">
+      <h2 class="text-3xl font-semibold mb-6">Device Stream</h2>
+      <div class="flex items-center space-x-6 mb-6">
+        <label for="streamType" class="font-medium text-lg">Select Data Stream Type:</label>
+        <select id="streamType" class="border rounded-lg p-3">
+          <!-- <option value="" selected disabled>Select a stream type</option> -->
+        </select>
+        <button id="startStream" class="bg-blue-600 text-white px-6 py-2 rounded shadow-lg">Start Stream</button>
+      </div>
+      <div class="bg-white p-4">
+        <canvas id="streamLive"></canvas>
+      </div>
+      <button id="launchBtn" class="bg-purple-600 text-white px-6 py-2 rounded shadow-lg">Launch Insights</button>
+    </div>
+  </div>
+  <script src="/health/main.js"></script>
+
+<script>
+
+
+</script>
+  
+</body>
+</html>

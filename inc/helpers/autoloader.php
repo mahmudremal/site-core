@@ -2,7 +2,7 @@
 /**
  * Autoloader file for theme.
  *
- * @package PartnershipManager
+ * @package SiteCore
  */
 
 namespace SITE_CORE\inc\Helpers;

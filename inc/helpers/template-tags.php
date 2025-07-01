@@ -2,6 +2,6 @@
 /**
  * Custom template tags for the theme.
  *
- * @package PartnershipManager
+ * @package SiteCore
  */
 // here we can create some functions for gloabally use.

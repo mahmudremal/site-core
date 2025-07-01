@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iframe Grid</title>
+    <style>
+        body {
+            max-width: 1800px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ccc;
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-container" id="framesGrid"></div>
+    <button onclick="addFrames()">Repeat Rows</button>
+
+    <script>
+        function addFrames() {
+            let count = prompt("How many frames do you want to add?", "4");
+            count = count ? parseInt(count) || 4 : 4;
+
+            const grid = document.getElementById("framesGrid");
+            for (let i = 0; i < count; i++) {
+                const iframe = document.createElement("iframe");
+                iframe.src = "/"; // Base path of the host
+                grid.appendChild(iframe);
+            }
+        }
+    </script>
+</body>
+</html>

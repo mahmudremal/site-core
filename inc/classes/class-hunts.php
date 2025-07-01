@@ -40,10 +40,22 @@ class Hunts {
     }
 	
 	public function register_routes() {
+		if (apply_filters('pm_project/system/isactive', 'hunts-disabled')) {return;}
 		register_rest_route('sitecore/v1', '/hunts/filters', [
 			'methods' => 'GET',
 			'callback' => [$this, 'api_get_filters'],
 			'permission_callback' => '__return_true'
+		]);
+		
+		// /auth
+		register_rest_route('sitecore/v1', '/hunts/auth', [
+			'methods'             => 'POST',
+			'callback'            => [$this, 'api_hunts_auth'],
+			'permission_callback' => '__return_true', // fn() => current_user_can('manage_options'),
+			'args' => [
+				'email'					=> ['type' => 'string', 'required' => true],
+				'password'				=> ['type' => 'string',  'required' => true]
+			]
 		]);
 		
 		// /hunts
@@ -139,7 +151,7 @@ class Hunts {
 		]);
 		register_rest_route('sitecore/v1', '/species', [
 			'methods'  => 'POST',
-			'callback' => fn($request) => $this->api_save_simple($request, $this->tables->species, 'id,name'),
+			'callback' => fn($request) => $this->api_save_simple($request, $this->tables->species, 'id,name,_status'),
 			'permission_callback' => '__return_true', // fn() => current_user_can('manage_options')
 		]);
 		register_rest_route('sitecore/v1', '/species', [
@@ -157,7 +169,7 @@ class Hunts {
 		]);
 		register_rest_route('sitecore/v1', '/weapons', [
 			'methods'  => 'POST',
-			'callback' => fn($request) => $this->api_save_simple($request, $this->tables->weapons, 'id,name'),
+			'callback' => fn($request) => $this->api_save_simple($request, $this->tables->weapons, 'id,name,_status'),
 			'permission_callback' => '__return_true', // fn() => current_user_can('manage_options')
 		]);
 		register_rest_route('sitecore/v1', '/weapons', [
@@ -175,7 +187,7 @@ class Hunts {
 		]);
 		register_rest_route('sitecore/v1', '/states', [
 			'methods'  => 'POST',
-			'callback' => fn($request) => $this->api_save_simple($request, $this->tables->states, 'id,name,abbreviation'),
+			'callback' => fn($request) => $this->api_save_simple($request, $this->tables->states, 'id,name,abbreviation,_status'),
 			'permission_callback' => '__return_true', // fn() => current_user_can('manage_options')
 		]);
 		register_rest_route('sitecore/v1', '/states', [
@@ -193,7 +205,7 @@ class Hunts {
 		]);
 		register_rest_route('sitecore/v1', '/bag_types', [
 			'methods'  => 'POST',
-			'callback' => fn($request) => $this->api_save_simple($request, $this->tables->bag_types, 'id,name,species_id'),
+			'callback' => fn($request) => $this->api_save_simple($request, $this->tables->bag_types, 'id,name,species_id,_status'),
 			'permission_callback' => '__return_true', // fn() => current_user_can('manage_options')
 		]);
 		register_rest_route('sitecore/v1', '/bag_types', [
@@ -277,6 +289,27 @@ class Hunts {
 			'args' => [ 'id' => ['type' => 'string', 'required' => true] ]
 		]);
 
+		// /syncs
+		register_rest_route('sitecore/v1', '/(?P<catalogue_table>[^/]+)/sync', [
+			'methods'  => 'POST',
+			'callback' => [$this, 'api_catalogue_table_sync'],
+			'permission_callback' => '__return_true', // fn() => current_user_can('manage_options')
+		]);
+
+		// /bulk_import
+		register_rest_route('sitecore/v1', '/hunts/bulk_import', [
+			'methods' => 'POST',
+			'callback' => [$this, 'api_do_bulk_import'],
+			'permission_callback' => '__return_true',
+			'args' => [
+				'csv_data'      => [
+					'type'        => 'string',
+					'required'    => true,
+					'description' => 'A csv file content matching to our template.'
+				],
+			]
+		]);
+
 	}
 
     public function register_activation_hook() {
@@ -288,7 +321,8 @@ class Hunts {
 		dbDelta(
 			"CREATE TABLE IF NOT EXISTS {$this->tables->species} (
 				id VARCHAR(20) NOT NULL PRIMARY KEY,
-				name VARCHAR(255) NOT NULL
+				name VARCHAR(255) NOT NULL,
+				_status BOOLEAN NOT NULL DEFAULT TRUE
 			) $charset_collate;"
 		);
 
@@ -296,7 +330,8 @@ class Hunts {
 		dbDelta(
 			"CREATE TABLE IF NOT EXISTS {$this->tables->weapons} (
 				id VARCHAR(20) NOT NULL PRIMARY KEY,
-				name VARCHAR(255) NOT NULL
+				name VARCHAR(255) NOT NULL,
+				_status BOOLEAN NOT NULL DEFAULT TRUE
 			) $charset_collate;"
 		);
 
@@ -305,7 +340,8 @@ class Hunts {
 			"CREATE TABLE IF NOT EXISTS {$this->tables->states} (
 				id VARCHAR(20) NOT NULL PRIMARY KEY,
 				name VARCHAR(255) NOT NULL,
-				abbreviation VARCHAR(10) NOT NULL
+				abbreviation VARCHAR(10) NOT NULL,
+				_status BOOLEAN NOT NULL DEFAULT TRUE
 			) $charset_collate;"
 		);
 
@@ -314,7 +350,8 @@ class Hunts {
 			"CREATE TABLE IF NOT EXISTS {$this->tables->bag_types} (
 				id VARCHAR(20) NOT NULL PRIMARY KEY,
 				name VARCHAR(255) NOT NULL,
-				species_id VARCHAR(20) NOT NULL
+				species_id VARCHAR(20) NOT NULL,
+				_status BOOLEAN NOT NULL DEFAULT TRUE
 				-- FOREIGN KEY (species_id) REFERENCES {$this->tables->species}(id) ON DELETE CASCADE
 			) $charset_collate;"
 		);
@@ -388,15 +425,20 @@ class Hunts {
 
     public function register_deactivation_hook() {
 		global $wpdb;
-		foreach ((array) $this->tables as $_table) {
-			$wpdb->query("DROP TABLE IF EXISTS {$_table}");
+		foreach ((array) $this->tables as $_key => $_table) {
+			$wpdb->query($wpdb->prepare("DROP TABLE IF EXISTS {$_table}"));
 		}
 	}
 
 	public function register_scripts() {
         wp_register_script('site-core-hunts', WP_SITECORE_BUILD_JS_URI . '/hunts.js', [], Assets::filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/hunts.js'), true);
         wp_register_style('site-core-hunts', WP_SITECORE_BUILD_CSS_URI . '/hunts.css', [], Assets::filemtime(WP_SITECORE_BUILD_CSS_DIR_PATH . '/hunts.css'), 'all');
-		wp_localize_script('site-core-hunts', 'siteCoreConfig', apply_filters('partnershipmang/siteconfig', []));
+		wp_localize_script('site-core-hunts', 'siteCoreConfig', apply_filters('partnershipmang/siteconfig', [
+			'_in' => is_user_logged_in(),
+			'rest_url' => rest_url('sitecore/v1'),
+			'hunt_api' => is_admin() ? substr(base64_encode(apply_filters('pm_project/system/getoption', 'hunts-apikey', 'ojjrlqlvfkarsltfvggweoubhzrwqzgw')), 0, -1) : null,
+			'_apss' => apply_filters('pm_project/system/getoption', 'hunts-appass', null) ? substr(base64_encode(apply_filters('pm_project/system/getoption', 'hunts-appass', null)), 0, -1) : null
+		]));
     }
 
     public function settings($args = []) {
@@ -411,6 +453,34 @@ class Hunts {
 					'type'					=> 'checkbox',
 					'default'				=> false
 				],
+				[
+					'id' 					=> 'hunts-apiend',
+					'label'					=> __('API Endpoint', 'site-core'),
+					'description'			=> __('API endpoint for huntful application.', 'site-core'),
+					'type'					=> 'url',
+					'default'				=> 'https://www.onxmaps.com/hunting-fool/api/v1'
+				],
+				[
+					'id' 					=> 'hunts-apikey',
+					'label'					=> __('API Key', 'site-core'),
+					'description'			=> __('API Key of onxmaps.com site.', 'site-core'),
+					'type'					=> 'text',
+					'default'				=> 'ojjrlqlvfkarsltfvggweoubhzrwqzgw'
+				],
+				[
+					'id' 					=> 'hunts-overwrite',
+					'label'					=> __('Overwrite', 'site-core'),
+					'description'			=> __('Enable to overwrite data on each time api or pdf import triggired.', 'site-core'),
+					'type'					=> 'checkbox',
+					'default'				=> false
+				],
+				[
+					'id' 					=> 'hunts-appass',
+					'label'					=> __('Password', 'site-core'),
+					'description'			=> __('Enter your application password.', 'site-core'),
+					'type'					=> 'password',
+					'default'				=> false
+				],
 			]
 		];
         return $args;
@@ -418,340 +488,65 @@ class Hunts {
 
 	public function api_get_filters(WP_REST_Request $request) {
 		global $wpdb;
-		// $response = [
-		// "weapon" => [
-		// 	[
-		// 		"_id" => "4P54J",
-		// 		"name" => "Archery"
-		// 	],
-		// 	[
-		// 		"_id" => "M3ZgJ",
-		// 		"name" => "Muzzleloader"
-		// 	],
-		// 	[
-		// 		"_id" => "9JMbP",
-		// 		"name" => "Rifle"
-		// 	],
-		// 	[
-		// 		"_id" => "vPEk3",
-		// 		"name" => "Shotgun"
-		// 	],
-		// 	[
-		// 		"_id" => "k36N3",
-		// 		"name" => "Handgun"
-		// 	]
-		// ],
-		// "states" => [
-		// 	[
-		// 		"_id" => "4P54J",
-		// 		"name" => "Wyoming"
-		// 	],
-		// 	[
-		// 		"_id" => "M3ZgJ",
-		// 		"name" => "New Mexico"
-		// 	],
-		// 	[
-		// 		"_id" => "03e0X",
-		// 		"name" => "Arizona"
-		// 	],
-		// 	[
-		// 		"_id" => "9JMbP",
-		// 		"name" => "Colorado"
-		// 	],
-		// 	[
-		// 		"_id" => "e3W5P",
-		// 		"name" => "Montana"
-		// 	],
-		// 	[
-		// 		"_id" => "73N8P",
-		// 		"name" => "Utah"
-		// 	],
-		// 	[
-		// 		"_id" => "vXdKP",
-		// 		"name" => "Idaho"
-		// 	],
-		// 	[
-		// 		"_id" => "nJQAJ",
-		// 		"name" => "Nevada"
-		// 	],
-		// 	[
-		// 		"_id" => "vPEk3",
-		// 		"name" => "Oregon"
-		// 	],
-		// 	[
-		// 		"_id" => "k36N3",
-		// 		"name" => "Washington"
-		// 	],
-		// 	[
-		// 		"_id" => "WXLvJ",
-		// 		"name" => "California"
-		// 	],
-		// 	[
-		// 		"_id" => "xPvyJ",
-		// 		"name" => "Kansas"
-		// 	],
-		// 	[
-		// 		"_id" => "l3DwX",
-		// 		"name" => "Alaska"
-		// 	],
-		// 	[
-		// 		"_id" => "A3oQP",
-		// 		"name" => "Alabama"
-		// 	],
-		// 	[
-		// 		"_id" => "MXar3",
-		// 		"name" => "Arkansas"
-		// 	],
-		// 	[
-		// 		"_id" => "LJr4X",
-		// 		"name" => "Connecticut"
-		// 	],
-		// 	[
-		// 		"_id" => "OJY43",
-		// 		"name" => "District of Columbia"
-		// 	],
-		// 	[
-		// 		"_id" => "rJpo3",
-		// 		"name" => "Delaware"
-		// 	],
-		// 	[
-		// 		"_id" => "LJwAX",
-		// 		"name" => "Florida"
-		// 	],
-		// 	[
-		// 		"_id" => "jJRLX",
-		// 		"name" => "Georgia"
-		// 	],
-		// 	[
-		// 		"_id" => "7Pz2P",
-		// 		"name" => "Hawaii"
-		// 	],
-		// 	[
-		// 		"_id" => "23glJ",
-		// 		"name" => "Iowa"
-		// 	],
-		// 	[
-		// 		"_id" => "LXAv3",
-		// 		"name" => "Illinois"
-		// 	],
-		// 	[
-		// 		"_id" => "M3953",
-		// 		"name" => "Indiana"
-		// 	],
-		// 	[
-		// 		"_id" => "2Pb1J",
-		// 		"name" => "Kentucky"
-		// 	],
-		// 	[
-		// 		"_id" => "qJ0EP",
-		// 		"name" => "Louisiana"
-		// 	],
-		// 	[
-		// 		"_id" => "0XmpP",
-		// 		"name" => "Massachusetts"
-		// 	],
-		// 	[
-		// 		"_id" => "BPGlX",
-		// 		"name" => "Maryland"
-		// 	],
-		// 	[
-		// 		"_id" => "oPVx3",
-		// 		"name" => "Maine"
-		// 	],
-		// 	[
-		// 		"_id" => "r3k73",
-		// 		"name" => "Michigan"
-		// 	],
-		// 	[
-		// 		"_id" => "BPlMX",
-		// 		"name" => "Minnesota"
-		// 	],
-		// 	[
-		// 		"_id" => "zPKOP",
-		// 		"name" => "Missouri"
-		// 	],
-		// 	[
-		// 		"_id" => "d38D3",
-		// 		"name" => "Mississippi"
-		// 	],
-		// 	[
-		// 		"_id" => "0P1DJ",
-		// 		"name" => "North Carolina"
-		// 	],
-		// 	[
-		// 		"_id" => "NXyV3",
-		// 		"name" => "North Dakota"
-		// 	],
-		// 	[
-		// 		"_id" => "ZJBe3",
-		// 		"name" => "Nebraska"
-		// 	],
-		// 	[
-		// 		"_id" => "34kyX",
-		// 		"name" => "New Hampshire"
-		// 	],
-		// 	[
-		// 		"_id" => "P544J",
-		// 		"name" => "New Jersey"
-		// 	],
-		// 	[
-		// 		"_id" => "3ZygX",
-		// 		"name" => "New York"
-		// 	],
-		// 	[
-		// 		"_id" => "3eb0J",
-		// 		"name" => "Ohio"
-		// 	],
-		// 	[
-		// 		"_id" => "JMObX",
-		// 		"name" => "Oklahoma"
-		// 	],
-		// 	[
-		// 		"_id" => "3W05J",
-		// 		"name" => "Pennsylvania"
-		// 	],
-		// 	[
-		// 		"_id" => "3NM8X",
-		// 		"name" => "Rhode Island"
-		// 	],
-		// 	[
-		// 		"_id" => "XdyK3",
-		// 		"name" => "South Carolina"
-		// 	],
-		// 	[
-		// 		"_id" => "JQdA3",
-		// 		"name" => "South Dakota"
-		// 	],
-		// 	[
-		// 		"_id" => "PEakP",
-		// 		"name" => "Tennessee"
-		// 	],
-		// 	[
-		// 		"_id" => "36mNX",
-		// 		"name" => "Texas"
-		// 	],
-		// 	[
-		// 		"_id" => "XLZvJ",
-		// 		"name" => "Virginia"
-		// 	],
-		// 	[
-		// 		"_id" => "Pn6eP",
-		// 		"name" => "Vermont"
-		// 	],
-		// 	[
-		// 		"_id" => "Jxb5X",
-		// 		"name" => "Wisconsin"
-		// 	],
-		// 	[
-		// 		"_id" => "32zk3",
-		// 		"name" => "West Virginia"
-		// 	]
-		// ],
-		// "species" => [
-		// 	[
-		// 		"_id" => "4P54J",
-		// 		"name" => "Elk"
-		// 	],
-		// 	[
-		// 		"_id" => "M3ZgJ",
-		// 		"name" => "Antelope"
-		// 	],
-		// 	[
-		// 		"_id" => "03e0X",
-		// 		"name" => "Deer"
-		// 	],
-		// 	[
-		// 		"_id" => "9JMbP",
-		// 		"name" => "Moose"
-		// 	],
-		// 	[
-		// 		"_id" => "e3W5P",
-		// 		"name" => "Bighorn Sheep"
-		// 	],
-		// 	[
-		// 		"_id" => "73N8P",
-		// 		"name" => "Mountain Goat"
-		// 	],
-		// 	[
-		// 		"_id" => "nJQAJ",
-		// 		"name" => "Bison"
-		// 	],
-		// 	[
-		// 		"_id" => "vPEk3",
-		// 		"name" => "Desert Sheep"
-		// 	],
-		// 	[
-		// 		"_id" => "k36N3",
-		// 		"name" => "Black Bear"
-		// 	],
-		// 	[
-		// 		"_id" => "932kJ",
-		// 		"name" => "Coues Deer"
-		// 	],
-		// 	[
-		// 		"_id" => "xPvyJ",
-		// 		"name" => "CA Bighorn Sheep"
-		// 	],
-		// 	[
-		// 		"_id" => "WPqDJ",
-		// 		"name" => "Ibex"
-		// 	],
-		// 	[
-		// 		"_id" => "bJODP",
-		// 		"name" => "Barbary Sheep"
-		// 	],
-		// 	[
-		// 		"_id" => "GJjnJ",
-		// 		"name" => "Oryx"
-		// 	],
-		// 	[
-		// 		"_id" => "l3DwX",
-		// 		"name" => "Brown Bear"
-		// 	],
-		// 	[
-		// 		"_id" => "A3oQP",
-		// 		"name" => "Caribou"
-		// 	],
-		// 	[
-		// 		"_id" => "MXar3",
-		// 		"name" => "Muskox"
-		// 	],
-		// 	[
-		// 		"_id" => "LJr4X",
-		// 		"name" => "Dall Sheep"
-		// 	]
-		// ]
-		// ];
-		// return rest_ensure_response($response);
-
+		
 		// Fetch data from database
-		$states    = $wpdb->get_results("SELECT id, name, abbreviation FROM {$this->tables->states}", ARRAY_A);
-		$species   = $wpdb->get_results("SELECT id, name FROM {$this->tables->species}", ARRAY_A);
-		$weapons   = $wpdb->get_results("SELECT id, name FROM {$this->tables->weapons}", ARRAY_A);
-		$bag_types = $wpdb->get_results("SELECT id, name, species_id FROM {$this->tables->bag_types}", ARRAY_A);
-		$gmu       = $wpdb->get_results("SELECT id, name, code, state_id FROM {$this->tables->gmu}", ARRAY_A);
+		$states    = $wpdb->get_results("SELECT id, name, abbreviation FROM {$this->tables->states} WHERE _status = TRUE", ARRAY_A);
+		$species   = $wpdb->get_results("SELECT id, name FROM {$this->tables->species} WHERE _status = TRUE", ARRAY_A);
+		$weapons   = $wpdb->get_results("SELECT id, name FROM {$this->tables->weapons} WHERE _status = TRUE", ARRAY_A);
+		$bag_types = $wpdb->get_results("SELECT id, name, species_id FROM {$this->tables->bag_types} WHERE _status = TRUE", ARRAY_A);
+		// $gmu       = $wpdb->get_results("SELECT id, name, code, state_id FROM {$this->tables->gmu}", ARRAY_A);
 
 		return rest_ensure_response([
 			'states'    => $states,
 			'species'   => $species,
 			'weapons'   => $weapons,
-			'bag_types' => $bag_types,
-			'gmu'       => $gmu
+			// 'bag_types' => $bag_types,
+			// 'gmu'       => $gmu
 		]);
 	}
 
+	public function api_hunts_auth(WP_REST_Request $request) {
+		$email  = $request->get_param('email');
+		$pass   = $request->get_param('password');
+
+		if (empty($email) || empty($pass)) {
+			return new WP_Error('fields_required', 'Email and password are required.', ['status' => 403]);
+		}
+
+		$user = get_user_by('email', $email);
+
+		if (!$user || is_wp_error($user)) {
+			return new WP_Error('not_found', 'User not found regarding the email address provided!', ['status' => 404]);
+		}
+
+		if (!wp_check_password($pass, $user->user_pass, $user->ID)) {
+			return new WP_Error('credentials_invalid', 'Invalid credentials. Account email and password not matched properly.', ['status' => 403]);
+		}
+
+		// Log in the user
+		wp_set_current_user($user->ID);
+		wp_set_auth_cookie($user->ID, true);
+
+		return rest_ensure_response([
+			'authenticated' => true,
+			'user_id' => $user->ID
+		]);
+	}
+
+	
 	public function api_get_hunts(WP_REST_Request $request) {
 		global $wpdb;
 
 		// Get filters
+		$year		= $request->get_param('year');
 		$state      = $request->get_param('state');
 		$weapon     = $request->get_param('weapon');
 		$species    = $request->get_param('species');
-		$points     = (int) $request->get_param('points');
 		$pointsType = $request->get_param('pointsType');
-		$resident   = filter_var($request->get_param('resident'), FILTER_VALIDATE_BOOLEAN);
+		$points     = (int) $request->get_param('points');
 		$page       = max(1, (int) $request->get_param('page'));
 		$per_page   = max(24, (int) $request->get_param('per_page'));
+		$resident   = filter_var($request->get_param('resident'), FILTER_VALIDATE_BOOLEAN);
 
 		$offset = ($page - 1) * $per_page;
 
@@ -759,12 +554,14 @@ class Hunts {
 		$sql = "
 			SELECT s.*, 
 				w.name AS weapon_name, 
-				b.name AS bag_type_name, 
+				b.name AS bag_type_name,
+				sp.name AS species_name, sp.id AS species_id, 
 				g.name AS gmu_name, g.public_ratio, g.total_sqmi, 
-				st.name AS state_name, st.abbreviation 
+				st.id AS state_id, st.name AS state_name, st.abbreviation 
 			FROM {$this->tables->seasons} s
 			INNER JOIN {$this->tables->weapons} w      ON w.id = s.weapon_id
 			INNER JOIN {$this->tables->bag_types} b    ON b.id = s.bag_type_id
+			INNER JOIN {$this->tables->species} sp    ON sp.id = b.species_id
 			INNER JOIN {$this->tables->gmu} g          ON g.id = s.gmu_id
 			INNER JOIN {$this->tables->states} st      ON st.id = g.state_id
 			WHERE 1=1
@@ -781,6 +578,10 @@ class Hunts {
 
 		if ($species) {
 			$sql .= $wpdb->prepare(" AND b.species_id = %s", $species);
+		}
+
+		if ($year && $year >= 2000) {
+			$sql .= $wpdb->prepare(" AND s.app_year = %d", $year);
 		}
 
 		$sql .= " ORDER BY s.user_odds DESC";
@@ -816,17 +617,21 @@ class Hunts {
 					'id'   => $row->bag_type_id,
 					'name' => $row->bag_type_name
 				],
+				'species'         => [
+					'id'   => $row->species_id,
+					'name' => $row->species_name
+				],
 				'gmu_id'           => $row->gmu_id,
 				'gmu'              => [
 					'id'            => $row->gmu_id,
 					'name'          => $row->gmu_name,
 					'public_ratio'  => (float) $row->public_ratio,
-					'total_sqmi'    => (float) $row->total_sqmi,
-					'state'         => [
-						'id'           => $state,
-						'name'         => $row->state_name,
-						'abbreviation' => $row->abbreviation
-					]
+					'total_sqmi'    => (float) $row->total_sqmi
+				],
+				'state'         => [
+					'id'           => $row->state_id,
+					'name'         => $row->state_name,
+					'abbreviation' => $row->abbreviation
 				],
 				'document_id'      => $row->document_id
 			];
@@ -1107,7 +912,7 @@ class Hunts {
 		$data = [];
 		foreach (explode(',', $fields) as $field) {
 			$field = trim($field);
-			$data[$field] = sanitize_text_field($request->get_param($field));
+			$data[$field] = $field == '_status' ? (bool) $request->get_param($field) : sanitize_text_field($request->get_param($field));
 		}
 
 		$id_field = explode(',', $fields)[0];
@@ -1146,15 +951,293 @@ class Hunts {
 		]);
 	}
 
+	public function api_catalogue_table_sync(WP_REST_Request $request) {
+		$catalogue_table = $request->get_param('catalogue_table');
+		$available_ends = ['weapons', 'states', 'species', 'seasons'];
+		if ($catalogue_table == 'hunts') {
+			$catalogue_table = 'seasons';
+		}
+		if (!in_array($catalogue_table, $available_ends)) {
+            return new WP_Error('invalid_request', 'Invalid request provided. Please review your request again.', ['status' => 404]);
+		}
+		// if (!in_array($catalogue_table, [...$available_ends, 'bag_types', 'gmu'])) {
+		// 	return new WP_Error('invalid_request', 'Invalid request provided. Please review your request again.', ['status' => 404]);
+		// }
+		$endpoint = apply_filters('pm_project/system/getoption', 'hunts-apiend', 'https://www.onxmaps.com/hunting-fool/api/v1');
+		if ($catalogue_table == 'seasons') {
+			$url = $endpoint . '/' . $catalogue_table;
+			$response = wp_remote_post($url, [
+				'body'    => json_encode([
+					'cursor' => null, // $request->get_param('cursor'),
+					'stateId' => (string) $request->get_param('stateId'),
+					'speciesId' => (string) $request->get_param('speciesId'),
+					'sortOrder' => (string) $request->get_param('sortOrder'), // DRAW_ODDS_DESC
+					'pointsType' => (string) $request->get_param('pointsType'),
+					'isResident' => (bool) $request->get_param('isResident'),
+					'points' => (int) $request->get_param('points'),
+					'pageNum' => (int) $request->get_param('pageNum'),
+					'apikey' => apply_filters('pm_project/system/getoption', 'hunts-apikey', 'ojjrlqlvfkarsltfvggweoubhzrwqzgw')
+				]),
+				'headers'	=> [
+					'Content-Type' => 'application/json',
+					'Accept'       => '*/*',
+				],
+				'method'  => 'POST',
+				'timeout' => 45,
+			]);
+		} else {
+			$url = $endpoint . '/' . $catalogue_table . '?apikey=' . apply_filters('pm_project/system/getoption', 'hunts-apikey', 'ojjrlqlvfkarsltfvggweoubhzrwqzgw');
+			$response = wp_remote_get($url);
+		}
+		
+		if (is_wp_error($response)) {
+			return $response;
+		}
+		$data = wp_remote_retrieve_body($response);
+		try {
+			$insertation = $result_data = json_decode($data, true);
+			// validate and catagorize data and then insert operation.
+			if (isset($result_data['edges'])) {
+				$result_data = array_map(function($e) {
+					$node = $e['node'];
+					return [
+						...$node,
+						'gmuId' => $node['gmu']['id'],
+						'weaponId' => $node['weapon']['id'],
+						'bagTypeId' => $node['bagType']['id'],
+						'documentId' => $node['huntDocument']['code']
+					];
+				}, $result_data['edges']);
+			}
+			$insertation = $this->_import_operation($result_data);
+			// 
+			return rest_ensure_response(['success' => true, 'data' => $insertation]);
+		} catch (\Throwable $th) {
+			return new WP_Error('parse_error', sprintf('Error parsing data. %s', $th->getMessage()), ['status' => 404]);
+		}
+	}
+
+	public function api_do_bulk_import(WP_REST_Request $request) {
+		$csv_data = $request->get_param('csv_data');$response = null;
+		$csv_data = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', stripslashes(html_entity_decode($csv_data))), true);
+		// 
+		$response = $csv_data;
+		// 
+		return rest_ensure_response($response === null ? new WP_Error('failed_import', 'Bulk import operation failed for some reason.', ['status' => 400]) : $response);
+	}
+
+
+	private function _import_operation(array $_datalist) {
+		global $wpdb;
+		foreach ($_datalist as $index => $row) {
+			$_entry_status = -1;
+			switch ($row['__typename']) {
+				case 'HuntPlannerSpecies':
+				// case 'HuntPlannerBagType':
+				case 'HuntPlannerWeapon':
+				case 'HuntPlannerState':
+					$_sql_table = $row['__typename'] == 'HuntPlannerSpecies' ? $this->tables->species : (
+						$row['__typename'] == 'HuntPlannerWeapon' ? $this->tables->weapons : (
+							$row['__typename'] == 'HuntPlannerState' ? $this->tables->states : (
+								$row['__typename'] == 'HuntPlannerBagType' ? $this->tables->bag_types : null
+							)
+						)
+					);
+					$sql_base = $wpdb->prepare("SELECT * FROM {$_sql_table} WHERE id=%s", $row['id']);
+					$total_items = (int) $wpdb->get_var("SELECT COUNT(*) FROM ({$sql_base}) AS t");
+					if (!$total_items) {
+						$_entry_status = $wpdb->insert(
+							$_sql_table,
+							['id' => $row['id'], 'name' => $row['name']],
+							['%s', '%s']
+						);
+					} else {
+						$_entry_status = apply_filters('pm_project/system/isactive', 'hunts-overwrite') && $wpdb->update(
+							$_sql_table,
+							['name' => $row['name']],
+							['id' => $row['id']],
+							['%s'], ['%s']
+						);
+					}
+					break;
+				case 'HuntPlannerSeason':
+					$sql_base = $wpdb->prepare("SELECT * FROM {$this->tables->seasons} WHERE id=%s", $row['id']);
+					$total_items = (int) $wpdb->get_var("SELECT COUNT(*) FROM ({$sql_base}) AS t");
+					if (!$total_items) {
+						$_entry_status = $wpdb->insert(
+							$this->tables->seasons,
+							[
+								'id' => $row['id'],
+								'app_year' => $row['appYear'],
+								'user_odds' => $row['userOdds'],
+								'harvest_rate' => $row['harvestRate'],
+								'start_date' => $row['startDate'],
+								'end_date' => $row['endDate'],
+								'hunters_per_sqmi' => $row['huntersPerSQMI'],
+								// 
+								// 'gameDepartmentNotes' => $row['gameDepartmentNotes'],
+								// 'additionalUnits' => $row['additionalUnits'],
+								// 
+								'season_type' => $row['seasonType'],
+								'gmu_id' => $row['gmuId'],
+								'weapon_id' => $row['weaponId'],
+								'bag_type_id' => $row['bagTypeId'],
+								'document_id' => $row['documentId'],
+							],
+							['%s', '%d', '%f', '%f', '%s', '%s', '%f', '%s', '%s', '%s']
+						);
+					} else {
+						$_entry_status = apply_filters('pm_project/system/isactive', 'hunts-overwrite') && $wpdb->update(
+							$this->tables->seasons,
+							[
+								'appYear' => (int) $row['appYear'],
+								'userOdds' => $row['userOdds'],
+								'harvestRate' => $row['harvestRate'],
+								'startDate' => $row['startDate'],
+								'endDate' => $row['endDate'],
+								'huntersPerSQMI' => $row['huntersPerSQMI'],
+								'gameDepartmentNotes' => $row['gameDepartmentNotes'],
+								'additionalUnits' => $row['additionalUnits'],
+								'seasonType' => $row['seasonType'],
+							],
+							['id' => $row['id']],
+							['%d', '%f', '%f', '%s', '%s', '%f', '%s', '%s', '%s'], ['%s']
+						);
+					}
+					if (isset($row['bagType'])) {
+						$_datalist[$index]['bagType'] = $this->_import_operation([$row['bagType']]);
+					}
+					if (isset($row['gmu'])) {
+						$_datalist[$index]['gmu'] = $this->_import_operation([$row['gmu']]);
+					}
+					if (isset($row['huntDocument'])) {
+						$_datalist[$index]['huntDocument'] = $this->_import_operation([$row['huntDocument']]);
+					}
+					break;
+				case 'HuntPlannerDocument':
+					$sql_base = $wpdb->prepare("SELECT * FROM {$this->tables->documents} WHERE code=%s", $row['code']);
+					$total_items = (int) $wpdb->get_var("SELECT COUNT(*) FROM ({$sql_base}) AS t");
+					if (!$total_items) {
+						$_entry_status = $wpdb->insert(
+							$this->tables->documents,
+							['id' => $row['code'], 'code' => $row['code'], 'totalQuota' => $row['totalQuota']],
+							['%s', '%s', '%d']
+						);
+					} else {
+						$_entry_status = apply_filters('pm_project/system/isactive', 'hunts-overwrite') && $wpdb->update(
+							$this->tables->documents,
+							['id' => $row['id'], 'totalQuota' => $row['totalQuota']],
+							['code' => $row['code']],
+							['%s', '%d'], ['%s']
+						);
+					}
+					// 
+					if (isset($row['applications'])) {
+						$wpdb->delete($this->tables->applications, ['document_id' => $row['code']], ['%s']);
+						$_list = [];foreach ($row['applications'] as $i => $_app) {$_list[$i] = ['document_id' => $row['code'], ...$_app];}
+						$_datalist[$index]['applications'] = $this->_import_operation($_list);
+					}
+					break;
+				case 'HuntPlannerBonusOdds':
+					$sql_base = $wpdb->prepare("SELECT * FROM {$this->tables->odds} WHERE id=%s", $row['id']);
+					$total_items = (int) $wpdb->get_var("SELECT COUNT(*) FROM ({$sql_base}) AS t");
+					if (!$total_items) {
+						$_entry_status = $wpdb->insert(
+							$this->tables->odds,
+							['id' => $row['id'], 'odds' => $row['odds'], 'type' => $row['type'], 'application_id' => $row['application_id']],
+							['%s', '%f', '%s', '%s']
+						);
+					} else {
+						$_entry_status = apply_filters('pm_project/system/isactive', 'hunts-overwrite') && $wpdb->update(
+							$this->tables->odds,
+							['odds' => $row['odds'], 'type' => $row['type'], 'application_id' => $row['application_id']],
+							['id' => $row['id']],
+							['%f', '%s', '%s'], ['%s']
+						);
+					}
+					break;
+				case 'HuntPlannerDocumentApplication':
+					$_entry_status = $wpdb->insert(
+						$this->tables->applications,
+						['document_id' => $row['document_id'], 'quota' => $row['quota'], 'is_resident' => (bool) $row['isResident']],
+						['%s', '%d', '%d']
+					);
+					if (isset($row['odds'])) {
+						$_list = [];foreach ($row['odds'] as $i => $_app) {$_list[$i] = ['application_id' => $wpdb->insert_id ? $wpdb->insert_id : $row['id'], ...$_app];}
+						$_datalist[$index]['odds'] = $this->_import_operation($_list);
+					}
+					break;
+				case 'HuntPlannerGMU':
+					$sql_base = $wpdb->prepare("SELECT * FROM {$this->tables->gmu} WHERE id=%s", $row['id']);
+					$total_items = (int) $wpdb->get_var("SELECT COUNT(*) FROM ({$sql_base}) AS t");
+					if (!$total_items) {
+						$_entry_status = $wpdb->insert(
+							$this->tables->gmu,
+							[
+								'id' => $row['id'],
+								'name' => $row['name'],
+								'total_sqmi' => $row['totalSqmi'],
+								'public_sqmi' => $row['publicSqmi'],
+								'public_ratio' => $row['publicRatio'],
+								'code' => $row['code'],
+								'state_id' => $row['state']['id']
+							],
+							['%s', '%s', '%f', '%f', '%f', '%s', '%s']
+						);
+					} else {
+						$_entry_status = apply_filters('pm_project/system/isactive', 'hunts-overwrite') && $wpdb->update(
+							$this->tables->gmu,
+							[
+								'name' => $row['name'],
+								'total_sqmi' => $row['totalSqmi'],
+								'public_sqmi' => $row['publicSqmi'],
+								'public_ratio' => $row['publicRatio'],
+								'code' => $row['code'],
+								'state_id' => $row['state']['id']
+							],
+							['id' => $row['id']],
+							['%s', '%f', '%f', '%f', '%s', '%s'], ['%s']
+						);
+					}
+					break;
+				// case 'HuntPlannerSeasonEdge':
+				// 	break;
+				case 'HuntPlannerBagType':
+					$sql_base = $wpdb->prepare("SELECT * FROM {$this->tables->bag_types} WHERE id=%s", $row['id']);
+					$total_items = (int) $wpdb->get_var("SELECT COUNT(*) FROM ({$sql_base}) AS t");
+					if (!$total_items) {
+						$_entry_status = $wpdb->insert(
+							$this->tables->bag_types,
+							['id' => $row['id'], 'name' => $row['name'], 'species_id' => $row['species']['id']],
+							['%s', '%s', '%s']
+						);
+					} else {
+						$_entry_status = apply_filters('pm_project/system/isactive', 'hunts-overwrite') && $wpdb->update(
+							$this->tables->bag_types,
+							['name' => $row['name'], 'species_id' => $row['species']['id']],
+							['id' => $row['id']],
+							['%s', '%s'], ['%s']
+						);
+					}
+					break;
+				default:
+					break;
+			}
+			$_datalist[$index]['__imported'] = ($_entry_status >= 1) ? true : (!$_entry_status ? $wpdb->last_error : null);
+		}
+		return $_datalist;
+	}
+
 
 
 
 	public function hunting_table_shortcode($atts) {
+		if (apply_filters('pm_project/system/isactive', 'hunts-disabled')) {return __('Hunting record application disabled by admin.', 'site-core');}
 		$atts = shortcode_atts([
 			'state' => '',
+			'points' => 0,
 			'weapon' => '',
 			'species' => '',
-			'points' => 0,
 			'pointsType' => 'BONUS',
 			'resident' => false,
 			'page' => 1,
@@ -1164,6 +1247,7 @@ class Hunts {
 
 		wp_enqueue_script('site-core-hunts');
 		wp_enqueue_style('site-core-hunts');
+		wp_enqueue_style('site-core');
 
 		ob_start();
 		?>
@@ -1176,17 +1260,24 @@ class Hunts {
 
 	public function add_admin_menu() {
 		$icon = file_exists(WP_SITECORE_BUILD_PATH . '/icons/animal.svg') ? WP_SITECORE_BUILD_URI . '/icons/animal.svg' : 'dashicons-pets';
-        add_menu_page(__('Hunting', 'domain'), __('Hunting', 'domain'), 'manage_options', 'hunting', [$this, 'hunting_admin_page'], $icon, 20);
+        add_menu_page(__('Hunting', 'site-core'), __('Hunting', 'site-core'), 'manage_options', 'hunting', [$this, 'hunting_admin_page'], $icon, 20);
         // add_submenu_page('hunting', 'API Keys', 'API Keys', 'manage_options', 'hunting-api-keys', [$this, 'api_keys_admin_page']);
     }
 
     public function hunting_admin_page() {
+		if (apply_filters('pm_project/system/isactive', 'hunts-disabled')) {
+			echo esc_html(__('Hunting record application disabled by admin.', 'site-core'));
+			echo '<br />';
+			echo esc_html(__('Please enable if from settings page to get it back.', 'site-core'));
+			return;
+		}
 		$this->register_scripts();
 		wp_enqueue_script('site-core-hunts');
 		wp_enqueue_style('site-core-hunts');
+		wp_enqueue_style('site-core');
         ?>
         <div id="hunting-editor-table" data-params="{}"></div>
         <?php
     }
-
+		
 }

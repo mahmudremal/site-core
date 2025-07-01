@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
-// import { __ } from '../utils';
-import install_media_tab from './media-library';
+import { __, tailwind_install } from '@js/utils';
+import { install_media_tab } from './media-library';
 
 class Medias {
     constructor() {
@@ -12,7 +12,8 @@ class Medias {
         this.media_screen();
     }
     media_screen() {
-        document.addEventListener('DOMContentLoaded', () => install_media_tab());
+        tailwind_install().finally(() => install_media_tab());
     }
 }
 const task = new Medias();
+

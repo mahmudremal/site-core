@@ -2,7 +2,7 @@
 /**
  * ProTools Manager Shortcode class
  *
- * @package PartnershipManager
+ * @package SiteCore
  */
 namespace SITE_CORE\inc;
 use SITE_CORE\inc\Traits\Singleton;

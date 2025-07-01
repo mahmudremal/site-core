@@ -24,8 +24,8 @@ class Instant_Images {
 	protected function setup_hooks() {
 		add_action('rest_api_init', [$this, 'register_routes']);
 		add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
-		add_filter('media_upload_tabs', [$this, 'media_upload_tabs'], 10, 1);
-		add_filter('media_view_settings', [$this, 'media_view_settings'], 10, 1);
+		// add_filter('media_upload_tabs', [$this, 'media_upload_tabs'], 10, 1);
+		// add_filter('media_view_settings', [$this, 'media_view_settings'], 10, 1);
 		add_filter('admin_enqueue_scripts', [$this, 'admin_enqueue_scripts'], 10, 1);
 	}
 
@@ -366,13 +366,13 @@ class Instant_Images {
 
 	public function media_upload_tabs($_tabs) {
 		if (apply_filters('pm_project/system/isactive', 'instantimg-disabled')) {return $_tabs;}
-		$_tabs['unsplash'] = __('Unsplash', 'domain');
+		$_tabs['instant_image'] = __('Instant Images', 'site-core');
 		return $_tabs;
 	}
-
 	function media_view_settings($settings) {
 		if (apply_filters('pm_project/system/isactive', 'instantimg-disabled')) {return $settings;}
-		$settings['tabs'] = ['photogrid' => 'Photogrid'];
+		$settings['tabs'] = isset($settings['tabs']) ? $settings['tabs'] : [];
+		$settings['tabs']['instant_image'] = 'Photogrid';
 		return $settings;
 	}
 	public function admin_enqueue_scripts($curr_page) {

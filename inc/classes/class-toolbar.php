@@ -16,12 +16,12 @@ class Toolbar {
         if (!is_admin_bar_showing()) {return;}
         $wp_admin_bar->add_node([
             'id'     => 'partnership-dashboard',
-            'title'  => __('Partnership Dashboard', 'domain'),
+            'title'  => __('Partnership Dashboard', 'site-core'),
             'href'   => site_url('/partnership-dashboard'),
             'parent' => 'site-name',
             'meta'   => [
                 'class' => 'ab-item',
-                'title' => __('Go to Partnership Dashboard', 'domain')
+                'title' => __('Go to Partnership Dashboard', 'site-core')
             ]
         ]);
     }

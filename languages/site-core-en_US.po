@@ -1,0 +1,1134 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Site Core\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-06-26 09:04+0000\n"
+"PO-Revision-Date: 2025-06-26 12:47+0000\n"
+"Last-Translator: \n"
+"Language-Team: English (United States)\n"
+"Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.8.0; wp-6.8.1; php-8.2.27\n"
+"X-Domain: site-core"
+
+#: templates/payment-status.php:67
+msgid " Payment Status"
+msgstr " Payment Status"
+
+#: inc/classes/class-cdn.php:483
+msgid "%d file(s) have been sent to CDN."
+msgstr "%d file(s) have been sent to CDN."
+
+#: inc/classes/class-option.php:49
+msgid "...."
+msgstr "...."
+
+#: inc/classes/class-notifications.php:33
+#, php-format
+msgid "A new subscription was created using %s."
+msgstr "A new subscription was created using %s."
+
+#: inc/classes/class-option.php:50
+msgid "A password is required."
+msgstr "A password is required."
+
+#: inc/classes/class-radar.php:81
+msgid "A radar interface will be apear here shortly."
+msgstr "A radar interface will be apear here shortly."
+
+#: inc/classes/class-notifications.php:81
+#, php-format
+msgid "A refund was issued for your subscription via %s."
+msgstr "A refund was issued for your subscription via %s."
+
+#: inc/classes/class-security.php:139
+msgid "Account created successfully. Please verify your email."
+msgstr "Account created successfully. Please verify your email."
+
+#: inc/classes/class-visitor.php:325
+msgid "Activity ID associated with the event."
+msgstr "Activity ID associated with the event."
+
+#: inc/classes/class-visitor.php:202
+msgid "Activity ID for deletion."
+msgstr "Activity ID for deletion."
+
+#: inc/classes/class-visitor.php:189
+msgid "Activity ID for fetching details."
+msgstr "Activity ID for fetching details."
+
+#: inc/classes/class-visitor.php:215
+msgid "Activity ID for updating; use 0 to create a new activity."
+msgstr "Activity ID for updating; use 0 to create a new activity."
+
+#: inc/classes/class-translations.php:53
+msgid "An list object of languages as per key: value structure."
+msgstr "An list object of languages as per key: value structure."
+
+#: inc/classes/class-cdn.php:139
+msgid "API Key"
+msgstr "API Key"
+
+#: inc/classes/class-apps.php:230 inc/classes/class-task.php:140
+msgid "Api keys"
+msgstr "Api keys"
+
+#: inc/classes/class-apps.php:231 inc/classes/class-task.php:141
+msgid "API keys interface will be apear here..."
+msgstr "API keys interface will be apear here..."
+
+#: inc/classes/class-option.php:48
+msgid "Application in depth configuration screen."
+msgstr "Application in depth configuration screen."
+
+#: inc/classes/class-apps.php:218
+msgid "Apps"
+msgstr "Apps"
+
+#: templates/language-template.php:15
+msgid "Articles"
+msgstr "Articles"
+
+#: inc/classes/class-apps.php:219
+msgid ""
+"Automation apps job for wordpress that will automate some common work flows "
+"on wordpress with browser extension."
+msgstr ""
+"Automation apps job for wordpress that will automate some common work flows "
+"on wordpress with browser extension."
+
+#: inc/classes/class-radar.php:69
+msgid "Automation radar headless server from wordpress."
+msgstr "Automation radar headless server from wordpress."
+
+#: inc/classes/class-task.php:129
+msgid ""
+"Automation task for wordpress that will automate some common work flows on "
+"wordpress with browser extension."
+msgstr ""
+"Automation task for wordpress that will automate some common work flows on "
+"wordpress with browser extension."
+
+#: inc/classes/class-notifications.php:141
+msgid "bool status for the config"
+msgstr "bool status for the config"
+
+#: templates/language-template.php:27
+msgid "By"
+msgstr "By"
+
+#: templates/language-template.php:21
+msgid "by Me alongside UXnDev"
+msgstr "by Me alongside UXnDev"
+
+#: templates/language-template.php:13
+msgid "Captcha"
+msgstr "Captcha"
+
+#: inc/classes/class-invoice.php:196
+msgid "Cart overview"
+msgstr "Cart overview"
+
+#: inc/classes/class-cdn.php:108
+msgid "CDN"
+msgstr "CDN"
+
+#: inc/classes/class-cdn.php:133
+msgid "CDN api public key."
+msgstr "CDN api public key."
+
+#: inc/classes/class-cdn.php:140
+msgid "CDN api secret key."
+msgstr "CDN api secret key."
+
+#: inc/classes/class-cdn.php:109
+msgid "CDN configurations, fields customization. Things enables and disables."
+msgstr "CDN configurations, fields customization. Things enables and disables."
+
+#: inc/classes/class-cdn.php:120
+msgid "CDN Provider"
+msgstr "CDN Provider"
+
+#: inc/classes/class-invoice.php:163
+msgid "Checkout"
+msgstr "Checkout"
+
+#: inc/classes/class-invoice.php:164
+msgid ""
+"Checkout configurations, fields customization. Things enables and disables."
+msgstr ""
+"Checkout configurations, fields customization. Things enables and disables."
+
+#: inc/classes/class-invoice.php:189
+msgid "City"
+msgstr "City"
+
+#: inc/classes/class-cdn.php:125
+msgid "Cloudinary"
+msgstr "Cloudinary"
+
+#: inc/classes/class-security.php:317
+msgid "Code and User ID are required."
+msgstr "Code and User ID are required."
+
+#: inc/classes/class-notifications.php:136
+msgid "Config key of inparticular notification."
+msgstr "Config key of inparticular notification."
+
+#: inc/classes/class-hunts.php:405
+msgid ""
+"Configure hunting table database, rest api endpoint and hunting record "
+"relations."
+msgstr ""
+"Configure hunting table database, rest api endpoint and hunting record "
+"relations."
+
+#: templates/language-template.php:20
+msgid "connect!"
+msgstr "connect!"
+
+#: templates/payment-status.php:69
+msgid "Contact Support"
+msgstr "Contact Support"
+
+#: inc/classes/class-menus.php:28
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: inc/classes/class-menus.php:49
+msgid "dashboard screen"
+msgstr "dashboard screen"
+
+#: inc/classes/class-invoice.php:168
+msgid "Default Country"
+msgstr "Default Country"
+
+#: inc/classes/class-cdn.php:147
+msgid "Delete attachment files thubmnails instantly after sending to cdn."
+msgstr "Delete attachment files thubmnails instantly after sending to cdn."
+
+#: inc/classes/class-cdn.php:146
+msgid "Delete File"
+msgstr "Delete File"
+
+#: inc/classes/class-cdn.php:153
+msgid "Delete Main File"
+msgstr "Delete Main File"
+
+#: inc/classes/class-cdn.php:154
+msgid "Delete the main attachment file besides thumbnails."
+msgstr "Delete the main attachment file besides thumbnails."
+
+#: inc/classes/class-visitor.php:225
+msgid "Description of the activity."
+msgstr "Description of the activity."
+
+#: inc/classes/class-option.php:74
+msgid "Developer Support"
+msgstr "Developer Support"
+
+#: inc/classes/class-editor.php:40 inc/classes/class-hunts.php:409
+#: inc/classes/class-instant-images.php:103
+msgid "Disable"
+msgstr "Disable"
+
+#: inc/classes/class-hunts.php:410
+msgid "Disable hunting record configurations."
+msgstr "Disable hunting record configurations."
+
+#: templates/language-template.php:30
+msgid "Dribbble"
+msgstr "Dribbble"
+
+#: templates/language-template.php:10
+msgid "e.g. +1 373 3783"
+msgstr "e.g. +1 373 3783"
+
+#: templates/language-template.php:8
+msgid "e.g. hello@yoursite.com"
+msgstr "e.g. hello@yoursite.com"
+
+#: templates/language-template.php:6
+msgid "e.g. John Doe"
+msgstr "e.g. John Doe"
+
+#: inc/classes/class-editor.php:35
+msgid "Editor"
+msgstr "Editor"
+
+#: templates/language-template.php:7
+msgid "Email"
+msgstr "Email"
+
+#: inc/classes/class-security.php:224 inc/classes/class-security.php:249
+msgid "Email does not exist."
+msgstr "Email does not exist."
+
+#: inc/classes/class-referral.php:283
+msgid "Email is required."
+msgstr "Email is required."
+
+#: inc/classes/class-security.php:216 inc/classes/class-security.php:241
+msgid "Email required."
+msgstr "Email required."
+
+#: inc/classes/class-security.php:276
+msgid "Email Verification"
+msgstr "Email Verification"
+
+#: inc/classes/class-security.php:335
+msgid "Email verified successfully."
+msgstr "Email verified successfully."
+
+#: inc/classes/class-invoice.php:182
+msgid "Emirate"
+msgstr "Emirate"
+
+#: inc/classes/class-payment-tap.php:85
+msgid "Empty response"
+msgstr "Empty response"
+
+#: templates/language-template.php:35
+msgid "Enjoyed This Article?"
+msgstr "Enjoyed This Article?"
+
+#: inc/classes/class-instant-images.php:258
+msgid "Error fetching image details"
+msgstr "Error fetching image details"
+
+#: inc/classes/class-instant-images.php:170
+msgid "Error fetching images"
+msgstr "Error fetching images"
+
+#: inc/classes/class-visitor.php:307
+msgid "Event ID for deletion."
+msgstr "Event ID for deletion."
+
+#: inc/classes/class-visitor.php:294
+msgid "Event ID for fetching details."
+msgstr "Event ID for fetching details."
+
+#: inc/classes/class-visitor.php:320
+msgid "Event ID for updating; use 0 to create a new event."
+msgstr "Event ID for updating; use 0 to create a new event."
+
+#: inc/classes/class-security.php:114
+msgid "Failed to create account!"
+msgstr "Failed to create account!"
+
+#: inc/classes/class-invoice.php:420
+msgid "Failed to create invoice."
+msgstr "Failed to create invoice."
+
+#: inc/classes/class-payment.php:305
+msgid "Failed to delete payment card"
+msgstr "Failed to delete payment card"
+
+#: inc/classes/class-task.php:285
+msgid "Failed to delete task"
+msgstr "Failed to delete task"
+
+#: inc/classes/class-instant-images.php:220
+msgid "Failed to download image"
+msgstr "Failed to download image"
+
+#: inc/classes/class-instant-images.php:307
+msgid "Failed to download image."
+msgstr "Failed to download image."
+
+#: inc/classes/class-payout.php:256
+msgid "Failed to execute the payment."
+msgstr "Failed to execute the payment."
+
+#: inc/classes/class-instant-images.php:340
+msgid "Failed to insert attachment."
+msgstr "Failed to insert attachment."
+
+#: inc/classes/class-invoice.php:509
+msgid "Failed to mark invoice as paid."
+msgstr "Failed to mark invoice as paid."
+
+#: inc/classes/class-instant-images.php:312
+#: inc/classes/class-instant-images.php:322
+msgid "Failed to move downloaded image."
+msgstr "Failed to move downloaded image."
+
+#: inc/classes/class-invoice.php:582
+msgid "Failed to share invoice."
+msgstr "Failed to share invoice."
+
+#: inc/classes/class-invoice.php:406
+msgid "Failed to update invoice."
+msgstr "Failed to update invoice."
+
+#: inc/classes/class-payout.php:267
+msgid "Failed to update the payout status."
+msgstr "Failed to update the payout status."
+
+#: inc/classes/class-instant-images.php:58
+msgid "Filter by color"
+msgstr "Filter by color"
+
+#: inc/classes/class-menus.php:37
+msgid "General"
+msgstr "General"
+
+#: inc/classes/class-menus.php:38
+msgid "General settings for teddy-bear customization popup."
+msgstr "General settings for teddy-bear customization popup."
+
+#: inc/classes/class-toolbar.php:24
+msgid "Go to Partnership Dashboard"
+msgstr "Go to Partnership Dashboard"
+
+#: inc/classes/class-utils.php:34
+msgid "Gutenburg"
+msgstr "Gutenburg"
+
+#: inc/classes/class-utils.php:41 inc/classes/class-utils.php:48
+msgid "Heartbit"
+msgstr "Heartbit"
+
+#: templates/language-template.php:18
+msgid "Hire Me"
+msgstr "Hire Me"
+
+#: templates/language-template.php:16
+msgid "Home"
+msgstr "Home"
+
+#. URI of the plugin
+#. Author URI of the plugin
+msgid "https://github.com/mahmudremal/"
+msgstr "https://github.com/mahmudremal/"
+
+#: inc/classes/class-hunts.php:1179
+msgid "Hunting"
+msgstr "Hunting"
+
+#: inc/classes/class-hunts.php:404
+msgid "Hunts"
+msgstr "Hunts"
+
+#: templates/language-template.php:4
+msgid ""
+"I help people and team worldwide. I can help you build your next digital "
+"product so fell to contact me. Sooner you write is better for both of us."
+msgstr ""
+"I help people and team worldwide. I can help you build your next digital "
+"product so fell to contact me. Sooner you write is better for both of us."
+
+#: templates/language-template.php:11
+msgid "I'm interested in"
+msgstr "I'm interested in"
+
+#: inc/classes/class-instant-images.php:71
+#: inc/classes/class-instant-images.php:84
+msgid "Image ID from Unsplash"
+msgstr "Image ID from Unsplash"
+
+#: inc/classes/class-instant-images.php:362
+msgid "Image uploaded successfully"
+msgstr "Image uploaded successfully"
+
+#: inc/classes/class-instant-images.php:240
+msgid "Image uploaded to Media Library successfully"
+msgstr "Image uploaded to Media Library successfully"
+
+#: inc/classes/class-instant-images.php:287
+msgid "Image URL is required."
+msgstr "Image URL is required."
+
+#: inc/classes/class-cdn.php:126
+msgid "imagekit"
+msgstr "imagekit"
+
+#: inc/classes/class-instant-images.php:98
+msgid "Images"
+msgstr "Images"
+
+#: inc/classes/class-option.php:44
+msgid "Indepth Settings"
+msgstr "Indepth Settings"
+
+#: inc/classes/class-instant-images.php:99
+msgid "Instant image media library configurations."
+msgstr "Instant image media library configurations."
+
+#: inc/classes/class-radar.php:80
+msgid "Interface"
+msgstr "Interface"
+
+#: inc/classes/class-security.php:321
+msgid "Invalid code format."
+msgstr "Invalid code format."
+
+#: inc/classes/class-security.php:220 inc/classes/class-security.php:245
+msgid "Invalid email address."
+msgstr "Invalid email address."
+
+#: inc/classes/class-task.php:316
+msgid "Invalid post ID or post type."
+msgstr "Invalid post ID or post type."
+
+#: inc/classes/class-security.php:174 inc/classes/class-security.php:179
+msgid "Invalid token format."
+msgstr "Invalid token format."
+
+#: inc/classes/class-security.php:187
+msgid "Invalid token signature."
+msgstr "Invalid token signature."
+
+#: inc/classes/class-users.php:154
+msgid "Invalid user ID."
+msgstr "Invalid user ID."
+
+#: inc/classes/class-security.php:294 inc/classes/class-security.php:309
+msgid "Invalid verification code."
+msgstr "Invalid verification code."
+
+#: inc/classes/class-invoice.php:578
+#, php-format
+msgid "Invoice #%s"
+msgstr "Invoice #%s"
+
+#: inc/classes/class-payment.php:84
+msgid "Invoice background"
+msgstr "Invoice background"
+
+#: inc/classes/class-invoice.php:454
+msgid "Invoice not found"
+msgstr "Invoice not found"
+
+#: inc/classes/class-invoice.php:582
+msgid "Invoice shared successfully."
+msgstr "Invoice shared successfully."
+
+#: inc/classes/class-invoice.php:475
+msgid "Item not found"
+msgstr "Item not found"
+
+#: inc/classes/class-task.php:459 inc/classes/class-task.php:460
+#: inc/classes/class-task.php:483 inc/classes/class-task.php:494
+msgid "Jobs"
+msgstr "Jobs"
+
+#: templates/language-template.php:36
+msgid ""
+"Join our community of 3 million people and get updated every week We have a "
+"lot more just for you! Lets join us now"
+msgstr ""
+"Join our community of 3 million people and get updated every week We have a "
+"lot more just for you! Lets join us now"
+
+#: templates/language-template.php:32
+msgid "Latest Post"
+msgstr "Latest Post"
+
+#: templates/payment-status.php:42
+msgid "Launch Tools"
+msgstr "Launch Tools"
+
+#: templates/language-template.php:19
+msgid "Let's"
+msgstr "Let's"
+
+#: inc/classes/class-security.php:139
+msgid "Login successful."
+msgstr "Login successful."
+
+#: inc/classes/class-manifest.php:43
+#, php-format
+msgid "Manage your partnership with %s"
+msgstr "Manage your partnership with %s"
+
+#: inc/classes/class-instant-images.php:104
+msgid "Mark to disable Instant image media library suggestions."
+msgstr "Mark to disable Instant image media library suggestions."
+
+#: inc/classes/class-editor.php:41
+msgid "Mark to dsable AI editor on post edit screen."
+msgstr "Mark to dsable AI editor on post edit screen."
+
+#: inc/classes/class-utils.php:35
+msgid "Mark to dsable gutenburg editor from wordpress."
+msgstr "Mark to dsable gutenburg editor from wordpress."
+
+#: inc/classes/class-utils.php:42 inc/classes/class-utils.php:49
+msgid "Mark to dsable heartbit for wordpress on frontend."
+msgstr "Mark to dsable heartbit for wordpress on frontend."
+
+#: inc/classes/class-invoice.php:176
+msgid "Mark to enable client middle name on checkout field."
+msgstr "Mark to enable client middle name on checkout field."
+
+#: inc/classes/class-invoice.php:197
+msgid ""
+"Mark to enable order line items or overview on the checkout screen right "
+"after the checkout field."
+msgstr ""
+"Mark to enable order line items or overview on the checkout screen right "
+"after the checkout field."
+
+#: inc/classes/class-invoice.php:190
+msgid "Mark to enable select City on checkout after address."
+msgstr "Mark to enable select City on checkout after address."
+
+#: inc/classes/class-invoice.php:183
+msgid "Mark to enable select Emirate on checkout after address."
+msgstr "Mark to enable select Emirate on checkout after address."
+
+#: inc/classes/class-menus.php:43 inc/classes/class-payment.php:62
+msgid "Mark to pause the application unconditionally."
+msgstr "Mark to pause the application unconditionally."
+
+#: inc/classes/class-apps.php:224
+msgid "Mark to pause the apps registration and rest api activity."
+msgstr "Mark to pause the apps registration and rest api activity."
+
+#: inc/classes/class-cdn.php:114
+msgid ""
+"Mark to pause the cdn unconditionally. Would be a reason for site image "
+"break."
+msgstr ""
+"Mark to pause the cdn unconditionally. Would be a reason for site image "
+"break."
+
+#: inc/classes/class-radar.php:74
+msgid "Mark to pause the radar functionality and activity."
+msgstr "Mark to pause the radar functionality and activity."
+
+#: inc/classes/class-task.php:134
+msgid "Mark to pause the task registration and rest api activity."
+msgstr "Mark to pause the task registration and rest api activity."
+
+#: inc/classes/class-invoice.php:175
+msgid "Middle name"
+msgstr "Middle name"
+
+#: templates/language-template.php:24
+msgid "More articles"
+msgstr "More articles"
+
+#: inc/classes/class-roles.php:184
+msgid "N/A"
+msgstr "N/A"
+
+#: templates/language-template.php:5
+msgid "Name"
+msgstr "Name"
+
+#: templates/language-template.php:23
+msgid "Next"
+msgstr "Next"
+
+#: templates/language-template.php:26
+msgid "No headings were found on this page."
+msgstr ""
+"No headings were found on this page.\n"
+
+#: inc/classes/class-invoice.php:64 inc/classes/class-stores.php:53
+#: inc/classes/class-users.php:53
+msgid "Number of users per page."
+msgstr "Number of users per page."
+
+#: templates/language-template.php:28
+msgid "On"
+msgstr "On"
+
+#: inc/classes/class-instant-images.php:47
+msgid "Page number"
+msgstr "Page number"
+
+#: inc/classes/class-invoice.php:48 inc/classes/class-stores.php:37
+#: inc/classes/class-users.php:37
+msgid "Page number."
+msgstr "Page number."
+
+#: inc/classes/class-roles.php:102
+msgid "Partnership Client"
+msgstr "Partnership Client"
+
+#: inc/classes/class-toolbar.php:19
+msgid "Partnership Dashboard"
+msgstr "Partnership Dashboard"
+
+#: inc/classes/class-menus.php:29
+msgid "Partnership dashboard application in depth configuration screen."
+msgstr "Partnership dashboard application in depth configuration screen."
+
+#: inc/classes/class-menus.php:27
+msgid "Partnership dashboard Settings"
+msgstr "Partnership dashboard Settings"
+
+#: inc/classes/class-roles.php:64
+msgid "Partnership Freelancer"
+msgstr "Partnership Freelancer"
+
+#: inc/classes/class-roles.php:76
+msgid "Partnership Influencer"
+msgstr "Partnership Influencer"
+
+#: inc/classes/class-roles.php:88
+msgid "Partnership Partner"
+msgstr "Partnership Partner"
+
+#: inc/classes/class-roles.php:58
+msgid "Partnership Project Manager"
+msgstr "Partnership Project Manager"
+
+#: inc/classes/class-security.php:231
+msgid "Password reset mail sent successfully."
+msgstr "Password reset mail sent successfully."
+
+#: inc/classes/class-apps.php:223 inc/classes/class-cdn.php:113
+#: inc/classes/class-menus.php:42 inc/classes/class-payment.php:61
+#: inc/classes/class-radar.php:73 inc/classes/class-task.php:133
+msgid "Pause"
+msgstr "Pause"
+
+#: inc/classes/class-payment.php:56
+msgid "Payment"
+msgstr "Payment"
+
+#: templates/payment-status.php:49
+msgid "Payment Cancelled"
+msgstr "Payment Cancelled"
+
+#: inc/classes/class-payment.php:310
+msgid "Payment card deleted successfully"
+msgstr "Payment card deleted successfully"
+
+#: inc/classes/class-payment.php:315
+msgid "Payment card not found or could not be deleted"
+msgstr "Payment card not found or could not be deleted"
+
+#: inc/classes/class-payment.php:57
+msgid ""
+"Payment configurations, gateway setups and all necessery things will be done "
+"form here."
+msgstr ""
+"Payment configurations, gateway setups and all necessery things will be done "
+"form here."
+
+#: templates/payment-status.php:58
+msgid "Payment Failed"
+msgstr "Payment Failed"
+
+#: templates/payment-status.php:40
+msgid "Payment Successful"
+msgstr "Payment Successful"
+
+#: inc/classes/class-payout.php:273
+msgid "Payout status updated successfully."
+msgstr "Payout status updated successfully."
+
+#: inc/classes/class-payment-tap.php:213
+#, php-format
+msgid "Payout to account %s"
+msgstr "Payout to account %s"
+
+#: templates/language-template.php:9
+msgid "Phone"
+msgstr "Phone"
+
+#: inc/classes/class-menus.php:30
+msgid ""
+"Place to setup your partnership program deshboard with application "
+"configurations and stuffs. Don't touch anything if you're not sure enough on "
+"this. Carefully change, update or delete anything because it may required "
+"some data to matched same stage and it does't save any revissions."
+msgstr ""
+"Place to setup your partnership program deshboard with application "
+"configurations and stuffs. Don't touch anything if you're not sure enough on "
+"this. Carefully change, update or delete anything because it may required "
+"some data to matched same stage and it does't save any revissions."
+
+#: templates/language-template.php:22
+msgid "Previous"
+msgstr "Previous"
+
+#: inc/classes/class-menus.php:57
+msgid "Privacy policy"
+msgstr "Privacy policy"
+
+#: inc/classes/class-payment.php:85
+msgid ""
+"Provide here an image url that will work as an background image of "
+"anonymouse payment background."
+msgstr ""
+"Provide here an image url that will work as an background image of "
+"anonymouse payment background."
+
+#: inc/classes/class-payment.php:76
+msgid "Provide tap public key."
+msgstr "Provide tap public key."
+
+#: inc/classes/class-payment.php:69
+msgid "Provide tap secret key."
+msgstr "Provide tap secret key."
+
+#: inc/classes/class-cdn.php:132
+msgid "Public Key"
+msgstr "Public Key"
+
+#: inc/classes/class-payment.php:75
+msgid "Public key"
+msgstr "Public key"
+
+#: inc/classes/class-invoice.php:169
+msgid "Put a default country code for phone number."
+msgstr "Put a default country code for phone number."
+
+#: inc/classes/class-radar.php:68
+msgid "Radar"
+msgstr "Radar"
+
+#: inc/classes/class-notifications.php:80
+msgid "Refund Issued"
+msgstr "Refund Issued"
+
+#: inc/classes/class-payment-tap.php:82
+msgid "Request failed"
+msgstr "Request failed"
+
+#: inc/classes/class-instant-images.php:53
+msgid "Results per page"
+msgstr "Results per page"
+
+#: inc/classes/class-roles.php:185
+msgid "Role assign interface will be apear here."
+msgstr "Role assign interface will be apear here."
+
+#: inc/classes/class-roles.php:179
+msgid "Roles"
+msgstr "Roles"
+
+#: inc/classes/class-roles.php:180
+msgid ""
+"Roles configurations, fields customization. Things enables and disables."
+msgstr ""
+"Roles configurations, fields customization. Things enables and disables."
+
+#: templates/language-template.php:31
+msgid "Scroll Down"
+msgstr "Scroll Down"
+
+#: inc/classes/class-invoice.php:53 inc/classes/class-stores.php:42
+#: inc/classes/class-users.php:42
+msgid "Search keyword."
+msgstr "Search keyword."
+
+#: inc/classes/class-instant-images.php:41
+msgid "Search term"
+msgstr "Search term"
+
+#: inc/classes/class-payment.php:68
+msgid "Secret key"
+msgstr "Secret key"
+
+#: inc/classes/class-cdn.php:121
+msgid ""
+"Select a cdn provider for image syncing from wordpress media library to cdn "
+"host."
+msgstr ""
+"Select a cdn provider for image syncing from wordpress media library to cdn "
+"host."
+
+#: inc/classes/class-menus.php:50
+msgid ""
+"Select a dashboard screen from where we'll apply the dashboard interface"
+msgstr ""
+"Select a dashboard screen from where we'll apply the dashboard interface"
+
+#: inc/classes/class-menus.php:58
+msgid "Select a privacy policy page."
+msgstr "Select a privacy policy page."
+
+#: inc/classes/class-menus.php:66
+msgid "Select a term and condition page"
+msgstr "Select a term and condition page"
+
+#: templates/language-template.php:14
+msgid "Send"
+msgstr "Send"
+
+#: inc/classes/class-cdn.php:416
+#, php-format
+msgid "Send to %s"
+msgstr "Send to %s"
+
+#: inc/classes/class-cdn.php:416 inc/classes/class-cdn.php:448
+msgid "Send to CDN"
+msgstr "Send to CDN"
+
+#: inc/classes/class-visitor.php:280
+msgid "Serialized dataset for the visitor; can be null."
+msgstr "Serialized dataset for the visitor; can be null."
+
+#: inc/classes/class-option.php:45 inc/classes/class-option.php:71
+msgid "Settings"
+msgstr "Settings"
+
+#: templates/language-template.php:29
+msgid "Share"
+msgstr "Share"
+
+#. Name of the plugin
+msgid "Site Core"
+msgstr "Site Core"
+
+#: templates/payment-status.php:59
+msgid ""
+"Sorry, your payment failed. Please try again or contact our support team for "
+"assistance."
+msgstr ""
+"Sorry, your payment failed. Please try again or contact our support team for "
+"assistance."
+
+#: inc/classes/class-payment-sslcommerz.php:38
+msgid "SslCommerz"
+msgstr "SslCommerz"
+
+#: inc/classes/class-payment-stripe.php:31
+msgid "Stripe"
+msgstr "Stripe"
+
+#: templates/language-template.php:33
+msgid "Subscribe Now"
+msgstr "Subscribe Now"
+
+#: inc/classes/class-notifications.php:68
+msgid "Subscription Cancelled"
+msgstr "Subscription Cancelled"
+
+#: inc/classes/class-notifications.php:32
+msgid "Subscription Created"
+msgstr "Subscription Created"
+
+#: inc/classes/class-notifications.php:44
+msgid "Subscription Paused"
+msgstr "Subscription Paused"
+
+#: inc/classes/class-notifications.php:56
+msgid "Subscription Resumed"
+msgstr "Subscription Resumed"
+
+#: inc/classes/class-payment-tabby.php:25
+msgid "Tabby"
+msgstr "Tabby"
+
+#: templates/language-template.php:25
+msgid "Table of Contents"
+msgstr "Table of Contents"
+
+#: inc/classes/class-payment-tap.php:36
+msgid "Tap"
+msgstr "Tap"
+
+#: inc/classes/class-visitor.php:335
+msgid "Target of the event; can be null."
+msgstr "Target of the event; can be null."
+
+#: inc/classes/class-task.php:128
+msgid "Task"
+msgstr "Task"
+
+#: inc/classes/class-task.php:285
+msgid "Task deleted successfully!"
+msgstr "Task deleted successfully!"
+
+#: templates/language-template.php:12
+msgid "Tell me more about your goals"
+msgstr "Tell me more about your goals"
+
+#: inc/classes/class-menus.php:65
+msgid "Terms & Condition"
+msgstr "Terms & Condition"
+
+#: inc/classes/class-task.php:78 inc/classes/class-task.php:94
+msgid "The ID of the requested item."
+msgstr "The ID of the requested item."
+
+#: inc/classes/class-translations.php:48 inc/classes/class-translations.php:65
+msgid "The language code for the translation."
+msgstr "The language code for the translation."
+
+#: inc/classes/class-task.php:73 inc/classes/class-task.php:89
+msgid "The post type of the requested item."
+msgstr "The post type of the requested item."
+
+#. Description of the plugin
+msgid ""
+"This plugin is specially designed for this wordpress website with necessery "
+"files, themes, assets to store, enqueue, register or deregister."
+msgstr ""
+"This plugin is specially designed for this wordpress website with necessery "
+"files, themes, assets to store, enqueue, register or deregister."
+
+#: inc/classes/class-security.php:193
+msgid "Token has expired."
+msgstr "Token has expired."
+
+#: inc/classes/class-security.php:286
+msgid "Too many verification attempts. Please try again later."
+msgstr "Too many verification attempts. Please try again later."
+
+#: inc/classes/class-visitor.php:270
+msgid "Tracker code for the visitor."
+msgstr "Tracker code for the visitor."
+
+#: templates/payment-status.php:51 templates/payment-status.php:60
+msgid "Try Again"
+msgstr "Try Again"
+
+#: inc/classes/class-visitor.php:330
+msgid "Type of the event (stay, click, scroll)."
+msgstr "Type of the event (stay, click, scroll)."
+
+#: inc/classes/class-instant-images.php:369
+msgid "Unsplash"
+msgstr "Unsplash"
+
+#: inc/classes/class-instant-images.php:272
+msgid "Unsplash is disabled"
+msgstr "Unsplash is disabled"
+
+#: inc/classes/class-security.php:96
+msgid "User already exists."
+msgstr "User already exists."
+
+#: inc/classes/class-visitor.php:275
+msgid "User ID associated with the visitor; can be null."
+msgstr "User ID associated with the visitor; can be null."
+
+#: inc/classes/class-users.php:150
+msgid "User ID is required."
+msgstr "User ID is required."
+
+#: inc/classes/class-translations.php:70
+msgid "User id to set that language as default language."
+msgstr "User id to set that language as default language."
+
+#: inc/classes/class-security.php:266
+msgid "User is already verified."
+msgstr "User is already verified."
+
+#: inc/classes/class-security.php:233 inc/classes/class-security.php:260
+#: inc/classes/class-security.php:326
+msgid "User not found."
+msgstr "User not found."
+
+#: inc/classes/class-invoice.php:58 inc/classes/class-stores.php:47
+#: inc/classes/class-users.php:47
+msgid "User status (e.g., pending, approved)."
+msgstr "User status (e.g., pending, approved)."
+
+#: inc/classes/class-utils.php:29
+msgid "Utils"
+msgstr "Utils"
+
+#. Author of the plugin
+msgid "UxnDev"
+msgstr "UxnDev"
+
+#: inc/classes/class-security.php:298
+msgid "Verification code has expired."
+msgstr "Verification code has expired."
+
+#: inc/classes/class-security.php:258
+msgid "Verification email sent successfully."
+msgstr "Verification email sent successfully."
+
+#: inc/classes/class-visitor.php:220
+msgid "Visitor ID associated with the activity."
+msgstr "Visitor ID associated with the activity."
+
+#: inc/classes/class-visitor.php:252
+msgid "Visitor ID for deletion."
+msgstr "Visitor ID for deletion."
+
+#: inc/classes/class-visitor.php:239
+msgid "Visitor ID for fetching details."
+msgstr "Visitor ID for fetching details."
+
+#: inc/classes/class-visitor.php:265
+msgid "Visitor ID for updating; use 0 to create a new visitor."
+msgstr "Visitor ID for updating; use 0 to create a new visitor."
+
+#: templates/language-template.php:17
+msgid "Want to work toegether and create an amazing products with me?"
+msgstr "Want to work toegether and create an amazing products with me?"
+
+#: templates/language-template.php:34
+msgid "Watch My Profile"
+msgstr "Watch My Profile"
+
+#: templates/payment-status.php:68
+msgid ""
+"We're sorry, but we're unable to confirm your payment. Please contact our "
+"support team for assistance."
+msgstr ""
+"We're sorry, but we're unable to confirm your payment. Please contact our "
+"support team for assistance."
+
+#: inc/classes/class-editor.php:36
+msgid ""
+"Wordpress editor to control your wordpress closely to improve performace and "
+"necessity first."
+msgstr ""
+"Wordpress editor to control your wordpress closely to improve performace and "
+"necessity first."
+
+#: inc/classes/class-utils.php:30
+msgid ""
+"Wordpress utils to control your wordpress closely to improve performace and "
+"necessity first."
+msgstr ""
+"Wordpress utils to control your wordpress closely to improve performace and "
+"necessity first."
+
+#: inc/classes/class-cdn.php:124
+msgid "WP Media library"
+msgstr "WP Media library"
+
+#: inc/classes/class-security.php:277
+msgid "Your email verification code is: %d"
+msgstr "Your email verification code is: %d"
+
+#: templates/payment-status.php:41
+msgid ""
+"Your payment has been successfully processed. Thank you for your purchase."
+msgstr ""
+"Your payment has been successfully processed. Thank you for your purchase."
+
+#: inc/classes/class-notifications.php:69
+#, php-format
+msgid "Your subscription via %s was cancelled."
+msgstr "Your subscription via %s was cancelled."
+
+#: inc/classes/class-notifications.php:45
+#, php-format
+msgid "Your subscription via %s was paused."
+msgstr "Your subscription via %s was paused."
+
+#: inc/classes/class-notifications.php:57
+#, php-format
+msgid "Your subscription via %s was resumed."
+msgstr "Your subscription via %s was resumed."
+
+#: templates/payment-status.php:50
+msgid ""
+"Your transaction has been cancelled. You can try again or contact our "
+"support team for assistance."
+msgstr ""
+"Your transaction has been cancelled. You can try again or contact our "
+"support team for assistance."
+
+#: templates/language-template.php:3
+msgid "😎 Interested?"
+msgstr "😎 Interested?"

@@ -2,7 +2,7 @@
 /**
  * Bootstraps the Theme.
  *
- * @package PartnershipManager
+ * @package SiteCore
  */
 namespace SITE_CORE\inc;
 use SITE_CORE\inc\Traits\Singleton;
@@ -21,47 +21,48 @@ class Project {
 	protected function __construct() {
 		// Load class instances.
 
-		Hunts::get_instance();
+			Hunts::get_instance();
 		
-		Cdn::get_instance();
-		Apps::get_instance();
-		Task::get_instance();
-		Error::get_instance();
-		Utils::get_instance();
-		Radar::get_instance();
-		Editor::get_instance();
-			Suite::get_instance();
-			Users::get_instance();
-			Roles::get_instance();
+		// Cdn::get_instance();
+		// 	Apps::get_instance();
+		// 	Task::get_instance();
+		// 	Error::get_instance();
+		// 	Utils::get_instance();
+		// 	Radar::get_instance();
+		// Editor::get_instance();
+		// 		Suite::get_instance();
+		// 		Users::get_instance();
+		// 		Roles::get_instance();
 		Menus::get_instance();
 		Option::get_instance();
 		Assets::get_instance();
-			Payout::get_instance();
-			Stores::get_instance();
-		Visitor::get_instance();
-			Toolbar::get_instance();
-			Invoice::get_instance();
-			Finance::get_instance();
-		Payment::get_instance();
-			Supports::get_instance();
-			Referral::get_instance();
-		Security::get_instance();
-			Frontend::get_instance();
-			Contract::get_instance();
-		Manifest::get_instance();
-		Currency::get_instance();
-		Shortcode::get_instance();
-			Admin_Menu::get_instance();
-			Partner_Docs::get_instance();
-			Service_Docs::get_instance();
+		// Llmstxt::get_instance();
+		// 		Payout::get_instance();
+		// 		Stores::get_instance();
+		// 	Visitor::get_instance();
+		// 		Toolbar::get_instance();
+		// 		Invoice::get_instance();
+		// 		Finance::get_instance();
+		// 	Payment::get_instance();
+		// 		Supports::get_instance();
+		// 		Referral::get_instance();
+			Security::get_instance();
+			// 	Frontend::get_instance();
+			// 	Contract::get_instance();
+			// Manifest::get_instance();
+			// Currency::get_instance();
+			// Shortcode::get_instance();
+			// 	Admin_Menu::get_instance();
+			// 	Partner_Docs::get_instance();
+			// 	Service_Docs::get_instance();
 		Translations::get_instance();
-		Notifications::get_instance();
-		Instant_Images::get_instance();
-			// 
-			Payment_Tap::get_instance();
-			Payment_Tabby::get_instance();
-			Payment_Stripe::get_instance();
-			Payment_Sslcommerz::get_instance();
+		// 	Notifications::get_instance();
+		// Instant_Images::get_instance();
+				
+		// 		Payment_Tap::get_instance();
+		// 		Payment_Tabby::get_instance();
+		// 		Payment_Stripe::get_instance();
+		// 		Payment_Sslcommerz::get_instance();
         // 
 		// Uncomment the following line if setup_hooks needs to be called.
 		$this->setup_hooks();

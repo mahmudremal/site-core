@@ -15,20 +15,22 @@ const SRC_DIR = path.resolve(__dirname, 'src');
 
 module.exports = {
   entry: {
-    // setting: JS_DIR + '/setting.js',
-    // pricing: JS_DIR + '/pricing.js',
-    // visitor: JS_DIR + '/visitor.js',
-    // invoice: JS_DIR + '/invoice.js',
-    // public: JS_DIR + '/public.js',
-    // editor: JS_DIR + '/editor.js',
-    // media: JS_DIR + '/media.js',
-    // admin: JS_DIR + '/admin.js',
-    // popup: JS_DIR + '/popup.js',
+      // setting: JS_DIR + '/setting.js',
+      // pricing: JS_DIR + '/pricing.js',
+      // visitor: JS_DIR + '/visitor.js',
+      // invoice: JS_DIR + '/invoice.js',
+      // public: JS_DIR + '/public.js',
+      // editor: JS_DIR + '/editor.js',
+      // health: JS_DIR + '/health.js',
+      // media: JS_DIR + '/media.js',
+      // admin: JS_DIR + '/admin.js',
+      // popup: JS_DIR + '/popup.js',
     hunts: JS_DIR + '/hunts.js',
-    // task: JS_DIR + '/task.js',
-    // pwa: JS_DIR + '/pwa.js',
-    // cdn: JS_DIR + '/cdn.js',
-    // app: JS_DIR + '/app.js',
+      // task: JS_DIR + '/task.js',
+      // meet: JS_DIR + '/meet.js',
+      // pwa: JS_DIR + '/pwa.js',
+      // cdn: JS_DIR + '/cdn.js',
+      // app: JS_DIR + '/app.js',
     // sw: JS_DIR + '/sw.js',
   },
   output: {
@@ -65,6 +67,8 @@ module.exports = {
       '@img': path.resolve(__dirname, 'src/img'),
       '@js': path.resolve(__dirname, 'src/js'),
     },
+    fallback: {
+    }
   },
   devServer: {
     hot: true,
@@ -95,6 +99,10 @@ module.exports = {
             },
           },
         ].filter(Boolean),
+      },
+      {
+        test: /\.mjs$/,
+        type: 'javascript/auto',
       },
       {
         test: /\.(sa|sc|c)ss$/,

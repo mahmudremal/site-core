@@ -16,7 +16,7 @@
  * Text Domain:       site-core
  * Domain Path:       /languages
  * 
- * @package PartnershipManager
+ * @package SiteCore
  * @author  Remal Mahmud (https://github.com/mahmudremal/)
  * @version 1.0.2
  * @link https://github.com/mahmudremal/wp-partnership-manager/
@@ -54,3 +54,6 @@ try {
 } catch (Error $th) {
 	//throw $th;
 }
+
+
+

@@ -2,7 +2,7 @@
 /**
  * Translation management class
  *
- * @package PartnershipManager
+ * @package SiteCore
  */
 namespace SITE_CORE\inc;
 use SITE_CORE\inc\Traits\Singleton;
@@ -155,8 +155,9 @@ class Translations {
         if (empty($atts['text'])) {
             return '';
         }
-        $_added = $this->get_trans_list($atts['text']);
         return __($atts['text'], 'site-core');
+        $_added = $this->get_trans_list($atts['text']);
+        return $_added ? $_added : __($atts['text'], 'site-core');
     }
     
 }

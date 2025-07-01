@@ -282,7 +282,7 @@ class Task {
             ['id' => (int) $task_id],
             ['%d']
         );
-        return rest_ensure_response(['success' => $deleted, 'message' => $deleted ? __('Task deleted successfully!', 'domain') : __('Failed to delete task', 'domain')]);
+        return rest_ensure_response(['success' => $deleted, 'message' => $deleted ? __('Task deleted successfully!', 'site-core') : __('Failed to delete task', 'site-core')]);
     }
     public function task_submit( WP_REST_Request $request ) {
         global $wpdb;$params = $request->get_params();

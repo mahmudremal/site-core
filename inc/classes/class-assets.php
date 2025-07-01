@@ -2,7 +2,7 @@
 /**
  * Enqueue theme assets
  *
- * @package PartnershipManager
+ * @package SiteCore
  */
 namespace SITE_CORE\inc;
 use SITE_CORE\inc\Traits\Singleton;
@@ -33,6 +33,7 @@ class Assets {
 	 * Registers and enqueues frontend styles.
 	 */
 	public function register_styles() {
+		wp_register_style('site-core', WP_SITECORE_DIR_URI . '/styling.css', [], $this->filemtime(WP_SITECORE_DIR_PATH . '/styling.css'), 'all');
 		if (!apply_filters('partnership_manager_screen_active', false)) {return;}
 
 		// Enqueue styles.
@@ -59,6 +60,7 @@ class Assets {
 	 * @param string $curr_page The current admin page.
 	 */
 	public function admin_enqueue_scripts($curr_page) {
+		wp_register_style('site-core', WP_SITECORE_DIR_URI . '/styling.css', [], $this->filemtime(WP_SITECORE_DIR_PATH . '/styling.css'), 'all');
 		// wp_register_style('site-core-tailwind', WP_SITECORE_DIR_URI . '/assets/tailwind.css', [], $this->filemtime(WP_SITECORE_DIR_PATH . '/assets/tailwind.css'), 'all');
 		// wp_register_style('site-core-admin', WP_SITECORE_BUILD_CSS_URI . '/admin.css', [], $this->filemtime(WP_SITECORE_BUILD_CSS_DIR_PATH . '/admin.css'), 'all');
 		// wp_register_script('site-core-admin', WP_SITECORE_BUILD_JS_URI . '/admin.js', [], $this->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/admin.js'), true);

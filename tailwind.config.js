@@ -47,5 +47,13 @@ module.exports = {
   },
   plugins: [
     require('daisyui')
-  ]
+  ],
+  // corePlugins: {
+  //   preflight: false,
+  // },
+  // safelist: [
+  //   {
+  //     pattern: /xpo_/,
+  //   },
+  // ],
 }

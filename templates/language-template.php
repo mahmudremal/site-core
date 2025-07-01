@@ -1,0 +1,42 @@
+<?php
+$languages = [
+    __("😎 Interested?", 'site-core'),
+    __("I help people and team worldwide. I can help you build your next digital product so fell to contact me. Sooner you write is better for both of us.", 'site-core'),
+    __("Name", 'site-core'),
+    __("e.g. John Doe", 'site-core'),
+    __("Email", 'site-core'),
+    __("e.g. hello@yoursite.com", 'site-core'),
+    __("Phone", 'site-core'),
+    __("e.g. +1 373 3783", 'site-core'),
+    __("I'm interested in", 'site-core'),
+    __("Tell me more about your goals", 'site-core'),
+    __("Captcha", 'site-core'),
+    __("Send", 'site-core'),
+    __("Articles", 'site-core'),
+    __("Home", 'site-core'),
+    __("Want to work toegether and create an amazing products with me?", 'site-core'),
+    __("Hire Me", 'site-core'),
+    __("Let's", 'site-core'),
+    __("connect!", 'site-core'),
+    __("by Me alongside UXnDev", 'site-core'),
+    __("Previous", 'site-core'),
+    __("Next", 'site-core'),
+    __("More articles", 'site-core'),
+    __("Table of Contents", 'site-core'),
+    __("No headings were found on this page.", 'site-core'),
+    __("Top", 'site-core'),
+    __("By", 'site-core'),
+    __("On", 'site-core'),
+    __("Share", 'site-core'),
+    __("Dribbble", 'site-core'),
+    __("Scroll Down", 'site-core'),
+    __("Latest Post", 'site-core'),
+    __("Subscribe Now", 'site-core'),
+    __("Watch My Profile", 'site-core'),
+    __("Enjoyed This Article?", 'site-core'),
+    __("Join our community of 3 million people and get updated every week We have a lot more just for you! Lets join us now", 'site-core'),
+];
+
+
+
+// [__ text=""]

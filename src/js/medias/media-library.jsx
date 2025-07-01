@@ -1,68 +1,74 @@
 import React, { Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
-const InstantImage = lazy(() => import('./instant-image'));
 import { __ } from '../utils';
 
-// Your React component
+const InstantImage = lazy(() => import('./instant-image'));
 
+export const install_media_tab = () => {
+	const l10n = wp.media.view.l10n;
+	const MediaFrame = wp.media.view.MediaFrame.Select;
 
-export default function install_media_tab() {
-	const { media } = wp;
-	const { l10n } = media.view;
+	wp.media.view.MediaFrame.Select = MediaFrame.extend({
+		initialize: function () {
+			MediaFrame.prototype.initialize.apply(this, arguments);
 
-	// Extend the media frame router
-	media.view.MediaFrame.Select.prototype.browseRouter = (routerView) => {
-		routerView.set({
-			upload: {
-				text: l10n.uploadFilesTitle,
-				priority: 20,
-			},
-			browse: {
-				text: l10n.mediaLibraryTitle,
-				priority: 40,
-			},
-			instant_image: {
-				text: __('Instant Image'),
-				priority: 60,
-			},
-		});
-	};
-
-	// Open handler
-	wp.media.view.Modal.prototype.on('open', function () {
-		const activeTab = document.querySelector('.active#menu-item-instant_image');
-		if (activeTab && activeTab?.nodeType) {mountReactComponent();}
-
-		// Tab click handler.
-		document.querySelectorAll('#menu-item-instant_image:not([data-event-attached])').forEach(tab => {
-			tab.dataset.eventAttached = true;
-			tab.addEventListener('click', function (e) {
-				e.preventDefault();
-				mountReactComponent();
+			const InstantImageState = wp.media.controller.State.extend({
+				insert: function () {
+					this.frame.close();
+				}
 			});
-		});
+
+			this.states.add([
+				new InstantImageState({
+					id: 'instant_image',
+					title: __('Instant Images'),
+					priority: 200,
+					search: false,
+				}),
+			]);
+
+			this.on('content:render:instant_image', this.renderInstantImageTab, this);
+		},
+
+		browseRouter: function (routerView) {
+			routerView.set({
+				upload: {
+					text: l10n.uploadFilesTitle,
+					priority: 20,
+				},
+				browse: {
+					text: l10n.mediaLibraryTitle,
+					priority: 40,
+				},
+				instant_image: {
+					text: __('Instant Images'),
+					priority: 60,
+				},
+			});
+		},
+
+		renderInstantImageTab: function () {
+			const View = wp.Backbone.View.extend({
+				className: 'instant-image-tab-content',
+				initialize: function () {
+					this.render();
+				},
+				render: function () {
+					const reactRoot = document.createElement('div');
+					this.el.innerHTML = '';this.el.appendChild(reactRoot);
+
+					const root = createRoot(reactRoot);
+					root.render(
+						<Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
+							<InstantImage config={{}} />
+						</Suspense>
+					);
+
+					return this;
+				},
+			});
+			var view = new View();
+			this.content.set(view);
+		},
 	});
-
-
-	// Function to mount React component
-	function mountReactComponent() {
-		const container = document.querySelector('.media-frame-content');
-		if (container) {
-			// Clear previous content
-			container.innerHTML = '';
-
-			// Create a new div as mount node
-			const content = document.createElement('div');
-			content.classList.add('xpo_p-3', 'xpo_rounded-lg');
-			content.innerHTML = '<h2>Instant Image</h2><p>Mounting Instant Image Tab...</p>';
-			container.appendChild(content);
-
-			// Render React component
-			const root = createRoot(container);root.render(
-				<Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
-					<InstantImage config={{}} />
-				</Suspense>
-			);
-		}
-	}
 }
