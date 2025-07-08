@@ -108,7 +108,7 @@ export const ClipboardInput = ({ text }) => {
   );
 }
 
-const ellipsis = (text, start = 0, end = 30) => {
+export const ellipsis = (text, start = 0, end = 30) => {
   if (typeof text !== 'string') {return text;}
   if (text?.length >= start + end) {
     return text.substring(start, end);
@@ -177,3 +177,5 @@ export const tailwind_install = () => {
     document.head.appendChild(script);
   });
 }
+
+export const home_route = (p) => p;

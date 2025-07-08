@@ -1,82 +1,95 @@
-async function siderAIStream(text, token = null, cid = "681978e6b26b631bde86cd3a") {
-  if (! token) {
-    token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxNTYzNjY3NSwicmVnaXN0ZXJfdHlwZSI6Im9hdXRoMiIsImFwcF9uYW1lIjoiQ2hpdENoYXRfV2ViIiwidG9rZW5faWQiOiJiYTA4MDBkNy02NWFjLTQ1MTUtYjIxMi01MTE0ZmU1NmIxZDkiLCJpc3MiOiJzaWRlci5haSIsImF1ZCI6WyIiXSwiZXhwIjoxNzc2MDYzMDY3LCJuYmYiOjE3NDQ5NTkwNjcsImlhdCI6MTc0NDk1OTA2N30._iluVsUht-vSzVYfVoFFP7OFpoQB-jK2asyIfdfVKOM';
-  }
-  const response = await fetch("https://api2.sider.ai/api/chat/v1/completions", {
-    method: "POST",
-    headers: {
-      "accept": "*/*",
-      "accept-language": "en-GB,en-US;q=0.9,en;q=0.8,bn;q=0.7",
-      "authorization": `Bearer ${token}`, // Replace securely
-      "cache-control": "no-cache",
-      "content-type": "application/json",
-      "pragma": "no-cache",
-      "priority": "u=1, i",
-      "sec-fetch-dest": "empty",
-      "sec-fetch-mode": "cors",
-      "sec-fetch-site": "none",
-      "sec-fetch-storage-access": "active",
-      "x-app-name": "ChitChat_Chrome_Ext",
-      "x-app-version": "5.7.1",
-      "x-time-zone": "Asia/Dhaka",
-      "x-trace-id": "1a9a18b1-e963-4e4b-b737-3a2ee2c729a6"
-    },
-    body: JSON.stringify({
-      "stream": true,
-      "cid": cid,
-      "model": "sider",
-      "filter_search_history": false,
-      "from": "chat",
-      "chat_models": [],
-      "think_mode": { "enable": true },
-      "quote": null,
-      "multi_content": [{
-        "type": "text",
-        "text": text,
-        "user_input_text": text
-      }],
-      "prompt_templates": [{
-        "key": "artifacts",
-        "attributes": { "lang": "original" }
-      }],
-      "tools": {
-        "image": { "quality_level": "medium" },
-        "auto": ["search", "create_image", "data_analysis"]
+async function siderAIStream(text, token = null, cid = '') {
+  return new Promise(async (resolve, reject) => {
+    if (! token) {reject(new Error('Invalid token provided!'));}
+    const response = await fetch("https://api2.sider.ai/api/chat/v1/completions", {
+      method: "POST",
+      headers: {
+        "accept": "*/*",
+        "accept-language": "en-GB,en-US;q=0.9,en;q=0.8,bn;q=0.7",
+        "authorization": `Bearer ${token}`,
+        "cache-control": "no-cache",
+        "content-type": "application/json",
+        "pragma": "no-cache",
+        "priority": "u=1, i",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "none",
+        "sec-fetch-storage-access": "active",
+        "x-app-name": "ChitChat_Chrome_Ext",
+        "x-app-version": "5.7.1",
+        "x-time-zone": "Asia/Dhaka",
+        "x-trace-id": "1a9a18b1-e963-4e4b-b737-3a2ee2c729a6"
       },
-      "extra_info": {
-        "origin_url": "chrome-extension://difoiogjjojoaoomphldepapgpbgkhkb/standalone.html?from=sidebar",
-        "origin_title": "Sider"
-      },
-      "output_language": "en",
-      "parent_message_id": "68197fccb26b631bde876ecd"
-    }),
-    mode: "cors",
-    credentials: "include"
-  });
-
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder("utf-8");
-
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    const chunk = decoder.decode(value, { stream: true });
-
-    // Streamed content may contain multiple SSE-style events
-    chunk.split("\n").forEach(line => {
-      if (line.startsWith("data: ")) {
-        const json = line.slice(6);
-        if (json === "[DONE]") return;
-        try {
-          const data = JSON.parse(json);
-          console.log("Received:", data);
-        } catch (e) {
-          console.error("Invalid JSON:", json);
-        }
-      }
+      body: JSON.stringify({
+        "stream": true,
+        "cid": cid,
+        "model": "sider",
+        "filter_search_history": false,
+        "from": "chat",
+        "chat_models": [],
+        "think_mode": { "enable": true },
+        "quote": null,
+        "multi_content": [{
+          "type": "text",
+          "text": text,
+          "user_input_text": text
+        }],
+        "prompt_templates": [{
+          "key": "artifacts",
+          "attributes": { "lang": "original" }
+        }],
+        "tools": {
+          "image": { "quality_level": "medium" },
+          "auto": ["search", "create_image", "data_analysis"]
+        },
+        "extra_info": {
+          "origin_url": "chrome-extension://difoiogjjojoaoomphldepapgpbgkhkb/standalone.html?from=sidebar",
+          "origin_title": "Sider"
+        },
+        "output_language": "en",
+        "parent_message_id": "68197fccb26b631bde876ecd"
+      }),
+      mode: "cors",
+      credentials: "include"
     });
-  }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder("utf-8");
+    let _result = {resoning: '', content: ''};
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+
+      // Streamed content may contain multiple SSE-style events
+      chunk.split("\n").forEach(line => {
+        if (line.startsWith("data:")) {
+          const json = line.slice(5).trim();
+          if (json === "[DONE]") return;
+          try {
+            const parsed = JSON.parse(json);
+            console.log("Received:", parsed);
+            if (parsed?.data?.reasoning_content?.text) {
+              _result.resoning += parsed.data.reasoning_content.text;
+            }
+            if (parsed?.data?.text && parsed?.data?.type == 'text') {
+              _result.content += parsed.data.text;
+            }
+          } catch (e) {
+            console.error("Invalid JSON:", json);
+            reject(e);
+          }
+        }
+      });
+    }
+    resolve(_result)
+  });
 }
+// await siderAIStream("What's up!", 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxNTYzNjY3NSwicmVnaXN0ZXJfdHlwZSI6Im9hdXRoMiIsImFwcF9uYW1lIjoiQ2hpdENoYXRfV2ViIiwidG9rZW5faWQiOiI4NzE0YTIwYy0yOWZkLTQyMDctOTY3ZC1hNDg0NjIzNjM0ZjAiLCJpc3MiOiJzaWRlci5haSIsImF1ZCI6WyIiXSwiZXhwIjoxNzgxMDE5MTg1LCJuYmYiOjE3NDk5MTUxODUsImlhdCI6MTc0OTkxNTE4NX0.cWsqJBXBGN0o-sQA30Dgg8tWjtPuTAwLgObfwZrjiUI', '')
+
+
+
 const schemas_dir = 'https://core.agency.local/wp-json/sitecore/v1/tasks/attachments/schemas';
 
 class System {
@@ -485,6 +498,7 @@ class ContentGenerator extends LLM {
     })
   }
 }
+
 class TaskHandler extends ContentGenerator {
   constructor(restRoot, llmEndpoint, llmModel) {
     super(llmEndpoint, llmModel, restRoot);
@@ -586,6 +600,7 @@ class TaskHandler extends ContentGenerator {
     }
   }
 }
+
 const taskHandler = new TaskHandler('https://core.agency.local/wp-json', 'http://localhost:11434', 'romi');
 taskHandler.processJobs();
 

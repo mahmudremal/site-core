@@ -14,10 +14,10 @@ class HealthMonitoringAddon {
         this.db = dbConnection;
         // Define tables with the prefix
         this.tables = {
-            users: `${this.db.prefix}_health_users`,
-            tokens: `${this.db.prefix}_health_tokens`,
-            connectionData: `${this.db.prefix}_health_connection_data`,
-            deviceData: `${this.db.prefix}_health_device_data`,
+            users: `${this.db.prefix}health_users`,
+            tokens: `${this.db.prefix}health_tokens`,
+            connectionData: `${this.db.prefix}health_connection_data`,
+            deviceData: `${this.db.prefix}health_device_data`,
         };
         this.s2c_stream_types = ['health_insights', 'medication_reminder', 'diet_plan', 'exercise_plan'];
         this.c2s_stream_types = [
@@ -39,10 +39,9 @@ class HealthMonitoringAddon {
         this.loadCachedIndex();
     }
 
-    register() {
+    register(router) {
         const server = this.app.get('server');
 
-        const router = express.Router();
         router.use('/health', (req, res, next) => {
             console.log('Health endpoint middleware');
             next();
@@ -106,7 +105,6 @@ class HealthMonitoringAddon {
             });
         });
 
-        this.app.use(router);
     }
 
     createTables() {

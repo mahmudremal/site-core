@@ -32,7 +32,8 @@ export default function Editor() {
             .then(() => e.target.querySelector('button[type=submit]').innerHTML = __('Loading...'))
             .then(async () => await sleep(2000))
             .then(() => {
-              if (password != atob(`${_pass}=`)) {
+              console.log(_pass, atob(_pass))
+              if (password != atob(_pass)) {
                 e.target.querySelector('button[type=submit]').innerHTML = __('Unlock');
                 throw new Error(__("Password didn't matched!"))
               }
@@ -79,7 +80,7 @@ export default function Editor() {
           <PDFTableExtractor />
           <TableEditor endpoint="species" fields={['id', 'name', '_status']} />
           <TableEditor endpoint="weapons" fields={['id', 'name', '_status']} />
-          <TableEditor endpoint="states" fields={['id', 'name', 'abbreviation', '_status']} />
+          {/* <TableEditor endpoint="states" fields={['id', 'name', 'abbreviation', '_status']} /> */}
           <TableEditor endpoint="bag_types" fields={['id', 'name', 'species_id', '_status']} />
           <TableEditor endpoint="gmu" fields={['id', 'name', 'code', 'total_sqmi', 'public_sqmi', 'public_ratio', 'state_id']} />
           <TableEditor endpoint="documents" fields={['id', 'code', 'total_quota']} />

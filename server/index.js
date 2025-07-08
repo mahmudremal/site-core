@@ -17,12 +17,13 @@ class Server {
             this.connection = conn;
             this.addonManager = new AddonManager(this.app, this.connection);
         })
-        .then(res => {
+        .then(async res => {
             this.initMiddleware();
-            this.initRoutes();
-            this.loadAddons();
+            this.preRoutes();
+            await this.loadAddons();
+            this.postRoutes();
         })
-        .catch(err => console.error("Failed ti start the application", err))
+        .catch(err => console.error("Failed to start the application", err))
         .finally(() => console.log('Successfully started the application'));
         
     }
@@ -34,6 +35,7 @@ class Server {
                 user: 'root',
                 password: 'root',
                 database: 'local',
+                charset: 'utf8mb4',
                 port: 10005
             });
 
@@ -52,27 +54,49 @@ class Server {
         this.app.use(express.json());
     }
 
-    initRoutes() {
-        const router = express.Router();
-        router.use('/', (req, res, next) => {
-            console.log('Base endpoint middleware');
-            next();
+    preRoutes() {
+        this.router = express.Router();
+        // this.router.use('/', (req, res, next) => {
+        //     console.log('Base endpoint middleware');
+        //     next();
+        // });
+        this.app.use(express.static(path.join(this.server.__root, 'public')));
+        this.app.use(express.static(path.join(this.server.__root, '..', 'dist')));
+        this.router.get('/styling.css', (req, res) => {
+            res.sendFile(path.join(this.server.__root, '..', '/styling.css'));
         });
-        this.app.use(express.static(path.join(__dirname, 'public')));
-        this.app.use(express.static(path.join(__dirname, '..', 'dist')));
-        router.get('/', (req, res) => {
-            res.sendFile(path.join(__dirname, 'public/index.html'));
-        });
-        this.app.use(router);
+
     }
 
-    loadAddons() {
-        this.addonManager.loadAllAddons(this.connection);
+    postRoutes() {
+        this.router.get(/^\/(?!api|ws|peerjs|stream)(.*)/, (req, res) => {
+            res.sendFile(path.resolve(this.server.__root, 'public/index.html'));
+        });
+        this.app.use(this.router);
+        // this.printRoutes(this.router);
+    }
+
+    async loadAddons() {
+        await this.addonManager.loadAllAddons(this.connection, this.router);
     }
 
     start() {
         this.server.listen(this.port, () => {
             console.log(`Server is running on http://localhost:${this.port}`);
+        });
+    }
+
+    printRoutes(router) {
+        router.stack.forEach((middleware) => {
+            if (middleware.route) {
+                const methods = Object.keys(middleware.route.methods).join(', ');
+                console.log(`Path: ${middleware.route.path} | Methods: ${methods}`);
+            } else if (middleware.handle && middleware.handle.stack) {
+                middleware.handle.stack.forEach((subMiddleware) => {
+                    const methods = Object.keys(subMiddleware.route.methods).join(', ');
+                    console.log(`Path: ${middleware.route.path}${subMiddleware.route.path} | Methods: ${methods}`);
+                });
+            }
         });
     }
 }

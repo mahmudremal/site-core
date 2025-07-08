@@ -1,0 +1,92 @@
+import React, { Suspense, lazy } from 'react';
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
+
+
+
+// import LanguageProvider from '@context/LanguageProvider';
+// import SettingsProvider from '@context/SettingsProvider';
+// import { LoadingProvider } from '@context/LoadingProvider';
+// import { PopupProvider } from '@context/PopupProvider';
+// import { AuthProvider } from '@context/AuthProvider';
+import SessionProvider from '@context/SessionProvider';
+// import ThemeProvider from '@context/ThemeProvider';
+// import NotificationsProvider from '@context/NotificationsProvider';
+// import CurrencyProvider from '@context/CurrencyProvider';
+
+
+
+import { __, home_route } from '@js/utils';
+
+const SearchHome = lazy(() => import('./search/home'));
+const SearchResults = lazy(() => import('./search/result'));
+const Search404 = lazy(() => import('./search/error404'));
+
+const MeetsHome = lazy(() => import('./meets/home'));
+const MeetsRoom = lazy(() => import('./meets/room'));
+const Meets404 = lazy(() => import('./search/error404'));
+
+const HealthsHome = lazy(() => import('./healths/home'));
+const HealthsRoom = lazy(() => import('./healths/room'));
+const Healths404 = lazy(() => import('./search/error404'));
+
+const N8NHome = lazy(() => import('./n8n/home'));
+const N8NCanvas = lazy(() => import('./n8n/canvas'));
+const N8N404 = lazy(() => import('./search/error404'));
+
+const MCPHome = lazy(() => import('./mcp/home'));
+const MCPAddon = lazy(() => import('./mcp/addon'));
+const MCPChat = lazy(() => import('./mcp/chat'));
+const MCPClient = lazy(() => import('./mcp/client'));
+const MCP404 = lazy(() => import('./search/error404'));
+
+const BStreamHome = lazy(() => import('./bstream/home'));
+const BStreamVideoPage = lazy(() => import('./bstream/single'));
+// const BStreamSearchPage = lazy(() => import('./bstream/SearchPage'));
+// const BStreamExplorePage = lazy(() => import('./bstream/ExplorePage'));
+const BStreamError = lazy(() => import('./search/error404'));
+
+const Error404 = lazy(() => import('./search/error404'));
+
+export default function Banglee() {
+    return (
+        <SessionProvider>
+            <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path={home_route('/')} element={<SearchHome />} />
+                        <Route path={home_route('/search')} element={<SearchHome />} />
+                        <Route path={home_route('/search/:s')} element={<SearchResults />} />
+                        <Route path={home_route('/search/*')} element={<Search404 />} />
+
+                        <Route path={home_route('/meets')} element={<MeetsHome />} />
+                        <Route path={home_route('/meets/:room_id')} element={<MeetsRoom />} />
+                        <Route path={home_route('/meets/*')} element={<Meets404 />} />
+
+                        <Route path={home_route('/healths')} element={<HealthsHome />} />
+                        {/* <Route path={home_route('/healths/:room_id')} element={<HealthsRoom />} /> */}
+                        <Route path={home_route('/healths/*')} element={<Healths404 />} />
+
+                        <Route path={home_route('/tasks')} element={<N8NHome />} />
+                        <Route path={home_route('/tasks/:workflow_id/view')} element={<N8NCanvas />} />
+                        <Route path={home_route('/tasks/*')} element={<N8N404 />} />
+
+                        <Route path={home_route('/mcp')} element={<MCPHome />} />
+                        <Route path={home_route('/mcp/addons/:addon')} element={<MCPAddon />} />
+                        <Route path={home_route('/mcp/client')} element={<MCPClient />} />
+                        <Route path={home_route('/mcp/chat')} element={<MCPChat />} />
+                        <Route path={home_route('/mcp/*')} element={<MCP404 />} />
+
+                        <Route path={home_route('/bstream')} element={<BStreamHome />} />
+                        <Route path={home_route('/bstream/watch/:id')} element={<BStreamVideoPage />} />
+                        {/* <Route path={home_route('/bstream/search')} element={<BStreamSearchPage />} />
+                        <Route path={home_route('/bstream/explore')} element={<BStreamExplorePage />} /> */}
+                        <Route path={home_route('/bstream/*')} element={<BStreamError />} />
+                        
+                        <Route path={home_route('/*')} element={<Error404 />} />
+
+                    </Routes>
+                </BrowserRouter>
+            </Suspense>
+        </SessionProvider>
+    )
+}

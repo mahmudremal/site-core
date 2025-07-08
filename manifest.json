@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Headless cms suite browser extension made for wordpress multi-purpose.",
   "background": {
-    "service_worker": "src/js/tasks/aicg.js"
+    "service_worker": "background.js"
   },
   "action": {
     "default_popup": "popup.html",
@@ -15,15 +15,16 @@
     "notifications",
     "webRequest",
     "webRequestBlocking",
-    "<all_urls>"
+    "<all_urls>",
+    "activeTab"
   ],
   "host_permissions": [
     "*://*/*"
   ],
   "content_scripts": [
     {
-      "matches": ["http://abas.com/"],
-      "js": ["dist/js/sw.js"]
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
     }
   ],
   "icons": {

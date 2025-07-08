@@ -39,7 +39,7 @@ class HuntsClient {
     async tailwind_install() {
         if (this.state.tailwind.installed) {return;}
         this.state.tailwind.installed = true;
-        // tailwind_install();
+        tailwind_install();
     }
 }
 const task = new HuntsClient();

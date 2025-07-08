@@ -251,7 +251,7 @@ export default function Editor({ trigger, config = {} }) {
                             id="seo_meta_description"
                             value={metadata?.description}
                             onChange={(e) => setMetadata(prev => ({...prev, description: e.target.value}))}
-                            className="xpo_block xpo_py-2.5 xpo_px-0 xpo_w-full xpo_text-sm xpo_text-gray-900 xpo_bg-transparent xpo_border-0 xpo_border-b-2 xpo_border-gray-300 xpo_appearance-none dark:xpo_text-white dark:xpo_border-gray-600 dark:xpo_focus:xpo_border-blue-500 focus:xpo_outline-none focus:xpo_ring-0 focus:xpo_border-blue-600 peer"
+                            className="xpo_block xpo_py-2.5 xpo_px-0 xpo_w-full xpo_text-sm xpo_text-gray-900 xpo_bg-transparent xpo_border-0 xpo_border-b-2 xpo_border-gray-300 xpo_appearance-none dark:xpo_text-white dark:xpo_border-gray-600 dark:focus:xpo_xpo_border-blue-500 focus:xpo_outline-none focus:xpo_ring-0 focus:xpo_border-blue-600 peer"
                           ></textarea>
                           <label htmlFor="seo_meta_description" className="peer-focus:xpo_font-medium xpo_absolute xpo_text-sm xpo_text-gray-500 dark:xpo_text-gray-400 xpo_duration-300 xpo_transform xpo_-translate-y-6 xpo_scale-75 xpo_top-3 xpo_-z-10 xpo_origin-[0] peer-focus:xpo_start-0 rtl:peer-focus:xpo_translate-x-1/4 rtl:peer-focus:xpo_left-auto peer-focus:xpo_text-blue-600 peer-focus:dark:xpo_text-blue-500 peer-placeholder-shown:xpo_scale-100 peer-placeholder-shown:xpo_translate-y-0 peer-focus:xpo_scale-75 peer-focus:xpo_-translate-y-6">{__('Meta Description')}</label>
                         </div>
@@ -263,7 +263,7 @@ export default function Editor({ trigger, config = {} }) {
                             id="seo_meta_keywords"
                             value={metadata?.keywords.join(', ')}
                             onChange={(e) => setMetadata(prev => ({...prev, keywords: e.target.value.split(',').map(i => i.trim())}))}
-                            className="xpo_block xpo_py-2.5 xpo_px-0 xpo_w-full xpo_text-sm xpo_text-gray-900 xpo_bg-transparent xpo_border-0 xpo_border-b-2 xpo_border-gray-300 xpo_appearance-none dark:xpo_text-white dark:xpo_border-gray-600 dark:xpo_focus:xpo_border-blue-500 focus:xpo_outline-none focus:xpo_ring-0 focus:xpo_border-blue-600 peer"
+                            className="xpo_block xpo_py-2.5 xpo_px-0 xpo_w-full xpo_text-sm xpo_text-gray-900 xpo_bg-transparent xpo_border-0 xpo_border-b-2 xpo_border-gray-300 xpo_appearance-none dark:xpo_text-white dark:xpo_border-gray-600 dark:focus:xpo_xpo_border-blue-500 focus:xpo_outline-none focus:xpo_ring-0 focus:xpo_border-blue-600 peer"
                           ></textarea>
                           <label htmlFor="seo_meta_keywords" className="peer-focus:xpo_font-medium xpo_absolute xpo_text-sm xpo_text-gray-500 dark:xpo_text-gray-400 xpo_duration-300 xpo_transform xpo_-translate-y-6 xpo_scale-75 xpo_top-3 xpo_-z-10 xpo_origin-[0] peer-focus:xpo_start-0 rtl:peer-focus:xpo_translate-x-1/4 rtl:peer-focus:xpo_left-auto peer-focus:xpo_text-blue-600 peer-focus:dark:xpo_text-blue-500 peer-placeholder-shown:xpo_scale-100 peer-placeholder-shown:xpo_translate-y-0 peer-focus:xpo_scale-75 peer-focus:xpo_-translate-y-6">{__('Meta Keywords')}</label>
                         </div>

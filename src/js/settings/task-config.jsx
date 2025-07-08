@@ -317,14 +317,14 @@ export default function TaskConfig() {
                                   .then(() => e.target.innerHTML = prev)
                                   .finally(() => setPopup(null));
                                 }}
-                                className="xpo_py-2 xpo_px-4 xpo_bg-primary-600 xpo_text-white xpo_font-medium xpo_hover:bg-primary-700 active:xpo_bg-primary-800 xpo_rounded"
+                                className="xpo_py-2 xpo_px-4 xpo_bg-primary-600 xpo_text-white xpo_font-medium hover:xpo_bg-primary-700 active:xpo_bg-primary-800 xpo_rounded"
                               >
                                 {__('Confirm')}
                               </button>
                               <button
                                 type="button"
                                 onClick={() => setPopup(null)}
-                                className="xpo_py-2 xpo_px-4 xpo_bg-gray-300 xpo_text-gray-800 xpo_font-medium xpo_hover:bg-gray-400 active:xpo_bg-gray-500 xpo_rounded"
+                                className="xpo_py-2 xpo_px-4 xpo_bg-gray-300 xpo_text-gray-800 xpo_font-medium hover:xpo_bg-gray-400 active:xpo_bg-gray-500 xpo_rounded"
                               >
                                 {__('Cancel')}
                               </button>
@@ -405,14 +405,14 @@ export default function TaskConfig() {
                                       .then(() => e.target.innerHTML = prev)
                                       .finally(() => setPopup(null));
                                     }}
-                                    className="xpo_py-2 xpo_px-4 xpo_bg-primary-600 xpo_text-white xpo_font-medium xpo_hover:bg-primary-700 active:xpo_bg-primary-800 xpo_rounded"
+                                    className="xpo_py-2 xpo_px-4 xpo_bg-primary-600 xpo_text-white xpo_font-medium hover:xpo_bg-primary-700 active:xpo_bg-primary-800 xpo_rounded"
                                   >
                                     {__('Confirm')}
                                   </button>
                                   <button
                                     type="button"
                                     onClick={() => setPopup(null)}
-                                    className="xpo_py-2 xpo_px-4 xpo_bg-gray-300 xpo_text-gray-800 xpo_font-medium xpo_hover:bg-gray-400 active:xpo_bg-gray-500 xpo_rounded"
+                                    className="xpo_py-2 xpo_px-4 xpo_bg-gray-300 xpo_text-gray-800 xpo_font-medium hover:xpo_bg-gray-400 active:xpo_bg-gray-500 xpo_rounded"
                                   >
                                     {__('Cancel')}
                                   </button>

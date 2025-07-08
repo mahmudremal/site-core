@@ -29,6 +29,7 @@ class Hunts {
 	}
 
     protected function setup_hooks() {
+
 		add_action('rest_api_init', [$this, 'register_routes']);
         add_action('wp_enqueue_scripts', [$this, 'register_scripts']);
         add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
@@ -352,7 +353,6 @@ class Hunts {
 				name VARCHAR(255) NOT NULL,
 				species_id VARCHAR(20) NOT NULL,
 				_status BOOLEAN NOT NULL DEFAULT TRUE
-				-- FOREIGN KEY (species_id) REFERENCES {$this->tables->species}(id) ON DELETE CASCADE
 			) $charset_collate;"
 		);
 
@@ -366,7 +366,6 @@ class Hunts {
 				public_sqmi FLOAT,
 				public_ratio FLOAT,
 				state_id VARCHAR(20) NOT NULL
-				-- FOREIGN KEY (state_id) REFERENCES {$this->tables->states}(id) ON DELETE CASCADE
 			) $charset_collate;"
 		);
 
@@ -381,13 +380,12 @@ class Hunts {
 				end_date DATE,
 				hunters_per_sqmi FLOAT,
 				season_type VARCHAR(255),
+				addi_units TEXT,
+				addi_notes TEXT,
 				weapon_id VARCHAR(20) NOT NULL,
 				bag_type_id VARCHAR(20) NOT NULL,
 				gmu_id VARCHAR(20) NOT NULL,
 				document_id VARCHAR(20)
-				-- FOREIGN KEY (weapon_id) REFERENCES {$this->tables->weapons}(id) ON DELETE CASCADE
-				-- FOREIGN KEY (bag_type_id) REFERENCES {$this->tables->bag_types}(id) ON DELETE CASCADE
-				-- FOREIGN KEY (gmu_id) REFERENCES {$this->tables->gmu}(id) ON DELETE CASCADE
 			) $charset_collate;"
 		);
 
@@ -407,7 +405,6 @@ class Hunts {
 				document_id VARCHAR(20) NOT NULL,
 				is_resident BOOLEAN,
 				quota INT
-				-- FOREIGN KEY (document_id) REFERENCES {$this->tables->documents}(id) ON DELETE CASCADE
 			) $charset_collate;"
 		);
 
@@ -418,7 +415,6 @@ class Hunts {
 				application_id BIGINT UNSIGNED NOT NULL,
 				odds FLOAT,
 				type VARCHAR(50)
-				-- FOREIGN KEY (application_id) REFERENCES {$this->tables->applications}(id) ON DELETE CASCADE
 			) $charset_collate;"
 		);
     }
@@ -436,8 +432,10 @@ class Hunts {
 		wp_localize_script('site-core-hunts', 'siteCoreConfig', apply_filters('partnershipmang/siteconfig', [
 			'_in' => is_user_logged_in(),
 			'rest_url' => rest_url('sitecore/v1'),
+			'publicPath' => WP_SITECORE_BUILD_URI . '/',
 			'hunt_api' => is_admin() ? substr(base64_encode(apply_filters('pm_project/system/getoption', 'hunts-apikey', 'ojjrlqlvfkarsltfvggweoubhzrwqzgw')), 0, -1) : null,
-			'_apss' => apply_filters('pm_project/system/getoption', 'hunts-appass', null) ? substr(base64_encode(apply_filters('pm_project/system/getoption', 'hunts-appass', null)), 0, -1) : null
+			'_apss' => apply_filters('pm_project/system/getoption', 'hunts-appass', null) ? base64_encode(apply_filters('pm_project/system/getoption', 'hunts-appass', null)) : null,
+			'profiledash' => apply_filters('pm_project/system/getoption', 'hunts-profiledash', null)
 		]));
     }
 
@@ -481,6 +479,13 @@ class Hunts {
 					'type'					=> 'password',
 					'default'				=> false
 				],
+				[
+					'id' 					=> 'hunts-profiledash',
+					'label'					=> __('Dashboard', 'site-core'),
+					'description'			=> __('Enter your membership profile dashboard url.', 'site-core'),
+					'type'					=> 'text',
+					'default'				=> ''
+				],
 			]
 		];
         return $args;
@@ -495,11 +500,15 @@ class Hunts {
 		$weapons   = $wpdb->get_results("SELECT id, name FROM {$this->tables->weapons} WHERE _status = TRUE", ARRAY_A);
 		$bag_types = $wpdb->get_results("SELECT id, name, species_id FROM {$this->tables->bag_types} WHERE _status = TRUE", ARRAY_A);
 		// $gmu       = $wpdb->get_results("SELECT id, name, code, state_id FROM {$this->tables->gmu}", ARRAY_A);
+		$years       = $wpdb->get_results("SELECT DISTINCT app_year FROM {$this->tables->seasons} ORDER BY app_year DESC;", ARRAY_A);
+		$units       = $wpdb->get_results("SELECT DISTINCT name FROM {$this->tables->gmu} ORDER BY id DESC;", ARRAY_A);
 
 		return rest_ensure_response([
 			'states'    => $states,
 			'species'   => $species,
 			'weapons'   => $weapons,
+			'years'		=> $years,
+			'units' => $units,
 			// 'bag_types' => $bag_types,
 			// 'gmu'       => $gmu
 		]);
@@ -540,30 +549,57 @@ class Hunts {
 		// Get filters
 		$year		= $request->get_param('year');
 		$state      = $request->get_param('state');
-		$weapon     = $request->get_param('weapon');
+		$weapons     = explode(',', $request->get_param('weapon'));
+		$weapons = (count($weapons) == 1 && empty($weapons[0])) ? [] : $weapons;
 		$species    = $request->get_param('species');
 		$pointsType = $request->get_param('pointsType');
 		$points     = (int) $request->get_param('points');
 		$page       = max(1, (int) $request->get_param('page'));
-		$per_page   = max(24, (int) $request->get_param('per_page'));
-		$resident   = filter_var($request->get_param('resident'), FILTER_VALIDATE_BOOLEAN);
+		$per_page   = max(1, (int) $request->get_param('per_page'));
+		$is_resident   = $request->get_param('is_resident');
+		$_status   = $request->get_param('_status');
+
+		// advance filters
+		$units   = $request->get_param('units');
+		$date_range   = $request->get_param('date_range');
+		$draw_odds   = $request->get_param('draw_odds');
+		$harvest_rate   = $request->get_param('harvest_rate');
+		$public_land_ratio   = $request->get_param('public_land_ratio');
+		$per_sqmi   = $request->get_param('per_sqmi');
 
 		$offset = ($page - 1) * $per_page;
 
 		// Base query
 		$sql = "
 			SELECT s.*, 
+				a.is_resident, 
 				w.name AS weapon_name, 
 				b.name AS bag_type_name,
+				d.total_quota AS tags_given,
+				s.addi_units AS additional_units,
+				s.addi_notes AS additional_notes,
 				sp.name AS species_name, sp.id AS species_id, 
 				g.name AS gmu_name, g.public_ratio, g.total_sqmi, 
-				st.id AS state_id, st.name AS state_name, st.abbreviation 
+				st.id AS state_id, st.name AS state_name, st.abbreviation,
+
+				CONCAT(
+					CASE 
+						WHEN s.user_odds > 1 THEN ROUND(s.user_odds, 1)
+						ELSE ROUND(s.user_odds * 100, 1)
+					END,
+						'% @ 0 pts'
+				) AS odds_per_min_points
+				
+				
 			FROM {$this->tables->seasons} s
-			INNER JOIN {$this->tables->weapons} w      ON w.id = s.weapon_id
-			INNER JOIN {$this->tables->bag_types} b    ON b.id = s.bag_type_id
-			INNER JOIN {$this->tables->species} sp    ON sp.id = b.species_id
-			INNER JOIN {$this->tables->gmu} g          ON g.id = s.gmu_id
-			INNER JOIN {$this->tables->states} st      ON st.id = g.state_id
+			INNER JOIN {$this->tables->weapons} w      ON w.id = s.weapon_id 
+			INNER JOIN {$this->tables->bag_types} b    ON b.id = s.bag_type_id 
+			INNER JOIN {$this->tables->species} sp    ON sp.id = b.species_id 
+			INNER JOIN {$this->tables->gmu} g          ON g.id = s.gmu_id 
+			INNER JOIN {$this->tables->states} st      ON st.id = g.state_id 
+			INNER JOIN {$this->tables->documents} d      ON d.id = s.document_id 
+			INNER JOIN {$this->tables->applications} a      ON d.id = a.document_id 
+			LEFT JOIN {$this->tables->odds} o				ON o.application_id = a.id
 			WHERE 1=1
 		";
 
@@ -572,8 +608,9 @@ class Hunts {
 			$sql .= $wpdb->prepare(" AND st.id = %s", $state);
 		}
 
-		if ($weapon) {
-			$sql .= $wpdb->prepare(" AND w.id = %s", $weapon);
+		if (count($weapons)) {
+			$placeholders = implode(', ', array_fill(0, count($weapons), '%s'));
+			$sql .= $wpdb->prepare(" AND w.id IN ({$placeholders})", $weapons);
 		}
 
 		if ($species) {
@@ -584,7 +621,41 @@ class Hunts {
 			$sql .= $wpdb->prepare(" AND s.app_year = %d", $year);
 		}
 
-		$sql .= " ORDER BY s.user_odds DESC";
+		if ($is_resident != -1) {
+			$sql .= $wpdb->prepare(" AND a.is_resident = %d", (bool) $is_resident);
+		}
+		
+		if ($public_land_ratio) {
+			$sql .= $wpdb->prepare(" AND g.public_ratio <= %f", (float) $public_land_ratio);
+		}
+		
+		if ($per_sqmi) {
+			$sql .= $wpdb->prepare(" AND s.hunters_per_sqmi <= %f", (float) $per_sqmi);
+		}
+		
+		if ($harvest_rate) {
+			$sql .= $wpdb->prepare(" AND s.harvest_rate <= %f", (float) $harvest_rate);
+		}
+		
+		if ($draw_odds) {
+			$sql .= $wpdb->prepare(" AND s.user_odds <= %f", (float) $draw_odds);
+		}
+		
+		if ($date_range) {
+			list($start_date, $end_date) = explode(' to ', $date_range);
+			$sql .= $wpdb->prepare(
+				" AND (s.start_date <= %s AND s.end_date >= %s)",
+				date('Y-m-d', strtotime($end_date)),
+				date('Y-m-d', strtotime($start_date))
+			);
+		}
+		
+		if ($_status != -1) {
+			$sql .= $wpdb->prepare(" AND st._status = %d AND w._status = %d", (bool) $_status, (bool) $_status);
+		}
+
+		$sql .= " ORDER BY s.id DESC";
+		// $sql .= " ORDER BY s.user_odds DESC";
 
 		// Total count
 		$total_items = (int) $wpdb->get_var("SELECT COUNT(*) FROM ({$sql}) as t");
@@ -594,6 +665,7 @@ class Hunts {
 
 		// Fetch results
 		$results = $wpdb->get_results($sql);
+		// return rest_ensure_response($results);
 
 		$response_data = [];
 
@@ -633,7 +705,13 @@ class Hunts {
 					'name'         => $row->state_name,
 					'abbreviation' => $row->abbreviation
 				],
-				'document_id'      => $row->document_id
+				'tags_given'      => $row->tags_given,
+				'document_id'      => $row->document_id,
+				'is_resident'      => $row->is_resident,
+				'notes'				=> $row->additional_notes,
+				'additional_units'	=> $row->additional_units,
+				// 'average_odds'		=> $row->average_odds,
+				'odds_min_points'	=> $row->odds_per_min_points,
 			];
 		}
 
@@ -1048,15 +1126,15 @@ class Hunts {
 					if (!$total_items) {
 						$_entry_status = $wpdb->insert(
 							$_sql_table,
-							['id' => $row['id'], 'name' => $row['name']],
-							['%s', '%s']
+							$row['__typename'] == 'HuntPlannerState' ? ['id' => $row['id'], 'name' => $row['name'], 'abbreviation' => $row['abbreviation']] : ['id' => $row['id'], 'name' => $row['name']],
+							$row['__typename'] == 'HuntPlannerState' ? ['%s', '%s', '%s'] : ['%s', '%s']
 						);
 					} else {
 						$_entry_status = apply_filters('pm_project/system/isactive', 'hunts-overwrite') && $wpdb->update(
 							$_sql_table,
-							['name' => $row['name']],
+							$row['__typename'] == 'HuntPlannerState' ? ['name' => $row['name'], 'abbreviation' => $row['abbreviation']] : ['name' => $row['name']],
 							['id' => $row['id']],
-							['%s'], ['%s']
+							$row['__typename'] == 'HuntPlannerState' ? ['%s', '%s'] : ['%s'], ['%s']
 						);
 					}
 					break;
@@ -1074,34 +1152,36 @@ class Hunts {
 								'start_date' => $row['startDate'],
 								'end_date' => $row['endDate'],
 								'hunters_per_sqmi' => $row['huntersPerSQMI'],
-								// 
-								// 'gameDepartmentNotes' => $row['gameDepartmentNotes'],
-								// 'additionalUnits' => $row['additionalUnits'],
-								// 
+								'addi_units' => $row['additionalUnits'],
+								'addi_notes' => $row['gameDepartmentNotes'],
 								'season_type' => $row['seasonType'],
 								'gmu_id' => $row['gmuId'],
 								'weapon_id' => $row['weaponId'],
 								'bag_type_id' => $row['bagTypeId'],
 								'document_id' => $row['documentId'],
 							],
-							['%s', '%d', '%f', '%f', '%s', '%s', '%f', '%s', '%s', '%s']
+							['%s', '%d', '%f', '%f', '%s', '%s', '%f', '%s', '%s', '%s', '%s', '%s', '%s', '%s']
 						);
 					} else {
 						$_entry_status = apply_filters('pm_project/system/isactive', 'hunts-overwrite') && $wpdb->update(
 							$this->tables->seasons,
 							[
-								'appYear' => (int) $row['appYear'],
-								'userOdds' => $row['userOdds'],
-								'harvestRate' => $row['harvestRate'],
-								'startDate' => $row['startDate'],
-								'endDate' => $row['endDate'],
-								'huntersPerSQMI' => $row['huntersPerSQMI'],
-								'gameDepartmentNotes' => $row['gameDepartmentNotes'],
-								'additionalUnits' => $row['additionalUnits'],
-								'seasonType' => $row['seasonType'],
+								'app_year' => $row['appYear'],
+								'user_odds' => $row['userOdds'],
+								'harvest_rate' => $row['harvestRate'],
+								'start_date' => $row['startDate'],
+								'end_date' => $row['endDate'],
+								'hunters_per_sqmi' => $row['huntersPerSQMI'],
+								'addi_units' => $row['additionalUnits'],
+								'addi_notes' => $row['gameDepartmentNotes'],
+								'season_type' => $row['seasonType'],
+								'gmu_id' => $row['gmuId'],
+								'weapon_id' => $row['weaponId'],
+								'bag_type_id' => $row['bagTypeId'],
+								'document_id' => $row['documentId'],
 							],
 							['id' => $row['id']],
-							['%d', '%f', '%f', '%s', '%s', '%f', '%s', '%s', '%s'], ['%s']
+							['%d', '%f', '%f', '%s', '%s', '%f', '%s', '%s', '%s', '%s', '%s', '%s', '%s'], ['%s']
 						);
 					}
 					if (isset($row['bagType'])) {
@@ -1120,7 +1200,7 @@ class Hunts {
 					if (!$total_items) {
 						$_entry_status = $wpdb->insert(
 							$this->tables->documents,
-							['id' => $row['code'], 'code' => $row['code'], 'totalQuota' => $row['totalQuota']],
+							['id' => $row['code'], 'code' => $row['code'], 'total_quota' => $row['totalQuota']],
 							['%s', '%s', '%d']
 						);
 					} else {

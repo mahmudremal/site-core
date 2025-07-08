@@ -263,7 +263,7 @@ function PayoutRequestForm({ maxAmount }) {
                         max={maxAmount}
                         placeholder={__('Enter amount')}
                         onChange={(e) => setForm(prev => ({...prev, amount: e.target.value}))}
-                        className="xpo_w-full xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_px-4 xpo_py-2 xpo_text-sm xpo_focus:outline-none xpo_focus:ring-2 xpo_focus:ring-primary-500"
+                        className="xpo_w-full xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_px-4 xpo_py-2 xpo_text-sm focus:xpo_outline-none focus:xpo_ring-2 focus:xpo_ring-primary-500"
                     />
                 </div>
     
@@ -273,7 +273,7 @@ function PayoutRequestForm({ maxAmount }) {
                         required
                         value={form.method}
                         onChange={(e) => setForm(prev => ({...prev, method: e.target.value}))}
-                        className="xpo_w-full xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_px-4 xpo_py-2 xpo_text-sm xpo_focus:outline-none xpo_focus:ring-2 xpo_focus:ring-primary-500"
+                        className="xpo_w-full xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_px-4 xpo_py-2 xpo_text-sm focus:xpo_outline-none focus:xpo_ring-2 focus:xpo_ring-primary-500"
                     >
                         <option value="">{__('Select method')}</option>
                         <option value="bank">{__('Bank Transfer')}</option>
@@ -292,7 +292,7 @@ function PayoutRequestForm({ maxAmount }) {
                         value={form.account_id}
                         placeholder={__('Enter account ID')}
                         onChange={(e) => setForm(prev => ({...prev, account_id: e.target.value}))}
-                        className="xpo_w-full xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_px-4 xpo_py-2 xpo_text-sm xpo_focus:outline-none xpo_focus:ring-2 xpo_focus:ring-primary-500"
+                        className="xpo_w-full xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_px-4 xpo_py-2 xpo_text-sm focus:xpo_outline-none focus:xpo_ring-2 focus:xpo_ring-primary-500"
                     />
                 </div>
     
@@ -303,14 +303,14 @@ function PayoutRequestForm({ maxAmount }) {
                         value={form.comment}
                         placeholder={__('Optional message')}
                         onChange={(e) => setForm(prev => ({...prev, comment: e.target.value}))}
-                        className="xpo_w-full xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_px-4 xpo_py-2 xpo_text-sm xpo_focus:outline-none xpo_focus:ring-2 xpo_focus:ring-primary-500"
+                        className="xpo_w-full xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_px-4 xpo_py-2 xpo_text-sm focus:xpo_outline-none focus:xpo_ring-2 focus:xpo_ring-primary-500"
                     />
                 </div>
     
                 <div className="xpo_flex xpo_justify-end xpo_gap-2">
                     <button
                         type="button"
-                        className="xpo_px-4 xpo_py-2 xpo_text-sm xpo_rounded-lg xpo_border xpo_border-gray-300 xpo_hover:bg-gray-50"
+                        className="xpo_px-4 xpo_py-2 xpo_text-sm xpo_rounded-lg xpo_border xpo_border-gray-300 hover:xpo_bg-gray-50"
                         onChange={(e) => setForm(prev => ({...prev, amount: maxAmount, method: '', comment: '', account_id: ''}))}
                     >
                         {__('Cancel')}

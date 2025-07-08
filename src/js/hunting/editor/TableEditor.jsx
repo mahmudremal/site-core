@@ -269,7 +269,7 @@ export default function TableEditor({ endpoint, fields }) {
             </thead>
             <tbody>
               {items.map((item) => (
-                <tr key={item.id} className="xpo_hover:bg-gray-50">
+                <tr key={item.id} className="hover:xpo_bg-gray-50">
                   {fields.map((field) => (
                     <td key={field} className="xpo_border xpo_p-2">{item[field]}</td>
                   ))}

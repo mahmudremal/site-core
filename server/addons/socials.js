@@ -38,12 +38,12 @@ class SocialServerAddon {
         this.setupWebSocket();
     }
     
-    register() {
-        this.app.get('/api/status', this.getStatus.bind(this));
-        this.app.post('/api/share_thought', this.shareThought.bind(this));
-        this.app.post('/api/comment', this.comment.bind(this));
-        this.app.post('/api/share', this.share.bind(this));
-        this.app.post('/api/react', this.react.bind(this));
+    register(router) {
+        router.get('/api/status', this.getStatus.bind(this));
+        router.post('/api/share_thought', this.shareThought.bind(this));
+        router.post('/api/comment', this.comment.bind(this));
+        router.post('/api/share', this.share.bind(this));
+        router.post('/api/react', this.react.bind(this));
     }
 
     getStatus(req, res) {

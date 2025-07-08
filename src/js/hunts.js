@@ -1,3 +1,4 @@
+__webpack_public_path__ = window?.siteCoreConfig?.publicPath;
 // Scripts
 import '@js/hunting';
 
