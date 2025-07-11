@@ -145,40 +145,48 @@ export default function TableEditor({ endpoint, fields }) {
       })
       .then(async lists => {
         // return lists;
-        // console.log(lists);
-        setTotalProcess(prev => prev + lists.species.length * 2);
-        // setTotalProcess(prev => prev + (lists.states.length * lists.species.length) * 2);
+        const species = await api.get('species').then(res => res.data).then(list => list.filter(s => s?._status != false));
+        // const weapons = lists.weapons.filters(s => s?._status);
+        const _pointsRange = 1; // new Date().getFullYear() + 2 - 1990;
+        setTotalProcess(prev => prev + species.length * _pointsRange);
+        // setTotalProcess(prev => prev + (lists.states.length * species.length) * 2);
         // for (const stateId of lists.states.map(s => s.id)) {
-          for (const speciesId of lists.species.map(s => s.id)) {
-            for (const isResident of [1, 0]) {
-              let hasNext = true;let pageNum = 0;
-              while (hasNext) {
-                setCurrentImport(sprintf(__('data of %s'), lists.species.find(s => s.id == speciesId)?.name));
-                const _formData = new FormData();
-                const dataobj = {
-                  points: 0,
-                  cursor: null,
-                  stateId: lists.states.find(s => s.abbreviation == 'AZ')?.id, // stateId,
-                  speciesId: speciesId,
-                  sortOrder: 'DRAW_ODDS_DESC',
-                  isResident: isResident,
-                  pointsType: 'BONUS',
-                  pageNum: pageNum++
-                };
-                Object.keys(dataobj).forEach(_key => _formData.append(_key, dataobj[_key]));
-                await api.post('hunts' + '/sync', _formData)
-                .then(res => res.data?.data??res.data)
-                .then(res => {
-                  hasNext = res?.pageInfo?.hasNextPage;
-                  if (res.error?.code) {
-                    setError(res.error.message);
-                    throw new Error(__('Failed to fetch hunting database.'));
-                  }
-                  return res;
-                })
-                .then(res => setProcess(prev => prev + 1));
+          for (const speciesId of species.map(s => s.id)) {
+            // for (const isResident of [1, 0]) {
+              for (const _point of [...Array(_pointsRange).keys()]) {
+                let hasNext = true;let pageNum = 0;let endCursor = null;
+                while (hasNext) {
+                  setCurrentImport(sprintf(__('data of %s'), lists.species.find(s => s.id == speciesId)?.name));
+                  const _formData = new FormData();
+                  const dataobj = {
+                    // points: _point,
+                    cursor: endCursor,
+                    stateId: lists.states.find(s => s.abbreviation == 'AZ')?.id, // stateId,
+                    speciesId: speciesId,
+                    sortOrder: 'DRAW_ODDS_DESC',
+                    // isResident: isResident,
+                    pointsType: 'BONUS',
+                    pageNum: pageNum++
+                  };
+                  Object.keys(dataobj).forEach(_key => _formData.append(_key, dataobj[_key]));
+                  await api.post('hunts' + '/sync', _formData)
+                  .then(res => res.data?.data??res.data)
+                  .then(res => {
+                    hasNext = res?.pageInfo?.hasNextPage;
+                    if (res?.error?.code) {
+                      setError(res.error.message);
+                      throw new Error(__('Failed to fetch hunting database.'));
+                    }
+                    if (hasNext) {
+                      endCursor = res?.pageInfo?.endCursor; // startCursor;
+                      setTotalProcess(prev => prev + 1);
+                    }
+                    return res;
+                  })
+                  .then(res => setProcess(prev => prev + 1));
+                }
               }
-            }
+            // }
           }
         // }
 

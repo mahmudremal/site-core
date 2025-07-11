@@ -19,6 +19,12 @@ class HuntsClient {
             await this.tailwind_install();
             container.innerHTML = '';
             const params = JSON.parse(container.dataset.params);
+            if (location.search) {
+                const searchParams = new URLSearchParams(location.search);
+                if (searchParams.get('f')) {
+                    params._filters = JSON.parse(atob(searchParams.get('f')));
+                }
+            }
             const root = createRoot(container);root.render(
                 <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
                     <Hunts params={params} />

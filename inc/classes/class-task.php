@@ -28,7 +28,6 @@ class Task {
         add_filter('partnership/security/api/abilities', [$this, 'api_abilities'], 10, 3);
         register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
         register_deactivation_hook(WP_SITECORE__FILE__, [$this, 'register_deactivation_hook']);
-        // add_action('load-' . get_plugin_page_hookname('automated-jobs', ''), array($this, 'screen_option'));
     }
 
     public function api_abilities($abilities, $_route, $user_id) {

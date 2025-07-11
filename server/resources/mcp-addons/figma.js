@@ -20,7 +20,7 @@ class FigmaAddon {
     return [
       {
         title: "Get Figma File",
-        name: "get_file",
+        name: "figma_get_file",
         description: "Retrieve and simplify full Figma file data",
         inputSchema: {
           fileKey: z.string(),
@@ -33,7 +33,7 @@ class FigmaAddon {
       },
       {
         title: "Get Node from File",
-        name: "get_node",
+        name: "figma_get_node",
         description: "Retrieve and simplify a node from a Figma file",
         inputSchema: {
           fileKey: z.string(),
@@ -47,7 +47,7 @@ class FigmaAddon {
       },
       {
         title: "Download Images for Nodes",
-        name: "download_images",
+        name: "figma_download_images",
         description: "Download image fills and renders from nodes",
         inputSchema: {
           fileKey: z.string(),

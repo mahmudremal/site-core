@@ -5,8 +5,224 @@ import { home_route } from '@banglee/core';
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Play, Save, Settings, Trash2, Clock, Zap, Database, Mail, Globe, Code, Loader, X } from 'lucide-react';
 import { useParams } from 'react-router-dom';
+import PrintElement from './utils/fieldprint';
+import StorageProvider, { useStorage } from './utils/storage';
 
-export default function WorkflowCanvas() {
+const nodeTypes = [
+  {
+    type: 'trigger',
+    icon: Zap,
+    label: __('Trigger'),
+    color: 'bg-green-500',
+    fields: [
+      {
+        id: 'event-name',
+        label: __('Event Name', 'site-core'),
+        description: __('The name of the event that triggers the workflow.', 'site-core'),
+        type: 'text',
+        default: '',
+      },
+      {
+        id: 'event-data',
+        label: __('Event Data', 'site-core'),
+        description: __('Data passed through when the event is triggered.', 'site-core'),
+        type: 'json',
+        default: {},
+      }
+    ]
+  },
+  {
+    type: 'task',
+    icon: Settings,
+    label: __('Task'),
+    color: 'bg-blue-500',
+    fields: [
+      {
+        id: 'task-name',
+        label: __('Task Name', 'site-core'),
+        description: __('Name of the task to be executed.', 'site-core'),
+        type: 'text',
+        default: '',
+      },
+      {
+        id: 'task-paused',
+        label: __('Pause', 'site-core'),
+        description: __('Mark to pause the task registration and REST API activity.', 'site-core'),
+        type: 'checkbox',
+        default: false,
+      },
+    ]
+  },
+  {
+    type: 'http',
+    icon: Globe,
+    label: __('HTTP Request'),
+    color: 'bg-purple-500',
+    fields: [
+      {
+        id: 'url',
+        label: __('Request URL', 'site-core'),
+        description: __('The URL to send the HTTP request to.', 'site-core'),
+        type: 'text',
+        default: '',
+      },
+      {
+        id: 'method',
+        label: __('Request Method', 'site-core'),
+        description: __('HTTP method to use (GET, POST, etc.).', 'site-core'),
+        type: 'select',
+        options: { GET: 'GET', POST: 'POST', PUT: 'PUT', DELETE: 'DELETE' },
+        default: 'GET',
+      },
+      {
+        id: 'headers',
+        label: __('Headers', 'site-core'),
+        description: __('Custom headers to include in the request.', 'site-core'),
+        type: 'json',
+        default: {},
+        repeatable: [
+          [
+            {
+              id: 'key',
+              label: __('Key', 'site-core'),
+              description: __('Add a headers Key for the request.', 'site-core'),
+              type: 'text',
+              default: 'X-Auth-Token',
+            },
+            {
+              id: 'value',
+              label: __('Key value', 'site-core'),
+              description: __('Add a value for the key.', 'site-core'),
+              type: 'text',
+              default: 'adasdsadas',
+            }
+          ],
+          [
+            {
+              id: 'key',
+              label: __('Key', 'site-core'),
+              description: __('Add a headers Key for the request.', 'site-core'),
+              type: 'text',
+              default: 'X-Auth-Token',
+            },
+            {
+              id: 'value',
+              label: __('Key value', 'site-core'),
+              description: __('Add a value for the key.', 'site-core'),
+              type: 'text',
+              default: 'adasdsadas',
+            }
+          ],
+        ]
+      },
+      {
+        id: 'params',
+        label: __('Query Parameters', 'site-core'),
+        description: __('URL parameters to send with the request.', 'site-core'),
+        type: 'json',
+        default: {},
+      },
+    ]
+  },
+  {
+    type: 'database',
+    icon: Database,
+    label: __('Database'),
+    color: 'bg-orange-500',
+    fields: [
+      {
+        id: 'db-connection',
+        label: __('Database Connection', 'site-core'),
+        description: __('Connection string to the database.', 'site-core'),
+        type: 'text',
+        default: '',
+      },
+      {
+        id: 'db-query',
+        label: __('Database Query', 'site-core'),
+        description: __('SQL query to execute against the database.', 'site-core'),
+        type: 'textarea',
+        default: '',
+      },
+    ]
+  },
+  {
+    type: 'email',
+    icon: Mail,
+    label: __('Email'),
+    color: 'bg-red-500',
+    fields: [
+      {
+        id: 'recipient',
+        label: __('Recipient Email', 'site-core'),
+        description: __('Email address of the recipient.', 'site-core'),
+        type: 'text',
+        default: '',
+      },
+      {
+        id: 'subject',
+        label: __('Email Subject', 'site-core'),
+        description: __('Subject line of the email.', 'site-core'),
+        type: 'text',
+        default: '',
+      },
+      {
+        id: 'body',
+        label: __('Email Body', 'site-core'),
+        description: __('Body text of the email.', 'site-core'),
+        type: 'textarea',
+        default: '',
+      },
+    ]
+  },
+  {
+    type: 'code',
+    icon: Code,
+    label: __('Code'),
+    color: 'bg-gray-500',
+    fields: [
+      {
+        id: 'code-snippet',
+        label: __('Code Snippet', 'site-core'),
+        description: __('Custom code to execute.', 'site-core'),
+        type: 'textarea',
+        default: '',
+      },
+      {
+        id: 'input-data',
+        label: __('Input Data', 'site-core'),
+        description: __('Data to pass into the code.', 'site-core'),
+        type: 'json',
+        default: {},
+      },
+    ]
+  },
+  {
+    type: 'schedule',
+    icon: Clock,
+    label: __('Schedule'),
+    color: 'bg-yellow-500',
+    fields: [
+      {
+        id: 'cron-expression',
+        label: __('Cron Expression', 'site-core'),
+        description: __('Cron schedule for task execution.', 'site-core'),
+        type: 'text',
+        default: '',
+      },
+      {
+        id: 'timezone',
+        label: __('Time Zone', 'site-core'),
+        description: __('Time zone for the scheduled task.', 'site-core'),
+        type: 'text',
+        default: 'UTC',
+      },
+    ]
+  }
+];
+
+function WorkflowCanvas() {
+  const { storage, setStorage } = useStorage();
   const { workflow_id: workflowId } = useParams();
   const [workflow, setWorkflow] = useState(null);
   const [saving, setSaving] = useState(null);
@@ -19,16 +235,6 @@ export default function WorkflowCanvas() {
   const [nodePickerPosition, setNodePickerPosition] = useState({ x: 0, y: 0 });
   const canvasRef = useRef(null);
   const nodePicker = useRef(null);
-
-  const nodeTypes = [
-    { type: 'trigger', icon: Zap, label: __('Trigger'), color: 'bg-green-500' },
-    { type: 'task', icon: Settings, label: __('Task'), color: 'bg-blue-500' },
-    { type: 'http', icon: Globe, label: __('HTTP Request'), color: 'bg-purple-500' },
-    { type: 'database', icon: Database, label: __('Database'), color: 'bg-orange-500' },
-    { type: 'email', icon: Mail, label: __('Email'), color: 'bg-red-500' },
-    { type: 'code', icon: Code, label: __('Code'), color: 'bg-gray-500' },
-    { type: 'schedule', icon: Clock, label: __('Schedule'), color: 'bg-yellow-500' },
-  ];
 
   useEffect(() => {
     if (workflowId) {
@@ -365,6 +571,11 @@ export default function WorkflowCanvas() {
                   rows={6}
                 />
               </div>
+
+              <div>
+                {nodeTypes.find(nt => nt.type === selectedNode.type)?.fields.map((data, index) => <PrintElement key={index} data={data} onChange={e => console.log(e)} />)}
+              </div>
+              
             </div>
           </div>
         )}
@@ -382,4 +593,14 @@ export default function WorkflowCanvas() {
       )}
     </div>
   );
+}
+
+export default function Canvas() {
+  const { workflow_id } = useParams();
+
+  return (
+    <StorageProvider canvas_id={workflow_id}>
+      <WorkflowCanvas />
+    </StorageProvider>
+  )
 }

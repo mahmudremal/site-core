@@ -6,10 +6,10 @@ class StripeAddon {
         this.db = db;
         this.logEvent = logEvent;
         this.name = 'stripe';
-        this.stripe = new Stripe(process.env.STRIPE_API_KEY, { apiVersion: '2022-11-15' });
     }
 
     async init() {
+        this.stripe = new Stripe(process.env.STRIPE_API_KEY, { apiVersion: '2022-11-15' });
         return true;
     }
 
@@ -17,7 +17,7 @@ class StripeAddon {
         return [
             {
                 title: 'List Charges',
-                name: 'list_charges',
+                name: 'stripe_list_charges',
                 description: 'Retrieve a list of charges',
                 inputSchema: {
                     limit: z.number().int().min(1).max(100).optional().default(10),
@@ -36,7 +36,7 @@ class StripeAddon {
             },
             {
                 title: 'Create Payment Intent',
-                name: 'create_payment_intent',
+                name: 'stripe_create_payment_intent',
                 description: 'Create a new payment intent',
                 inputSchema: {
                     amount: z.number().int().min(1),
@@ -57,7 +57,7 @@ class StripeAddon {
             },
             {
                 title: 'Retrieve Payment Intent',
-                name: 'retrieve_payment_intent',
+                name: 'stripe_retrieve_payment_intent',
                 description: 'Retrieve a payment intent by ID',
                 inputSchema: {
                     id: z.string()
@@ -69,7 +69,7 @@ class StripeAddon {
             },
             {
                 title: 'Cancel Payment Intent',
-                name: 'cancel_payment_intent',
+                name: 'stripe_cancel_payment_intent',
                 description: 'Cancel a payment intent by ID',
                 inputSchema: {
                     id: z.string()
@@ -81,7 +81,7 @@ class StripeAddon {
             },
             {
                 title: 'Create Refund',
-                name: 'create_refund',
+                name: 'stripe_create_refund',
                 description: 'Create a refund for a charge or payment intent',
                 inputSchema: {
                     charge: z.string().optional(),
@@ -103,7 +103,7 @@ class StripeAddon {
             },
             {
                 title: 'Retrieve Refund',
-                name: 'retrieve_refund',
+                name: 'stripe_retrieve_refund',
                 description: 'Retrieve a refund by ID',
                 inputSchema: {
                     id: z.string()
@@ -115,7 +115,7 @@ class StripeAddon {
             },
             {
                 title: 'List Customers',
-                name: 'list_customers',
+                name: 'stripe_list_customers',
                 description: 'List customers',
                 inputSchema: {
                     limit: z.number().int().min(1).max(100).optional().default(10)
@@ -127,7 +127,7 @@ class StripeAddon {
             },
             {
                 title: 'Create Customer',
-                name: 'create_customer',
+                name: 'stripe_create_customer',
                 description: 'Create a new customer',
                 inputSchema: {
                     email: z.string().email().optional(),
@@ -147,7 +147,7 @@ class StripeAddon {
             },
             {
                 title: 'Delete Customer',
-                name: 'delete_customer',
+                name: 'stripe_delete_customer',
                 description: 'Delete a customer by ID',
                 inputSchema: {
                     id: z.string()

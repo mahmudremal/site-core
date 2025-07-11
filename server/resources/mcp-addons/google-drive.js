@@ -24,6 +24,7 @@ class GoogleDriveAddon {
     }
 
     async init() {
+        return;
         await this._getDriveClient();
         return true;
     }
@@ -32,7 +33,7 @@ class GoogleDriveAddon {
         return [
             {
                 title: 'List Files',
-                name: 'list_files',
+                name: 'gdrive_list_files',
                 description: 'List files with optional query',
                 inputSchema: {
                     q: z.string().optional(),
@@ -51,7 +52,7 @@ class GoogleDriveAddon {
             },
             {
                 title: 'Get File Metadata',
-                name: 'get_file',
+                name: 'gdrive_get_file',
                 description: 'Retrieve file metadata by ID',
                 inputSchema: {
                     fileId: z.string()
@@ -64,7 +65,7 @@ class GoogleDriveAddon {
             },
             {
                 title: 'Delete File',
-                name: 'delete_file',
+                name: 'gdrive_delete_file',
                 description: 'Delete file by ID',
                 inputSchema: {
                     fileId: z.string()
@@ -77,7 +78,7 @@ class GoogleDriveAddon {
             },
             {
                 title: 'Update File Metadata',
-                name: 'update_file_metadata',
+                name: 'gdrive_update_file_metadata',
                 description: 'Update file metadata fields',
                 inputSchema: {
                     fileId: z.string(),
@@ -95,7 +96,7 @@ class GoogleDriveAddon {
             },
             {
                 title: 'Upload Local File',
-                name: 'upload_file',
+                name: 'gdrive_upload_file',
                 description: 'Upload a local file to Google Drive',
                 inputSchema: {
                     localPath: z.string(),
@@ -126,7 +127,7 @@ class GoogleDriveAddon {
             },
             {
                 title: 'Download File',
-                name: 'download_file',
+                name: 'gdrive_download_file',
                 description: 'Download a file from Google Drive to local path',
                 inputSchema: {
                     fileId: z.string(),
@@ -150,7 +151,7 @@ class GoogleDriveAddon {
             },
             {
                 title: 'Search Files',
-                name: 'search_files',
+                name: 'gdrive_search_files',
                 description: 'Search files using query string',
                 inputSchema: {
                     query: z.string(),

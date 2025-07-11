@@ -108,8 +108,8 @@ class McpAddon {
                 const logEvent = (...args) => this.logEvent(...args, addonName);
                 const addonInstance = new AddonClass(this.db, logEvent);
                 const addonEnabled = await this.isAddonEnabled(addonInstance.name);
-                if (!addonEnabled) console.log(sprintf('⏸️ MCP addon (%s) skipped as disabled', addonInstance.name))
-                if (!addonEnabled) continue;
+                // if (!addonEnabled) console.log(sprintf('⏸️ MCP addon (%s) skipped as disabled', addonInstance.name))
+                // if (!addonEnabled) continue;
                 
                 await addonInstance.init();
                 this.loadedAddons.set(addonName, addonInstance);

@@ -37,7 +37,6 @@ class SearchAddon {
     }
 
     register(router) {
-        // 
         router.use('/search', (req, res, next) => {
             console.log('Search endpoint middleware');
             next();

@@ -46,20 +46,21 @@ function MyDateRange({ onChange }) {
 const _date = new Date();
 
 const currentYear = new Date().getFullYear();
-const defFilters = {
-    year: currentYear,
-    is_resident: -1,
-    per_page: 50,
-    species: '',
-    _status: 1,
-    weapon: '',
-    state: '',
-    points: 0,
-    units: '',
-    page: 1,
-};
 
-export default function DrawTool() {
+export default function DrawTool({ params }) {
+    const defFilters = {
+        // year: currentYear,
+        is_resident: 1,
+        per_page: 50,
+        species: '',
+        _status: 1,
+        weapon: '',
+        state: '',
+        points: 0,
+        units: '',
+        page: 1,
+        ...params?._filters??{}
+    };
     const [email, setEmail] = useState('');
     const [hunts, setHunts] = useState([]);
     const [locked, setLocked] = useState(!siteCoreConfig?._in??false);
@@ -71,6 +72,10 @@ export default function DrawTool() {
     const [filterStyle, setFilterStyle] = useState(1);
     const [filterOptions, setFilterOptions] = useState({
         species: [], weapons: [], states: [], years: [], units: []
+    });
+    const [paginations, setPaginations] = useState({
+        totalItems: 0,
+        totalPages: 1
     });
     const [popup, setPopup] = useState(null);
     const [filters, setFilters] = useState(defFilters);
@@ -118,7 +123,7 @@ export default function DrawTool() {
             defFilters.state = data.states.find(i => i?.abbreviation == 'AZ')?.id??defFilters.state;
             setFilters(prev => ({
                 ...prev,
-                year: _years?.[0]??prev.year,
+                // year: _years?.[0]??prev.year,
                 state: data.states.find(i => i?.abbreviation == 'AZ')?.id??''
             }));
         })
@@ -129,8 +134,30 @@ export default function DrawTool() {
         setLoading(true);
         const query = new URLSearchParams({ ...filters }).toString();
         fetch(`${rest_url}hunts?${query}`)
+        .then(res => {
+            setPaginations(prev => ({
+                ...prev,
+                totalItems: Number(res.headers.get('x-wp-total')),
+                totalPages: Number(res.headers.get('x-wp-totalpages'))
+            }));
+            return res;
+        })
         .then(res => res.json())
-        .then(data => setHunts(Array.isArray(data) ? data : []))
+        .then(data => Array.isArray(data) ? data : [])
+        .then(data => {
+            return data.map(d => ({
+                ...d,
+                user_odds: Number(d.user_odds),
+                odds: d.odds.split(',').map(Number).map(i => i / (i + 100)).reduce((t, i) => t + i, 0)
+            })).map(d => ({
+                ...d,
+                tags_given: d.tags_given ? d.tags_given / 10 : d.tags_given,
+                _probability: Math.floor(d.odds / 2)
+            }))
+
+            // .map(d => {console.log(d);return d;});
+        })
+        .then(data => setHunts(data))
         .catch(err => console.error('Error fetching hunts:', err))
         .finally(() => setLoading(false));
     };
@@ -177,7 +204,6 @@ export default function DrawTool() {
         // 
         return () => document.body.style.overflow = 'hidden';
     }, []);
-    
 
     if (false) {
         return (
@@ -217,7 +243,8 @@ export default function DrawTool() {
     
 
     return (
-        <section className={`xpo_bg-paper xpo_font-vintage xpo_pb-0 xpo_pb-2 md:xpo_pb-4 xpo_relative xpo_mx-auto xpo_bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] xpo_from-[#D7B77E] xpo_to-[#C69D5D] ${showForm ? 'xpo_h-screen xpo_overflow-y-auto' : ''}`}>
+        // xpo_bg-paper xpo_bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))]
+        <section className={`xpo_font-vintage xpo_pb-0 xpo_pb-2 md:xpo_pb-4 xpo_relative xpo_mx-auto xpo_from-[#D7B77E] xpo_to-[#C69D5D] ${showForm ? 'xpo_h-screen xpo_overflow-y-auto' : ''}`}>
             {/* xpo_border-8 xpo_shadow-lg xpo_bg-white xpo_border-[#5c3b10]  */}
             {filterStyle == 1 ? (
                 <div>
@@ -281,14 +308,21 @@ export default function DrawTool() {
                                     </Dropdown>
                                     
                                 </div>
-                                <span type="button" className="xpo_text-gray-500 xpo_underline xpo_flex xpo_items-center xpo_gap-2 xpo_cursor-pointer xpo_text-sm xpo_lowercase"
-                                onClick={e => setFilters(prev => defFilters)}
-                                >{__('Clear')}</span>
+                                <div className="xpo_flex xpo_items-center xpo_gap-3">
+                                    <label className="xpo_inline-flex xpo_items-center xpo_cursor-pointer">
+                                        <input type="checkbox" defaultChecked={filters.is_resident} onChange={e => setFilters(prev => ({...prev, is_resident: e.target.checked}))} className="xpo_sr-only xpo_peer" />
+                                        <div className="xpo_relative xpo_w-11 xpo_h-6 xpo_bg-gray-200 peer-focus:xpo_outline-none peer-focus:xpo_ring-4 peer-focus:xpo_ring-blue-300 dark:peer-focus:xpo_ring-blue-800 xpo_rounded-full xpo_peer dark:xpo_bg-gray-700 peer-checked:after:xpo_translate-x-full rtl:peer-checked:after:xpo_-translate-x-full peer-checked:after:xpo_border-white after:xpo_content-[''] after:xpo_absolute after:xpo_top-[2px] after:xpo_start-[2px] after:xpo_bg-white after:xpo_border-gray-300 after:xpo_border after:xpo_rounded-full after:xpo_h-5 after:xpo_w-5 after:xpo_transition-all dark:xpo_border-gray-600 peer-checked:xpo_bg-blue-600 dark:peer-checked:xpo_bg-blue-600"></div>
+                                        <span className="xpo_ms-3 xpo_text-sm xpo_font-medium xpo_text-gray-900 dark:xpo_text-gray-300 xpo_whitespace-nowrap">{filters.is_resident ? __('Resident') : __('Non-resident')}</span>
+                                    </label>
+                                    <span type="button" className="xpo_text-gray-500 xpo_underline xpo_flex xpo_items-center xpo_gap-2 xpo_cursor-pointer xpo_text-sm xpo_lowercase" onClick={e => setFilters(prev => defFilters)}>{__('Clear')}</span>
+                                </div>
+                                
+
                             </div>
                             <div className="xpo_flex xpo_items-center xpo_justify-end">
                                 {siteCoreConfig?.profiledash ? (
                                     <a target="_blank" title={__('View profile dashboard')} href={siteCoreConfig?.profiledash || '#'} className="xpo_flex xpo_gap-3 xpo_p-2 xpo_items-center xpo_rounded-lg xpo_border-2 xpo_border-gray-300">
-                                        <CircleUser size="32" color="white" />
+                                        <CircleUser size="32" color="#333" />
                                     </a>
                                 ) : null}
                             </div>
@@ -302,7 +336,7 @@ export default function DrawTool() {
                                                 <div className="xpo_inset-0 xpo_z-50 xpo_flex xpo_items-center xpo_justify-center xpo_bg-black xpo_bg-opacity-40">
                                                     <div className="xpo_bg-white xpo_rounded-md xpo_shadow-lg xpo_max-h-[80vh] xpo_flex xpo_flex-col">
                                                         <div className="xpo_flex xpo_items-center xpo_justify-center xpo_relative xpo_border-b xpo_px-6 xpo_py-3">
-                                                            <h2 className="xpo_font-semibold xpo_text-lg">Search By Unit</h2>
+                                                            <h2 className="xpo_font-semibold xpo_text-lg">{__('Search By Unit')}</h2>
                                                             <X size={24} type="button" onClick={e => setPopup(null)} className="xpo_absolute xpo_-top-2 xpo_-right-2 xpo_z-10 xpo_cursor-pointer" />
                                                         </div>
 
@@ -313,7 +347,7 @@ export default function DrawTool() {
                                                             <div className="xpo_grid xpo_grid-cols-4 xpo_gap-y-3 xpo_gap-x-6 xpo_text-gray-800">
                                                                 {filterOptions.units.map((u, i) => (
                                                                     <label key={i} className="xpo_flex xpo_items-center xpo_space-x-2 xpo_cursor-pointer xpo_select-none">
-                                                                        <input type="checkbox" className="xpo_accent-primary-400 xpo_cursor-pointer" checked={filters.units.split(',').find(unit => unit == u.name)} onChange={e => setFilters(prev => ({...prev, units: e.target.checked ? [...prev.units.split(',').filter(i => i), u.name].join(',') : prev.units.split(',').filter(i => i).filter(unit => unit != u.name).join(',')}))} />
+                                                                        <input type="checkbox" className="xpo_accent-primary-400 xpo_cursor-pointer" defaultChecked={filters.units.split(',').find(unit => unit == u.name)} onChange={e => setFilters(prev => ({...prev, units: e.target.checked ? [...prev.units.split(',').filter(i => i), u.name].join(',') : prev.units.split(',').filter(i => i).filter(unit => unit != u.name).join(',')}))} />
                                                                         <span>{u.name}</span>
                                                                     </label>
                                                                 ))}
@@ -340,174 +374,174 @@ export default function DrawTool() {
                                     <button
                                         className="xpo_bg-white xpo_border xpo_border-gray-300 xpo_rounded xpo_px-3 xpo_py-1 xpo_text-sm"
                                         onClick={e => setPopup(
-<div className="xpo_inset-0 xpo_z-50 xpo_flex xpo_items-center xpo_justify-center xpo_bg-black xpo_bg-opacity-40">
-  <div className="xpo_bg-white xpo_rounded-md xpo_shadow-lg xpo_w-full xpo_max-w-3xl xpo_max-h-[95vh] xpo_overflow-hidden xpo_overflow-y-auto xpo_flex xpo_flex-col">
-    <div className="xpo_flex xpo_justify-center xpo_items-center xpo_relative xpo_border-b xpo_py-4">
-      <span className="xpo_text-lg xpo_font-semibold">{__('Filters')}</span>
-      <X size={24} type="button" onClick={e => setPopup(null)} className="xpo_absolute xpo_top-2 xpo_right-2 xpo_z-10 xpo_cursor-pointer" />
-    </div>
+                                            <div className="xpo_inset-0 xpo_z-50 xpo_flex xpo_items-center xpo_justify-center xpo_bg-black xpo_bg-opacity-40">
+                                            <div className="xpo_bg-white xpo_rounded-md xpo_shadow-lg xpo_w-full xpo_max-w-3xl xpo_max-h-[95vh] xpo_overflow-hidden xpo_overflow-y-auto xpo_flex xpo_flex-col">
+                                                <div className="xpo_flex xpo_justify-center xpo_items-center xpo_relative xpo_border-b xpo_py-4">
+                                                <span className="xpo_text-lg xpo_font-semibold">{__('Filters')}</span>
+                                                <X size={24} type="button" onClick={e => setPopup(null)} className="xpo_absolute xpo_top-2 xpo_right-2 xpo_z-10 xpo_cursor-pointer" />
+                                                </div>
 
-    <div className="xpo_p-6 xpo_space-y-8 xpo_flex-1">
-      <div>
-        <div className="xpo_text-sm xpo_mb-2 xpo_font-medium">{__('Season Dates')}</div>
-        <div className="xpo_overflow-x-auto">
-            <MyDateRange onChange={val => setFilters(prev => ({...prev, date_range: val.startDate.toDateString() +' to '+ val.endDate.toDateString()}))} />
-        </div>
-        
-        <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-4 xpo_hidden">
-          <div>
-            <div className="xpo_text-xs xpo_font-semibold">{__('Planned hunting dates')}</div>
-            <div className="xpo_text-xs xpo_text-gray-500">
-              {__('Includes hunts that historically occurred within ±12 days of the selected range')}
-            </div>
-          </div>
-          
-          <button className="xpo_flex xpo_items-center xpo_bg-gray-100 xpo_rounded xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-500 xpo_border xpo_border-gray-200">
-            <span className="xpo_mr-2">📅</span> {__('Date range')}
-          </button>
-        </div>
-        <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-6 xpo_hidden">
-          <div>
-            <div className="xpo_text-xs xpo_font-semibold">{__('Rut Activity')}</div>
-            <div className="xpo_text-xs xpo_text-gray-500">
-              {__('Show tags where season dates align with peak rut timing')}
-            </div>
-          </div>
-          <div className="xpo_relative">
-            <input type="checkbox" className="xpo_sr-only" />
-            <div className="xpo_block xpo_w-10 xpo_h-6 xpo_rounded-full xpo_bg-gray-200"></div>
-            <div className="xpo_absolute xpo_left-1 xpo_top-1 xpo_bg-white xpo_w-4 xpo_h-4 xpo_rounded-full xpo_shadow"></div>
-          </div>
-        </div>
-      </div>
+                                                <div className="xpo_p-6 xpo_space-y-8 xpo_flex-1">
+                                                <div>
+                                                    <div className="xpo_text-sm xpo_mb-2 xpo_font-medium">{__('Season Dates')}</div>
+                                                    <div className="xpo_overflow-x-auto">
+                                                        <MyDateRange onChange={val => setFilters(prev => ({...prev, date_range: val.startDate.toDateString() +' to '+ val.endDate.toDateString()}))} />
+                                                    </div>
+                                                    
+                                                    <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-4 xpo_hidden">
+                                                    <div>
+                                                        <div className="xpo_text-xs xpo_font-semibold">{__('Planned hunting dates')}</div>
+                                                        <div className="xpo_text-xs xpo_text-gray-500">
+                                                        {__('Includes hunts that historically occurred within ±12 days of the selected range')}
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <button className="xpo_flex xpo_items-center xpo_bg-gray-100 xpo_rounded xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-500 xpo_border xpo_border-gray-200">
+                                                        <span className="xpo_mr-2">📅</span> {__('Date range')}
+                                                    </button>
+                                                    </div>
+                                                    <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-6 xpo_hidden">
+                                                    <div>
+                                                        <div className="xpo_text-xs xpo_font-semibold">{__('Rut Activity')}</div>
+                                                        <div className="xpo_text-xs xpo_text-gray-500">
+                                                        {__('Show tags where season dates align with peak rut timing')}
+                                                        </div>
+                                                    </div>
+                                                    <div className="xpo_relative">
+                                                        <input type="checkbox" className="xpo_sr-only" />
+                                                        <div className="xpo_block xpo_w-10 xpo_h-6 xpo_rounded-full xpo_bg-gray-200"></div>
+                                                        <div className="xpo_absolute xpo_left-1 xpo_top-1 xpo_bg-white xpo_w-4 xpo_h-4 xpo_rounded-full xpo_shadow"></div>
+                                                    </div>
+                                                    </div>
+                                                </div>
 
-      <div className="xpo_hidden">
-        <div className="xpo_text-sm xpo_mb-2 xpo_font-medium">Species Sex</div>
-        <div className="xpo_flex xpo_space-x-6 xpo_mb-1 xpo_flex-wrap">
-          <label className="xpo_flex xpo_items-center xpo_space-x-1">
-            <input type="radio" name="species_sex" defaultChecked className="xpo_accent-black"/>
-            <span className="xpo_font-semibold">All Sexes</span>
-            <span className="xpo_text-xs xpo_text-gray-500">Show all tags</span>
-          </label>
-          <label className="xpo_flex xpo_items-center xpo_space-x-1">
-            <input type="radio" name="species_sex" className="xpo_accent-black"/>
-            <span className="xpo_font-semibold">Male Tags</span>
-            <span className="xpo_text-xs xpo_text-gray-500">Shows only tags that include males</span>
-          </label>
-          <label className="xpo_flex xpo_items-center xpo_space-x-1">
-            <input type="radio" name="species_sex" className="xpo_accent-black"/>
-            <span className="xpo_font-semibold">Female Tags</span>
-            <span className="xpo_text-xs xpo_text-gray-500">Show only tags that include females</span>
-          </label>
-          <label className="xpo_flex xpo_items-center xpo_space-x-1">
-            <input type="radio" name="species_sex" className="xpo_accent-black"/>
-            <span className="xpo_font-semibold">Either Sex Only</span>
-            <span className="xpo_text-xs xpo_text-gray-500">Shows only either sex tags</span>
-          </label>
-        </div>
-      </div>
+                                                <div className="xpo_hidden">
+                                                    <div className="xpo_text-sm xpo_mb-2 xpo_font-medium">Species Sex</div>
+                                                    <div className="xpo_flex xpo_space-x-6 xpo_mb-1 xpo_flex-wrap">
+                                                    <label className="xpo_flex xpo_items-center xpo_space-x-1">
+                                                        <input type="radio" name="species_sex" defaultChecked className="xpo_accent-black"/>
+                                                        <span className="xpo_font-semibold">All Sexes</span>
+                                                        <span className="xpo_text-xs xpo_text-gray-500">Show all tags</span>
+                                                    </label>
+                                                    <label className="xpo_flex xpo_items-center xpo_space-x-1">
+                                                        <input type="radio" name="species_sex" className="xpo_accent-black"/>
+                                                        <span className="xpo_font-semibold">Male Tags</span>
+                                                        <span className="xpo_text-xs xpo_text-gray-500">Shows only tags that include males</span>
+                                                    </label>
+                                                    <label className="xpo_flex xpo_items-center xpo_space-x-1">
+                                                        <input type="radio" name="species_sex" className="xpo_accent-black"/>
+                                                        <span className="xpo_font-semibold">Female Tags</span>
+                                                        <span className="xpo_text-xs xpo_text-gray-500">Show only tags that include females</span>
+                                                    </label>
+                                                    <label className="xpo_flex xpo_items-center xpo_space-x-1">
+                                                        <input type="radio" name="species_sex" className="xpo_accent-black"/>
+                                                        <span className="xpo_font-semibold">Either Sex Only</span>
+                                                        <span className="xpo_text-xs xpo_text-gray-500">Shows only either sex tags</span>
+                                                    </label>
+                                                    </div>
+                                                </div>
 
-      <div className="xpo_hidden">
-        <div className="xpo_text-sm xpo_mb-2 xpo_font-medium">Special Hunt Options</div>
-        
-        <div className="xpo_flex xpo_items-center xpo_mb-4">
-          <label className="xpo_mr-2 xpo_text-xs xpo_font-semibold">Veteran Hunts</label>
-          <div className="xpo_flex xpo_items-center xpo_space-x-6">
-            <label className="xpo_flex xpo_items-center xpo_space-x-1">
-              <input type="radio" name="veteran_hunt" defaultChecked className="xpo_accent-black"/>
-              <span>Include</span>
-            </label>
-            <label className="xpo_flex xpo_items-center xpo_space-x-1">
-              <input type="radio" name="veteran_hunt" className="xpo_accent-black"/>
-              <span>Exclude</span>
-            </label>
-            <label className="xpo_flex xpo_items-center xpo_space-x-1">
-              <input type="radio" name="veteran_hunt" className="xpo_accent-black"/>
-              <span>Show Only</span>
-            </label>
-          </div>
-        </div>
+                                                <div className="xpo_hidden">
+                                                    <div className="xpo_text-sm xpo_mb-2 xpo_font-medium">Special Hunt Options</div>
+                                                    
+                                                    <div className="xpo_flex xpo_items-center xpo_mb-4">
+                                                    <label className="xpo_mr-2 xpo_text-xs xpo_font-semibold">Veteran Hunts</label>
+                                                    <div className="xpo_flex xpo_items-center xpo_space-x-6">
+                                                        <label className="xpo_flex xpo_items-center xpo_space-x-1">
+                                                        <input type="radio" name="veteran_hunt" defaultChecked className="xpo_accent-black"/>
+                                                        <span>Include</span>
+                                                        </label>
+                                                        <label className="xpo_flex xpo_items-center xpo_space-x-1">
+                                                        <input type="radio" name="veteran_hunt" className="xpo_accent-black"/>
+                                                        <span>Exclude</span>
+                                                        </label>
+                                                        <label className="xpo_flex xpo_items-center xpo_space-x-1">
+                                                        <input type="radio" name="veteran_hunt" className="xpo_accent-black"/>
+                                                        <span>Show Only</span>
+                                                        </label>
+                                                    </div>
+                                                    </div>
 
-        <div className="xpo_flex xpo_items-center">
-          <label className="xpo_mr-2 xpo_text-xs xpo_font-semibold">Youth Hunts</label>
-          <div className="xpo_flex xpo_items-center xpo_space-x-6">
-            <label className="xpo_flex xpo_items-center xpo_space-x-1">
-              <input type="radio" name="youth_hunt" defaultChecked className="xpo_accent-black"/>
-              <span>Include</span>
-            </label>
-            <label className="xpo_flex xpo_items-center xpo_space-x-1">
-              <input type="radio" name="youth_hunt" className="xpo_accent-black"/>
-              <span>Exclude</span>
-            </label>
-            <label className="xpo_flex xpo_items-center xpo_space-x-1">
-              <input type="radio" name="youth_hunt" className="xpo_accent-black"/>
-              <span>Show Only</span>
-            </label>
-          </div>
-        </div>
-      </div>
+                                                    <div className="xpo_flex xpo_items-center">
+                                                    <label className="xpo_mr-2 xpo_text-xs xpo_font-semibold">Youth Hunts</label>
+                                                    <div className="xpo_flex xpo_items-center xpo_space-x-6">
+                                                        <label className="xpo_flex xpo_items-center xpo_space-x-1">
+                                                        <input type="radio" name="youth_hunt" defaultChecked className="xpo_accent-black"/>
+                                                        <span>Include</span>
+                                                        </label>
+                                                        <label className="xpo_flex xpo_items-center xpo_space-x-1">
+                                                        <input type="radio" name="youth_hunt" className="xpo_accent-black"/>
+                                                        <span>Exclude</span>
+                                                        </label>
+                                                        <label className="xpo_flex xpo_items-center xpo_space-x-1">
+                                                        <input type="radio" name="youth_hunt" className="xpo_accent-black"/>
+                                                        <span>Show Only</span>
+                                                        </label>
+                                                    </div>
+                                                    </div>
+                                                </div>
 
-      <div>
-        <div className="xpo_text-sm xpo_mb-2 xpo_font-medium">{__('Deciding Data')}</div>
+                                                <div>
+                                                    <div className="xpo_text-sm xpo_mb-2 xpo_font-medium">{__('Deciding Data')}</div>
 
-        <div className="xpo_mb-4">
-          <div className="xpo_flex xpo_justify-between xpo_items-center xpo_text-xs">
-            <span className="xpo_font-semibold">{__('Draw Odds')}</span>
-            {filters?.draw_odds ? <span>{filters?.draw_odds}% <span className="xpo_inline-block xpo_w-24"></span> 100%</span> : null}
-          </div>
-          <input type="range" min="0" max="100" className="xpo_w-full xpo_mt-2" defaultValue={filters?.draw_odds??0} onChange={e => setFilters(prev => ({...prev, draw_odds: Number(e.target.value)}))} />
-        </div>
+                                                    <div className="xpo_mb-4">
+                                                    <div className="xpo_flex xpo_justify-between xpo_items-center xpo_text-xs">
+                                                        <span className="xpo_font-semibold">{__('Draw Odds')}</span>
+                                                        {filters?.draw_odds ? <span>{filters?.draw_odds}% <span className="xpo_inline-block xpo_w-24"></span> 100%</span> : null}
+                                                    </div>
+                                                    <input type="range" min="0" max="100" className="xpo_w-full xpo_mt-2" defaultValue={filters?.draw_odds??0} onChange={e => setFilters(prev => ({...prev, draw_odds: Number(e.target.value)}))} />
+                                                    </div>
 
-        <div className="xpo_mb-4">
-          <div className="xpo_flex xpo_justify-between xpo_items-center xpo_text-xs">
-            <span className="xpo_font-semibold">{__('Bonus Point')}</span>
-            {filters?.points ? <span>{filters?.points} <span className="xpo_inline-block xpo_w-24"></span> 40</span> : null}
-          </div>
-          <input type="range" min="0" max="40" className="xpo_w-full xpo_mt-2" defaultValue={filters?.points??0} onChange={e => setFilters(prev => ({...prev, points: Number(e.target.value)}))} />
-        </div>
+                                                    <div className="xpo_mb-4">
+                                                    <div className="xpo_flex xpo_justify-between xpo_items-center xpo_text-xs">
+                                                        <span className="xpo_font-semibold">{__('Bonus Point')}</span>
+                                                        {filters?.points ? <span>{filters?.points} <span className="xpo_inline-block xpo_w-24"></span> 40</span> : null}
+                                                    </div>
+                                                    <input type="range" min="0" max="40" className="xpo_w-full xpo_mt-2" defaultValue={filters?.points??0} onChange={e => setFilters(prev => ({...prev, points: Number(e.target.value)}))} />
+                                                    </div>
 
-        <div className="xpo_mb-4">
-          <div className="xpo_flex xpo_justify-between xpo_items-center xpo_text-xs">
-            <span className="xpo_font-semibold">{__('Harvest Rate')}</span>
-            {filters?.harvest_rate ? <span>{filters?.harvest_rate}% <span className="xpo_inline-block xpo_w-24"></span> 100%</span> : null}
-          </div>
-          <input type="range" min="0" max="100" className="xpo_w-full xpo_mt-2" defaultValue={filters?.harvest_rate??0} onChange={e => setFilters(prev => ({...prev, harvest_rate: Number(e.target.value)}))} />
-        </div>
+                                                    <div className="xpo_mb-4">
+                                                    <div className="xpo_flex xpo_justify-between xpo_items-center xpo_text-xs">
+                                                        <span className="xpo_font-semibold">{__('Harvest Rate')}</span>
+                                                        {filters?.harvest_rate ? <span>{filters?.harvest_rate}% <span className="xpo_inline-block xpo_w-24"></span> 100%</span> : null}
+                                                    </div>
+                                                    <input type="range" min="0" max="100" className="xpo_w-full xpo_mt-2" defaultValue={filters?.harvest_rate??0} onChange={e => setFilters(prev => ({...prev, harvest_rate: Number(e.target.value)}))} />
+                                                    </div>
 
-        <div className="xpo_mb-4">
-          <div className="xpo_flex xpo_justify-between xpo_items-center xpo_text-xs">
-            <span className="xpo_font-semibold">{__('Public Land Ratio')}</span>
-            {filters?.public_land_ratio ? <span>{filters?.public_land_ratio}% <span className="xpo_inline-block xpo_w-24"></span> 100%</span> : null}
-          </div>
-          <input type="range" min="0" max="100" className="xpo_w-full xpo_mt-2" defaultValue={filters?.public_land_ratio??0} onChange={e => setFilters(prev => ({...prev, public_land_ratio: Number(e.target.value)}))} />
-        </div>
+                                                    <div className="xpo_mb-4">
+                                                    <div className="xpo_flex xpo_justify-between xpo_items-center xpo_text-xs">
+                                                        <span className="xpo_font-semibold">{__('Public Land Ratio')}</span>
+                                                        {filters?.public_land_ratio ? <span>{filters?.public_land_ratio}% <span className="xpo_inline-block xpo_w-24"></span> 100%</span> : null}
+                                                    </div>
+                                                    <input type="range" min="0" max="100" className="xpo_w-full xpo_mt-2" defaultValue={filters?.public_land_ratio??0} onChange={e => setFilters(prev => ({...prev, public_land_ratio: Number(e.target.value)}))} />
+                                                    </div>
 
-        <div className="">
-          <div className="xpo_flex xpo_justify-between xpo_items-center xpo_text-xs">
-            <span className="xpo_font-semibold">{__('Hunters Per Square Mile')}</span>
-            {filters?.per_sqmi ? <span>{filters?.per_sqmi} <span className="xpo_inline-block xpo_w-24"></span> 50</span> : null}
-          </div>
-          <input type="range" min="0" max="50" className="xpo_w-full xpo_mt-2" defaultValue={filters?.per_sqmi??0} onChange={e => setFilters(prev => ({...prev, per_sqmi: Number(e.target.value)}))} />
-        </div>
-      </div>
-    </div>
+                                                    <div className="">
+                                                    <div className="xpo_flex xpo_justify-between xpo_items-center xpo_text-xs">
+                                                        <span className="xpo_font-semibold">{__('Hunters Per Square Mile')}</span>
+                                                        {filters?.per_sqmi ? <span>{filters?.per_sqmi} <span className="xpo_inline-block xpo_w-24"></span> 50</span> : null}
+                                                    </div>
+                                                    <input type="range" min="0" max="50" className="xpo_w-full xpo_mt-2" defaultValue={filters?.per_sqmi??0} onChange={e => setFilters(prev => ({...prev, per_sqmi: Number(e.target.value)}))} />
+                                                    </div>
+                                                </div>
+                                                </div>
 
-    <div className="xpo_border-t xpo_flex xpo_justify-end xpo_items-center xpo_gap-8 xpo_px-8 xpo_py-4">
-        <button
-            type="button"
-            onClick={e => setFilters(prev => defFilters)}
-            className="xpo_text-black xpo_font-bold hover:xpo_underline"
-        >{__('Clear')}</button>
-        <button
-            type="button"
-            onClick={e => setPopup(null)}
-            className="xpo_px-6 xpo_py-2 xpo_bg-primary-500 xpo_text-white xpo_rounded xpo_font-bold hover:xpo_bg-primary-600"
-        >
-        {__('Apply')}
-      </button>
-    </div>
-  </div>
-</div>
+                                                <div className="xpo_border-t xpo_flex xpo_justify-end xpo_items-center xpo_gap-8 xpo_px-8 xpo_py-4">
+                                                    <button
+                                                        type="button"
+                                                        onClick={e => setFilters(prev => defFilters)}
+                                                        className="xpo_text-black xpo_font-bold hover:xpo_underline"
+                                                    >{__('Clear')}</button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={e => setPopup(null)}
+                                                        className="xpo_px-6 xpo_py-2 xpo_bg-primary-500 xpo_text-white xpo_rounded xpo_font-bold hover:xpo_bg-primary-600"
+                                                    >
+                                                    {__('Apply')}
+                                                </button>
+                                                </div>
+                                            </div>
+                                            </div>
                                         )}
                                     >
                                         {__('+ More Filters')}
@@ -532,14 +566,14 @@ export default function DrawTool() {
                                                         <input
                                                             readOnly
                                                             type="text"
-                                                            value={location.href}
+                                                            value={`${location.href.replace(location.search, '')}?f=${btoa(JSON.stringify(filters))}`}
                                                             className="xpo_flex-1 xpo_border xpo_border-gray-300 xpo_rounded xpo_px-4 xpo_py-2 xpo_text-sm xpo_select-all"
                                                         />
                                                         <button
                                                             type="button"
                                                             onClick={e => 
                                                                 sleep(100)
-                                                                .then(res => navigator.clipboard.writeText(location.href))
+                                                                .then(res => navigator.clipboard.writeText(`${location.href.replace(location.search, '')}?f=${btoa(JSON.stringify(filters))}`))
                                                                 .then(() => e.target.innerHTML = __('Copied'))
                                                                 .then(async () => await sleep(2000))
                                                                 .finally(() => e.target.innerHTML = __('Copy Link'))
@@ -554,7 +588,13 @@ export default function DrawTool() {
                                         {__('Share')}
                                     </button>
                                 </div>
-                                <span className="xpo_text-gray-500 xpo_text-sm">{sprintf(__('%d results'), hunts.length)}</span>
+                                <div className="xpo_flex xpo_gap-3 xpo_items-center xpo_justify-end">
+                                    <div className="xpo_flex xpo_gap-3 xpo_items-center">
+                                        {filters.page >= 2 ? <button type="button" className="xpo_relative xpo_bg-white xpo_border xpo_border-gray-300 xpo_rounded xpo_px-3 xpo_py-1 xpo_text-sm" onClick={e => setFilters(prev => ({...prev, page: filters.page - 1}))}>{__('Prev')}</button> : null}
+                                        {paginations.totalPages > 1 && filters.page < paginations.totalPages ? <button type="button" className="xpo_relative xpo_bg-white xpo_border xpo_border-gray-300 xpo_rounded xpo_px-3 xpo_py-1 xpo_text-sm" onClick={e => setFilters(prev => ({...prev, page: filters.page + 1}))}>{__('Next')}</button> : null}
+                                    </div>
+                                    <span className="xpo_text-gray-500 xpo_text-sm">{sprintf(__('%d/%d results'), hunts.length * filters.page, paginations.totalItems)}</span>
+                                </div>
                             </div>
                             {/* <div className="xpo_bg-yellow-100 xpo_p-3 xpo_rounded xpo_text-gray-700 xpo_text-sm xpo_flex xpo_justify-between">
                                 {sprintf(__('Your residency is %s, and we will only show resident draw odds and tag quota for your residency state.'), filterOptions.states.find(i => i.id == filters.state)?.name??'Arizona')}
@@ -586,7 +626,7 @@ export default function DrawTool() {
                                         title={__('Back')}
                                         aria-label={__('Back')}
                                         onClick={(e) => setShowForm(prev => !prev)}
-                                        className="xpo_absolute xpo_flex xpo_gap-2 xpo_items-center xpo_-bottom-10 xpo_-right-22 xpo_px-4 xpo_py-2 xpo_bg-transparent xpo_text-[#5c3b10]"
+                                        className="xpo_bg-transparent xpo_absolute xpo_flex xpo_gap-2 xpo_items-center xpo_-bottom-10 xpo_-right-22 xpo_px-4 xpo_py-2 xpo_text-[#5c3b10]"
                                     >
                                         <ChevronLeft size={36} />
                                         <span>{__('Back')}</span>
@@ -755,7 +795,8 @@ export default function DrawTool() {
                                     </div>
                                 : null
                             ) : (
-                                <div className="xpo_w-full xpo_bg-[#987A56] xpo_border-8 xpo_border-[#5c3b10] xpo_p-4 md:xpo_p-8 xpo_rounded-md xpo_shadow-lg">
+                                // xpo_border-[#5c3b10] xpo_p-4 md:xpo_p-8
+                                <div className="xpo_bg-transparent xpo_w-full xpo_bg-[#987A56] xpo_border-8 xpo_rounded-md xpo_shadow-lg">
                                     <div className="xpo_overflow-auto xpo_scrollbar-thin xpo_[scrollbar-color:#5c3b10_#987A56] xpo_[scrollbar-width:thin] hunter-table" ref={table}>
                                         {/* xpo_min-w-[2000px] xpo_rounded-md xpo_overflow-hidden */}
                                         <table className="xpo_table xpo_table-auto xpo_w-full xpo_border xpo_border-collapse xpo_border-gray-200 xpo_text-center">
@@ -764,38 +805,39 @@ export default function DrawTool() {
                                                     {(
                                                         viewType == 2 ? tableColumns.slice(0, 8) : tableColumns
                                                     ).map((col, index) => (
-                                                        <th key={index} className={`xpo_sticky xpo_top-0 xpo_border xpo_px-4 xpo_py-2 xpo_whitespace-nowrap xpo_bg-gray-100 xpo_text-gray-900 ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{viewType == 2 && index == 7 ? 'View' : col}</th>
+                                                        // xpo_whitespace-nowrap 
+                                                        <th key={index} className={`xpo_sticky xpo_top-0 xpo_border xpo_px-4 xpo_py-2 xpo_bg-gray-100 xpo_text-gray-900 ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{viewType == 2 && index == 7 ? __('View') : col}</th>
                                                     ))}
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {loading ?
-                                                    [...Array(filters.per_page).keys()].map((_, index) => (
-                                                        <tr key={index} className="xpo_animate-pulse">
+                                                    [...Array(Math.min(11, filters.per_page)).keys()].map(i => (
+                                                        <tr key={i} className="xpo_animate-pulse">
                                                             <td colSpan={viewType == 2 ? 8 : tableColumns.length} className="xpo_text-center xpo_p-4">
-                                                                {index === Math.floor(filters.per_page / 2) ? __('Loading...') : null}
+                                                                {i === Math.floor(Math.min(11, filters.per_page) / 2) ? __('Loading...') : null}
                                                             </td>
                                                         </tr>
                                                     ))
                                                     : hunts.length === 0 ? (
                                                         <tr>
-                                                            <td colSpan={viewType == 2 ? 8 : tableColumns.length} className="xpo_text-center xpo_p-4 xpo_text-white">
+                                                            <td colSpan={viewType == 2 ? 8 : tableColumns.length} className="xpo_text-center xpo_p-4">
                                                                 {__('No results found.')}
                                                             </td>
                                                         </tr>
                                                     ) : (
                                                         hunts.map((hunt, hIndex) => viewType == 2 ? (
                                                             <tr key={hIndex}>
-                                                                {/* <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.app_year}</td> */}
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.document_id}</td>
-                                                                {/* <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt?.state?.name}</td> */}
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.gmu?.name}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.bag_type?.name}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.species.name || ''}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.weapon?.name}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.start_date || __('N/A')} - {hunt.end_date || __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.user_odds || __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>
+                                                                {/* <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.app_year}</td> */}
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.document_id}</td>
+                                                                {/* <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt?.state?.name}</td> */}
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.gmu?.name}</td>
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.bag_type?.name}</td>
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.species.name || ''}</td>
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.weapon?.name}</td>
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.start_date || __('N/A')} - {hunt.end_date || __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.user_odds || __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>
                                                                     <Eye
                                                                         type="button"
                                                                         onClick={(e) => setPopup(
@@ -823,7 +865,7 @@ export default function DrawTool() {
                                                                                             <tr><td className="xpo_border xpo_px-2 xpo_text-white">{__('Tags')}</td><td className="xpo_border xpo_px-2 xpo_text-white"> {hunt.tags_given || ''}</td></tr>
                                                                                             <tr><td className="xpo_border xpo_px-2 xpo_text-white">{__('Rate')}</td><td className="xpo_border xpo_px-2 xpo_text-white"> {hunt.harvest_rate}</td></tr>
                                                                                             <tr><td className="xpo_border xpo_px-2 xpo_text-white">{__('SQMI')}</td><td className="xpo_border xpo_px-2 xpo_text-white"> {hunt.gmu?.total_sqmi}</td></tr>
-                                                                                            <tr><td className="xpo_border xpo_px-2 xpo_text-white">{__('Ratio')}</td><td className="xpo_border xpo_px-2 xpo_text-white"> {(hunt.gmu?.public_ratio * 100).toFixed(0)}%</td></tr>
+                                                                                            <tr><td className="xpo_border xpo_px-2 xpo_text-white">{__('Ratio')}</td><td className="xpo_border xpo_px-2 xpo_text-white"> {(hunt.gmu?.public_ratio).toFixed(0)}%</td></tr>
                                                                                             <tr><td className="xpo_border xpo_px-2 xpo_text-white">{__('Per SQMI')}</td><td className="xpo_border xpo_px-2 xpo_text-white"> {hunt.hunters_per_sqmi}</td></tr>
                                                                                             <tr><td className="xpo_border xpo_px-2 xpo_text-white">{__('Units')}</td><td className="xpo_border xpo_px-2 xpo_text-white"> {hunt.additional_units || ''}</td></tr>
                                                                                             <tr><td className="xpo_border xpo_px-2 xpo_text-white" colSpan={2}>{__('Notes')}</td></tr>
@@ -843,28 +885,27 @@ export default function DrawTool() {
                                                                         className="xpo_cursor-pointer xpo_m-auto"
                                                                     />
                                                                 </td>
-
                                                             </tr>
                                                         ) : (
                                                             <tr key={hIndex}>
-                                                                {/* <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.app_year || __('N/A')}</td> */}
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.document_id || __('N/A')}</td>
-                                                                {/* <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt?.state?.name || __('N/A')}</td> */}
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.gmu?.name || __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.bag_type?.name || __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.species.name || __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.weapon?.name || __('N/A')}</td>
-                                                                {/* <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.season_type || __('N/A')}</td> */}
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.start_date ? strtotime(hunt.start_date).format('MMM, DD') : __('N/A')} - {hunt.end_date ? strtotime(hunt.end_date).format('MMM, DD') : __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.user_odds || __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.odds_min_points || __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.tags_given || __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.harvest_rate ? hunt.harvest_rate.toFixed(2) + '%' : __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.gmu?.total_sqmi || __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{(hunt.gmu?.public_ratio * 100).toFixed(2)}%</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.hunters_per_sqmi || __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.additional_units || __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[12px]' : ''}`}>{hunt.notes || __('N/A')}</td>
+                                                                {/* <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.app_year || __('N/A')}</td> */}
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.document_id || __('N/A')}</td>
+                                                                {/* <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt?.state?.name || __('N/A')}</td> */}
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.gmu?.name || __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.bag_type?.name || __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.species.name || __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.weapon?.name || __('N/A')}</td>
+                                                                {/* <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.season_type || __('N/A')}</td> */}
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.start_date ? strtotime(hunt.start_date).format('MMM, DD') : __('N/A')} - {hunt.end_date ? strtotime(hunt.end_date).format('MMM, DD') : __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt._probability ? sprintf(__('%f%s @ %d pts'), hunt.user_odds.toFixed(3), '%', hunt._probability) : __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{false && hunt.user_odds ? hunt.user_odds.toFixed(3) : __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.tags_given || __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.harvest_rate ? hunt.harvest_rate.toFixed(2) + '%' : __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.gmu?.total_sqmi ? hunt.gmu.total_sqmi.toFixed(2) : __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{(hunt.gmu?.public_ratio).toFixed(0)}%</td>
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.hunters_per_sqmi ? hunt.hunters_per_sqmi.toFixed(2) : __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.additional_units || __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.notes || __('N/A')}</td>
                                                             </tr>
                                                         ))
                                                     )}

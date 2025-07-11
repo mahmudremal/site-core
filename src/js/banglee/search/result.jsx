@@ -7,7 +7,7 @@ import { __ } from '@js/utils';
 
 import { Dropdown, SearchBar, AppsList, ProfileBar } from '.';
 
-const placeholderIcon = 'https://via.placeholder.com/40';
+const placeholderIcon = 'https://placehold.co/40';
 
 export default function SearchResults() {
     const { s: query } = useParams();

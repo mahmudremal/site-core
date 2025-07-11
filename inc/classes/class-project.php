@@ -23,23 +23,23 @@ class Project {
 
 			Hunts::get_instance();
 		
-		// Cdn::get_instance();
+		Cdn::get_instance();
 		// 	Apps::get_instance();
-		// 	Task::get_instance();
+			Task::get_instance();
 		// 	Error::get_instance();
-		// 	Utils::get_instance();
+			Utils::get_instance();
 		// 	Radar::get_instance();
-		// Editor::get_instance();
-		// 		Suite::get_instance();
+		Editor::get_instance();
+				Suite::get_instance();
 		// 		Users::get_instance();
 		// 		Roles::get_instance();
 		Menus::get_instance();
 		Option::get_instance();
 		Assets::get_instance();
-		// Llmstxt::get_instance();
+		Llmstxt::get_instance();
 		// 		Payout::get_instance();
 		// 		Stores::get_instance();
-		// 	Visitor::get_instance();
+			// Visitor::get_instance();
 		// 		Toolbar::get_instance();
 		// 		Invoice::get_instance();
 		// 		Finance::get_instance();
@@ -57,7 +57,7 @@ class Project {
 			// 	Service_Docs::get_instance();
 		Translations::get_instance();
 		// 	Notifications::get_instance();
-		// Instant_Images::get_instance();
+		Instant_Images::get_instance();
 				
 		// 		Payment_Tap::get_instance();
 		// 		Payment_Tabby::get_instance();
