@@ -17,6 +17,7 @@ class McpAddon {
         };
         this.mcpsPath = path.join(server.__root, 'resources',  'mcp-addons');
         this.loadedAddons = new Map();
+        this.registeredElements = new Map();
     }
 
     async init() {
@@ -30,17 +31,20 @@ class McpAddon {
                 capabilities: {
                     tools: {},
                     resources: {},
-                    prompts: {}
+                    prompts: {},
+                    sampling: {},
+                    roots: {
+                        listChanged: true,
+                    },
                 }
             }
         );
-        this.createTables();
         await this.loadMcpAddons();
         return true;
     }
 
-    createTables() {
-        const tables = {
+    get_tables_schemas() {
+        return {
             events: `CREATE TABLE IF NOT EXISTS ${this.tables.events} (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 event_type VARCHAR(50) NOT NULL,
@@ -77,16 +81,6 @@ class McpAddon {
                 UNIQUE KEY unique_element (addon_name, element_name, element_type)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;`
         };
-        
-        Object.keys(tables).forEach(table => {
-            this.db.query(tables[table], (err) => {
-                if (err) {
-                    console.error(`Error creating ${table} table:`, err);
-                } else {
-                    console.log(`${table} table ready`);
-                }
-            });
-        });
     }
 
     async loadMcpAddons() {
@@ -102,20 +96,14 @@ class McpAddon {
                 const addonPath = path.join(this.mcpsPath, file);
                 const AddonClass = require(addonPath);
                 const addonName = file.replace('.js', '');
-                // console.log(`Loading MCP addon: ${addonName}`);
 
-                
                 const logEvent = (...args) => this.logEvent(...args, addonName);
                 const addonInstance = new AddonClass(this.db, logEvent);
-                const addonEnabled = await this.isAddonEnabled(addonInstance.name);
-                // if (!addonEnabled) console.log(sprintf('⏸️ MCP addon (%s) skipped as disabled', addonInstance.name))
-                // if (!addonEnabled) continue;
                 
                 await addonInstance.init();
                 this.loadedAddons.set(addonName, addonInstance);
                 
                 await this.syncAddonToDatabase(addonName, addonInstance);
-                console.log(`▶️ Loaded MCP addon: ${addonName}`);
             } catch (error) {
                 console.error(`Error loading addon ${file}:`, error.message);
             }
@@ -182,27 +170,57 @@ class McpAddon {
         });
     }
 
-    async register(router) {
-        await this.registerMcpElements();
-        
-        this.registerRoutes(router);
-        
-        process.on('SIGINT', () => this.stop());
-        process.on('SIGTERM', () => this.stop());
+    async isAddonEnabled(addonName) {
+        return new Promise((resolve, reject) => {
+            const query = `SELECT enabled FROM ${this.tables.addons} WHERE name = ?`;
+            this.db.query(query, [addonName], (err, results) => {
+                if (err) reject(err);
+                else resolve(results.length > 0 ? results[0].enabled : false);
+            });
+        });
     }
 
-    async registerMcpElements() {
-        
+    async rebuildMcpRegistrations() {
+        if (this.server) {
+            try {
+                await this.server.close();
+                console.log('Old MCP Server closed');
+            } catch (error) {
+                console.error('Error closing old MCP server:', error);
+            }
+        }
+
+        const newServer = new McpServer(
+            {
+                name: 'banglee-mcp',
+                version: '1.0.0',
+                description: 'Banglee MCP Server'
+            },
+            {
+                capabilities: {
+                    tools: {},
+                    resources: {},
+                    prompts: {},
+                    sampling: {},
+                    roots: {
+                        listChanged: true,
+                    },
+                }
+            }
+        );
+
+        // Re-register all enabled elements
         for (const [addonName, addonInstance] of this.loadedAddons) {
-            // const addonEnabled = await this.isAddonEnabled(addonName);
-            // if (!addonEnabled) continue;
+            const addonEnabled = await this.isAddonEnabled(addonName);
+            if (!addonEnabled) continue;
             
+            // Register tools
             if (addonInstance.getTools) {
                 const tools = addonInstance.getTools();
                 for (const tool of tools) {
                     const enabled = await this.isElementEnabled(addonName, tool.name, 'tool');
                     if (enabled) {
-                        this.server.registerTool(
+                        newServer.registerTool(
                             tool.name,
                             {...tool},
                             async (args) => {
@@ -228,12 +246,13 @@ class McpAddon {
                 }
             }
             
+            // Register resources
             if (addonInstance.getResources) {
                 const resources = addonInstance.getResources();
                 for (const resource of resources) {
                     const enabled = await this.isElementEnabled(addonName, resource.uri, 'resource');
                     if (enabled) {
-                        this.server.registerResource(
+                        newServer.registerResource(
                             resource.uri,
                             {
                                 name: resource.name,
@@ -258,12 +277,13 @@ class McpAddon {
                 }
             }
             
+            // Register prompts
             if (addonInstance.getPrompts) {
                 const prompts = addonInstance.getPrompts();
                 for (const prompt of prompts) {
                     const enabled = await this.isElementEnabled(addonName, prompt.name, 'prompt');
                     if (enabled) {
-                        this.server.registerPrompt(
+                        newServer.registerPrompt(
                             prompt.name,
                             {
                                 description: prompt.description,
@@ -288,17 +308,22 @@ class McpAddon {
             }
         }
 
-        // console.log(this.server._registeredTools);
+        // Replace the old server with the new one
+        this.server = newServer;
     }
 
-    async isAddonEnabled(addonName) {
-        return new Promise((resolve, reject) => {
-            const query = `SELECT enabled FROM ${this.tables.addons} WHERE name = ?`;
-            this.db.query(query, [addonName], (err, results) => {
-                if (err) reject(err);
-                else resolve(results.length > 0 ? results[0].enabled : false);
-            });
-        });
+    async register(router) {
+        await this.registerMcpElements();
+        
+        this.registerRoutes(router);
+        
+        process.on('SIGINT', () => this.stop());
+        process.on('SIGTERM', () => this.stop());
+    }
+
+    async registerMcpElements() {
+        // Initial registration - register all enabled elements
+        await this.rebuildMcpRegistrations();
     }
 
     registerRoutes(router) {
@@ -329,11 +354,13 @@ class McpAddon {
             try {
                 const { name } = req.params;
                 const query = `UPDATE ${this.tables.addons} SET enabled = NOT enabled WHERE name = ?`;
-                this.db.query(query, [name], (err, result) => {
+                this.db.query(query, [name], async (err, result) => {
                     if (err) {
                         res.status(500).json({ success: false, error: err.message });
                     } else {
-                        res.json({ success: true, affected: result.affectedRows });
+                        // Rebuild MCP registrations after toggling addon
+                        await this.rebuildMcpRegistrations();
+                        res.json({ success: true, affected: result.affectedRows, message: 'MCP registrations updated' });
                     }
                 });
             } catch (error) {
@@ -360,11 +387,13 @@ class McpAddon {
             try {
                 const { id } = req.params;
                 const query = `UPDATE ${this.tables.elements} SET enabled = NOT enabled WHERE id = ?`;
-                this.db.query(query, [id], (err, result) => {
+                this.db.query(query, [id], async (err, result) => {
                     if (err) {
                         res.status(500).json({ success: false, error: err.message });
                     } else {
-                        res.json({ success: true, affected: result.affectedRows });
+                        // Rebuild MCP registrations after toggling element
+                        await this.rebuildMcpRegistrations();
+                        res.json({ success: true, affected: result.affectedRows, message: 'MCP registrations updated' });
                     }
                 });
             } catch (error) {
@@ -422,7 +451,6 @@ class McpAddon {
             }
         });
 
-        // Add these routes to your McpAddon.js registerRoutes() method
         router.post('/mcp/test-tool', async (req, res) => {
             try {
                 const { tool_name, arguments: args } = req.body;
@@ -445,6 +473,16 @@ class McpAddon {
                 }
                 
                 res.status(404).json({ success: false, error: 'Tool not found or disabled' });
+            } catch (error) {
+                res.status(500).json({ success: false, error: error.message });
+            }
+        });
+
+        // New endpoint to manually refresh MCP registrations
+        router.post('/mcp/refresh', async (req, res) => {
+            try {
+                await this.rebuildMcpRegistrations();
+                res.json({ success: true, message: 'MCP registrations refreshed successfully' });
             } catch (error) {
                 res.status(500).json({ success: false, error: error.message });
             }

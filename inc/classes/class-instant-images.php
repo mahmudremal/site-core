@@ -366,13 +366,13 @@ class Instant_Images {
 
 	public function media_upload_tabs($_tabs) {
 		if (apply_filters('pm_project/system/isactive', 'instantimg-disabled')) {return $_tabs;}
-		$_tabs['instant_image'] = __('Instant Images', 'site-core');
+		$_tabs['free_images'] = __('Instant Images', 'site-core');
 		return $_tabs;
 	}
 	function media_view_settings($settings) {
 		if (apply_filters('pm_project/system/isactive', 'instantimg-disabled')) {return $settings;}
 		$settings['tabs'] = isset($settings['tabs']) ? $settings['tabs'] : [];
-		$settings['tabs']['instant_image'] = 'Photogrid';
+		$settings['tabs']['free_images'] = 'Photogrid';
 		return $settings;
 	}
 	public function admin_enqueue_scripts($curr_page) {

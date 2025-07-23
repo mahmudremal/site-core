@@ -8,7 +8,7 @@ class AddonManager {
         this.addonDir = path.join(__dirname, 'addons');
     }
 
-    loadAllAddons(dbConnection, router) {
+    loadAllAddons(db, router) {
         return new Promise((resolve, reject) => {
             fs.readdir(this.addonDir, async (err, files) => {
                 if (err) {
@@ -21,12 +21,32 @@ class AddonManager {
                     const Addon = await require(addonPath);
                     const addonInstance = new Addon(this.app, this.db);
                     await addonInstance.init();
+                    // 
+                    if (addonInstance.get_tables_schemas) {
+                        await this.install_tables(addonInstance.get_tables_schemas());
+                    }
+                    // 
                     await addonInstance.register(router);
-                    console.log(`🔌 Loaded addon: ${file}`);
+                    // console.log(`🔌 Loaded addon: ${file}`);
                 }
                 resolve(router);
             });
         })
+    }
+
+    install_tables(tables) {
+        Object.keys(tables).forEach((table) => {
+            if (table == 'users') {
+                console.log('Table of Users creating ✅✅')
+            }
+            this.db.query(tables[table], (err) => {
+                if (err) {
+                    console.error(`Error creating ${table} table: `, err);
+                } else {
+                    // console.log(`${table} table created or exists already.`);
+                }
+            });
+        });
     }
 }
 

@@ -3,6 +3,8 @@ const http = require('http');
 const mysql = require('mysql2');
 const AddonManager = require('./addonManager');
 const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config();
 
 class Server {
     constructor() {

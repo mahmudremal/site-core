@@ -38,7 +38,7 @@ class Editor {
 				[
 					'id' 					=> 'editor-disabled',
 					'label'					=> __('Disable', 'site-core'),
-					'description'			=> __('Mark to dsable AI editor on post edit screen.', 'site-core'),
+					'description'			=> __('Mark to disable AI editor on post edit screen.', 'site-core'),
 					'type'					=> 'checkbox',
 					'default'				=> false
 				],

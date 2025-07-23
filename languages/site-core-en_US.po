@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Site Core\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-26 09:04+0000\n"
-"PO-Revision-Date: 2025-06-26 12:47+0000\n"
+"PO-Revision-Date: 2025-07-16 11:17+0000\n"
 "Last-Translator: \n"
 "Language-Team: English (United States)\n"
 "Language: en_US\n"
@@ -27,6 +27,10 @@ msgstr "%d file(s) have been sent to CDN."
 msgid "...."
 msgstr "...."
 
+#: templates/language-template.php:90
+msgid "A Founder"
+msgstr "A Founder"
+
 #: inc/classes/class-notifications.php:33
 #, php-format
 msgid "A new subscription was created using %s."
@@ -37,8 +41,8 @@ msgid "A password is required."
 msgstr "A password is required."
 
 #: inc/classes/class-radar.php:81
-msgid "A radar interface will be apear here shortly."
-msgstr "A radar interface will be apear here shortly."
+msgid "A radar interface will be appear here shortly."
+msgstr "A radar interface will be appear here shortly."
 
 #: inc/classes/class-notifications.php:81
 #, php-format
@@ -65,21 +69,45 @@ msgstr "Activity ID for fetching details."
 msgid "Activity ID for updating; use 0 to create a new activity."
 msgstr "Activity ID for updating; use 0 to create a new activity."
 
+#: templates/language-template.php:93
+msgid "After a long studies period, I found my self interested in graphics."
+msgstr "After a long studies period, I found my self interested in graphics."
+
+#: templates/language-template.php:91
+msgid "Ah it was such time i first meet my school life from nursery,"
+msgstr "Ah it was such time i first meet my school life from nursery,"
+
 #: inc/classes/class-translations.php:53
 msgid "An list object of languages as per key: value structure."
 msgstr "An list object of languages as per key: value structure."
 
-#: inc/classes/class-cdn.php:139
+#: templates/language-template.php:92
+msgid "and then I finished my secondary school certification program."
+msgstr "and then I finished my secondary school certification program."
+
+#: inc/classes/class-hunts.php:470
+msgid "API Endpoint"
+msgstr "API Endpoint"
+
+#: inc/classes/class-hunts.php:471
+msgid "API endpoint for huntful application."
+msgstr "API endpoint for huntful application."
+
+#: inc/classes/class-cdn.php:139 inc/classes/class-hunts.php:477
 msgid "API Key"
 msgstr "API Key"
 
-#: inc/classes/class-apps.php:230 inc/classes/class-task.php:140
+#: inc/classes/class-hunts.php:478
+msgid "API Key of onxmaps.com site."
+msgstr "API Key of onxmaps.com site."
+
+#: inc/classes/class-apps.php:230 inc/classes/class-task.php:138
 msgid "Api keys"
 msgstr "Api keys"
 
-#: inc/classes/class-apps.php:231 inc/classes/class-task.php:141
-msgid "API keys interface will be apear here..."
-msgstr "API keys interface will be apear here..."
+#: inc/classes/class-apps.php:231 inc/classes/class-task.php:139
+msgid "API keys interface will be appear here..."
+msgstr "API keys interface will be appear here..."
 
 #: inc/classes/class-option.php:48
 msgid "Application in depth configuration screen."
@@ -89,9 +117,24 @@ msgstr "Application in depth configuration screen."
 msgid "Apps"
 msgstr "Apps"
 
+#: templates/language-template.php:100
+msgid ""
+"Architecting scalable and efficient design systems to maintain consistency "
+"across platforms. Implementing reusable components and structured workflows "
+"to streamline development."
+msgstr ""
+"Architecting scalable and efficient design systems to maintain consistency "
+"across platforms. Implementing reusable components and structured workflows "
+"to streamline development."
+
 #: templates/language-template.php:15
 msgid "Articles"
 msgstr "Articles"
+
+#: templates/language-template.php:96
+msgid "At the very biggening of 25, I'm a founder, an author and an instructor"
+msgstr ""
+"At the very biggening of 25, I'm a founder, an author and an instructor"
 
 #: inc/classes/class-apps.php:219
 msgid ""
@@ -105,7 +148,7 @@ msgstr ""
 msgid "Automation radar headless server from wordpress."
 msgstr "Automation radar headless server from wordpress."
 
-#: inc/classes/class-task.php:129
+#: inc/classes/class-task.php:127
 msgid ""
 "Automation task for wordpress that will automate some common work flows on "
 "wordpress with browser extension."
@@ -113,11 +156,15 @@ msgstr ""
 "Automation task for wordpress that will automate some common work flows on "
 "wordpress with browser extension."
 
+#: templates/language-template.php:62
+msgid "Awards"
+msgstr "Awards"
+
 #: inc/classes/class-notifications.php:141
 msgid "bool status for the config"
 msgstr "bool status for the config"
 
-#: templates/language-template.php:27
+#: templates/language-template.php:28
 msgid "By"
 msgstr "By"
 
@@ -167,6 +214,14 @@ msgstr ""
 msgid "City"
 msgstr "City"
 
+#: templates/language-template.php:53
+msgid "Client"
+msgstr "Client"
+
+#: templates/language-template.php:41
+msgid "Clients"
+msgstr "Clients"
+
 #: inc/classes/class-cdn.php:125
 msgid "Cloudinary"
 msgstr "Cloudinary"
@@ -175,11 +230,15 @@ msgstr "Cloudinary"
 msgid "Code and User ID are required."
 msgstr "Code and User ID are required."
 
+#: templates/language-template.php:86
+msgid "Completed SSC"
+msgstr "Completed SSC"
+
 #: inc/classes/class-notifications.php:136
 msgid "Config key of inparticular notification."
 msgstr "Config key of inparticular notification."
 
-#: inc/classes/class-hunts.php:405
+#: inc/classes/class-hunts.php:459
 msgid ""
 "Configure hunting table database, rest api endpoint and hunting record "
 "relations."
@@ -195,7 +254,23 @@ msgstr "connect!"
 msgid "Contact Support"
 msgstr "Contact Support"
 
-#: inc/classes/class-menus.php:28
+#: templates/language-template.php:98
+msgid ""
+"Crafting intuitive and user-friendly interfaces by focusing on user behavior,"
+" accessibility, and aesthetics. Using wireframes, prototypes, and design "
+"systems to create seamless interactions."
+msgstr ""
+"Crafting intuitive and user-friendly interfaces by focusing on user behavior,"
+" accessibility, and aesthetics. Using wireframes, prototypes, and design "
+"systems to create seamless interactions."
+
+#: inc/classes/class-llmstxt.php:112
+msgid ""
+"Customize the content of llms.txt. You can add custom directives, links, etc."
+msgstr ""
+"Customize the content of llms.txt. You can add custom directives, links, etc."
+
+#: inc/classes/class-hunts.php:498 inc/classes/class-menus.php:28
 msgid "Dashboard"
 msgstr "Dashboard"
 
@@ -211,10 +286,6 @@ msgstr "Default Country"
 msgid "Delete attachment files thubmnails instantly after sending to cdn."
 msgstr "Delete attachment files thubmnails instantly after sending to cdn."
 
-#: inc/classes/class-cdn.php:146
-msgid "Delete File"
-msgstr "Delete File"
-
 #: inc/classes/class-cdn.php:153
 msgid "Delete Main File"
 msgstr "Delete Main File"
@@ -222,6 +293,10 @@ msgstr "Delete Main File"
 #: inc/classes/class-cdn.php:154
 msgid "Delete the main attachment file besides thumbnails."
 msgstr "Delete the main attachment file besides thumbnails."
+
+#: inc/classes/class-cdn.php:146
+msgid "Delete Thumbnails"
+msgstr "Delete Thumbnails"
 
 #: inc/classes/class-visitor.php:225
 msgid "Description of the activity."
@@ -231,16 +306,54 @@ msgstr "Description of the activity."
 msgid "Developer Support"
 msgstr "Developer Support"
 
-#: inc/classes/class-editor.php:40 inc/classes/class-hunts.php:409
-#: inc/classes/class-instant-images.php:103
+#: templates/language-template.php:99
+msgid ""
+"Developing structural blueprints for digital products, outlining key "
+"interface elements and user flows. Ensuring clarity and usability before "
+"diving into high-fidelity designs."
+msgstr ""
+"Developing structural blueprints for digital products, outlining key "
+"interface elements and user flows. Ensuring clarity and usability before "
+"diving into high-fidelity designs."
+
+#: templates/language-template.php:79
+msgid "Development"
+msgstr "Development"
+
+#: inc/classes/class-editor.php:40 inc/classes/class-hunts.php:463
+#: inc/classes/class-instant-images.php:103 inc/classes/class-llmstxt.php:51
 msgid "Disable"
 msgstr "Disable"
 
-#: inc/classes/class-hunts.php:410
+#: inc/classes/class-llmstxt.php:65
+msgid "Disable Excerpt"
+msgstr "Disable Excerpt"
+
+#: inc/classes/class-hunts.php:464
 msgid "Disable hunting record configurations."
 msgstr "Disable hunting record configurations."
 
-#: templates/language-template.php:30
+#: inc/classes/class-llmstxt.php:86
+msgid "Disable Post types"
+msgstr "Disable Post types"
+
+#: inc/classes/class-llmstxt.php:58
+msgid "Disable Terms"
+msgstr "Disable Terms"
+
+#: templates/language-template.php:49
+msgid "Discover"
+msgstr "Discover"
+
+#: templates/language-template.php:54
+msgid "Download CV"
+msgstr "Download CV"
+
+#: inc/classes/class-llmstxt.php:79
+msgid "Downloadable"
+msgstr "Downloadable"
+
+#: templates/language-template.php:31
 msgid "Dribbble"
 msgstr "Dribbble"
 
@@ -292,9 +405,35 @@ msgstr "Emirate"
 msgid "Empty response"
 msgstr "Empty response"
 
-#: templates/language-template.php:35
+#: inc/classes/class-llmstxt.php:72
+msgid "Enable Cache"
+msgstr "Enable Cache"
+
+#: inc/classes/class-hunts.php:485
+msgid "Enable to overwrite data on each time api or pdf import triggired."
+msgstr "Enable to overwrite data on each time api or pdf import triggired."
+
+#: templates/language-template.php:102
+msgid ""
+"Enhancing performance, accessibility, and usability through continuous "
+"testing and iteration. Fine-tuning design and code to ensure the best "
+"possible user experience."
+msgstr ""
+"Enhancing performance, accessibility, and usability through continuous "
+"testing and iteration. Fine-tuning design and code to ensure the best "
+"possible user experience."
+
+#: templates/language-template.php:36
 msgid "Enjoyed This Article?"
 msgstr "Enjoyed This Article?"
+
+#: inc/classes/class-hunts.php:492
+msgid "Enter your application password."
+msgstr "Enter your application password."
+
+#: inc/classes/class-hunts.php:499
+msgid "Enter your membership profile dashboard url."
+msgstr "Enter your membership profile dashboard url."
 
 #: inc/classes/class-instant-images.php:258
 msgid "Error fetching image details"
@@ -316,6 +455,14 @@ msgstr "Event ID for fetching details."
 msgid "Event ID for updating; use 0 to create a new event."
 msgstr "Event ID for updating; use 0 to create a new event."
 
+#: templates/language-template.php:69
+msgid "Experienced"
+msgstr "Experienced"
+
+#: templates/language-template.php:84
+msgid "Experiences"
+msgstr "Experiences"
+
 #: inc/classes/class-security.php:114
 msgid "Failed to create account!"
 msgstr "Failed to create account!"
@@ -328,7 +475,7 @@ msgstr "Failed to create invoice."
 msgid "Failed to delete payment card"
 msgstr "Failed to delete payment card"
 
-#: inc/classes/class-task.php:285
+#: inc/classes/class-task.php:292
 msgid "Failed to delete task"
 msgstr "Failed to delete task"
 
@@ -373,6 +520,10 @@ msgstr "Failed to update the payout status."
 msgid "Filter by color"
 msgstr "Filter by color"
 
+#: templates/language-template.php:39
+msgid "for you"
+msgstr "for you"
+
 #: inc/classes/class-menus.php:37
 msgid "General"
 msgstr "General"
@@ -381,9 +532,21 @@ msgstr "General"
 msgid "General settings for teddy-bear customization popup."
 msgstr "General settings for teddy-bear customization popup."
 
+#: templates/language-template.php:66
+msgid "Get Started"
+msgstr "Get Started"
+
+#: templates/language-template.php:65
+msgid "Global Clients"
+msgstr "Global Clients"
+
 #: inc/classes/class-toolbar.php:24
 msgid "Go to Partnership Dashboard"
 msgstr "Go to Partnership Dashboard"
+
+#: templates/language-template.php:46
+msgid "Google Review"
+msgstr "Google Review"
 
 #: inc/classes/class-utils.php:34
 msgid "Gutenburg"
@@ -393,7 +556,8 @@ msgstr "Gutenburg"
 msgid "Heartbit"
 msgstr "Heartbit"
 
-#: templates/language-template.php:18
+#: templates/language-template.php:18 templates/language-template.php:47
+#: templates/language-template.php:71
 msgid "Hire Me"
 msgstr "Hire Me"
 
@@ -401,16 +565,24 @@ msgstr "Hire Me"
 msgid "Home"
 msgstr "Home"
 
+#: templates/language-template.php:50
+msgid "how I work"
+msgstr "how I work"
+
 #. URI of the plugin
 #. Author URI of the plugin
 msgid "https://github.com/mahmudremal/"
 msgstr "https://github.com/mahmudremal/"
 
-#: inc/classes/class-hunts.php:1179
+#: inc/classes/class-hunts.php:1527
 msgid "Hunting"
 msgstr "Hunting"
 
-#: inc/classes/class-hunts.php:404
+#: inc/classes/class-hunts.php:1499 inc/classes/class-hunts.php:1533
+msgid "Hunting record application disabled by admin."
+msgstr "Hunting record application disabled by admin."
+
+#: inc/classes/class-hunts.php:458
 msgid "Hunts"
 msgstr "Hunts"
 
@@ -422,9 +594,35 @@ msgstr ""
 "I help people and team worldwide. I can help you build your next digital "
 "product so fell to contact me. Sooner you write is better for both of us."
 
+#: templates/language-template.php:94
+msgid "I then recognized as a senior designer on a well known press."
+msgstr "I then recognized as a senior designer on a well known press."
+
+#: templates/language-template.php:67
+msgid "I want to introduce myself"
+msgstr "I want to introduce myself"
+
 #: templates/language-template.php:11
 msgid "I'm interested in"
 msgstr "I'm interested in"
+
+#: templates/language-template.php:70
+msgid ""
+"I've got a strong background in UX/UI design, system architecture, and web "
+"development, and my mission is all about helping businesses create solutions "
+"that are not just functional but also a joy to use. Whether I'm diving into "
+"research, sketching out designs, or getting into the nitty-gritty of "
+"implementation, I'm committed to delivering quality that truly makes a "
+"difference. I believe when you love what you do, it shows in the work, and "
+"that's exactly what I aim for in every project."
+msgstr ""
+"I've got a strong background in UX/UI design, system architecture, and web "
+"development, and my mission is all about helping businesses create solutions "
+"that are not just functional but also a joy to use. Whether I'm diving into "
+"research, sketching out designs, or getting into the nitty-gritty of "
+"implementation, I'm committed to delivering quality that truly makes a "
+"difference. I believe when you love what you do, it shows in the work, and "
+"that's exactly what I aim for in every project."
 
 #: inc/classes/class-instant-images.php:71
 #: inc/classes/class-instant-images.php:84
@@ -451,6 +649,16 @@ msgstr "imagekit"
 msgid "Images"
 msgstr "Images"
 
+#: templates/language-template.php:61
+msgid ""
+"Imagine a walking shit, always stays at home, people says introvert, father "
+"says oh, but perfect on mothers sight. Yeah I know it's not referring to my "
+"quality. But I believe I have a thing after all! It's love, for what I do."
+msgstr ""
+"Imagine a walking shit, always stays at home, people says introvert, father "
+"says oh, but perfect on mothers sight. Yeah I know it's not referring to my "
+"quality. But I believe I have a thing after all! It's love, for what I do."
+
 #: inc/classes/class-option.php:44
 msgid "Indepth Settings"
 msgstr "Indepth Settings"
@@ -458,6 +666,10 @@ msgstr "Indepth Settings"
 #: inc/classes/class-instant-images.php:99
 msgid "Instant image media library configurations."
 msgstr "Instant image media library configurations."
+
+#: inc/classes/class-instant-images.php:369
+msgid "Instant Images"
+msgstr "Instant Images"
 
 #: inc/classes/class-radar.php:80
 msgid "Interface"
@@ -471,7 +683,7 @@ msgstr "Invalid code format."
 msgid "Invalid email address."
 msgstr "Invalid email address."
 
-#: inc/classes/class-task.php:316
+#: inc/classes/class-task.php:325
 msgid "Invalid post ID or post type."
 msgstr "Invalid post ID or post type."
 
@@ -512,12 +724,12 @@ msgstr "Invoice shared successfully."
 msgid "Item not found"
 msgstr "Item not found"
 
-#: inc/classes/class-task.php:459 inc/classes/class-task.php:460
-#: inc/classes/class-task.php:483 inc/classes/class-task.php:494
+#: inc/classes/class-task.php:469 inc/classes/class-task.php:470
+#: inc/classes/class-task.php:493 inc/classes/class-task.php:504
 msgid "Jobs"
 msgstr "Jobs"
 
-#: templates/language-template.php:36
+#: templates/language-template.php:37
 msgid ""
 "Join our community of 3 million people and get updated every week We have a "
 "lot more just for you! Lets join us now"
@@ -525,7 +737,19 @@ msgstr ""
 "Join our community of 3 million people and get updated every week We have a "
 "lot more just for you! Lets join us now"
 
-#: templates/language-template.php:32
+#: templates/language-template.php:87
+msgid "Junior Designer"
+msgstr "Junior Designer"
+
+#: templates/language-template.php:89
+msgid "Junior developer"
+msgstr "Junior developer"
+
+#: templates/language-template.php:40
+msgid "Latest Articles"
+msgstr "Latest Articles"
+
+#: templates/language-template.php:33
 msgid "Latest Post"
 msgstr "Latest Post"
 
@@ -537,30 +761,70 @@ msgstr "Launch Tools"
 msgid "Let's"
 msgstr "Let's"
 
+#: inc/classes/class-llmstxt.php:47
+msgid "LLMs.txt file configuration for this site."
+msgstr "LLMs.txt file configuration for this site."
+
+#: inc/classes/class-llmstxt.php:33
+msgid "LLMSTxt"
+msgstr "LLMSTxt"
+
+#: inc/classes/class-llmstxt.php:46
+msgid "LlmsTxt"
+msgstr "LlmsTxt"
+
+#: inc/classes/class-llmstxt.php:32 inc/classes/class-llmstxt.php:107
+msgid "LLMSTxt Settings"
+msgstr "LLMSTxt Settings"
+
 #: inc/classes/class-security.php:139
 msgid "Login successful."
 msgstr "Login successful."
+
+#: templates/language-template.php:58
+msgid "Making Ideas Shine"
+msgstr "Making Ideas Shine"
 
 #: inc/classes/class-manifest.php:43
 #, php-format
 msgid "Manage your partnership with %s"
 msgstr "Manage your partnership with %s"
 
+#: inc/classes/class-llmstxt.php:87
+msgid "Mark to disable custom post types on this site."
+msgstr "Mark to disable custom post types on this site."
+
 #: inc/classes/class-instant-images.php:104
 msgid "Mark to disable Instant image media library suggestions."
 msgstr "Mark to disable Instant image media library suggestions."
 
+#: inc/classes/class-llmstxt.php:52
+msgid "Mark to disable llmstxt on the site or make it private."
+msgstr "Mark to disable llmstxt on the site or make it private."
+
+#: inc/classes/class-llmstxt.php:66
+msgid "Mark to disable post excerpt on llmstxt."
+msgstr "Mark to disable post excerpt on llmstxt."
+
+#: inc/classes/class-llmstxt.php:59
+msgid "Mark to disable terms taxonomies on this site."
+msgstr "Mark to disable terms taxonomies on this site."
+
 #: inc/classes/class-editor.php:41
-msgid "Mark to dsable AI editor on post edit screen."
-msgstr "Mark to dsable AI editor on post edit screen."
+msgid "Mark to disable AI editor on post edit screen."
+msgstr "Mark to disable AI editor on post edit screen."
 
 #: inc/classes/class-utils.php:35
-msgid "Mark to dsable gutenburg editor from wordpress."
-msgstr "Mark to dsable gutenburg editor from wordpress."
+msgid "Mark to disable gutenburg editor from wordpress."
+msgstr "Mark to disable gutenburg editor from wordpress."
 
 #: inc/classes/class-utils.php:42 inc/classes/class-utils.php:49
-msgid "Mark to dsable heartbit for wordpress on frontend."
-msgstr "Mark to dsable heartbit for wordpress on frontend."
+msgid "Mark to disable heartbit for wordpress on frontend."
+msgstr "Mark to disable heartbit for wordpress on frontend."
+
+#: inc/classes/class-llmstxt.php:73
+msgid "Mark to enable cache for 12 hours on llmstxt."
+msgstr "Mark to enable cache for 12 hours on llmstxt."
 
 #: inc/classes/class-invoice.php:176
 msgid "Mark to enable client middle name on checkout field."
@@ -582,6 +846,10 @@ msgstr "Mark to enable select City on checkout after address."
 msgid "Mark to enable select Emirate on checkout after address."
 msgstr "Mark to enable select Emirate on checkout after address."
 
+#: inc/classes/class-llmstxt.php:80
+msgid "Mark to make llmstxt is a file downloadable."
+msgstr "Mark to make llmstxt is a file downloadable."
+
 #: inc/classes/class-menus.php:43 inc/classes/class-payment.php:62
 msgid "Mark to pause the application unconditionally."
 msgstr "Mark to pause the application unconditionally."
@@ -602,7 +870,7 @@ msgstr ""
 msgid "Mark to pause the radar functionality and activity."
 msgstr "Mark to pause the radar functionality and activity."
 
-#: inc/classes/class-task.php:134
+#: inc/classes/class-task.php:132
 msgid "Mark to pause the task registration and rest api activity."
 msgstr "Mark to pause the task registration and rest api activity."
 
@@ -613,6 +881,18 @@ msgstr "Middle name"
 #: templates/language-template.php:24
 msgid "More articles"
 msgstr "More articles"
+
+#: templates/language-template.php:73
+msgid "My"
+msgstr "My"
+
+#: templates/language-template.php:38
+msgid "My Blog"
+msgstr "My Blog"
+
+#: templates/language-template.php:82
+msgid "My Journey & Track Record"
+msgstr "My Journey & Track Record"
 
 #: inc/classes/class-roles.php:184
 msgid "N/A"
@@ -636,9 +916,17 @@ msgstr ""
 msgid "Number of users per page."
 msgstr "Number of users per page."
 
-#: templates/language-template.php:28
+#: templates/language-template.php:29
 msgid "On"
 msgstr "On"
+
+#: templates/language-template.php:80
+msgid "Optimization"
+msgstr "Optimization"
+
+#: inc/classes/class-hunts.php:484
+msgid "Overwrite"
+msgstr "Overwrite"
 
 #: inc/classes/class-instant-images.php:47
 msgid "Page number"
@@ -681,13 +969,17 @@ msgstr "Partnership Partner"
 msgid "Partnership Project Manager"
 msgstr "Partnership Project Manager"
 
+#: inc/classes/class-hunts.php:491
+msgid "Password"
+msgstr "Password"
+
 #: inc/classes/class-security.php:231
 msgid "Password reset mail sent successfully."
 msgstr "Password reset mail sent successfully."
 
 #: inc/classes/class-apps.php:223 inc/classes/class-cdn.php:113
 #: inc/classes/class-menus.php:42 inc/classes/class-payment.php:61
-#: inc/classes/class-radar.php:73 inc/classes/class-task.php:133
+#: inc/classes/class-radar.php:73 inc/classes/class-task.php:131
 msgid "Pause"
 msgstr "Pause"
 
@@ -732,6 +1024,10 @@ msgstr "Payout status updated successfully."
 msgid "Payout to account %s"
 msgstr "Payout to account %s"
 
+#: templates/language-template.php:43
+msgid "People Say about me"
+msgstr "People Say about me"
+
 #: templates/language-template.php:9
 msgid "Phone"
 msgstr "Phone"
@@ -748,6 +1044,10 @@ msgstr ""
 "this. Carefully change, update or delete anything because it may required "
 "some data to matched same stage and it does't save any revissions."
 
+#: inc/classes/class-hunts.php:1535
+msgid "Please enable if from settings page to get it back."
+msgstr "Please enable if from settings page to get it back."
+
 #: templates/language-template.php:22
 msgid "Previous"
 msgstr "Previous"
@@ -755,6 +1055,18 @@ msgstr "Previous"
 #: inc/classes/class-menus.php:57
 msgid "Privacy policy"
 msgstr "Privacy policy"
+
+#: templates/language-template.php:68
+msgid "Professional"
+msgstr "Professional"
+
+#: templates/language-template.php:51
+msgid "Project Category"
+msgstr "Project Category"
+
+#: templates/language-template.php:63
+msgid "Project Finished"
+msgstr "Project Finished"
 
 #: inc/classes/class-payment.php:85
 msgid ""
@@ -792,6 +1104,10 @@ msgstr "Radar"
 msgid "Refund Issued"
 msgstr "Refund Issued"
 
+#: templates/language-template.php:45
+msgid "Repeat Order"
+msgstr "Repeat Order"
+
 #: inc/classes/class-payment-tap.php:82
 msgid "Request failed"
 msgstr "Request failed"
@@ -801,8 +1117,8 @@ msgid "Results per page"
 msgstr "Results per page"
 
 #: inc/classes/class-roles.php:185
-msgid "Role assign interface will be apear here."
-msgstr "Role assign interface will be apear here."
+msgid "Role assign interface will be appear here."
+msgstr "Role assign interface will be appear here."
 
 #: inc/classes/class-roles.php:179
 msgid "Roles"
@@ -814,7 +1130,11 @@ msgid ""
 msgstr ""
 "Roles configurations, fields customization. Things enables and disables."
 
-#: templates/language-template.php:31
+#: templates/language-template.php:44
+msgid "Satisfation Rate"
+msgstr "Satisfation Rate"
+
+#: templates/language-template.php:32
 msgid "Scroll Down"
 msgstr "Scroll Down"
 
@@ -830,6 +1150,10 @@ msgstr "Search term"
 #: inc/classes/class-payment.php:68
 msgid "Secret key"
 msgstr "Secret key"
+
+#: templates/language-template.php:81
+msgid "See Past Work"
+msgstr "See Past Work"
 
 #: inc/classes/class-cdn.php:121
 msgid ""
@@ -874,13 +1198,29 @@ msgstr "Serialized dataset for the visitor; can be null."
 msgid "Settings"
 msgstr "Settings"
 
-#: templates/language-template.php:29
+#: templates/language-template.php:30
 msgid "Share"
 msgstr "Share"
+
+#: templates/language-template.php:52
+msgid "Short Description"
+msgstr "Short Description"
+
+#: templates/language-template.php:48
+msgid "Show case"
+msgstr "Show case"
 
 #. Name of the plugin
 msgid "Site Core"
 msgstr "Site Core"
+
+#: templates/language-template.php:74
+msgid "Skillset"
+msgstr "Skillset"
+
+#: templates/language-template.php:95
+msgid "Slowly I learned programing in PHP & JavaScript as a Junior"
+msgstr "Slowly I learned programing in PHP & JavaScript as a Junior"
 
 #: templates/payment-status.php:59
 msgid ""
@@ -890,15 +1230,23 @@ msgstr ""
 "Sorry, your payment failed. Please try again or contact our support team for "
 "assistance."
 
+#: templates/language-template.php:88
+msgid "Sr. Graphics Designer"
+msgstr "Sr. Graphics Designer"
+
 #: inc/classes/class-payment-sslcommerz.php:38
 msgid "SslCommerz"
 msgstr "SslCommerz"
+
+#: templates/language-template.php:85
+msgid "Started Schooling"
+msgstr "Started Schooling"
 
 #: inc/classes/class-payment-stripe.php:31
 msgid "Stripe"
 msgstr "Stripe"
 
-#: templates/language-template.php:33
+#: templates/language-template.php:34
 msgid "Subscribe Now"
 msgstr "Subscribe Now"
 
@@ -918,6 +1266,10 @@ msgstr "Subscription Paused"
 msgid "Subscription Resumed"
 msgstr "Subscription Resumed"
 
+#: templates/language-template.php:78
+msgid "System Design"
+msgstr "System Design"
+
 #: inc/classes/class-payment-tabby.php:25
 msgid "Tabby"
 msgstr "Tabby"
@@ -925,6 +1277,14 @@ msgstr "Tabby"
 #: templates/language-template.php:25
 msgid "Table of Contents"
 msgstr "Table of Contents"
+
+#: templates/language-template.php:59
+msgid "Talented Developer"
+msgstr "Talented Developer"
+
+#: templates/language-template.php:42
+msgid "talking"
+msgstr "talking"
 
 #: inc/classes/class-payment-tap.php:36
 msgid "Tap"
@@ -934,11 +1294,11 @@ msgstr "Tap"
 msgid "Target of the event; can be null."
 msgstr "Target of the event; can be null."
 
-#: inc/classes/class-task.php:128
+#: inc/classes/class-task.php:126
 msgid "Task"
 msgstr "Task"
 
-#: inc/classes/class-task.php:285
+#: inc/classes/class-task.php:292
 msgid "Task deleted successfully!"
 msgstr "Task deleted successfully!"
 
@@ -950,7 +1310,7 @@ msgstr "Tell me more about your goals"
 msgid "Terms & Condition"
 msgstr "Terms & Condition"
 
-#: inc/classes/class-task.php:78 inc/classes/class-task.php:94
+#: inc/classes/class-task.php:77 inc/classes/class-task.php:93
 msgid "The ID of the requested item."
 msgstr "The ID of the requested item."
 
@@ -958,7 +1318,7 @@ msgstr "The ID of the requested item."
 msgid "The language code for the translation."
 msgstr "The language code for the translation."
 
-#: inc/classes/class-task.php:73 inc/classes/class-task.php:89
+#: inc/classes/class-task.php:72 inc/classes/class-task.php:88
 msgid "The post type of the requested item."
 msgstr "The post type of the requested item."
 
@@ -974,9 +1334,22 @@ msgstr ""
 msgid "Token has expired."
 msgstr "Token has expired."
 
+#: templates/language-template.php:83
+msgid "tons of"
+msgstr "tons of"
+
 #: inc/classes/class-security.php:286
 msgid "Too many verification attempts. Please try again later."
 msgstr "Too many verification attempts. Please try again later."
+
+#: templates/language-template.php:27
+msgid "Top"
+msgstr "Top"
+
+#. Homepage
+#: templates/language-template.php:57
+msgid "Top rated at"
+msgstr "Top rated at"
 
 #: inc/classes/class-visitor.php:270
 msgid "Tracker code for the visitor."
@@ -986,13 +1359,29 @@ msgstr "Tracker code for the visitor."
 msgid "Try Again"
 msgstr "Try Again"
 
+#: templates/language-template.php:101
+msgid ""
+"Turning designs into functional products with clean, optimized, and "
+"maintainable code. Implementing front-end and back-end technologies to bring "
+"interactive experiences to life."
+msgstr ""
+"Turning designs into functional products with clean, optimized, and "
+"maintainable code. Implementing front-end and back-end technologies to bring "
+"interactive experiences to life."
+
 #: inc/classes/class-visitor.php:330
 msgid "Type of the event (stay, click, scroll)."
 msgstr "Type of the event (stay, click, scroll)."
 
-#: inc/classes/class-instant-images.php:369
-msgid "Unsplash"
-msgstr "Unsplash"
+#: templates/language-template.php:97
+msgid ""
+"Understanding user needs through research and analysis to create data-driven "
+"design solutions. Conducting surveys, interviews, and usability testing to "
+"gather insights that enhance user experience."
+msgstr ""
+"Understanding user needs through research and analysis to create data-driven "
+"design solutions. Conducting surveys, interviews, and usability testing to "
+"gather insights that enhance user experience."
 
 #: inc/classes/class-instant-images.php:272
 msgid "Unsplash is disabled"
@@ -1032,6 +1421,14 @@ msgstr "User status (e.g., pending, approved)."
 msgid "Utils"
 msgstr "Utils"
 
+#: templates/language-template.php:76
+msgid "UX Design"
+msgstr "UX Design"
+
+#: templates/language-template.php:75
+msgid "UX Research"
+msgstr "UX Research"
+
 #. Author of the plugin
 msgid "UxnDev"
 msgstr "UxnDev"
@@ -1064,7 +1461,7 @@ msgstr "Visitor ID for updating; use 0 to create a new visitor."
 msgid "Want to work toegether and create an amazing products with me?"
 msgstr "Want to work toegether and create an amazing products with me?"
 
-#: templates/language-template.php:34
+#: templates/language-template.php:35
 msgid "Watch My Profile"
 msgstr "Watch My Profile"
 
@@ -1075,6 +1472,18 @@ msgid ""
 msgstr ""
 "We're sorry, but we're unable to confirm your payment. Please contact our "
 "support team for assistance."
+
+#: templates/language-template.php:72
+msgid "What I Do"
+msgstr "What I Do"
+
+#: templates/language-template.php:60
+msgid "Who Helps you"
+msgstr "Who Helps you"
+
+#: templates/language-template.php:77
+msgid "Wireframe"
+msgstr "Wireframe"
 
 #: inc/classes/class-editor.php:36
 msgid ""
@@ -1095,6 +1504,10 @@ msgstr ""
 #: inc/classes/class-cdn.php:124
 msgid "WP Media library"
 msgstr "WP Media library"
+
+#: templates/language-template.php:64
+msgid "Years Experience"
+msgstr "Years Experience"
 
 #: inc/classes/class-security.php:277
 msgid "Your email verification code is: %d"

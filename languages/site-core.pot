@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Site Core\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-26 12:33+0000\n"
+"POT-Creation-Date: 2025-07-17 16:42+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -28,6 +28,29 @@ msgstr ""
 msgid "...."
 msgstr ""
 
+#: templates/language-template.php:118
+msgid "3 revision for each service"
+msgstr ""
+
+#: templates/language-template.php:124
+msgid "3 revisions for each service"
+msgstr ""
+
+#: templates/language-template.php:120 templates/language-template.php:126
+msgid "6-month support"
+msgstr ""
+
+#: templates/language-template.php:174
+msgid ""
+"A clear idea of your goals, preferred design style (if any), and any "
+"reference websites or wireframes you have. Don't worry—if you're unsure, "
+"I'll guide you through the process!"
+msgstr ""
+
+#: templates/language-template.php:90
+msgid "A Founder"
+msgstr ""
+
 #: inc/classes/class-notifications.php:33
 #, php-format
 msgid "A new subscription was created using %s."
@@ -38,12 +61,16 @@ msgid "A password is required."
 msgstr ""
 
 #: inc/classes/class-radar.php:81
-msgid "A radar interface will be apear here shortly."
+msgid "A radar interface will be appear here shortly."
 msgstr ""
 
 #: inc/classes/class-notifications.php:81
 #, php-format
 msgid "A refund was issued for your subscription via %s."
+msgstr ""
+
+#: templates/language-template.php:152
+msgid "ability"
 msgstr ""
 
 #: inc/classes/class-security.php:139
@@ -66,20 +93,52 @@ msgstr ""
 msgid "Activity ID for updating; use 0 to create a new activity."
 msgstr ""
 
+#: templates/language-template.php:93
+msgid "After a long studies period, I found my self interested in graphics."
+msgstr ""
+
+#: templates/language-template.php:91
+msgid "Ah it was such time i first meet my school life from nursery,"
+msgstr ""
+
+#: templates/language-template.php:109
+msgid "All In one"
+msgstr ""
+
+#: templates/language-template.php:187
+msgid "Amazing Portfolio"
+msgstr ""
+
 #: inc/classes/class-translations.php:53
 msgid "An list object of languages as per key: value structure."
 msgstr ""
 
-#: inc/classes/class-cdn.php:139
+#: templates/language-template.php:92
+msgid "and then I finished my secondary school certification program."
+msgstr ""
+
+#: inc/classes/class-hunts.php:470
+msgid "API Endpoint"
+msgstr ""
+
+#: inc/classes/class-hunts.php:471
+msgid "API endpoint for huntful application."
+msgstr ""
+
+#: inc/classes/class-cdn.php:139 inc/classes/class-hunts.php:477
 msgid "API Key"
 msgstr ""
 
-#: inc/classes/class-apps.php:230 inc/classes/class-task.php:140
+#: inc/classes/class-hunts.php:478
+msgid "API Key of onxmaps.com site."
+msgstr ""
+
+#: inc/classes/class-apps.php:230 inc/classes/class-task.php:138
 msgid "Api keys"
 msgstr ""
 
-#: inc/classes/class-apps.php:231 inc/classes/class-task.php:141
-msgid "API keys interface will be apear here..."
+#: inc/classes/class-apps.php:231 inc/classes/class-task.php:139
+msgid "API keys interface will be appear here..."
 msgstr ""
 
 #: inc/classes/class-option.php:48
@@ -90,8 +149,19 @@ msgstr ""
 msgid "Apps"
 msgstr ""
 
+#: templates/language-template.php:100
+msgid ""
+"Architecting scalable and efficient design systems to maintain consistency "
+"across platforms. Implementing reusable components and structured workflows "
+"to streamline development."
+msgstr ""
+
 #: templates/language-template.php:15
 msgid "Articles"
+msgstr ""
+
+#: templates/language-template.php:96
+msgid "At the very biggening of 25, I'm a founder, an author and an instructor"
 msgstr ""
 
 #: inc/classes/class-apps.php:219
@@ -104,22 +174,41 @@ msgstr ""
 msgid "Automation radar headless server from wordpress."
 msgstr ""
 
-#: inc/classes/class-task.php:129
+#: inc/classes/class-task.php:127
 msgid ""
 "Automation task for wordpress that will automate some common work flows on "
 "wordpress with browser extension."
+msgstr ""
+
+#: templates/language-template.php:62
+msgid "Awards"
+msgstr ""
+
+#: templates/language-template.php:136
+msgid ""
+"Based on your feedback, I'll make necessary revisions until we reach the "
+"perfect result. Your satisfaction is key, and I ensure the final product "
+"aligns with your expectations."
 msgstr ""
 
 #: inc/classes/class-notifications.php:141
 msgid "bool status for the config"
 msgstr ""
 
-#: templates/language-template.php:27
+#: templates/language-template.php:116
+msgid "Brief draft"
+msgstr ""
+
+#: templates/language-template.php:28
 msgid "By"
 msgstr ""
 
 #: templates/language-template.php:21
 msgid "by Me alongside UXnDev"
+msgstr ""
+
+#: templates/language-template.php:177
+msgid "Can you handle urgent projects?"
 msgstr ""
 
 #: templates/language-template.php:13
@@ -163,6 +252,18 @@ msgstr ""
 msgid "City"
 msgstr ""
 
+#: templates/language-template.php:53
+msgid "Client"
+msgstr ""
+
+#: templates/language-template.php:199
+msgid "Client Review"
+msgstr ""
+
+#: templates/language-template.php:41
+msgid "Clients"
+msgstr ""
+
 #: inc/classes/class-cdn.php:125
 msgid "Cloudinary"
 msgstr ""
@@ -171,11 +272,19 @@ msgstr ""
 msgid "Code and User ID are required."
 msgstr ""
 
+#: templates/language-template.php:213
+msgid "Common Questions"
+msgstr ""
+
+#: templates/language-template.php:86
+msgid "Completed SSC"
+msgstr ""
+
 #: inc/classes/class-notifications.php:136
 msgid "Config key of inparticular notification."
 msgstr ""
 
-#: inc/classes/class-hunts.php:405
+#: inc/classes/class-hunts.php:459
 msgid ""
 "Configure hunting table database, rest api endpoint and hunting record "
 "relations."
@@ -185,11 +294,39 @@ msgstr ""
 msgid "connect!"
 msgstr ""
 
+#: templates/language-template.php:179
+msgid "Contact me"
+msgstr ""
+
+#: templates/language-template.php:170
+msgid "contact me"
+msgstr ""
+
 #: templates/payment-status.php:69
 msgid "Contact Support"
 msgstr ""
 
-#: inc/classes/class-menus.php:28
+#: templates/language-template.php:189
+msgid "cool project"
+msgstr ""
+
+#: templates/language-template.php:98
+msgid ""
+"Crafting intuitive and user-friendly interfaces by focusing on user behavior,"
+" accessibility, and aesthetics. Using wireframes, prototypes, and design "
+"systems to create seamless interactions."
+msgstr ""
+
+#: templates/language-template.php:196
+msgid "customer smile is my breath"
+msgstr ""
+
+#: inc/classes/class-llmstxt.php:112
+msgid ""
+"Customize the content of llms.txt. You can add custom directives, links, etc."
+msgstr ""
+
+#: inc/classes/class-hunts.php:498 inc/classes/class-menus.php:28
 msgid "Dashboard"
 msgstr ""
 
@@ -201,12 +338,12 @@ msgstr ""
 msgid "Default Country"
 msgstr ""
 
-#: inc/classes/class-cdn.php:147
-msgid "Delete attachment files thubmnails instantly after sending to cdn."
+#: templates/language-template.php:146
+msgid "Define"
 msgstr ""
 
-#: inc/classes/class-cdn.php:146
-msgid "Delete File"
+#: inc/classes/class-cdn.php:147
+msgid "Delete attachment files thubmnails instantly after sending to cdn."
 msgstr ""
 
 #: inc/classes/class-cdn.php:153
@@ -217,6 +354,10 @@ msgstr ""
 msgid "Delete the main attachment file besides thumbnails."
 msgstr ""
 
+#: inc/classes/class-cdn.php:146
+msgid "Delete Thumbnails"
+msgstr ""
+
 #: inc/classes/class-visitor.php:225
 msgid "Description of the activity."
 msgstr ""
@@ -225,16 +366,59 @@ msgstr ""
 msgid "Developer Support"
 msgstr ""
 
-#: inc/classes/class-editor.php:40 inc/classes/class-hunts.php:409
-#: inc/classes/class-instant-images.php:103
+#: templates/language-template.php:99
+msgid ""
+"Developing structural blueprints for digital products, outlining key "
+"interface elements and user flows. Ensuring clarity and usability before "
+"diving into high-fidelity designs."
+msgstr ""
+
+#: templates/language-template.php:79 templates/language-template.php:160
+msgid "Development"
+msgstr ""
+
+#: inc/classes/class-editor.php:40 inc/classes/class-hunts.php:463
+#: inc/classes/class-instant-images.php:103 inc/classes/class-llmstxt.php:51
 msgid "Disable"
 msgstr ""
 
-#: inc/classes/class-hunts.php:410
+#: inc/classes/class-llmstxt.php:65
+msgid "Disable Excerpt"
+msgstr ""
+
+#: inc/classes/class-hunts.php:464
 msgid "Disable hunting record configurations."
 msgstr ""
 
-#: templates/language-template.php:30
+#: inc/classes/class-llmstxt.php:86
+msgid "Disable Post types"
+msgstr ""
+
+#: inc/classes/class-llmstxt.php:58
+msgid "Disable Terms"
+msgstr ""
+
+#: templates/language-template.php:49
+msgid "Discover"
+msgstr ""
+
+#: templates/language-template.php:214
+msgid "Discover topics that my clients"
+msgstr ""
+
+#: templates/language-template.php:54 templates/language-template.php:142
+msgid "Download CV"
+msgstr ""
+
+#: templates/language-template.php:217
+msgid "Download My Profile"
+msgstr ""
+
+#: inc/classes/class-llmstxt.php:79
+msgid "Downloadable"
+msgstr ""
+
+#: templates/language-template.php:31
 msgid "Dribbble"
 msgstr ""
 
@@ -282,12 +466,39 @@ msgstr ""
 msgid "Emirate"
 msgstr ""
 
+#: templates/language-template.php:149
+msgid "Emphaty"
+msgstr ""
+
 #: inc/classes/class-payment-tap.php:85
 msgid "Empty response"
 msgstr ""
 
-#: templates/language-template.php:35
+#: inc/classes/class-llmstxt.php:72
+msgid "Enable Cache"
+msgstr ""
+
+#: inc/classes/class-hunts.php:485
+msgid "Enable to overwrite data on each time api or pdf import triggired."
+msgstr ""
+
+#: templates/language-template.php:102
+msgid ""
+"Enhancing performance, accessibility, and usability through continuous "
+"testing and iteration. Fine-tuning design and code to ensure the best "
+"possible user experience."
+msgstr ""
+
+#: templates/language-template.php:36
 msgid "Enjoyed This Article?"
+msgstr ""
+
+#: inc/classes/class-hunts.php:492
+msgid "Enter your application password."
+msgstr ""
+
+#: inc/classes/class-hunts.php:499
+msgid "Enter your membership profile dashboard url."
 msgstr ""
 
 #: inc/classes/class-instant-images.php:258
@@ -310,6 +521,20 @@ msgstr ""
 msgid "Event ID for updating; use 0 to create a new event."
 msgstr ""
 
+#: templates/language-template.php:198
+msgid ""
+"Every sense of happiness and satisfaction that is born from customers "
+"becomes a value that is not comparable to anything. Trust is priceless"
+msgstr ""
+
+#: templates/language-template.php:69
+msgid "Experienced"
+msgstr ""
+
+#: templates/language-template.php:84
+msgid "Experiences"
+msgstr ""
+
 #: inc/classes/class-security.php:114
 msgid "Failed to create account!"
 msgstr ""
@@ -322,7 +547,7 @@ msgstr ""
 msgid "Failed to delete payment card"
 msgstr ""
 
-#: inc/classes/class-task.php:285
+#: inc/classes/class-task.php:292
 msgid "Failed to delete task"
 msgstr ""
 
@@ -363,8 +588,28 @@ msgstr ""
 msgid "Failed to update the payout status."
 msgstr ""
 
+#: templates/language-template.php:201
+msgid "FAQs"
+msgstr ""
+
+#: templates/language-template.php:117
+msgid "Fast work"
+msgstr ""
+
+#: templates/language-template.php:169
+msgid "Feel free to"
+msgstr ""
+
 #: inc/classes/class-instant-images.php:58
 msgid "Filter by color"
+msgstr ""
+
+#: templates/language-template.php:39
+msgid "for you"
+msgstr ""
+
+#: templates/language-template.php:123
+msgid "Full development"
 msgstr ""
 
 #: inc/classes/class-menus.php:37
@@ -375,24 +620,85 @@ msgstr ""
 msgid "General settings for teddy-bear customization popup."
 msgstr ""
 
+#: templates/language-template.php:66
+msgid "Get Started"
+msgstr ""
+
+#: templates/language-template.php:65
+msgid "Global Clients"
+msgstr ""
+
 #: inc/classes/class-toolbar.php:24
 msgid "Go to Partnership Dashboard"
+msgstr ""
+
+#: templates/language-template.php:46 templates/language-template.php:192
+msgid "Google Review"
+msgstr ""
+
+#: templates/language-template.php:216
+msgid ""
+"Got questions? You're not alone! Here, I've answered some of the most common "
+"inquiries about my services, process, and expertise. Whether you're curious "
+"about project timelines, requirements, or how I work, you'll find the "
+"answers right here."
 msgstr ""
 
 #: inc/classes/class-utils.php:34
 msgid "Gutenburg"
 msgstr ""
 
+#: templates/language-template.php:195
+msgid "Happy customers"
+msgstr ""
+
 #: inc/classes/class-utils.php:41 inc/classes/class-utils.php:48
 msgid "Heartbit"
 msgstr ""
 
-#: templates/language-template.php:18
+#: templates/language-template.php:18 templates/language-template.php:47
+#: templates/language-template.php:71 templates/language-template.php:141
 msgid "Hire Me"
 msgstr ""
 
-#: templates/language-template.php:16
+#: templates/language-template.php:16 templates/language-template.php:106
 msgid "Home"
+msgstr ""
+
+#: templates/language-template.php:209
+msgid "How do I build lasting trust with my clients?"
+msgstr ""
+
+#: templates/language-template.php:211
+msgid "How do I drive business success post-launch?"
+msgstr ""
+
+#: templates/language-template.php:171
+msgid "How do I know if you're the right fit for my project?"
+msgstr ""
+
+#: templates/language-template.php:223
+msgid "How do you ensure quality and efficiency?"
+msgstr ""
+
+#: templates/language-template.php:220
+msgid "How do you handle project inquiries?"
+msgstr ""
+
+#: templates/language-template.php:127
+msgid "How I process"
+msgstr ""
+
+#: templates/language-template.php:219
+msgid "How I process your request?"
+msgstr ""
+
+#: templates/language-template.php:50
+msgid "how I work"
+msgstr ""
+
+#: templates/language-template.php:175
+msgid "How long will my project take?"
 msgstr ""
 
 #. URI of the plugin
@@ -400,12 +706,57 @@ msgstr ""
 msgid "https://github.com/mahmudremal/"
 msgstr ""
 
-#: inc/classes/class-hunts.php:1179
+#: inc/classes/class-hunts.php:1527
 msgid "Hunting"
 msgstr ""
 
-#: inc/classes/class-hunts.php:404
+#: inc/classes/class-hunts.php:1499 inc/classes/class-hunts.php:1533
+msgid "Hunting record application disabled by admin."
+msgstr ""
+
+#: inc/classes/class-hunts.php:458
 msgid "Hunts"
+msgstr ""
+
+#: templates/language-template.php:212
+msgid ""
+"I believe a great website is just the beginning. In partnership with two "
+"leading marketing agencies, I ensure your digital product achieves deep "
+"online visibility and growth. Together, we deploy targeted strategies that "
+"boost engagement and drive measurable business success."
+msgstr ""
+
+#: templates/language-template.php:206
+msgid ""
+"I combine a passion for exceptional design with robust development expertise "
+"to deliver digital products that truly resonate. My comprehensive approach "
+"means your vision is transformed into a high-performing, visually engaging "
+"solution tailored to your business goals."
+msgstr ""
+
+#: templates/language-template.php:140
+msgid ""
+"I craft experiences not just for my clients, but for the people who use them."
+msgstr ""
+
+#: templates/language-template.php:133
+msgid "I execute and send you a result"
+msgstr ""
+
+#: templates/language-template.php:224
+msgid ""
+"I follow industry best practices in UX/UI design and full-stack development. "
+"By using structured workflows, modern tools, and iterative feedback, I "
+"ensure that every project meets high standards of usability, performance, "
+"and aesthetics."
+msgstr ""
+
+#: templates/language-template.php:184
+msgid ""
+"I have a good range of work experience, and it's from school project to "
+"venture backed business. My work also featured on NYTimes, and of course on "
+"out community contests. I believe if i found a little opportunity to work on,"
+" I try my best to make an attention."
 msgstr ""
 
 #: templates/language-template.php:4
@@ -414,8 +765,76 @@ msgid ""
 "product so fell to contact me. Sooner you write is better for both of us."
 msgstr ""
 
+#: templates/language-template.php:203
+msgid "I help?"
+msgstr ""
+
+#: templates/language-template.php:155
+msgid ""
+"I love software engineering and enjoy creating systems that actually work "
+"for people and that people love. You know how a song people love brings "
+"satisfaction to an artist? Yeah, that's how I feel about my work. I "
+"genuinely enjoy every step of the process, from brainstorming ideas to "
+"putting everything together. I really don't expect any business "
+"opportunities or to make a lot of money; I'm just looking for an opportunity "
+"to do something that makes my days fulfilling—something that keeps me "
+"focused on my work instead of worrying about other things."
+msgstr ""
+
+#. Portfolio
+#: templates/language-template.php:183
+msgid "I make digital products for your needs, and proudly I'll show you"
+msgstr ""
+
+#: templates/language-template.php:226
+msgid ""
+"I offer post-launch support and revisions based on the project agreement. If "
+"you need additional features or modifications beyond the initial scope, I'm "
+"happy to discuss an extended service plan or hourly updates to keep your "
+"project evolving."
+msgstr ""
+
+#: templates/language-template.php:172
+msgid ""
+"I specialize in both UX/UI design and full-stack development, building "
+"websites with WordPress, Shopify, Webflow, React, Next.js, PHP, and Node.js. "
+"If you need a seamless, high-performing digital product, I can bring your "
+"vision to life. Let's discuss your project to see if we're a great match!"
+msgstr ""
+
+#: templates/language-template.php:94
+msgid "I then recognized as a senior designer on a well known press."
+msgstr ""
+
+#: templates/language-template.php:67 templates/language-template.php:143
+msgid "I want to introduce myself"
+msgstr ""
+
+#: templates/language-template.php:134
+msgid ""
+"I will begin the execution phase, creating the design or development based "
+"on our discussions. Once the initial version is ready, I will send it over "
+"to you for review and feedback."
+msgstr ""
+
 #: templates/language-template.php:11
 msgid "I'm interested in"
+msgstr ""
+
+#. Contact Me
+#: templates/language-template.php:168
+msgid "I'm ready to help you"
+msgstr ""
+
+#: templates/language-template.php:70
+msgid ""
+"I've got a strong background in UX/UI design, system architecture, and web "
+"development, and my mission is all about helping businesses create solutions "
+"that are not just functional but also a joy to use. Whether I'm diving into "
+"research, sketching out designs, or getting into the nitty-gritty of "
+"implementation, I'm committed to delivering quality that truly makes a "
+"difference. I believe when you love what you do, it shows in the work, and "
+"that's exactly what I aim for in every project."
 msgstr ""
 
 #: inc/classes/class-instant-images.php:71
@@ -443,12 +862,27 @@ msgstr ""
 msgid "Images"
 msgstr ""
 
+#: templates/language-template.php:61
+msgid ""
+"Imagine a walking shit, always stays at home, people says introvert, father "
+"says oh, but perfect on mothers sight. Yeah I know it's not referring to my "
+"quality. But I believe I have a thing after all! It's love, for what I do."
+msgstr ""
+
 #: inc/classes/class-option.php:44
 msgid "Indepth Settings"
 msgstr ""
 
 #: inc/classes/class-instant-images.php:99
 msgid "Instant image media library configurations."
+msgstr ""
+
+#: inc/classes/class-instant-images.php:369
+msgid "Instant Images"
+msgstr ""
+
+#: templates/language-template.php:3
+msgid "Interested?"
 msgstr ""
 
 #: inc/classes/class-radar.php:80
@@ -463,7 +897,7 @@ msgstr ""
 msgid "Invalid email address."
 msgstr ""
 
-#: inc/classes/class-task.php:316
+#: inc/classes/class-task.php:325
 msgid "Invalid post ID or post type."
 msgstr ""
 
@@ -500,22 +934,43 @@ msgstr ""
 msgid "Invoice shared successfully."
 msgstr ""
 
+#: templates/language-template.php:112
+msgid ""
+"It's not enough to get all of them at once, so it's a great place to start"
+msgstr ""
+
+#: templates/language-template.php:144
+msgid "It's not only about"
+msgstr ""
+
 #: inc/classes/class-invoice.php:475
 msgid "Item not found"
 msgstr ""
 
-#: inc/classes/class-task.php:459 inc/classes/class-task.php:460
-#: inc/classes/class-task.php:483 inc/classes/class-task.php:494
+#: inc/classes/class-task.php:469 inc/classes/class-task.php:470
+#: inc/classes/class-task.php:493 inc/classes/class-task.php:504
 msgid "Jobs"
 msgstr ""
 
-#: templates/language-template.php:36
+#: templates/language-template.php:37
 msgid ""
 "Join our community of 3 million people and get updated every week We have a "
 "lot more just for you! Lets join us now"
 msgstr ""
 
-#: templates/language-template.php:32
+#: templates/language-template.php:87
+msgid "Junior Designer"
+msgstr ""
+
+#: templates/language-template.php:89
+msgid "Junior developer"
+msgstr ""
+
+#: templates/language-template.php:40
+msgid "Latest Articles"
+msgstr ""
+
+#: templates/language-template.php:33
 msgid "Latest Post"
 msgstr ""
 
@@ -527,8 +982,36 @@ msgstr ""
 msgid "Let's"
 msgstr ""
 
+#: templates/language-template.php:185
+msgid "Let's start new project"
+msgstr ""
+
+#: inc/classes/class-llmstxt.php:47
+msgid "LLMs.txt file configuration for this site."
+msgstr ""
+
+#: inc/classes/class-llmstxt.php:33
+msgid "LLMSTxt"
+msgstr ""
+
+#: inc/classes/class-llmstxt.php:46
+msgid "LlmsTxt"
+msgstr ""
+
+#: inc/classes/class-llmstxt.php:32 inc/classes/class-llmstxt.php:107
+msgid "LLMSTxt Settings"
+msgstr ""
+
 #: inc/classes/class-security.php:139
 msgid "Login successful."
+msgstr ""
+
+#: templates/language-template.php:147
+msgid "Low Fi"
+msgstr ""
+
+#: templates/language-template.php:58
+msgid "Making Ideas Shine"
 msgstr ""
 
 #: inc/classes/class-manifest.php:43
@@ -536,20 +1019,40 @@ msgstr ""
 msgid "Manage your partnership with %s"
 msgstr ""
 
+#: inc/classes/class-editor.php:41
+msgid "Mark to disable AI editor on post edit screen."
+msgstr ""
+
+#: inc/classes/class-llmstxt.php:87
+msgid "Mark to disable custom post types on this site."
+msgstr ""
+
+#: inc/classes/class-utils.php:35
+msgid "Mark to disable gutenburg editor from wordpress."
+msgstr ""
+
+#: inc/classes/class-utils.php:42 inc/classes/class-utils.php:49
+msgid "Mark to disable heartbit for wordpress on frontend."
+msgstr ""
+
 #: inc/classes/class-instant-images.php:104
 msgid "Mark to disable Instant image media library suggestions."
 msgstr ""
 
-#: inc/classes/class-editor.php:41
-msgid "Mark to dsable AI editor on post edit screen."
+#: inc/classes/class-llmstxt.php:52
+msgid "Mark to disable llmstxt on the site or make it private."
 msgstr ""
 
-#: inc/classes/class-utils.php:35
-msgid "Mark to dsable gutenburg editor from wordpress."
+#: inc/classes/class-llmstxt.php:66
+msgid "Mark to disable post excerpt on llmstxt."
 msgstr ""
 
-#: inc/classes/class-utils.php:42 inc/classes/class-utils.php:49
-msgid "Mark to dsable heartbit for wordpress on frontend."
+#: inc/classes/class-llmstxt.php:59
+msgid "Mark to disable terms taxonomies on this site."
+msgstr ""
+
+#: inc/classes/class-llmstxt.php:73
+msgid "Mark to enable cache for 12 hours on llmstxt."
 msgstr ""
 
 #: inc/classes/class-invoice.php:176
@@ -570,6 +1073,10 @@ msgstr ""
 msgid "Mark to enable select Emirate on checkout after address."
 msgstr ""
 
+#: inc/classes/class-llmstxt.php:80
+msgid "Mark to make llmstxt is a file downloadable."
+msgstr ""
+
 #: inc/classes/class-menus.php:43 inc/classes/class-payment.php:62
 msgid "Mark to pause the application unconditionally."
 msgstr ""
@@ -588,8 +1095,24 @@ msgstr ""
 msgid "Mark to pause the radar functionality and activity."
 msgstr ""
 
-#: inc/classes/class-task.php:134
+#: inc/classes/class-task.php:132
 msgid "Mark to pause the task registration and rest api activity."
+msgstr ""
+
+#: templates/language-template.php:154
+msgid "mastered in 3 popular app for every designer"
+msgstr ""
+
+#: templates/language-template.php:151
+msgid "measurable"
+msgstr ""
+
+#: templates/language-template.php:131
+msgid "Meet and Brief"
+msgstr ""
+
+#: templates/language-template.php:180
+msgid "Message me on Linkedin"
 msgstr ""
 
 #: inc/classes/class-invoice.php:175
@@ -598,6 +1121,26 @@ msgstr ""
 
 #: templates/language-template.php:24
 msgid "More articles"
+msgstr ""
+
+#: templates/language-template.php:215
+msgid "most ask"
+msgstr ""
+
+#: templates/language-template.php:73
+msgid "My"
+msgstr ""
+
+#: templates/language-template.php:38
+msgid "My Blog"
+msgstr ""
+
+#: templates/language-template.php:82
+msgid "My Journey & Track Record"
+msgstr ""
+
+#: templates/language-template.php:188
+msgid "My latest"
 msgstr ""
 
 #: inc/classes/class-roles.php:184
@@ -621,8 +1164,39 @@ msgstr ""
 msgid "Number of users per page."
 msgstr ""
 
-#: templates/language-template.php:28
+#: templates/language-template.php:197
+msgid "of happiness"
+msgstr ""
+
+#: templates/language-template.php:29
 msgid "On"
+msgstr ""
+
+#: templates/language-template.php:130
+msgid ""
+"Once you submit your order, I'll review your project requirements in detail. "
+"You'll receive a confirmation and a quick follow-up to ensure I have all the "
+"information needed to start the work."
+msgstr ""
+
+#: templates/language-template.php:110
+msgid "Only"
+msgstr ""
+
+#: templates/language-template.php:80 templates/language-template.php:161
+msgid "Optimization"
+msgstr ""
+
+#: templates/language-template.php:115
+msgid "Order Now"
+msgstr ""
+
+#: templates/language-template.php:165
+msgid "Our Process"
+msgstr ""
+
+#: inc/classes/class-hunts.php:484
+msgid "Overwrite"
 msgstr ""
 
 #: inc/classes/class-instant-images.php:47
@@ -666,13 +1240,17 @@ msgstr ""
 msgid "Partnership Project Manager"
 msgstr ""
 
+#: inc/classes/class-hunts.php:491
+msgid "Password"
+msgstr ""
+
 #: inc/classes/class-security.php:231
 msgid "Password reset mail sent successfully."
 msgstr ""
 
 #: inc/classes/class-apps.php:223 inc/classes/class-cdn.php:113
 #: inc/classes/class-menus.php:42 inc/classes/class-payment.php:61
-#: inc/classes/class-radar.php:73 inc/classes/class-task.php:133
+#: inc/classes/class-radar.php:73 inc/classes/class-task.php:131
 msgid "Pause"
 msgstr ""
 
@@ -715,6 +1293,14 @@ msgstr ""
 msgid "Payout to account %s"
 msgstr ""
 
+#: templates/language-template.php:43
+msgid "People Say about me"
+msgstr ""
+
+#: templates/language-template.php:125
+msgid "Performance & SEO optimization"
+msgstr ""
+
 #: templates/language-template.php:9
 msgid "Phone"
 msgstr ""
@@ -727,12 +1313,41 @@ msgid ""
 "some data to matched same stage and it does't save any revissions."
 msgstr ""
 
+#: inc/classes/class-hunts.php:1535
+msgid "Please enable if from settings page to get it back."
+msgstr ""
+
 #: templates/language-template.php:22
 msgid "Previous"
 msgstr ""
 
+#. Pricing
+#: templates/language-template.php:105
+msgid "Pricing"
+msgstr ""
+
 #: inc/classes/class-menus.php:57
 msgid "Privacy policy"
+msgstr ""
+
+#: templates/language-template.php:68
+msgid "Professional"
+msgstr ""
+
+#: templates/language-template.php:51
+msgid "Project Category"
+msgstr ""
+
+#: templates/language-template.php:63
+msgid "Project Finished"
+msgstr ""
+
+#: templates/language-template.php:190
+msgid "Project Name"
+msgstr ""
+
+#: templates/language-template.php:148
+msgid "Prototype"
 msgstr ""
 
 #: inc/classes/class-payment.php:85
@@ -765,8 +1380,16 @@ msgstr ""
 msgid "Radar"
 msgstr ""
 
+#: templates/language-template.php:107
+msgid "Recommended"
+msgstr ""
+
 #: inc/classes/class-notifications.php:80
 msgid "Refund Issued"
+msgstr ""
+
+#: templates/language-template.php:45 templates/language-template.php:193
+msgid "Repeat Order"
 msgstr ""
 
 #: inc/classes/class-payment-tap.php:82
@@ -777,8 +1400,12 @@ msgstr ""
 msgid "Results per page"
 msgstr ""
 
+#: templates/language-template.php:135
+msgid "Revision Until Finish The Work"
+msgstr ""
+
 #: inc/classes/class-roles.php:185
-msgid "Role assign interface will be apear here."
+msgid "Role assign interface will be appear here."
 msgstr ""
 
 #: inc/classes/class-roles.php:179
@@ -790,7 +1417,11 @@ msgid ""
 "Roles configurations, fields customization. Things enables and disables."
 msgstr ""
 
-#: templates/language-template.php:31
+#: templates/language-template.php:44 templates/language-template.php:194
+msgid "Satisfation Rate"
+msgstr ""
+
+#: templates/language-template.php:32
 msgid "Scroll Down"
 msgstr ""
 
@@ -803,8 +1434,20 @@ msgstr ""
 msgid "Search term"
 msgstr ""
 
+#: templates/language-template.php:204
+msgid "Search..."
+msgstr ""
+
 #: inc/classes/class-payment.php:68
 msgid "Secret key"
+msgstr ""
+
+#: templates/language-template.php:186
+msgid "See my work"
+msgstr ""
+
+#: templates/language-template.php:81
+msgid "See Past Work"
 msgstr ""
 
 #: inc/classes/class-cdn.php:121
@@ -847,12 +1490,44 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: templates/language-template.php:29
+#: templates/language-template.php:30
 msgid "Share"
+msgstr ""
+
+#: templates/language-template.php:52
+msgid "Short Description"
+msgstr ""
+
+#: templates/language-template.php:218
+msgid "Show Case"
+msgstr ""
+
+#: templates/language-template.php:48
+msgid "Show case"
+msgstr ""
+
+#: templates/language-template.php:191
+msgid "Showcase"
+msgstr ""
+
+#: templates/language-template.php:108
+msgid "Single"
 msgstr ""
 
 #. Name of the plugin
 msgid "Site Core"
+msgstr ""
+
+#: templates/language-template.php:150
+msgid "Skill in range"
+msgstr ""
+
+#: templates/language-template.php:74
+msgid "Skillset"
+msgstr ""
+
+#: templates/language-template.php:95
+msgid "Slowly I learned programing in PHP & JavaScript as a Junior"
 msgstr ""
 
 #: templates/payment-status.php:59
@@ -861,15 +1536,31 @@ msgid ""
 "assistance."
 msgstr ""
 
+#: templates/language-template.php:119
+msgid "Source file deliverable"
+msgstr ""
+
+#: templates/language-template.php:88
+msgid "Sr. Graphics Designer"
+msgstr ""
+
 #: inc/classes/class-payment-sslcommerz.php:38
 msgid "SslCommerz"
+msgstr ""
+
+#: templates/language-template.php:111
+msgid "Start from"
+msgstr ""
+
+#: templates/language-template.php:85
+msgid "Started Schooling"
 msgstr ""
 
 #: inc/classes/class-payment-stripe.php:31
 msgid "Stripe"
 msgstr ""
 
-#: templates/language-template.php:33
+#: templates/language-template.php:34
 msgid "Subscribe Now"
 msgstr ""
 
@@ -889,12 +1580,36 @@ msgstr ""
 msgid "Subscription Resumed"
 msgstr ""
 
+#: templates/language-template.php:113
+msgid ""
+"Suitable for those of you who do not have a team. Get all my service in "
+"single payment"
+msgstr ""
+
+#: templates/language-template.php:122
+msgid "System architecture"
+msgstr ""
+
+#: templates/language-template.php:78 templates/language-template.php:159
+#: templates/language-template.php:162 templates/language-template.php:163
+#: templates/language-template.php:164
+msgid "System Design"
+msgstr ""
+
 #: inc/classes/class-payment-tabby.php:25
 msgid "Tabby"
 msgstr ""
 
 #: templates/language-template.php:25
 msgid "Table of Contents"
+msgstr ""
+
+#: templates/language-template.php:59
+msgid "Talented Developer"
+msgstr ""
+
+#: templates/language-template.php:42
+msgid "talking"
 msgstr ""
 
 #: inc/classes/class-payment-tap.php:36
@@ -905,11 +1620,11 @@ msgstr ""
 msgid "Target of the event; can be null."
 msgstr ""
 
-#: inc/classes/class-task.php:128
+#: inc/classes/class-task.php:126
 msgid "Task"
 msgstr ""
 
-#: inc/classes/class-task.php:285
+#: inc/classes/class-task.php:292
 msgid "Task deleted successfully!"
 msgstr ""
 
@@ -921,7 +1636,7 @@ msgstr ""
 msgid "Terms & Condition"
 msgstr ""
 
-#: inc/classes/class-task.php:78 inc/classes/class-task.php:94
+#: inc/classes/class-task.php:77 inc/classes/class-task.php:93
 msgid "The ID of the requested item."
 msgstr ""
 
@@ -929,7 +1644,11 @@ msgstr ""
 msgid "The language code for the translation."
 msgstr ""
 
-#: inc/classes/class-task.php:73 inc/classes/class-task.php:89
+#: templates/language-template.php:145
+msgid "the looks"
+msgstr ""
+
+#: inc/classes/class-task.php:72 inc/classes/class-task.php:88
 msgid "The post type of the requested item."
 msgstr ""
 
@@ -939,28 +1658,66 @@ msgid ""
 "files, themes, assets to store, enqueue, register or deregister."
 msgstr ""
 
+#: templates/language-template.php:176
+msgid ""
+"Timelines depend on the project's complexity. A simple design or development "
+"task can take a few days, while a full website or app may take weeks. I'll "
+"provide an estimated timeframe after reviewing your requirements."
+msgstr ""
+
 #: inc/classes/class-security.php:193
 msgid "Token has expired."
+msgstr ""
+
+#: templates/language-template.php:83
+msgid "tons of"
 msgstr ""
 
 #: inc/classes/class-security.php:286
 msgid "Too many verification attempts. Please try again later."
 msgstr ""
 
+#: templates/language-template.php:27
+msgid "Top"
+msgstr ""
+
+#. Homepage
+#: templates/language-template.php:57
+msgid "Top rated at"
+msgstr ""
+
 #: inc/classes/class-visitor.php:270
 msgid "Tracker code for the visitor."
+msgstr ""
+
+#: templates/language-template.php:210
+msgid ""
+"Transparency, clear communication, and a proven track record define my "
+"client relationships. I keep you updated every step of the way and back my "
+"promises with tangible results, earning the confidence of businesses I work "
+"with time and again."
 msgstr ""
 
 #: templates/payment-status.php:51 templates/payment-status.php:60
 msgid "Try Again"
 msgstr ""
 
+#: templates/language-template.php:101
+msgid ""
+"Turning designs into functional products with clean, optimized, and "
+"maintainable code. Implementing front-end and back-end technologies to bring "
+"interactive experiences to life."
+msgstr ""
+
 #: inc/classes/class-visitor.php:330
 msgid "Type of the event (stay, click, scroll)."
 msgstr ""
 
-#: inc/classes/class-instant-images.php:369
-msgid "Unsplash"
+#: templates/language-template.php:97
+msgid ""
+"Understanding user needs through research and analysis to create data-driven "
+"design solutions. Conducting surveys, interviews, and usability testing to "
+"gather insights that enhance user experience."
 msgstr ""
 
 #: inc/classes/class-instant-images.php:272
@@ -1001,6 +1758,23 @@ msgstr ""
 msgid "Utils"
 msgstr ""
 
+#: templates/language-template.php:121
+msgid "UX & UI design"
+msgstr ""
+
+#: templates/language-template.php:76 templates/language-template.php:157
+msgid "UX Design"
+msgstr ""
+
+#. About Me
+#: templates/language-template.php:139
+msgid "UX Designer & Developer"
+msgstr ""
+
+#: templates/language-template.php:75 templates/language-template.php:156
+msgid "UX Research"
+msgstr ""
+
 #. Author of the plugin
 msgid "UxnDev"
 msgstr ""
@@ -1033,14 +1807,81 @@ msgstr ""
 msgid "Want to work toegether and create an amazing products with me?"
 msgstr ""
 
-#: templates/language-template.php:34
+#: templates/language-template.php:35
 msgid "Watch My Profile"
+msgstr ""
+
+#: templates/language-template.php:132
+msgid ""
+"We'll schedule a meeting where we'll discuss your project goals, "
+"expectations, and any additional details that will help shape the final "
+"product. This is where we align our vision for the project."
 msgstr ""
 
 #: templates/payment-status.php:68
 msgid ""
 "We're sorry, but we're unable to confirm your payment. Please contact our "
 "support team for assistance."
+msgstr ""
+
+#: templates/language-template.php:153
+msgid "What App I Use"
+msgstr ""
+
+#: templates/language-template.php:202
+msgid "what can"
+msgstr ""
+
+#: templates/language-template.php:173
+msgid "What do you need from me to get started?"
+msgstr ""
+
+#: templates/language-template.php:72
+msgid "What I Do"
+msgstr ""
+
+#: templates/language-template.php:225
+msgid "What if I need changes after the project is completed?"
+msgstr ""
+
+#: templates/language-template.php:207
+msgid "What sets my services apart from others?"
+msgstr ""
+
+#: templates/language-template.php:114
+msgid "What will you get"
+msgstr ""
+
+#: templates/language-template.php:222
+msgid "What's your typical workflow once we start?"
+msgstr ""
+
+#: templates/language-template.php:221
+msgid ""
+"When you reach out with a project request, I take the time to understand "
+"your needs, goals, and vision. I'll review your requirements and schedule a "
+"consultation if needed. From there, I provide a tailored approach and "
+"suggest the best solutions for your project."
+msgstr ""
+
+#: templates/language-template.php:60
+msgid "Who Helps you"
+msgstr ""
+
+#: templates/language-template.php:205
+msgid "Why choose me for your project?"
+msgstr ""
+
+#: templates/language-template.php:77 templates/language-template.php:158
+msgid "Wireframe"
+msgstr ""
+
+#: templates/language-template.php:208
+msgid ""
+"With extensive experience in UX/UI design and full-stack development across "
+"platforms like WordPress, Shopify, Webflow, React, and more, I bring "
+"innovation and precision to every project. My commitment to staying ahead of "
+"industry trends ensures your project isn't just current—it's future-proof."
 msgstr ""
 
 #: inc/classes/class-editor.php:36
@@ -1059,8 +1900,26 @@ msgstr ""
 msgid "WP Media library"
 msgstr ""
 
+#: templates/language-template.php:64
+msgid "Years Experience"
+msgstr ""
+
+#: templates/language-template.php:178
+msgid ""
+"Yes! If you have a tight deadline, let me know. I offer expedited services "
+"for urgent projects, depending on availability."
+msgstr ""
+
+#: templates/language-template.php:129
+msgid "Your create an order"
+msgstr ""
+
 #: inc/classes/class-security.php:277
 msgid "Your email verification code is: %d"
+msgstr ""
+
+#: templates/language-template.php:128
+msgid "your order"
 msgstr ""
 
 #: templates/payment-status.php:41
@@ -1087,8 +1946,4 @@ msgstr ""
 msgid ""
 "Your transaction has been cancelled. You can try again or contact our "
 "support team for assistance."
-msgstr ""
-
-#: templates/language-template.php:3
-msgid "😎 Interested?"
 msgstr ""

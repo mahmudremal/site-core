@@ -182,7 +182,7 @@ class Roles {
 				[
 					'id' 					=> 'roles-assign-interface',
 					'label'					=> __('N/A', 'site-core'),
-					'description'			=> __('Role assign interface will be apear here.', 'site-core'),
+					'description'			=> __('Role assign interface will be appear here.', 'site-core'),
 					'type'					=> 'text',
 					'default'				=> '',
 					'attr'					=> [

@@ -146,13 +146,13 @@ export default function TableEditor({ endpoint, fields }) {
       .then(async lists => {
         // return lists;
         const species = await api.get('species').then(res => res.data).then(list => list.filter(s => s?._status != false));
-        // const weapons = lists.weapons.filters(s => s?._status);
+        const weapons = await api.get('weapons').then(res => res.data).then(list => list.filter(s => s?._status != false));
         const _pointsRange = 1; // new Date().getFullYear() + 2 - 1990;
-        setTotalProcess(prev => prev + species.length * _pointsRange);
+        setTotalProcess(prev => prev + species.length * 2 * _pointsRange);
         // setTotalProcess(prev => prev + (lists.states.length * species.length) * 2);
-        // for (const stateId of lists.states.map(s => s.id)) {
+        // for (const weaponId of weapons.map(s => s.id)) {
           for (const speciesId of species.map(s => s.id)) {
-            // for (const isResident of [1, 0]) {
+            for (const isResident of [1, 0]) {
               for (const _point of [...Array(_pointsRange).keys()]) {
                 let hasNext = true;let pageNum = 0;let endCursor = null;
                 while (hasNext) {
@@ -162,9 +162,10 @@ export default function TableEditor({ endpoint, fields }) {
                     // points: _point,
                     cursor: endCursor,
                     stateId: lists.states.find(s => s.abbreviation == 'AZ')?.id, // stateId,
+                    // weaponId: weaponId,
                     speciesId: speciesId,
                     sortOrder: 'DRAW_ODDS_DESC',
-                    // isResident: isResident,
+                    isResident: isResident,
                     pointsType: 'BONUS',
                     pageNum: pageNum++
                   };
@@ -186,7 +187,7 @@ export default function TableEditor({ endpoint, fields }) {
                   .then(res => setProcess(prev => prev + 1));
                 }
               }
-            // }
+            }
           }
         // }
 

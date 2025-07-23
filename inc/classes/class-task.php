@@ -120,7 +120,6 @@ class Task {
         global $wpdb;
         $wpdb->query("DROP TABLE IF EXISTS {$this->table}");
     }
-
     
     public function settings($args) {
 		$args['task']		= [
@@ -137,7 +136,7 @@ class Task {
                 [
 					'id' 					=> 'task-config-interface',
 					'label'					=> __('Api keys', 'site-core'),
-					'description'			=> __('API keys interface will be apear here...', 'site-core'),
+					'description'			=> __('API keys interface will be appear here...', 'site-core'),
 					'type'					=> 'text',
 					'default'				=> '',
 					'attr'					=> [
@@ -153,6 +152,7 @@ class Task {
 		];
         return $args;
     }
+    
 	public function admin_enqueue_scripts($curr_page) {
         if ($curr_page != 'settings_page_site-core') {return;}
         wp_enqueue_script('site-core-setting', WP_SITECORE_BUILD_JS_URI . '/setting.js', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/setting.js'), true);
@@ -162,7 +162,7 @@ class Task {
         global $wpdb;
         $current_page = (int) $request->get_param('page')??1;
         $per_page = (int) $request->get_param('per_page')??20;
-        $search = (string) $request->get_param('search')??''; // also implement this seach if not empty use this keyword to search.
+        $search = (string) $request->get_param('search')??'';
         $status = (string) $request->get_param('status')??'pending';
         $task_type = (string) $request->get_param('task_type')??'all';
         $orderby = (string) $request->get_param('orderby')??'id';
@@ -193,11 +193,17 @@ class Task {
 
         $response_data = $wpdb->get_results("SELECT * FROM {$this->table} {$where} {$order_by} LIMIT {$per_page} OFFSET {$offset}", ARRAY_A);
 
+        foreach ($response_data as $index => $row) {
+            $row['task_object'] = maybe_unserialize($row['task_object']);
+            $response_data[$index] = $row;
+        }
+        
         $response = rest_ensure_response($response_data);
         $response->header('X-WP-Total', (int) $total_items);
         $response->header('X-WP-TotalPages', (int) $total_pages);
         return $response;
     }
+    
     public function tasks_search(WP_REST_Request $request) {
         global $wpdb;
 
@@ -246,6 +252,7 @@ class Task {
         }
         return new WP_REST_Response($latest_task, 200);
     }
+    
     public function task_update(WP_REST_Request $request) {
         global $wpdb;
     
@@ -273,6 +280,7 @@ class Task {
     
         return new WP_Error( 'rest_post_processing_failed', 'Failed to update query', [ 'status' => 500 ] );
     }
+    
     public function task_delete( WP_REST_Request $request ) {
         global $wpdb;
         $task_id = $request->get_param( 'task_id' );
@@ -283,6 +291,7 @@ class Task {
         );
         return rest_ensure_response(['success' => $deleted, 'message' => $deleted ? __('Task deleted successfully!', 'site-core') : __('Failed to delete task', 'site-core')]);
     }
+    
     public function task_submit( WP_REST_Request $request ) {
         global $wpdb;$params = $request->get_params();
         $task_id = $request->get_param( 'task_id' );
@@ -305,6 +314,7 @@ class Task {
             return rest_ensure_response($_performed);
         }
     }
+    
     public function get_post_data( WP_REST_Request $request ) {
         $post_type = $request->get_param( 'post_type' );
         $post_id   = $request->get_param( 'post_id' );
@@ -351,6 +361,7 @@ class Task {
     
         return rest_ensure_response( $response_data );
     }
+    
     public function update_post_data( WP_REST_Request $request ) {
         $post_type = $request->get_param( 'post_type' );
 	    $post_id   = $request->get_param( 'post_id' );

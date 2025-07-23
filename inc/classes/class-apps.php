@@ -228,7 +228,7 @@ class Apps {
                 [
 					'id' 					=> 'apps-api-keys',
 					'label'					=> __('Api keys', 'site-core'),
-					'description'			=> __('API keys interface will be apear here...', 'site-core'),
+					'description'			=> __('API keys interface will be appear here...', 'site-core'),
 					'type'					=> 'text',
 					'default'				=> '',
 					'attr'					=> [

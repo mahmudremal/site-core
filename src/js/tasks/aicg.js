@@ -90,7 +90,7 @@ async function siderAIStream(text, token = null, cid = '') {
 
 
 
-const schemas_dir = 'https://core.agency.local/wp-json/sitecore/v1/tasks/attachments/schemas';
+const schemas_dir = `https://${location.host}/wp-json/sitecore/v1/tasks/attachments/schemas`;
 
 class System {
   constructor() {

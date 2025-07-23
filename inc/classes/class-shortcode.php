@@ -51,7 +51,7 @@ class Shortcode {
         return '
         <div class="partnershipapp do-not-track" data-sensitive="true" data-hj-suppress data-fs-ignore>
             <p>
-                Partner manager Interface should be apear here. If your found this message repeating, please contact to Remal Mahmud (Developer).
+                Partner manager Interface should be appear here. If your found this message repeating, please contact to Remal Mahmud (Developer).
                 <a href="https://wa.me/8801814118328" target="_blank">+8801814118328</a> <a href="mailto:hello@mahmudremal.com">hello@mahmudremal.com</a>
             </p>
         </div>

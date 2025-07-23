@@ -12,35 +12,26 @@ export const install_media_tab = () => {
 		initialize: function () {
 			MediaFrame.prototype.initialize.apply(this, arguments);
 
-			const InstantImageState = wp.media.controller.State.extend({
-				insert: function () {
-					this.frame.close();
-				}
-			});
-
 			this.states.add([
-				new InstantImageState({
-					id: 'instant_image',
-					title: __('Instant Images'),
-					priority: 200,
-					search: false,
-				}),
+				new wp.media.controller.Library({
+					id: 'free_images',
+					title: __('Free Images'),
+					priority: 20,
+					toolbar: 'main-insert',
+					filterable: 'all',
+					library: wp.media.query({type: 'image'}),
+					multiple: false,
+					editable: false
+				})
 			]);
 
-			this.on('content:render:instant_image', this.renderInstantImageTab, this);
+			this.on('content:render:free_images', this.renderInstantImageTab, this);
 		},
 
 		browseRouter: function (routerView) {
+			MediaFrame.prototype.browseRouter.apply(this, arguments);
 			routerView.set({
-				upload: {
-					text: l10n.uploadFilesTitle,
-					priority: 20,
-				},
-				browse: {
-					text: l10n.mediaLibraryTitle,
-					priority: 40,
-				},
-				instant_image: {
+				free_images: {
 					text: __('Instant Images'),
 					priority: 60,
 				},
@@ -54,6 +45,7 @@ export const install_media_tab = () => {
 					this.render();
 				},
 				render: function () {
+					this.$el.empty();
 					const reactRoot = document.createElement('div');
 					this.el.innerHTML = '';this.el.appendChild(reactRoot);
 

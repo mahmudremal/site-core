@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
 
-const location_host = `https://${location.host}/vivianeokorie`; // 'https://core.agency.local';
+const location_host = `https://${location.host}/vivianeokorie`;
 
 export const nl2br = (str) => {
     if (typeof str !== 'string') return str;

@@ -34,7 +34,6 @@ class HealthMonitoringAddon {
     }
 
     init() {
-        this.createTables();
         this.setupSocketIO();
         this.loadCachedIndex();
     }
@@ -107,78 +106,37 @@ class HealthMonitoringAddon {
 
     }
 
-    createTables() {
-        const createUsersTable = `
-            CREATE TABLE IF NOT EXISTS ${this.tables.users} (
+    get_tables_schemas() {
+        return {
+            users: `CREATE TABLE IF NOT EXISTS ${this.tables.users} (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 fn VARCHAR(50) NOT NULL,
                 ln VARCHAR(50) NOT NULL,
                 e VARCHAR(255) NOT NULL UNIQUE,
                 p VARCHAR(255) NOT NULL,
                 r TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        `;
-
-        this.db.query(createUsersTable, (err) => {
-            if (err) {
-                console.error('Error creating users table: ', err);
-            } else {
-                console.log('Users table created or exists already.');
-            }
-        });
-
-        const createTokensTable = `
-            CREATE TABLE IF NOT EXISTS ${this.tables.tokens} (
+            )`,
+            tokens: `CREATE TABLE IF NOT EXISTS ${this.tables.tokens} (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 u INT NOT NULL,
                 t VARCHAR(255) NOT NULL,
                 e DATETIME NOT NULL
-            )
-        `;
-
-        this.db.query(createTokensTable, (err) => {
-            if (err) {
-                console.error('Error creating tokens table: ', err);
-            } else {
-                console.log('Tokens table created or exists already.');
-            }
-        });
-
-        const createConnectionDataTable = `
-            CREATE TABLE IF NOT EXISTS ${this.tables.connectionData} (
+            )`,
+            connectionData: `CREATE TABLE IF NOT EXISTS ${this.tables.connectionData} (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 dt VARCHAR(100) NOT NULL,
                 u INT NOT NULL,
                 st TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 et TIMESTAMP NULL,
                 a BOOLEAN DEFAULT TRUE
-            )
-        `;
-
-        this.db.query(createConnectionDataTable, (err) => {
-            if (err) {
-                console.error('Error creating connection data table: ', err);
-            } else {
-                console.log('Connection data table created or exists already.');
-            }
-        });
-
-        const createDeviceDataTable = `
-            CREATE TABLE IF NOT EXISTS ${this.tables.deviceData} (
+            )`,
+            deviceData: `CREATE TABLE IF NOT EXISTS ${this.tables.deviceData} (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 cd INT NOT NULL,
                 r FLOAT NOT NULL,
                 t TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        `;
-
-        this.db.query(createDeviceDataTable, (err) => {
-            if (err) {
-                console.error('Error creating device data table: ', err);
-            } else {
-                console.log('Device data table created or exists already.');
-            }
-        });
+            )`
+        }
     }
 
     setupSocketIO() {

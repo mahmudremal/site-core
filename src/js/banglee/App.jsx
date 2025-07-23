@@ -41,9 +41,16 @@ const MCP404 = lazy(() => import('./search/error404'));
 
 const BStreamHome = lazy(() => import('./bstream/home'));
 const BStreamVideoPage = lazy(() => import('./bstream/single'));
+const BStreamUploadPage = lazy(() => import('./bstream/upload'));
 // const BStreamSearchPage = lazy(() => import('./bstream/SearchPage'));
 // const BStreamExplorePage = lazy(() => import('./bstream/ExplorePage'));
 const BStreamError = lazy(() => import('./search/error404'));
+
+const AgentikHome = lazy(() => import('./agentik/workspaces'));
+const AgentikWorkspace = lazy(() => import('./agentik/workspace'));
+const AgentikRoom = lazy(() => import('./agentik/room'));
+const AgentikChat = lazy(() => import('./agentik/chat'));
+const AgentikError = lazy(() => import('./search/error404'));
 
 const Error404 = lazy(() => import('./search/error404'));
 
@@ -78,9 +85,16 @@ export default function Banglee() {
 
                         <Route path={home_route('/bstream')} element={<BStreamHome />} />
                         <Route path={home_route('/bstream/watch/:id')} element={<BStreamVideoPage />} />
+                        {/* <Route path={home_route('/bstream/upload')} element={<BStreamUploadPage />} />
                         {/* <Route path={home_route('/bstream/search')} element={<BStreamSearchPage />} />
                         <Route path={home_route('/bstream/explore')} element={<BStreamExplorePage />} /> */}
                         <Route path={home_route('/bstream/*')} element={<BStreamError />} />
+
+                        <Route path={home_route('/agentika')} element={<AgentikHome />} />
+                        <Route path={home_route('/agentika/:workspace_id')} element={<AgentikWorkspace />} />
+                        <Route path={home_route('/agentika/:workspace_id/rooms/:room_id')} element={<AgentikRoom />} />
+                        <Route path={home_route('/agentika/:workspace_id/rooms/:room_id/conversations')} element={<AgentikChat />} />
+                        <Route path={home_route('/agentika/*')} element={<AgentikError />} />
                         
                         <Route path={home_route('/*')} element={<Error404 />} />
 

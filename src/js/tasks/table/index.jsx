@@ -37,7 +37,7 @@ const TaskTable = ({ config }) => {
     const handler = setTimeout(() => {
       setLoading(true);
       axios.get(`https://${location.host}/wp-json/sitecore/v1/tasks?${
-        Object.keys(filters).map((key, i) => `${key}=${__(filters[key])}`).join('&')
+        Object.keys(filters).map((key, i) => `${key}=${encodeURIComponent(filters[key])}`).join('&')
       }`, {
         headers: {
           'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ const TaskTable = ({ config }) => {
       })
       .then(res => {
         setPagination(prev => ({...prev, total: parseInt(res.headers.get('x-wp-total')), totalPages: parseInt(res.headers.get('x-wp-totalpages'))}));
-        setTableItems(res.data);
+        setTableItems(res.data.map(i => ({...i, task_object: JSON.stringify(i.task_object)})));
       })
       .catch(err => {
         notify.error(err?.response?.data?.message??err?.message??__('Something went wrong!'), {position: 'bottom-right'})
@@ -73,19 +73,13 @@ const TaskTable = ({ config }) => {
                   <button key={index} type="button" className={ `btn btn-link xpo_text-secondary-light xpo_text-decoration-none xpo_p-2 hover:xpo_bg-transparent ${filters.task_type == key && 'xpo_text-primary'}` } onClick={() => setFilters(prev => ({...prev, task_type: key}))}>{label}</button>
                 ))}
               </div>
-              <div className="xpo_flex xpo_items-center">
+              <div className="xpo_flex xpo_items-center xpo_gap-3">
                 <div className="form-group xpo_mb-0 me-3">
                   <input type="text" className="form-control" placeholder={__('Search...')} value={filters.search} onChange={(e) => setFilters({ ...filters, s: e.target.value })} />
                 </div>
                 <button
                   className="btn btn-primary"
-                  onClick={(e) => setPopup(
-                    <div>
-                      <p>
-                        {Object.keys(task).map(k => <><b>{k}</b><span key={k}>{task[k]}</span><br /></>)}
-                      </p>
-                    </div>
-                  )}
+                  onClick={(e) => setPopup(<TaskEdit data={{id: 0}} setPopup={setPopup} onChange={(data) => setTableItems(prev => data.id == 0 ? prev.unshift(data) : prev.map(i => i.id == data.id ? ({...data}) : i))} />)}
                 >{__('Create new task')}</button>
               </div>
             </div>
@@ -138,7 +132,7 @@ const TaskTable = ({ config }) => {
                                 <Store className="text-xxl" /> 
                                 <h6 className="text-lg xpo_mb-0">{task.task_title}</h6>
                               </div>
-                              <div className="xpo_block xpo_mt-2">
+                              <div className="xpo_block xpo_mt-2 xpo_max-w-lg">
                                 <div>
                                   <p>
                                     {Object.keys(task).map(k => <><b className="xpo_mr-2 xpo_uppercase">{k.replaceAll('_', ' ')} :</b><span key={k}>{task[k]}</span><br /></>)}

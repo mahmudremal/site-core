@@ -78,7 +78,7 @@ class Radar {
                 [
 					'id' 					=> 'radar-interface',
 					'label'					=> __('Interface', 'site-core'),
-					'description'			=> __('A radar interface will be apear here shortly.', 'site-core'),
+					'description'			=> __('A radar interface will be appear here shortly.', 'site-core'),
 					'type'					=> 'text',
 					'default'				=> '',
 					'attr'					=> [

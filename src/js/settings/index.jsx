@@ -1,10 +1,11 @@
 import React, { Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 const Radar = lazy(() => import('./radar'));
+const PostTypes = lazy(() => import('./post-types'));
 const RoleBased = lazy(() => import('./role-based'));
 const AppsApiKeys = lazy(() => import('./api-keys'));
 const TaskConfig = lazy(() => import('./task-config'));
-import { __, tailwind_install } from '../utils';
+import { __, tailwind_install } from '@js/utils';
 
 class TaskSettings {
     constructor() {
@@ -19,7 +20,7 @@ class TaskSettings {
             const container = field.parentElement;
             container.previousElementSibling.remove();
             if (container) {
-                await this.tailwind_install();
+                // await this.tailwind_install();
                 container.innerHTML = '';
                 container.setAttribute('colspan', 2);
                 const config = JSON.parse(field.dataset.config);
@@ -34,7 +35,7 @@ class TaskSettings {
             const container = field.parentElement;
             container.previousElementSibling.remove();
             if (container) {
-                await this.tailwind_install();
+                // await this.tailwind_install();
                 container.innerHTML = '';
                 container.setAttribute('colspan', 2);
                 const config = JSON.parse(field.dataset.config);
@@ -49,7 +50,7 @@ class TaskSettings {
             const container = field.parentElement;
             container.previousElementSibling.remove();
             if (container) {
-                await this.tailwind_install();
+                // await this.tailwind_install();
                 container.innerHTML = '';
                 container.setAttribute('colspan', 2);
                 const config = JSON.parse(field.dataset.config);
@@ -64,7 +65,7 @@ class TaskSettings {
             const container = field.parentElement;
             container.previousElementSibling.remove();
             if (container) {
-                await this.tailwind_install();
+                // await this.tailwind_install();
                 container.innerHTML = '';
                 container.setAttribute('colspan', 2);
                 const config = JSON.parse(field.dataset.config);
@@ -75,11 +76,29 @@ class TaskSettings {
                 );
             }
         });
+        document.querySelectorAll('#llmstxt-posttypes').forEach(async field => {
+            const container = field.parentElement;
+            container.previousElementSibling.remove();
+            if (container) {
+                const cpts = JSON.parse(field.dataset.cpts);
+                const inputName = field.name;
+                const inputValue = field.value;
+                // await this.tailwind_install();
+                container.innerHTML = '';
+                container.setAttribute('colspan', 2);
+                const root = createRoot(container);root.render(
+                    <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
+                        <PostTypes name={inputName} value={inputValue} cpts={cpts} />
+                    </Suspense>
+                );
+            }
+        });
     }
     async tailwind_install() {
         if (this.state.tailwind.installed) {return;}
         this.state.tailwind.installed = true;
-        tailwind_install();
+        return await tailwind_install();
     }
 }
 const task = new TaskSettings();
+

@@ -15,11 +15,10 @@ class MeetsAddon {
     }
 
     init() {
-        this.createTables();
     }
 
-    createTables() {
-        const tables = {
+    get_tables_schemas() {
+        return {
             rooms: `CREATE TABLE IF NOT EXISTS ${this.tables.rooms} (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 room_id VARCHAR(255) NOT NULL,
@@ -46,15 +45,6 @@ class MeetsAddon {
                 content TEXT NOT NULL
             )`
         };
-        Object.keys(tables).forEach(table => {
-            this.db.query(tables[table], (err) => {
-                if (err) {
-                    console.error(`Error creating ${table} table: `, err);
-                } else {
-                    console.log(`${table} table created or exists already.`);
-                }
-            });
-        })
     }
 
     register(router) {

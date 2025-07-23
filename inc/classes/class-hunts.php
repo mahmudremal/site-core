@@ -40,6 +40,10 @@ class Hunts {
 
 		add_shortcode('hunting-record-table', [$this, 'hunting_table_shortcode']);
 		add_action('admin_menu', [$this, 'add_admin_menu']);
+
+		add_shortcode('huntarizona_research_restricted_access', [$this, 'huntarizona_research_restricted_access']);
+		
+		add_shortcode('huntarizona_draw_tools_subscription_status', [$this, 'huntarizona_draw_tools_subscription_status']);
     }
 	
 	public function register_routes() {
@@ -160,7 +164,7 @@ class Hunts {
 		]);
 		register_rest_route('sitecore/v1', '/species', [
 			'methods'  => 'POST',
-			'callback' => fn($request) => $this->api_save_simple($request, $this->tables->species, 'id,name,_status'),
+			'callback' => fn($request) => $this->api_save_simple($request, $this->tables->species, 'id,name,_status,_order'),
 			'permission_callback' => '__return_true', // fn() => current_user_can('manage_options')
 		]);
 		register_rest_route('sitecore/v1', '/species', [
@@ -178,7 +182,7 @@ class Hunts {
 		]);
 		register_rest_route('sitecore/v1', '/weapons', [
 			'methods'  => 'POST',
-			'callback' => fn($request) => $this->api_save_simple($request, $this->tables->weapons, 'id,name,_status'),
+			'callback' => fn($request) => $this->api_save_simple($request, $this->tables->weapons, 'id,name,_status,_order'),
 			'permission_callback' => '__return_true', // fn() => current_user_can('manage_options')
 		]);
 		register_rest_route('sitecore/v1', '/weapons', [
@@ -196,7 +200,7 @@ class Hunts {
 		]);
 		register_rest_route('sitecore/v1', '/states', [
 			'methods'  => 'POST',
-			'callback' => fn($request) => $this->api_save_simple($request, $this->tables->states, 'id,name,abbreviation,_status'),
+			'callback' => fn($request) => $this->api_save_simple($request, $this->tables->states, 'id,name,abbreviation,_status,_order'),
 			'permission_callback' => '__return_true', // fn() => current_user_can('manage_options')
 		]);
 		register_rest_route('sitecore/v1', '/states', [
@@ -214,7 +218,7 @@ class Hunts {
 		]);
 		register_rest_route('sitecore/v1', '/bag_types', [
 			'methods'  => 'POST',
-			'callback' => fn($request) => $this->api_save_simple($request, $this->tables->bag_types, 'id,name,species_id,_status'),
+			'callback' => fn($request) => $this->api_save_simple($request, $this->tables->bag_types, 'id,name,species_id,_status,_order'),
 			'permission_callback' => '__return_true', // fn() => current_user_can('manage_options')
 		]);
 		register_rest_route('sitecore/v1', '/bag_types', [
@@ -331,7 +335,8 @@ class Hunts {
 			"CREATE TABLE IF NOT EXISTS {$this->tables->species} (
 				id VARCHAR(20) NOT NULL PRIMARY KEY,
 				name VARCHAR(255) NOT NULL,
-				_status BOOLEAN NOT NULL DEFAULT TRUE
+				_status BOOLEAN NOT NULL DEFAULT TRUE,
+				_order INT NOT NULL DEFAULT 0
 			) $charset_collate;"
 		);
 
@@ -340,7 +345,8 @@ class Hunts {
 			"CREATE TABLE IF NOT EXISTS {$this->tables->weapons} (
 				id VARCHAR(20) NOT NULL PRIMARY KEY,
 				name VARCHAR(255) NOT NULL,
-				_status BOOLEAN NOT NULL DEFAULT TRUE
+				_status BOOLEAN NOT NULL DEFAULT TRUE,
+				_order INT NOT NULL DEFAULT 0
 			) $charset_collate;"
 		);
 
@@ -350,7 +356,8 @@ class Hunts {
 				id VARCHAR(20) NOT NULL PRIMARY KEY,
 				name VARCHAR(255) NOT NULL,
 				abbreviation VARCHAR(10) NOT NULL,
-				_status BOOLEAN NOT NULL DEFAULT TRUE
+				_status BOOLEAN NOT NULL DEFAULT TRUE,
+				_order INT NOT NULL DEFAULT 0
 			) $charset_collate;"
 		);
 
@@ -360,7 +367,8 @@ class Hunts {
 				id VARCHAR(20) NOT NULL PRIMARY KEY,
 				name VARCHAR(255) NOT NULL,
 				species_id VARCHAR(20) NOT NULL,
-				_status BOOLEAN NOT NULL DEFAULT TRUE
+				_status BOOLEAN NOT NULL DEFAULT TRUE,
+				_order INT NOT NULL DEFAULT 0
 			) $charset_collate;"
 		);
 
@@ -413,7 +421,8 @@ class Hunts {
 				id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 				document_id VARCHAR(20) NOT NULL,
 				is_resident BOOLEAN,
-				quota INT
+				quota INT,
+				_listodds TEXT
 			) $charset_collate;"
 		);
 
@@ -642,24 +651,48 @@ class Hunts {
 	public function api_get_filters(WP_REST_Request $request) {
 		global $wpdb;
 		
+		$_cached = get_transient('hunts_filters_data');
+		if ($_cached) {
+			return rest_ensure_response($_cached);
+		}
+		
 		// Fetch data from database
-		$states    = $wpdb->get_results("SELECT id, name, abbreviation FROM {$this->tables->states} WHERE _status = TRUE", ARRAY_A);
-		$species   = $wpdb->get_results("SELECT id, name FROM {$this->tables->species} WHERE _status = TRUE", ARRAY_A);
-		$weapons   = $wpdb->get_results("SELECT id, name FROM {$this->tables->weapons} WHERE _status = TRUE", ARRAY_A);
-		$bag_types = $wpdb->get_results("SELECT id, name, species_id FROM {$this->tables->bag_types} WHERE _status = TRUE", ARRAY_A);
+		$states    = $wpdb->get_results("SELECT id, name, _order, abbreviation FROM {$this->tables->states} WHERE _status = TRUE", ARRAY_A);
+		$species   = $wpdb->get_results("SELECT id, name, _order FROM {$this->tables->species} WHERE _status = TRUE", ARRAY_A);
+		$weapons   = $wpdb->get_results("SELECT id, name, _order FROM {$this->tables->weapons} WHERE _status = TRUE", ARRAY_A);
+		$bag_types = $wpdb->get_results("SELECT id, name, _order, species_id FROM {$this->tables->bag_types} WHERE _status = TRUE", ARRAY_A);
 		// $gmu       = $wpdb->get_results("SELECT id, name, code, state_id FROM {$this->tables->gmu}", ARRAY_A);
 		$years       = $wpdb->get_results("SELECT DISTINCT app_year FROM {$this->tables->seasons} ORDER BY app_year DESC;", ARRAY_A);
-		$units       = $wpdb->get_results("SELECT DISTINCT name FROM {$this->tables->gmu} ORDER BY id DESC;", ARRAY_A);
+		$units       = $wpdb->get_results("SELECT DISTINCT name FROM {$this->tables->gmu} ORDER BY name ASC;", ARRAY_A);
+		$aFilters	= $wpdb->get_row(
+		"
+		SELECT
+		(SELECT MIN(harvest_rate) FROM {$this->tables->seasons}) AS min_harvest_rate,
+		(SELECT MAX(harvest_rate) FROM {$this->tables->seasons}) AS max_harvest_rate,
+		(SELECT MIN(user_odds) FROM {$this->tables->seasons}) AS min_user_odds,
+		(SELECT MAX(user_odds) FROM {$this->tables->seasons}) AS max_user_odds,
+		(SELECT MIN(public_ratio) FROM {$this->tables->gmu}) AS min_public_ratio,
+		(SELECT MAX(public_ratio) FROM {$this->tables->gmu}) AS max_public_ratio,
+		(SELECT MIN(public_sqmi) FROM {$this->tables->gmu}) AS min_public_sqmi,
+		(SELECT MAX(public_sqmi) FROM {$this->tables->gmu}) AS max_public_sqmi,
+		(SELECT MIN(odds) FROM {$this->tables->odds}) AS min_public_odds,
+		(SELECT MAX(odds) FROM {$this->tables->odds}) AS max_public_odds
+		;", ARRAY_A);
 
-		return rest_ensure_response([
+		$response = [
+			...$aFilters,
 			'states'    => $states,
 			'species'   => $species,
 			'weapons'   => $weapons,
 			'years'		=> $years,
-			'units' => $units,
+			'units'		=> $units,
 			// 'bag_types' => $bag_types,
 			// 'gmu'       => $gmu
-		]);
+		];
+		
+		set_transient('hunts_filters_data', $response, 7 * DAY_IN_SECONDS);
+
+		return rest_ensure_response($response);
 	}
 
 	public function api_hunts_auth(WP_REST_Request $request) {
@@ -716,21 +749,28 @@ class Hunts {
 		$public_land_ratio   = $request->get_param('public_land_ratio');
 		$per_sqmi   = $request->get_param('per_sqmi');
 
+		$public_odds   = $request->get_param('public_odds');
+		$public_ratio   = $request->get_param('public_ratio');
+		$harvest_rate   = $request->get_param('harvest_rate');
+
 		$offset = ($page - 1) * $per_page;
 
 		$sql = "
 			SELECT s.*,
 			a.is_resident,
+			a._listodds AS odds,
+			a.quota AS tags_given,
 			w.name AS weapon_name,
 			a.id AS application_id,
 			b.name AS bag_type_name,
-			d.total_quota AS tags_given,
+			d.total_quota AS total_quota,
 			s.addi_units AS additional_units,
 			s.addi_notes AS additional_notes,
 			sp.name AS species_name, sp.id AS species_id,
-			g.name AS gmu_name, g.public_ratio, g.total_sqmi,
+			g.name AS gmu_name, g.public_ratio, g.public_sqmi, g.total_sqmi,
 			st.id AS state_id, st.name AS state_name, st.abbreviation
-			-- 
+
+			
 			FROM {$this->tables->seasons} s
 			LEFT JOIN {$this->tables->weapons} w ON w.id = s.weapon_id
 			LEFT JOIN {$this->tables->bag_types} b ON b.id = s.bag_type_id
@@ -739,9 +779,36 @@ class Hunts {
 			LEFT JOIN {$this->tables->states} st ON st.id = g.state_id
 			LEFT JOIN {$this->tables->documents} d ON d.id = s.document_id
 			LEFT JOIN {$this->tables->applications} a ON a.document_id = d.id
+			
 			WHERE 1=1
 		";
-		// return rest_ensure_response($sql);
+		$sql = "
+			SELECT s.*,
+			a.is_resident,
+			a._listodds AS odds,
+			a.quota AS tags_given,
+			w.name AS weapon_name,
+			a.id AS application_id,
+			b.name AS bag_type_name,
+			d.total_quota AS total_quota,
+			s.addi_units AS additional_units,
+			s.addi_notes AS additional_notes,
+			sp.name AS species_name, sp.id AS species_id,
+			g.name AS gmu_name, g.public_ratio, g.public_sqmi, g.total_sqmi,
+			st.id AS state_id, st.name AS state_name, st.abbreviation
+
+			
+			FROM {$this->tables->applications} a
+			LEFT JOIN {$this->tables->documents} d ON d.id = a.document_id
+			LEFT JOIN {$this->tables->seasons} s ON s.document_id = d.id
+			LEFT JOIN {$this->tables->weapons} w ON w.id = s.weapon_id
+			LEFT JOIN {$this->tables->bag_types} b ON b.id = s.bag_type_id
+			LEFT JOIN {$this->tables->species} sp ON sp.id = b.species_id
+			LEFT JOIN {$this->tables->gmu} g ON g.id = s.gmu_id
+			LEFT JOIN {$this->tables->states} st ON st.id = g.state_id
+			
+			WHERE 1=1
+		";
 
 		if ($state) {
 			$sql .= $wpdb->prepare(" AND st.id = %s", $state);
@@ -766,7 +833,7 @@ class Hunts {
 		}
 
 		if ($is_resident != -1) {
-			$sql .= $wpdb->prepare(" AND a.is_resident = %d", (bool) $is_resident);
+			$sql .= $wpdb->prepare(" AND a.is_resident = %d", (int) $is_resident);
 		}
 
 		if ($public_land_ratio) {
@@ -777,9 +844,9 @@ class Hunts {
 			$sql .= $wpdb->prepare(" AND s.hunters_per_sqmi <= %f", (float) $per_sqmi);
 		}
 
-		if ($harvest_rate) {
-			$sql .= $wpdb->prepare(" AND s.harvest_rate <= %f", (float) $harvest_rate);
-		}
+		// if ($harvest_rate) {
+		// 	$sql .= $wpdb->prepare(" AND s.harvest_rate <= %f", (float) $harvest_rate);
+		// }
 
 		if ($draw_odds) {
 			$sql .= $wpdb->prepare(" AND s.user_odds <= %f", (float) $draw_odds);
@@ -797,20 +864,42 @@ class Hunts {
 		if ($_status != -1) {
 			$sql .= $wpdb->prepare(" AND st._status = %d AND w._status = %d", (bool) $_status, (bool) $_status);
 		}
+		
+		// Disabled currently.
+		// if ($public_odds) {
+		// 	$public_odds = array_map('floatval', explode(',', $public_odds));
+		// 	$sql .= $wpdb->prepare(" AND o.odds BETWEEN %f AND %f", ...$public_odds );
+		// }
+		
+		if ($public_ratio) {
+			$public_ratio = array_map('floatval', explode(',', $public_ratio));
+			$sql .= $wpdb->prepare(" AND g.public_ratio BETWEEN %f AND %f", ...$public_ratio );
+		}
+		
+		if ($harvest_rate) {
+			$harvest_rate = array_map('floatval', explode(',', $harvest_rate));
+			$sql .= $wpdb->prepare(" AND s.harvest_rate BETWEEN %f AND %f", ...$harvest_rate );
+		}
 
 		$sql .= " ORDER BY s.document_id DESC";
 
 		$total_items = (int) $wpdb->get_var("SELECT COUNT(*) FROM ({$sql}) as t");
 
 		$sql .= $wpdb->prepare(" LIMIT %d OFFSET %d", $per_page, $offset);
+		// return rest_ensure_response($sql);
 
 		$results = $wpdb->get_results($sql);
-		// return rest_ensure_response($results);
+		// return rest_ensure_response([$sql]);
 
 		$response_data = [];
 
 		foreach ($results as $row) {
-			$odds_points = $wpdb->get_row($wpdb->prepare("SELECT GROUP_CONCAT(o.odds ORDER BY o.id DESC SEPARATOR ',') AS _odds FROM {$this->tables->odds} o LEFT JOIN {$this->tables->applications} a ON a.id = o.application_id WHERE o.application_id = %d AND a.is_resident = %d", $row->application_id, (bool) $row->is_resident));
+			// $odds_points = $wpdb->get_results(
+			// 	$wpdb->prepare(
+			// 		"SELECT o.odds FROM {$this->tables->odds} o LEFT JOIN {$this->tables->applications} a ON a.id = o.application_id WHERE o.application_id = %d AND a.is_resident = %d",
+			// 		$row->application_id, (int) $row->is_resident
+			// 	)
+			// );
 			$response_data[] = [
 				'id'               => $row->id,
 				'app_year'         => $row->app_year,
@@ -839,7 +928,8 @@ class Hunts {
 					'id'            => $row->gmu_id,
 					'name'          => $row->gmu_name,
 					'public_ratio'  => (float) $row->public_ratio,
-					'total_sqmi'    => (float) $row->total_sqmi
+					'total_sqmi'    => (float) $row->total_sqmi,
+					'public_sqmi'    => (float) $row->public_sqmi
 				],
 				'state'         => [
 					'id'           => $row->state_id,
@@ -854,7 +944,7 @@ class Hunts {
 				'additional_units'	=> $row->additional_units,
 				// 'average_odds'		=> $row->average_odds,
 				// '_probability'	=> $row->_probability,
-				'odds'				=> $odds_points ? $odds_points->_odds : '',
+				'odds'				=> $row->odds,
 			];
 		}
 
@@ -1194,9 +1284,9 @@ class Hunts {
 				'stateId' => (string) $request->get_param('stateId'),
 				'speciesId' => (string) $request->get_param('speciesId'),
 				// 'weaponId' => (string) $request->get_param('weaponId'),
-				'sortOrder' => (string) $request->get_param('sortOrder'), // DRAW_ODDS_DESC
+				'sortOrder' => (string) $request->get_param('sortOrder'), // DRAW_ODDS_DESC | GMU_CODE_ASC
 				// 'pointsType' => (string) $request->get_param('pointsType'),
-				// 'isResident' => (bool) $request->get_param('isResident'),
+				'isResident' => (bool) $request->get_param('isResident'),
 				// 'points' => (int) $request->get_param('points'),
 				'pageNum' => (int) $request->get_param('pageNum'),
 				'apikey' => apply_filters('pm_project/system/getoption', 'hunts-apikey', 'ojjrlqlvfkarsltfvggweoubhzrwqzgw')
@@ -1403,8 +1493,13 @@ class Hunts {
 				case 'HuntPlannerDocumentApplication':
 					$_entry_status = $wpdb->insert(
 						$this->tables->applications,
-						['document_id' => $row['document_id'], 'quota' => $row['quota'], 'is_resident' => (bool) $row['isResident']],
-						['%s', '%d', '%d']
+						[
+							'document_id' => $row['document_id'],
+							'quota' => $row['quota'],
+							'is_resident' => (bool) $row['isResident'],
+							'_listodds' => implode(',', array_map(fn($i) => $i['odds'], $row['odds']))
+						],
+						['%s', '%d', '%d', '%s']
 					);
 					if (isset($row['odds'])) {
 						$_list = [];foreach ($row['odds'] as $i => $_app) {$_list[$i] = ['application_id' => $wpdb->insert_id ? $wpdb->insert_id : $row['id'], ...$_app];}
@@ -1523,5 +1618,98 @@ class Hunts {
         <div id="hunting-editor-table" data-params="{}"></div>
         <?php
     }
+
+	public function huntarizona_research_restricted_access($atts) {
+		wp_enqueue_style('site-core');
+		wp_enqueue_style('site-core-hunts');
+		
+		$atts = shortcode_atts(array(
+			'title' => __('Restricted Access', 'site-core'),
+			'description' => __('Only available to ALL PAID HUNT ARIZONA members. Sign up for Membership…', 'site-core'),
+			'button_text' => __('Sign Up', 'site-core'),
+			'login_text' => __('Already an ALL PAID HUNT ARIZONA Member?', 'site-core'),
+			'login_link_text' => __('Log in here.', 'site-core'),
+			'buy_url' => site_url('/checkout/?add-to-cart=247331'),
+			'login_url' => site_url('/my-account/'),
+			'benefits_title' => __('Membership Benefits Include', 'site-core'),
+		), $atts);
+
+		ob_start();
+		?>
+		<div class="xpo_mx-auto xpo_text-center xpo_p-0 md:xpo_p-4 md:xpo_pt-0 xpo_relative xpo_rounded-md xpo_w-full xpo_max-w-3xl">
+			<div class="xpo_absolute xpo_-left-14 xpo_-translate-y-1/2 xpo_w-[150px] xpo_h-full xpo_bg-center xpo_bg-contain xpo_bg-no-repeat xpo_top-1/3" style="background-image: url('<?php echo esc_url(WP_SITECORE_BUILD_URI . '/images/7021c278bcbf3785c459.png'); ?>');"></div>
+			<div class="xpo_absolute xpo_-right-14 xpo_-translate-y-1/2 xpo_w-[150px] xpo_h-full xpo_bg-center xpo_bg-contain xpo_bg-no-repeat beer-horn-flip xpo_top-1/3" style="background-image: url('<?php echo esc_url(WP_SITECORE_BUILD_URI . '/images/7021c278bcbf3785c459.png'); ?>');"></div>
+			<div class="xpo_flex xpo_items-center xpo_gap-3">
+				<div class="xpo_flex xpo_flex-col xpo_items-center xpo_gap-3 xpo_text-[#5c3b10] xpo_text-center xpo_justify-center xpo_w-full">
+					<h1 class="xpo_text-3xl md:xpo_text-5xl xpo_font-bold xpo_tracking-wide">ARIZONA OUTFITTERS</h1>
+					<h2 class="xpo_text-3xl md:xpo_text-5xl xpo_font-bold xpo_tracking-wide">DRAW TOOL</h2>
+				</div>
+			</div>
+
+			<div class="xpo_w-full xpo_relative">
+				<div class="">
+					<div class="xpo_flex xpo_flex-nowrap xpo_justify-center">
+						<div class="">
+							<div class="xpo_bg-[#987A56] xpo_border-8 xpo_border-solid xpo_border-[#5c3b10] xpo_inline-block xpo_p-8 xpo_rounded-md xpo_shadow-lg">
+								<div class="md:xpo_w-[550px]">
+									<div class="xpo_flex xpo_flex-col xpo_gap-6 xpo_mb-6">
+
+										<div class="">
+											<div class="xpo_text-center xpo_relative">
+												<h2 class="xpo_text-2xl xpo_font-bold xpo_text-white xpo_mb-4">
+													<?php echo esc_html($atts['title']); ?>
+												</h2>
+												<p class="xpo_text-white xpo_mb-6">
+													<?php echo esc_html($atts['description']); ?>
+												</p>
+												<a href="<?php echo esc_url($atts['buy_url']); ?>" class="xpo_bg-[#135242] hover:xpo_bg-blue-600 xpo_text-white xpo_px-6 xpo_py-2 xpo_rounded xpo_inline-flex xpo_items-center xpo_gap-2 xpo_mx-auto xpo_mb-4" target="_blank">
+													<?php echo esc_html($atts['button_text']); ?>
+												</a>
+												<p class="xpo_text-sm xpo_text-white xpo_mb-6">
+													<?php echo esc_html($atts['login_text']); ?>
+													<a href="<?php echo esc_url($atts['login_url']); ?>" class="xpo_text-white xpo_underline">
+														<?php echo esc_html($atts['login_link_text']); ?>
+													</a>
+												</p>
+												<div class="xpo_text-left">
+													<h3 class="xpo_font-semibold xpo_text-white xpo_mb-2"><?php echo esc_html($atts['benefits_title']); ?></h3>
+													<ul class="xpo_list-disc xpo_list-inside xpo_text-white xpo_space-y-1">
+														<li><?php echo esc_html(__('Real-time draw odds calculations', 'site-core')); ?></li>
+														<li><?php echo esc_html(__('Historical trends and charts', 'site-core')); ?></li>
+														<li><?php echo esc_html(__('Expert hunting insights', 'site-core')); ?></li>
+													</ul>
+												</div>
+											</div>
+										</div>
+	
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<p class="xpo_text-[#5c3b10] xpo_mt-6 xpo_max-w-3xl xpo_mx-auto">Use this tool to estimate your draw chances for big game hunts in Arizona based on species, units, hunt type, residency, and your bonus point profile. Updated annually using the latest AZGFD data.</p>
+		</div>
+		<style>.beer-horn-flip {--tw-scale-x: -1;}</style>
+		<?php
+		return ob_get_clean();
+	}
+
+	public function huntarizona_draw_tools_subscription_status($atts) {
+		$atts = shortcode_atts(['product_id' => 247331], $atts);
+		// 
+		if (is_user_logged_in()) {
+			$current_user = wp_get_current_user();
+			if (in_array('administrator', $current_user->roles)) {
+				return do_shortcode('[hunting-record-table]');
+			}
+			if (wc_customer_bought_product($current_user->user_email, $current_user->ID, $atts['product_id'])) {
+				return do_shortcode('[hunting-record-table]');
+			}
+		}
+		return do_shortcode('[huntarizona_research_restricted_access]');
+	}
 		
 }

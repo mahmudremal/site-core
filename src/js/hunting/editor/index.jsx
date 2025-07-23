@@ -78,10 +78,10 @@ export default function Editor() {
       ) : (
         <>
           <PDFTableExtractor />
-          <TableEditor endpoint="species" fields={['id', 'name', '_status']} />
-          <TableEditor endpoint="weapons" fields={['id', 'name', '_status']} />
-          {/* <TableEditor endpoint="states" fields={['id', 'name', 'abbreviation', '_status']} /> */}
-          <TableEditor endpoint="bag_types" fields={['id', 'name', 'species_id', '_status']} />
+          <TableEditor endpoint="species" fields={['id', 'name', '_status', '_order']} />
+          <TableEditor endpoint="weapons" fields={['id', 'name', '_status', '_order']} />
+          {/* <TableEditor endpoint="states" fields={['id', 'name', 'abbreviation', '_status', '_order']} /> */}
+          <TableEditor endpoint="bag_types" fields={['id', 'name', 'species_id', '_status', '_order']} />
           <TableEditor endpoint="gmu" fields={['id', 'name', 'code', 'total_sqmi', 'public_sqmi', 'public_ratio', 'state_id']} />
           <TableEditor endpoint="documents" fields={['id', 'code', 'total_quota']} />
           <TableEditor endpoint="applications" fields={['id', 'document_id', 'is_resident', 'quota']} />

@@ -32,21 +32,21 @@ class Utils {
 				[
 					'id' 					=> 'utils-off-gutenburg',
 					'label'					=> __('Gutenburg', 'site-core'),
-					'description'			=> __('Mark to dsable gutenburg editor from wordpress.', 'site-core'),
+					'description'			=> __('Mark to disable gutenburg editor from wordpress.', 'site-core'),
 					'type'					=> 'checkbox',
 					'default'				=> false
 				],
 				[
 					'id' 					=> 'utils-off-heartbit-front',
 					'label'					=> __('Heartbit', 'site-core'),
-					'description'			=> __('Mark to dsable heartbit for wordpress on frontend.', 'site-core'),
+					'description'			=> __('Mark to disable heartbit for wordpress on frontend.', 'site-core'),
 					'type'					=> 'checkbox',
 					'default'				=> false
 				],
 				[
 					'id' 					=> 'utils-off-heartbit-back',
 					'label'					=> __('Heartbit', 'site-core'),
-					'description'			=> __('Mark to dsable heartbit for wordpress on frontend.', 'site-core'),
+					'description'			=> __('Mark to disable heartbit for wordpress on frontend.', 'site-core'),
 					'type'					=> 'checkbox',
 					'default'				=> false
 				],

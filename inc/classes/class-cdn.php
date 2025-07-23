@@ -143,7 +143,7 @@ class Cdn {
 				],
 				[
 					'id' 					=> 'cdn-delocals',
-					'label'					=> __('Delete File', 'site-core'),
+					'label'					=> __('Delete Thumbnails', 'site-core'),
 					'description'			=> __('Delete attachment files thubmnails instantly after sending to cdn.', 'site-core'),
 					'type'					=> 'checkbox',
 					'default'				=> false
@@ -318,8 +318,8 @@ class Cdn {
     }
 
     public function wp_get_attachment_image_src($image, $attachment_id, $size) {
-        // if ($this->get_cdn_host() === 'media') {return $image;}
-        // if ($this->get_cdn_host() !== 'imagekit') {return $image;}
+        if (apply_filters('pm_project/system/isactive', 'cdn-paused')) {return $image;}
+        if ($this->get_cdn_host() === 'media') {return $image;}
         $dimensions = [];
 
         [$dimensions['width'], $dimensions['height']] = $size;
@@ -493,20 +493,25 @@ class Cdn {
         if (!empty($attr['srcset'])) {return $attr;}
         // $image_sizes = get_intermediate_image_sizes();
         $metadata = wp_get_attachment_metadata($image_id);
+        if (!empty($size) && isset($metadata['sizes'][$size])) {
+            $image_size = $metadata['sizes'][$size];
+            $image_link = $this->wp_get_attachment_image_src(null, $image_id, [$image_size['width'], $image_size['height']]);
+            if ($image_link) {$attr['src'] = $image_link[0];}
+        }
         $sources = [];
         foreach ($metadata['sizes'] as $size_key => $size) {
             if (empty($size['width']) || empty($size['height'])) {continue;}
-            $image = $this->wp_get_attachment_image_src(null, $image_id, [$size['width'], $size['height']]);
-            if (!$image) {continue;}
-            $sources[] = $image[0] . ' ' . $size['width'] . 'w';
+            $image_link = $this->wp_get_attachment_image_src(null, $image_id, [$size['width'], $size['height']]);
+            if (!$image_link) {continue;}
+            $sources[] = $image_link[0] . ' ' . $size['width'] . 'w';
         }
         if (!empty($sources)) {
             $attr['srcset'] = implode(', ', $sources);
         }
-        // print_r($attr);wp_die('Remal Mahmud');
         return $attr;
     }
 
 
     
 }
+

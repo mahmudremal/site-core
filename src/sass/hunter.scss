@@ -23,3 +23,26 @@
 td.xpo_border.xpo_p-2.xpo_text-white {
   color: #333;
 }
+
+.col-harvest-rate,
+.col-public-land-sq-mi,
+.col-public-land,
+.col-odds-min-points,
+.col-hunters-sq-mi,
+.col-additional-units {
+  width: 100px;
+}
+.col-tags-given {
+  width: 70px;
+}
+.col-notes {
+  max-width: 200px;
+}
+.rdrDays {
+  .rdrDayHovered .rdrDayNumber:after {
+    border-color: #135242 !important;
+  }
+  .rdrDay, .rdrStartEdge, .rdrInRange, .rdrEndEdge {
+    color: #135242 !important;
+  }
+ }

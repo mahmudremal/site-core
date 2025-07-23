@@ -14,11 +14,10 @@ class LlmAddon {
     }
 
     init() {
-        this.createTables();
     }
 
-    createTables() {
-        const tables = {
+    get_tables_schemas() {
+        return {
             conversations: `
                 CREATE TABLE IF NOT EXISTS ${this.tables.conversations} (
                   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -48,12 +47,6 @@ class LlmAddon {
                 )
             `
         };
-        Object.entries(tables).forEach(([table, sql]) => {
-            this.db.query(sql, err => {
-                if (err) console.error(`Error creating ${table}:`, err);
-                else console.log(`${table} table created/exists.`);
-            });
-        });
     }
 
     async ask({ message = '', token = null, cid = '', onChunk = (t) => {}, parent_message_id = '' }) {

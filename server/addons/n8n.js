@@ -14,12 +14,11 @@ class N8nAddon {
     }
 
     init() {
-        this.createTables();
         this.startScheduledJobs();
     }
 
-    createTables() {
-        const tables = {
+    get_tables_schemas() {
+        return {
             workflows: `
                 CREATE TABLE IF NOT EXISTS ${this.tables.workflows} (
                     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -62,15 +61,6 @@ class N8nAddon {
                 )
             `,
         };
-        Object.keys(tables).forEach(table => {
-            this.db.query(tables[table], (err) => {
-                if (err) {
-                    console.error(`Error creating ${table} table: `, err);
-                } else {
-                    console.log(`${table} table created or exists already.`);
-                }
-            });
-        })
     }
 
     register(router) {

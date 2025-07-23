@@ -2,9 +2,9 @@ import React, { Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Toaster } from 'react-hot-toast';
 const TaskTable = lazy(() => import('./table'));
+import { __, tailwind_install } from '@js/utils';
 import axios from 'axios';
 
-const __ = (t) => t;
 
 class Tasks {
 	constructor() {
@@ -27,19 +27,13 @@ class Tasks {
 				const task_key = parseInt(element.parentElement.dataset.key);
 				const update_value = event.target.value
 				if (job_id) {
-					axios.post(`https://core.agency.local/wp-json/sitecore/v1/tasks/${job_id}`, {task_key, update_value}, {headers: {'X-WP-Nonce': this.ajaxNonce}});
+					axios.post(`https://${location.host}/wp-json/sitecore/v1/tasks/${job_id}`, {task_key, update_value}, {headers: {'X-WP-Nonce': this.ajaxNonce}});
 				}
 			});
 		});
     }
-	setup_table() {
-		const script = document.createElement("script");
-        script.src = 'https://cdn.tailwindcss.com';
-        script.onload = () => {
-            window.tailwind = window.tailwind || {};
-            window.tailwind.config = {prefix: 'xpo_'};
-        }
-        document.head.appendChild(script);
+	async setup_table() {
+		await tailwind_install();
 		document.querySelectorAll('#automated_task_table').forEach(container => {
 			const config = JSON.parse(container.dataset.config);
 			const root = createRoot(container);root.render(

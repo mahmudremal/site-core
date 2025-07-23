@@ -19,27 +19,29 @@ class Project {
 	 * Loads necessary classes and sets up hooks.
 	 */
 	protected function __construct() {
-		// Load class instances.
-
-			Hunts::get_instance();
-		
+		// $this->setup_hunts();
+		$this->setup_hooks();
+	}
+	protected function setup_hooks() {
+			// Hunts::get_instance();
 		Cdn::get_instance();
-		// 	Apps::get_instance();
+			Apps::get_instance();
 			Task::get_instance();
 		// 	Error::get_instance();
 			Utils::get_instance();
 		// 	Radar::get_instance();
 		Editor::get_instance();
 				Suite::get_instance();
-		// 		Users::get_instance();
-		// 		Roles::get_instance();
+				// Users::get_instance();
+				// Roles::get_instance();
 		Menus::get_instance();
 		Option::get_instance();
 		Assets::get_instance();
 		Llmstxt::get_instance();
+			Links::get_instance();
 		// 		Payout::get_instance();
 		// 		Stores::get_instance();
-			// Visitor::get_instance();
+		// 	Visitor::get_instance();
 		// 		Toolbar::get_instance();
 		// 		Invoice::get_instance();
 		// 		Finance::get_instance();
@@ -64,14 +66,22 @@ class Project {
 		// 		Payment_Stripe::get_instance();
 		// 		Payment_Sslcommerz::get_instance();
         // 
-		// Uncomment the following line if setup_hooks needs to be called.
-		$this->setup_hooks();
+		// 
+		add_action('init', [$this, 'init'], 1, 0);
+		register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
 	}
 
 	/**
-	 * Sets up WordPress hooks for the project.
+	 * Sets up WordPress hooks for the project - Hunt Research tool.
 	 */
-	protected function setup_hooks() {
+	protected function setup_hunts() {
+		Hunts::get_instance();
+		Menus::get_instance();
+		Option::get_instance();
+		Assets::get_instance();
+		Security::get_instance();
+		Translations::get_instance();
+		// 
 		add_action('init', [$this, 'init'], 1, 0);
 		register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
 	}

@@ -138,49 +138,8 @@ class RequestAddon {
     }
 
     getResources() {
+        return [];
         return [
-            {
-                uri: 'request://examples',
-                title: 'Request Examples',
-                name: 'HTTP Request Examples',
-                description: 'Common HTTP request patterns and examples',
-                mimeType: 'application/json',
-                handler: async () => ({
-                    content: JSON.stringify({
-                        "simple_get": {
-                            "method": "GET",
-                            "url": "https://api.example.com/users"
-                        },
-                        "post_with_json": {
-                            "method": "POST",
-                            "url": "https://api.example.com/users",
-                            "data": { "name": "John", "email": "john@example.com" },
-                            "headers": { "Content-Type": "application/json" }
-                        },
-                        "with_auth": {
-                            "method": "GET",
-                            "url": "https://api.example.com/protected",
-                            "headers": { "Authorization": "Bearer your-token" }
-                        },
-                        "with_basic_auth": {
-                            "method": "GET",
-                            "url": "https://api.example.com/protected",
-                            "auth": { "username": "user", "password": "pass" }
-                        },
-                        "form_data": {
-                            "method": "POST",
-                            "url": "https://api.example.com/upload",
-                            "data": "key1=value1&key2=value2",
-                            "headers": { "Content-Type": "application/x-www-form-urlencoded" }
-                        },
-                        "with_proxy": {
-                            "method": "GET",
-                            "url": "https://api.example.com/data",
-                            "proxy": { "host": "proxy.example.com", "port": 8080 }
-                        }
-                    })
-                })
-            },
             {
                 uri: 'request://headers',
                 title: 'Common Headers',

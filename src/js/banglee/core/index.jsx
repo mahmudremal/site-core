@@ -113,6 +113,8 @@ export const AppsList = () => {
             {name: 'Tasks', slug: 'tasks', color: '#DC2626', description: 'Task management and personal productivity.'},
             {name: 'bStream', slug: 'bstream', color: '#B91C1C', description: 'Video streaming platform for creators.'},
             {name: 'AI', slug: 'ai', color: '#78350F', description: 'AI-powered tools and chat interfaces.'},
+            {name: 'Mcp', slug: 'mcp', color: '#0F766E', description: 'Cloud Model context protocol for AI.'},
+            {name: 'Agent', slug: 'agentika', color: '#0F766E', description: 'Agentic workspace driven by cloud ai.'},
             {name: 'Docs', slug: 'docs', color: '#0F766E', description: 'Collaborative document editing and writing.'},
             {name: 'Sheets', slug: 'sheets', color: '#6D28D9', description: 'Spreadsheet creation and collaboration.'},
             {name: 'Drive', slug: 'drive', color: '#2563EB', description: 'Cloud storage and file sharing.'},
