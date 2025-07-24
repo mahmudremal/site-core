@@ -1625,7 +1625,7 @@ class Hunts {
 		
 		$atts = shortcode_atts(array(
 			'title' => __('Restricted Access', 'site-core'),
-			'description' => __('Only available to ALL PAID HUNT ARIZONA members. Sign up for Membership…', 'site-core'),
+			'description' => __('Sign up for the ALL PAID HINT ARIZONA MEMBERSHIP & APPLICATION SERVICE today for full access.', 'site-core'),
 			'button_text' => __('Sign Up', 'site-core'),
 			'login_text' => __('Already an ALL PAID HUNT ARIZONA Member?', 'site-core'),
 			'login_link_text' => __('Log in here.', 'site-core'),

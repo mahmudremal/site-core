@@ -36,9 +36,9 @@ class AddonManager {
 
     install_tables(tables) {
         Object.keys(tables).forEach((table) => {
-            if (table == 'users') {
-                console.log('Table of Users creating ✅✅')
-            }
+            // if (table == 'users') {
+            //     console.log('Table of Users creating ✅✅', tables[table])
+            // }
             this.db.query(tables[table], (err) => {
                 if (err) {
                     console.error(`Error creating ${table} table: `, err);

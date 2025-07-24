@@ -6,7 +6,7 @@ export const Popup = ({ onClose = null, showCross = true, className = null, body
   if (!bodyClassName) {bodyClassName = "xpo_relative xpo_z-10 xpo_bg-white xpo_rounded-xl xpo_shadow-lg xpo_p-6 xpo_max-w-full xpo_min-w-[90vw] md:xpo_min-w-[28rem]";}
   return (
     <div className={className} aria-modal="true" role="dialog">
-      {typeof onClose === 'function' ? <div className="xpo_absolute xpo_inset-0 xpo_bg-black xpo_bg-opacity-30" onClick={onClose} aria-label={__('Close popup')}></div> : null}
+      {typeof onClose === 'function' ? <div className="xpo_absolute xpo_inset-0 xpo_bg-black/40 xpo_bg-opacity-30" onClick={onClose} aria-label={__('Close popup')}></div> : null}
       <div className={bodyClassName}>
         {/* xpo_-translate-x-1 xpo_-translate-y-1 */}
         {typeof onClose === 'function' && showCross ? (

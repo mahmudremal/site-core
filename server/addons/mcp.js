@@ -48,19 +48,16 @@ class McpAddon {
             events: `CREATE TABLE IF NOT EXISTS ${this.tables.events} (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 event_type VARCHAR(50) NOT NULL,
-                element_name VARCHAR(100) DEFAULT NULL,
+                element_name VARCHAR(100),
                 element_type ENUM('tool', 'resource', 'prompt') DEFAULT NULL,
-                request_data TEXT,
-                response_data TEXT,
+                request_data LONGTEXT,
+                response_data LONGTEXT,
                 status VARCHAR(20) DEFAULT 'success',
                 error_message TEXT DEFAULT NULL,
                 execution_time_ms INT DEFAULT 0,
                 addon_name VARCHAR(100) DEFAULT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                INDEX idx_event_type (event_type),
-                INDEX idx_element_name (element_name),
-                INDEX idx_addon_name (addon_name)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;`,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )`,
             
             addons: `CREATE TABLE IF NOT EXISTS ${this.tables.addons} (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -68,7 +65,7 @@ class McpAddon {
                 enabled BOOLEAN DEFAULT TRUE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;`,
+            )`,
             
             elements: `CREATE TABLE IF NOT EXISTS ${this.tables.elements} (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -79,7 +76,7 @@ class McpAddon {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 UNIQUE KEY unique_element (addon_name, element_name, element_type)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;`
+            )`
         };
     }
 
@@ -508,12 +505,7 @@ class McpAddon {
     }
 
     async logEvent(eventType, elementName, elementType, requestData, responseData, status = 'success', errorMessage = null, executionTime = 0, addonName) {
-        const query = `
-            INSERT INTO ${this.tables.events} (
-                event_type, element_name, element_type, request_data, 
-                response_data, status, error_message, execution_time_ms, addon_name
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `;
+        const query = `INSERT INTO ${this.tables.events} ( event_type, element_name, element_type, request_data,  response_data, status, error_message, execution_time_ms, addon_name ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`;
 
         const params = [
             eventType,

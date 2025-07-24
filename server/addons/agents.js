@@ -6,12 +6,12 @@ class Agents {
         this.app = app;
         this.db = dbConnection;
         this.tables = {
-            workspaces: `${this.db.prefix}workspaces`,
-            users: `${this.db.prefix}users`,
-            rooms: `${this.db.prefix}rooms`,
-            assignments: `${this.db.prefix}assignments`,
-            communication: `${this.db.prefix}communication`,
-            logs: `${this.db.prefix}logs`,
+            workspaces: `${this.db.prefix}agents_workspaces`,
+            users: `${this.db.prefix}agents_users`,
+            rooms: `${this.db.prefix}agents_rooms`,
+            assignments: `${this.db.prefix}agents_assignments`,
+            communication: `${this.db.prefix}agents_communication`,
+            logs: `${this.db.prefix}agents_logs`,
         };
     }
 

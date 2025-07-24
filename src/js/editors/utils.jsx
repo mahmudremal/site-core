@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 export const Popup = ({ onClose, children }) => {
   return (
     <div className="xpo_fixed xpo_inset-0 xpo_z-50 xpo_flex xpo_items-center xpo_justify-center" aria-modal="true" role="dialog">
-      <div className="xpo_absolute xpo_inset-0 xpo_bg-black xpo_bg-opacity-30" onClick={onClose} aria-label={__('Close popup')} />
+      <div className="xpo_absolute xpo_inset-0 xpo_bg-black/40 xpo_bg-opacity-30" onClick={onClose} aria-label={__('Close popup')} />
       <div className="xpo_relative xpo_z-10 xpo_bg-white xpo_rounded-xl xpo_shadow-lg xpo_p-6 xpo_max-w-full xpo_w-[90vw] md:xpo_w-[28rem]">
         {/* xpo_-translate-x-1 xpo_-translate-y-1 */}
         <div className="xpo_absolute xpo_top-1 xpo_right-1">

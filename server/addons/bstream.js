@@ -54,7 +54,7 @@ class bStreamAddon {
             subscriptions: `${this.db.prefix}bstream_subscriptions`,
             watchHistory: `${this.db.prefix}bstream_watch_history`,
             searchHistory: `${this.db.prefix}bstream_search_history`,
-            users: `${this.db.prefix}users`,
+            users: `${this.db.prefix}bstream_users`,
             channels: `${this.db.prefix}bstream_channels`,
             playlists: `${this.db.prefix}bstream_playlists`,
             playlistVideos: `${this.db.prefix}bstream_playlist_videos`,
@@ -64,25 +64,25 @@ class bStreamAddon {
 
     init() {
         // Initialize with sample data
-        axios.get('https://gist.githubusercontent.com/poudyalanil/ca84582cbeb4fc123a13290a586da925/raw/14a27bd0bcd0cd323b35ad79cf3b493dddf6216b/videos.json')
-        .then(out => out.data)
-        .then(data => 
-            data.map(i => ({ 
-                id: i.id, 
-                title: i.title, 
-                description: i.description, 
-                thumbnail: i.thumbnailUrl, 
-                time: i.duration, 
-                uploadTime: i.uploadTime, 
-                views: i.views, 
-                channel: i.author, 
-                url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', 
-                subscriber: i.subscriber, 
-                isLive: i.isLive 
-            }))
-        )
-        .then(list => this.cachedVideos = list)
-        .catch(err => console.log('Failed to load sample data:', err));
+        // axios.get('https://gist.githubusercontent.com/poudyalanil/ca84582cbeb4fc123a13290a586da925/raw/14a27bd0bcd0cd323b35ad79cf3b493dddf6216b/videos.json')
+        // .then(out => out.data)
+        // .then(data => 
+        //     data.map(i => ({ 
+        //         id: i.id, 
+        //         title: i.title, 
+        //         description: i.description, 
+        //         thumbnail: i.thumbnailUrl, 
+        //         time: i.duration, 
+        //         uploadTime: i.uploadTime, 
+        //         views: i.views, 
+        //         channel: i.author, 
+        //         url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', 
+        //         subscriber: i.subscriber, 
+        //         isLive: i.isLive 
+        //     }))
+        // )
+        // .then(list => this.cachedVideos = list)
+        // .catch(err => console.log('Failed to load sample data:', err));
 
         // Create uploads directory
         if (!fs.existsSync('uploads')) {

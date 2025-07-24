@@ -15,7 +15,7 @@ class Server {
         this.port = 3000;
         this.initDatabase()
         .then(conn => {
-            conn.prefix = 'npm_';
+            conn.prefix = 'banglee_';
             this.connection = conn;
             this.addonManager = new AddonManager(this.app, this.connection);
         })
