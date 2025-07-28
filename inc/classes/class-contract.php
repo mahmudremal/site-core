@@ -311,7 +311,7 @@ class Contract {
     public function register_scripts() {
         wp_register_script('site-core-pricing', WP_SITECORE_BUILD_JS_URI . '/pricing.js', [], Assets::filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/pricing.js'), true);
         wp_register_style('site-core-pricing', WP_SITECORE_BUILD_CSS_URI . '/pricing.css', [], Assets::filemtime(WP_SITECORE_BUILD_CSS_DIR_PATH . '/pricing.css'), 'all');
-        wp_localize_script('site-core-pricing', 'siteCoreConfig', apply_filters('partnershipmang/siteconfig', []));
+        wp_localize_script('site-core-pricing', 'siteCoreConfig', apply_filters('sitecorejs/siteconfig', []));
     }
 
     public function add_custom_rewrite() {

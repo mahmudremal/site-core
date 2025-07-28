@@ -7,11 +7,10 @@ class TasksAddon {
         this.logEvent = logEvent;
         this.name = "aitask";
         
-        this.apiBase = "https://yourwordpresssite.com/wp-json/sitecore/v1/tasks";
+        this.apiBase = "https://core.agency.local/wp-json/sitecore/v1/tasks";
     }
 
     async init() {
-        
         return true;
     }
 
@@ -80,10 +79,10 @@ class TasksAddon {
     getResources() {
         return [
             {
-                name: "task_ai_instruction",
-                description: [
-                    `This resource provides detailed instructions for interacting with the WordPress automated tasks via the REST API, enabling task fetching, processing, and submission in an organized workflow.\n\n1. Collecting a Task:\n  - Use the 'get_a_task' tool to query the WordPress REST API endpoint "/tasks/search" to fetch the oldest pending task.\n  - You can filter by task status (default 'pending') and task type (e.g., 'post_seo', 'media_seo', 'comment_moderation', etc.).\n  - Optionally provide a list of task IDs to exclude if previously processed or skipped.\n  - The fetched task object contains 'task_type', 'task_desc', and a 'task_object' with detailed parameters specific to the task type.\n\n2. Processing a Task:\n  - When a task is received, analyze the 'task_type' to determine the appropriate processing logic.\n  - Typical operations include:\n     * SEO Analysis: Review titles, metadata, headings, and keywords against best practices.\n     * Media SEO: Check images for descriptive titles, captions, and alt text.\n     * Comment Moderation: Scan comments for spam, hate speech, or guideline violations.\n     * Onboarding: Send welcome emails or guide user actions.\n     * WooCommerce Orders: Verify order details, update statuses, and notify customers.\n  - Use any gathered data or external APIs necessary to perform the task objectives.\n  - Collect all findings, results, suggestions, or outcomes in a structured format to be submitted as the task result.\n\n3. Submitting a Task:\n  - Use the 'submit_task' tool to POST the task completion data to "/tasks/{task_id}/submit" endpoint.\n  - Include the task results and any notes or structured data explaining what was performed.\n  - Upon successful submission, the task status is updated as 'completed' in the backend database.\n\n4. Error Handling and State Management:\n  - If no tasks are available, wait or retry after some delay.\n  - If task submission fails, retry or log error for manual intervention.\n  - Maintain a state of processed task IDs to avoid duplication or conflicts.\n\nFollowing these instructions ensures consistent task lifecycle management from acquisition to completion within automated WordPress workflows.`
-                ].join("\n")
+                uri: 'tasks://instruction',
+                name: "Task AI Instruction",
+                description: `This resource provides detailed instructions for interacting with the WordPress automated tasks via the REST API, enabling task fetching, processing, and submission in an organized workflow.\n\n1. Collecting a Task:\n  - Use the 'get_a_task' tool to query the WordPress REST API endpoint "/tasks/search" to fetch the oldest pending task.\n  - You can filter by task status (default 'pending') and task type (e.g., 'post_seo', 'media_seo', 'comment_moderation', etc.).\n  - Optionally provide a list of task IDs to exclude if previously processed or skipped.\n  - The fetched task object contains 'task_type', 'task_desc', and a 'task_object' with detailed parameters specific to the task type.\n\n2. Processing a Task:\n  - When a task is received, analyze the 'task_type' to determine the appropriate processing logic.\n  - Typical operations include:\n     * SEO Analysis: Review titles, metadata, headings, and keywords against best practices.\n     * Media SEO: Check images for descriptive titles, captions, and alt text.\n     * Comment Moderation: Scan comments for spam, hate speech, or guideline violations.\n     * Onboarding: Send welcome emails or guide user actions.\n     * WooCommerce Orders: Verify order details, update statuses, and notify customers.\n  - Use any gathered data or external APIs necessary to perform the task objectives.\n  - Collect all findings, results, suggestions, or outcomes in a structured format to be submitted as the task result.\n\n3. Submitting a Task:\n  - Use the 'submit_task' tool to POST the task completion data to "/tasks/{task_id}/submit" endpoint.\n  - Include the task results and any notes or structured data explaining what was performed.\n  - Upon successful submission, the task status is updated as 'completed' in the backend database.\n\n4. Error Handling and State Management:\n  - If no tasks are available, wait or retry after some delay.\n  - If task submission fails, retry or log error for manual intervention.\n  - Maintain a state of processed task IDs to avoid duplication or conflicts.\n\nFollowing these instructions ensures consistent task lifecycle management from acquisition to completion within automated WordPress workflows.`,
+                mimeType: 'application/json'
             }
         ];
     }

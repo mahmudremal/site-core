@@ -28,7 +28,7 @@ export default function HealthHome() {
                 </button>
             </div>
             </div>
-            <img src="https://placehold.co/500x400" className="xpo_rounded-2xl xpo_shadow-xl" />
+            <img src="/image/generate?text=500x400&width=500&height=500&bgColor=ccc&textColor=ffffff&format=svg" className="xpo_rounded-2xl xpo_shadow-xl" />
         </div>
       </section>
 

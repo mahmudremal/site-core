@@ -7,7 +7,7 @@ import { LogOut, Plus, Clock, Bookmark, ShieldCheck, Globe, Settings, HelpCircle
 import { createPopper } from '@popperjs/core';
 import { __ } from '@js/utils';
 
-export const Dropdown = ({ button, placement = 'bottom-end', children }) => {
+export const Dropdown = ({ button, placement = 'bottom-end', className = 'xpo_z-50 xpo_bg-white xpo_border xpo_rounded xpo_shadow xpo_mt-2 xpo_p-2 xpo_min-w-[120px]', pclassName = 'xpo_relative', onOpen = null, onClose = null, children }) => {
     const [visible, setVisible] = useState(false);
     const btnRef = useRef();
     const popperRef = useRef();
@@ -32,12 +32,18 @@ export const Dropdown = ({ button, placement = 'bottom-end', children }) => {
         };
     }, []);
     
+    const toggle = (e) => {
+        e.preventDefault();
+        if (visible) {onOpen && onOpen(e);}
+        else {onClose && onClose(e);}
+        setVisible(prev => !prev);
+    }
 
     return (
-        <div className="xpo_relative">
-            <div ref={btnRef} onClick={() => setVisible(!visible)}>{button}</div>
+        <div className={pclassName}>
+            <div ref={btnRef} onClick={toggle}>{button}</div>
             {visible && (
-                <div ref={popperRef} className="xpo_z-50 xpo_bg-white xpo_border xpo_rounded xpo_shadow xpo_mt-2 xpo_p-2 xpo_min-w-[120px]">
+                <div ref={popperRef} className={className}>
                     {children}
                 </div>
             )}
@@ -142,7 +148,8 @@ export const AppsList = () => {
                     <img
                         alt={app.name}
                         className="xpo_rounded-md"
-                        src={`https://placehold.co/64x64/${app.color.slice(1)}/ffffff?text=${app.name[0]}`}
+                        // src={`https://placehold.co/64x64/${app.color.slice(1)}/ffffff?text=${app.name[0]}`}
+                        src={`/image/generate?text=${app.name[0]}&width=64&height=64&bgColor=${app.color.slice(1)}&textColor=ffffff&format=svg`}
                     />
                     <span className="xpo_text-sm xpo_text-gray-700">{app.name}</span>
                 </Link>

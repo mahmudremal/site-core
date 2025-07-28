@@ -3,32 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { __ } from '@js/utils';
 import { home_route } from '@banglee/core';
 import Header from './header';
-import {
-  Home,
-  Compass,
-  MonitorPlay,
-  Rss,
-  Library,
-  History,
-  Video,
-  Clock,
-  ThumbsUp,
-  TrendingUp,
-  ShoppingCart,
-  Music,
-  Gamepad2,
-  Newspaper,
-  Trophy,
-  BookOpen,
-  ChevronDown,
-  ChevronRight,
-  Settings,
-  Flag,
-  HelpCircle,
-  MessageSquare,
-  Users,
-  Play
-} from 'lucide-react';
+import { Home, Compass, MonitorPlay, Rss, Library, History, Video, Clock, ThumbsUp, TrendingUp, ShoppingCart, Music, Gamepad2, Newspaper, Trophy, BookOpen, ChevronDown, ChevronRight, Settings, Flag, HelpCircle, MessageSquare, Users, Play } from 'lucide-react';
 
 const Sidebar = ({ children, isCollapsed = false, onToggleCollapse }) => {
     const [showMore, setShowMore] = useState(false);
@@ -150,7 +125,6 @@ const Sidebar = ({ children, isCollapsed = false, onToggleCollapse }) => {
 
     return (
         <div className="xpo_w-full xpo_h-screen xpo_flex xpo_flex-col">
-            {/* Header */}
             <div className="xpo_w-full xpo_sticky xpo_top-0 xpo_z-10 xpo_bg-white xpo_border-b xpo_border-gray-200">
                 <Header onToggleSidebar={onToggleCollapse} />
             </div>
@@ -240,20 +214,20 @@ const Sidebar = ({ children, isCollapsed = false, onToggleCollapse }) => {
                             <div className="xpo_px-3 xpo_py-4 xpo_text-xs xpo_text-gray-500 xpo_space-y-1">
                                 <p>© 2025 BStream</p>
                                 <div className="xpo_flex xpo_flex-wrap xpo_gap-2">
-                                    <Link to="#" className="hover:xpo_text-gray-700">{__('About')}</Link>
-                                    <Link to="#" className="hover:xpo_text-gray-700">{__('Press')}</Link>
-                                    <Link to="#" className="hover:xpo_text-gray-700">{__('Copyright')}</Link>
-                                    <Link to="#" className="hover:xpo_text-gray-700">{__('Contact')}</Link>
+                                    <Link to={home_route('bstream', '/#')} className="hover:xpo_text-gray-700">{__('About')}</Link>
+                                    <Link to={home_route('bstream', '/#')} className="hover:xpo_text-gray-700">{__('Press')}</Link>
+                                    <Link to={home_route('bstream', '/#')} className="hover:xpo_text-gray-700">{__('Copyright')}</Link>
+                                    <Link to={home_route('bstream', '/#')} className="hover:xpo_text-gray-700">{__('Contact')}</Link>
                                 </div>
                                 <div className="xpo_flex xpo_flex-wrap xpo_gap-2">
-                                    <Link to="#" className="hover:xpo_text-gray-700">{__('Creators')}</Link>
-                                    <Link to="#" className="hover:xpo_text-gray-700">{__('Advertise')}</Link>
-                                    <Link to="#" className="hover:xpo_text-gray-700">{__('Developers')}</Link>
+                                    <Link to={home_route('bstream', '/#')} className="hover:xpo_text-gray-700">{__('Creators')}</Link>
+                                    <Link to={home_route('bstream', '/#')} className="hover:xpo_text-gray-700">{__('Advertise')}</Link>
+                                    <Link to={home_route('bstream', '/#')} className="hover:xpo_text-gray-700">{__('Developers')}</Link>
                                 </div>
                                 <div className="xpo_flex xpo_flex-wrap xpo_gap-2">
-                                    <Link to="#" className="hover:xpo_text-gray-700">{__('Terms')}</Link>
-                                    <Link to="#" className="hover:xpo_text-gray-700">{__('Privacy')}</Link>
-                                    <Link to="#" className="hover:xpo_text-gray-700">{__('Safety')}</Link>
+                                    <Link to={home_route('bstream', '/#')} className="hover:xpo_text-gray-700">{__('Terms')}</Link>
+                                    <Link to={home_route('bstream', '/#')} className="hover:xpo_text-gray-700">{__('Privacy')}</Link>
+                                    <Link to={home_route('bstream', '/#')} className="hover:xpo_text-gray-700">{__('Safety')}</Link>
                                 </div>
                             </div>
                         )}

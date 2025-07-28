@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Send, ArrowLeft, Clock, User, DollarSign, Tags } from 'lucide-react';
+import { home_route, NavMenu } from '@banglee/core';
+
 
 const AssignmentDetailPage = () => {
   const { id } = useParams();
@@ -125,95 +127,98 @@ const AssignmentDetailPage = () => {
   }
 
   return (
-    <div className="xpo_grid xpo_grid-cols-1 lg:xpo_grid-cols-3 xpo_h-screen">
-      {/* Chat Section */}
-      <div className="xpo_col-span-2 xpo_border-r xpo_flex xpo_flex-col">
-        <div className="xpo_p-4 xpo_border-b xpo_flex xpo_items-center xpo_justify-between">
-          <div className="xpo_flex xpo_items-center xpo_gap-2">
-            <ArrowLeft 
-              onClick={() => navigate(-1)} 
-              className="xpo_cursor-pointer xpo_text-gray-600 hover:xpo_text-blue-500" 
-            />
-            <h2 className="xpo_font-semibold xpo_text-lg">Agent Chat</h2>
+    <>
+      <NavMenu />
+      <div className="xpo_grid xpo_grid-cols-1 lg:xpo_grid-cols-3 xpo_h-screen">
+        {/* Chat Section */}
+        <div className="xpo_col-span-2 xpo_border-r xpo_flex xpo_flex-col">
+          <div className="xpo_p-4 xpo_border-b xpo_flex xpo_items-center xpo_justify-between">
+            <div className="xpo_flex xpo_items-center xpo_gap-2">
+              <ArrowLeft 
+                onClick={() => navigate(-1)} 
+                className="xpo_cursor-pointer xpo_text-gray-600 hover:xpo_text-blue-500" 
+              />
+              <h2 className="xpo_font-semibold xpo_text-lg">Agent Chat</h2>
+            </div>
+            {loading.messages && (
+              <div className="xpo_text-sm xpo_text-gray-500">Loading messages...</div>
+            )}
           </div>
-          {loading.messages && (
-            <div className="xpo_text-sm xpo_text-gray-500">Loading messages...</div>
+
+          <div className="xpo_flex-1 xpo_overflow-y-auto xpo_p-4 xpo_space-y-4 xpo_bg-gray-50">
+            {messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`xpo_max-w-xl xpo_px-4 xpo_py-2 xpo_rounded-xl ${
+                  msg.agent_id === assignment?.agent_id
+                    ? 'xpo_bg-blue-100 xpo_self-start'
+                    : 'xpo_bg-green-100 xpo_self-end'
+                }`}
+              >
+                <p className="xpo_text-sm">{msg.content}</p>
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
+
+          <div className="xpo_p-4 xpo_border-t xpo_bg-white xpo_flex xpo_gap-2">
+            <textarea
+              placeholder="Type message..."
+              value={input}
+              onKeyDown={handleKeyDown}
+              onChange={(e) => setInput(e.target.value)}
+              className="xpo_flex-1 xpo_px-3 xpo_py-2 xpo_border xpo_rounded-md xpo_resize-none xpo_h-20"
+            />
+            <button 
+              onClick={sendMessage} 
+              disabled={loading.sending || !input.trim()}
+              className="xpo_bg-blue-500 xpo_text-white xpo_px-4 xpo_py-2 xpo_rounded-md xpo_flex xpo_items-center xpo_gap-2 disabled:xpo_opacity-50"
+            >
+              <Send className="xpo_w-4 xpo_h-4" />
+              Send
+            </button>
+          </div>
+        </div>
+
+        {/* Assignment Info Section */}
+        <div className="xpo_p-6 xpo_bg-white xpo_h-full xpo_overflow-y-auto">
+          <h2 className="xpo_text-xl xpo_font-semibold xpo_mb-4 xpo_flex xpo_items-center xpo_gap-2">
+            <Tags className="xpo_w-5 xpo_h-5 xpo_text-blue-500" />
+            Assignment Details
+          </h2>
+          
+          {loading.assignment ? (
+            <div className="xpo_text-center xpo_text-gray-500">Loading...</div>
+          ) : assignment ? (
+            <div className="xpo_space-y-4">
+              <div className="xpo_flex xpo_items-center xpo_gap-3">
+                <User className="xpo_w-5 xpo_h-5 xpo_text-blue-500" />
+                <p>
+                  <span className="xpo_font-medium">Type:</span>{' '}
+                  {assignment.assignment_type}
+                </p>
+              </div>
+              <div className="xpo_flex xpo_items-center xpo_gap-3">
+                <DollarSign className="xpo_w-5 xpo_h-5 xpo_text-green-500" />
+                <p>
+                  <span className="xpo_font-medium">Token Cost:</span>{' '}
+                  {assignment.tokens_cost}
+                </p>
+              </div>
+              <div className="xpo_flex xpo_items-center xpo_gap-3">
+                <Clock className="xpo_w-5 xpo_h-5 xpo_text-orange-500" />
+                <p>
+                  <span className="xpo_font-medium">Budget:</span>{' '}
+                  {assignment.budgets}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="xpo_text-center xpo_text-red-500">No Assignment Found</div>
           )}
         </div>
-
-        <div className="xpo_flex-1 xpo_overflow-y-auto xpo_p-4 xpo_space-y-4 xpo_bg-gray-50">
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`xpo_max-w-xl xpo_px-4 xpo_py-2 xpo_rounded-xl ${
-                msg.agent_id === assignment?.agent_id
-                  ? 'xpo_bg-blue-100 xpo_self-start'
-                  : 'xpo_bg-green-100 xpo_self-end'
-              }`}
-            >
-              <p className="xpo_text-sm">{msg.content}</p>
-            </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-
-        <div className="xpo_p-4 xpo_border-t xpo_bg-white xpo_flex xpo_gap-2">
-          <textarea
-            placeholder="Type message..."
-            value={input}
-            onKeyDown={handleKeyDown}
-            onChange={(e) => setInput(e.target.value)}
-            className="xpo_flex-1 xpo_px-3 xpo_py-2 xpo_border xpo_rounded-md xpo_resize-none xpo_h-20"
-          />
-          <button 
-            onClick={sendMessage} 
-            disabled={loading.sending || !input.trim()}
-            className="xpo_bg-blue-500 xpo_text-white xpo_px-4 xpo_py-2 xpo_rounded-md xpo_flex xpo_items-center xpo_gap-2 disabled:xpo_opacity-50"
-          >
-            <Send className="xpo_w-4 xpo_h-4" />
-            Send
-          </button>
-        </div>
       </div>
-
-      {/* Assignment Info Section */}
-      <div className="xpo_p-6 xpo_bg-white xpo_h-full xpo_overflow-y-auto">
-        <h2 className="xpo_text-xl xpo_font-semibold xpo_mb-4 xpo_flex xpo_items-center xpo_gap-2">
-          <Tags className="xpo_w-5 xpo_h-5 xpo_text-blue-500" />
-          Assignment Details
-        </h2>
-        
-        {loading.assignment ? (
-          <div className="xpo_text-center xpo_text-gray-500">Loading...</div>
-        ) : assignment ? (
-          <div className="xpo_space-y-4">
-            <div className="xpo_flex xpo_items-center xpo_gap-3">
-              <User className="xpo_w-5 xpo_h-5 xpo_text-blue-500" />
-              <p>
-                <span className="xpo_font-medium">Type:</span>{' '}
-                {assignment.assignment_type}
-              </p>
-            </div>
-            <div className="xpo_flex xpo_items-center xpo_gap-3">
-              <DollarSign className="xpo_w-5 xpo_h-5 xpo_text-green-500" />
-              <p>
-                <span className="xpo_font-medium">Token Cost:</span>{' '}
-                {assignment.tokens_cost}
-              </p>
-            </div>
-            <div className="xpo_flex xpo_items-center xpo_gap-3">
-              <Clock className="xpo_w-5 xpo_h-5 xpo_text-orange-500" />
-              <p>
-                <span className="xpo_font-medium">Budget:</span>{' '}
-                {assignment.budgets}
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div className="xpo_text-center xpo_text-red-500">No Assignment Found</div>
-        )}
-      </div>
-    </div>
+    </>
   );
 };
 

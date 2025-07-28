@@ -19,8 +19,8 @@ class Project {
 	 * Loads necessary classes and sets up hooks.
 	 */
 	protected function __construct() {
-		// $this->setup_hunts();
-		$this->setup_hooks();
+		$this->setup_hunts();
+		// $this->setup_hooks();
 	}
 	protected function setup_hooks() {
 			// Hunts::get_instance();
@@ -38,7 +38,7 @@ class Project {
 		Option::get_instance();
 		Assets::get_instance();
 		Llmstxt::get_instance();
-			Links::get_instance();
+			Affiliate::get_instance();
 		// 		Payout::get_instance();
 		// 		Stores::get_instance();
 		// 	Visitor::get_instance();

@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object Detection Location System</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .connection-status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .connected { background: #27ae60; }
+        .disconnected { background: #e74c3c; }
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .device-list {
+            list-style: none;
+            padding: 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .device-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #ecf0f1;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+            transition: all 0.3s ease;
+        }
+        .device-item.online {
+            border-left-color: #27ae60;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        .detection-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .location-result {
+            padding: 15px;
+            margin: 10px 0;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            animation: slideIn 0.5s ease-out;
+        }
+        .map-container {
+            height: 400px;
+            background: #e8e8e8;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #666;
+            position: relative;
+            overflow: hidden;
+        }
+        .map-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .map-point {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: mapPulse 1.5s infinite;
+        }
+        .device-point {
+            background: #3498db;
+            border: 2px solid white;
+        }
+        .object-point {
+            background: #e74c3c;
+            border: 2px solid white;
+        }
+        @keyframes mapPulse {
+            0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(52, 152, 219, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        .stat-item {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .stat-item:hover {
+            transform: translateY(-5px);
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #3498db;
+            transition: color 0.3s ease;
+        }
+        .stat-number.updated {
+            color: #27ae60;
+        }
+        .controls {
+            margin: 20px 0;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .status-online { color: #27ae60; }
+        .status-offline { color: #e74c3c; }
+        .filter-controls {
+            margin-bottom: 15px;
+        }
+        .filter-controls select, .filter-controls input {
+            padding: 5px 10px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .scrollable-content {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .accuracy-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .accuracy-high { background: #27ae60; }
+        .accuracy-medium { background: #f39c12; }
+        .accuracy-low { background: #e74c3c; }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: #27ae60;
+            color: white;
+            border-radius: 4px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        .notification.show {
+            transform: translateX(0);
+        }
+        .notification.error {
+            background: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Multi-Device Object Detection & Location System</h1>
+            <p>Real-time collaborative object detection and precise location calculation</p>
+            <span class="connection-status disconnected" id="connectionStatus">Disconnected</span>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number" id="deviceCount">0</div>
+                <div>Connected Devices</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="detectionCount">0</div>
+                <div>Total Detections</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="locationCount">0</div>
+                <div>Calculated Locations</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="accuracyAverage">0%</div>
+                <div>Average Accuracy</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button onclick="clearDetections()">Clear All Detections</button>
+            <button onclick="refreshDevices()">Refresh Devices</button>
+            <button onclick="exportData()">Export Data</button>
+            <button onclick="toggleAutoRefresh()" id="autoRefreshBtn">Enable Auto Refresh</button>
+            <button onclick="simulateDetection()">Simulate Detection</button>
+        </div>
+
+        <div class="dashboard">
+            <div class="panel">
+                <h3>Connected Devices</h3>
+                <div class="filter-controls">
+                    <select id="deviceFilter" onchange="filterDevices()">
+                        <option value="all">All Devices</option>
+                        <option value="online">Online Only</option>
+                        <option value="detecting">Detecting</option>
+                    </select>
+                </div>
+                <ul class="device-list" id="deviceList">
+                    <li>No devices connected</li>
+                </ul>
+            </div>
+
+            <div class="panel">
+                <h3>Recent Detections</h3>
+                <div class="filter-controls">
+                    <select id="detectionFilter" onchange="filterDetections()">
+                        <option value="all">All Objects</option>
+                        <option value="person">Person</option>
+                        <option value="car">Car</option>
+                        <option value="bicycle">Bicycle</option>
+                    </select>
+                    <input type="number" id="detectionLimit" value="10" min="5" max="50" onchange="filterDetections()" placeholder="Limit">
+                </div>
+                <div class="scrollable-content" id="detectionList">
+                    <p>No detections yet</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h3>Calculated Object Locations</h3>
+            <div class="filter-controls">
+                <input type="text" id="locationSearch" placeholder="Search by object type..." onkeyup="filterLocations()">
+                <select id="accuracyFilter" onchange="filterLocations()">
+                    <option value="all">All Accuracy</option>
+                    <option value="high">High (>70%)</option>
+                    <option value="medium">Medium (30-70%)</option>
+                    <option value="low">Low (<30%)</option>
+                </select>
+            </div>
+            <div class="scrollable-content" id="locationList">
+                <p>No locations calculated yet</p>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h3>Location Map</h3>
+            <div class="map-container" id="mapContainer">
+                <div class="map-grid"></div>
+                <div style="position: relative; z-index: 10;">
+                    Map visualization<br>
+                    <small>Devices and detected objects will appear here</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        const socket = io();
+        let devices = [];
+        let detections = [];
+        let calculatedLocations = [];
+        let autoRefresh = false;
+        let autoRefreshInterval;
+
+        // Socket event listeners
+        socket.on('connect', () => {
+            console.log('Connected to server');
+            updateConnectionStatus(true);
+            socket.emit('get-devices');
+            showNotification('Connected to server', false);
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Disconnected from server');
+            updateConnectionStatus(false);
+            showNotification('Disconnected from server', true);
+        });
+
+        socket.on('devices-updated', (deviceList) => {
+            devices = deviceList;
+            updateDeviceList();
+            updateStats();
+            updateMap();
+        });
+
+        socket.on('object-detection', (detection) => {
+            detections.push(detection);
+            updateDetectionList();
+            updateStats();
+            showNotification(`New ${detection.objectType} detected by ${detection.deviceName}`, false);
+        });
+
+        socket.on('object-location-calculated', (location) => {
+            calculatedLocations.push(location);
+            updateLocationList();
+            updateStats();
+            updateMap();
+            showNotification(`Location calculated for ${location.objectType} with ${location.accuracy.toFixed(1)}% accuracy`, false);
+        });
+
+        socket.on('detections-cleared', () => {
+            detections = [];
+            calculatedLocations = [];
+            updateDetectionList();
+            updateLocationList();
+            updateStats();
+            updateMap();
+            showNotification('All detections cleared', false);
+        });
+
+        // Update functions
+        function updateConnectionStatus(connected) {
+            const statusElement = document.getElementById('connectionStatus');
+            if (connected) {
+                statusElement.textContent = 'Connected';
+                statusElement.className = 'connection-status connected';
+            } else {
+                statusElement.textContent = 'Disconnected';
+                statusElement.className = 'connection-status disconnected';
+            }
+        }
+
+        function updateDeviceList() {
+            const deviceList = document.getElementById('deviceList');
+            const filter = document.getElementById('deviceFilter').value;
+            
+            let filteredDevices = devices;
+            if (filter === 'online') {
+                filteredDevices = devices.filter(d => Date.now() - d.lastSeen < 30000);
+            } else if (filter === 'detecting') {
+                filteredDevices = devices.filter(d => d.status === 'detecting');
+            }
+            
+            if (filteredDevices.length === 0) {
+                deviceList.innerHTML = '<li>No devices match filter</li>';
+                return;
+            }
+
+            deviceList.innerHTML = filteredDevices.map(device => {
+                const isOnline = Date.now() - device.lastSeen < 30000;
+                const batteryInfo = device.battery ? `Battery: ${device.battery}%` : '';
+                return `
+                    <li class="device-item ${isOnline ? 'online' : ''}">
+                        <strong>${device.name}</strong> (ID: ${device.id.substr(0, 8)})<br>
+                        <small>GPS: ${device.gps.latitude.toFixed(6)}, ${device.gps.longitude.toFixed(6)}</small><br>
+                        <small>Last seen: ${new Date(device.lastSeen).toLocaleTimeString()}</small><br>
+                        ${batteryInfo ? `<small>${batteryInfo}</small><br>` : ''}
+                        <small>Status: <span class="${isOnline ? 'status-online' : 'status-offline'}">${device.status || 'idle'}</span></small>
+                    </li>
+                `;
+            }).join('');
+        }
+
+        function updateDetectionList() {
+            const detectionList = document.getElementById('detectionList');
+            const filter = document.getElementById('detectionFilter').value;
+            const limit = parseInt(document.getElementById('detectionLimit').value) || 10;
+            
+            let filteredDetections = detections;
+            if (filter !== 'all') {
+                filteredDetections = detections.filter(d => d.objectType === filter);
+            }
+            
+            if (filteredDetections.length === 0) {
+                detectionList.innerHTML = '<p>No detections match filter</p>';
+                return;
+            }
+
+            const recent = filteredDetections.slice(-limit).reverse();
+            detectionList.innerHTML = recent.map(detection => `
+                <div class="detection-item">
+                    <strong>${detection.objectType}</strong> 
+                    (Confidence: ${(detection.confidence * 100).toFixed(1)}%)<br>
+                    <small>Device: ${detection.deviceName}</small><br>
+                    <small>Distance: ${detection.estimatedDistance.toFixed(1)}m</small><br>
+                    <small>Camera Angle: ${detection.cameraAngle ? detection.cameraAngle.toFixed(1) + '°' : 'N/A'}</small><br>
+                    <small>Time: ${new Date(detection.timestamp).toLocaleTimeString()}</small>
+                </div>
+            `).join('');
+        }
+
+        function updateLocationList() {
+            const locationList = document.getElementById('locationList');
+            const searchTerm = document.getElementById('locationSearch').value.toLowerCase();
+            const accuracyFilter = document.getElementById('accuracyFilter').value;
+            
+            let filteredLocations = calculatedLocations;
+            
+            if (searchTerm) {
+                filteredLocations = filteredLocations.filter(l => 
+                    l.objectType.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            if (accuracyFilter !== 'all') {
+                filteredLocations = filteredLocations.filter(l => {
+                    const accuracy = l.accuracy;
+                    switch(accuracyFilter) {
+                        case 'high': return accuracy > 70;
+                        case 'medium': return accuracy >= 30 && accuracy <= 70;
+                        case 'low': return accuracy < 30;
+                        default: return true;
+                    }
+                });
+            }
+            
+            if (filteredLocations.length === 0) {
+                locationList.innerHTML = '<p>No locations match filter</p>';
+                return;
+            }
+
+            locationList.innerHTML = filteredLocations.map(location => {
+                const accuracyClass = location.accuracy > 70 ? 'accuracy-high' : 
+                                    location.accuracy >= 30 ? 'accuracy-medium' : 'accuracy-low';
+                
+                return `
+                    <div class="location-result">
+                        <span class="accuracy-indicator ${accuracyClass}"></span>
+                        <strong>${location.objectType}</strong> located at:<br>
+                        <strong>Lat: ${location.location.latitude.toFixed(8)}</strong><br>
+                        <strong>Lng: ${location.location.longitude.toFixed(8)}</strong><br>
+                        <small>Accuracy: ${location.accuracy.toFixed(1)}%</small><br>
+                        <small>Detected by: ${location.detectedBy.join(', ')}</small><br>
+                        <small>Time: ${new Date(location.timestamp).toLocaleTimeString()}</small><br>
+                        <button onclick="showOnMap(${location.location.latitude}, ${location.location.longitude})" 
+                                style="font-size: 10px; padding: 2px 8px; margin-top: 5px;">Show on Map</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateStats() {
+            const deviceCount = document.getElementById('deviceCount');
+            const detectionCount = document.getElementById('detectionCount');
+            const locationCount = document.getElementById('locationCount');
+            const accuracyAverage = document.getElementById('accuracyAverage');
+            
+            // Animate stat updates
+            animateStatUpdate(deviceCount, devices.length);
+            animateStatUpdate(detectionCount, detections.length);
+            animateStatUpdate(locationCount, calculatedLocations.length);
+            
+            // Calculate average accuracy
+            const avgAccuracy = calculatedLocations.length > 0 
+                ? calculatedLocations.reduce((sum, loc) => sum + loc.accuracy, 0) / calculatedLocations.length
+                : 0;
+            animateStatUpdate(accuracyAverage, avgAccuracy.toFixed(1) + '%');
+        }
+
+        function animateStatUpdate(element, newValue) {
+            element.classList.add('updated');
+            element.textContent = newValue;
+            setTimeout(() => element.classList.remove('updated'), 1000);
+        }
+
+        function updateMap() {
+            const mapContainer = document.getElementById('mapContainer');
+            
+            // Clear existing points
+            const existingPoints = mapContainer.querySelectorAll('.map-point');
+            existingPoints.forEach(point => point.remove());
+            
+            if (devices.length === 0 && calculatedLocations.length === 0) {
+                return;
+            }
+            
+            // Calculate bounds
+            let minLat = Infinity, maxLat = -Infinity;
+            let minLng = Infinity, maxLng = -Infinity;
+            
+            devices.forEach(device => {
+                minLat = Math.min(minLat, device.gps.latitude);
+                maxLat = Math.max(maxLat, device.gps.latitude);
+                minLng = Math.min(minLng, device.gps.longitude);
+                maxLng = Math.max(maxLng, device.gps.longitude);
+            });
+            
+            calculatedLocations.forEach(location => {
+                minLat = Math.min(minLat, location.location.latitude);
+                maxLat = Math.max(maxLat, location.location.latitude);
+                minLng = Math.min(minLng, location.location.longitude);
+                maxLng = Math.max(maxLng, location.location.longitude);
+            });
+            
+            // Add some padding
+            const latPadding = (maxLat - minLat) * 0.1 || 0.001;
+            const lngPadding = (maxLng - minLng) * 0.1 || 0.001;
+            minLat -= latPadding; maxLat += latPadding;
+            minLng -= lngPadding; maxLng += lngPadding;
+            
+            // Plot devices
+            devices.forEach(device => {
+                const point = document.createElement('div');
+                point.className = 'map-point device-point';
+                point.title = `Device: ${device.name}`;
+                
+                const x = ((device.gps.longitude - minLng) / (maxLng - minLng)) * 100;
+                const y = ((maxLat - device.gps.latitude) / (maxLat - minLat)) * 100;
+                
+                point.style.left = x + '%';
+                point.style.top = y + '%';
+                
+                mapContainer.appendChild(point);
+            });
+            
+            // Plot calculated locations
+            calculatedLocations.forEach(location => {
+                const point = document.createElement('div');
+                point.className = 'map-point object-point';
+                point.title = `Object: ${location.objectType} (${location.accuracy.toFixed(1)}% accuracy)`;
+                
+                const x = ((location.location.longitude - minLng) / (maxLng - minLng)) * 100;
+                const y = ((maxLat - location.location.latitude) / (maxLat - minLat)) * 100;
+                
+                point.style.left = x + '%';
+                point.style.top = y + '%';
+                
+                mapContainer.appendChild(point);
+            });
+        }
+
+        // Control functions
+        function clearDetections() {
+            if (confirm('Are you sure you want to clear all detections?')) {
+                socket.emit('clear-detections');
+            }
+        }
+
+        function refreshDevices() {
+            socket.emit('get-devices');
+            showNotification('Devices refreshed', false);
+        }
+
+        function exportData() {
+            const data = {
+                devices: devices,
+                detections: detections,
+                calculatedLocations: calculatedLocations,
+                exportTime: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], {
+                type: 'application/json'
+            });
+            
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `object-detection-data-${Date.now()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('Data exported successfully', false);
+        }
+
+        function toggleAutoRefresh() {
+            autoRefresh = !autoRefresh;
+            const btn = document.getElementById('autoRefreshBtn');
+            
+            if (autoRefresh) {
+                btn.textContent = 'Disable Auto Refresh';
+                autoRefreshInterval = setInterval(() => {
+                    socket.emit('get-devices');
+                }, 5000);
+            } else {
+                btn.textContent = 'Enable Auto Refresh';
+                clearInterval(autoRefreshInterval);
+            }
+        }
+
+        function simulateDetection() {
+            if (devices.length === 0) {
+                showNotification('No devices connected for simulation', true);
+                return;
+            }
+            
+            const objectTypes = ['person', 'car', 'bicycle', 'dog', 'cat'];
+            const randomObject = objectTypes[Math.floor(Math.random() * objectTypes.length)];
+            
+            const mockDetection = {
+                deviceId: 'simulator',
+                deviceName: 'Simulator',
+                objectType: randomObject,
+                confidence: 0.7 + Math.random() * 0.3,
+                boundingBox: {
+                    x: Math.random() * 640,
+                    y: Math.random() * 480,
+                    width: 50 + Math.random() * 100,
+                    height: 80 + Math.random() * 150
+                },
+                timestamp: Date.now(),
+                gps: {
+                    latitude: 23.8103 + (Math.random() - 0.5) * 0.01,
+                    longitude: 90.4125 + (Math.random() - 0.5) * 0.01
+                },
+                estimatedDistance: 5 + Math.random() * 50,
+                cameraAngle: Math.random() * 360,
+                imageData: 'simulated'
+            };
+            
+            detections.push(mockDetection);
+            updateDetectionList();
+            updateStats();
+            
+            showNotification(`Simulated ${randomObject} detection`, false);
+        }
+
+        // Filter functions
+        function filterDevices() {
+            updateDeviceList();
+        }
+
+        function filterDetections() {
+            updateDetectionList();
+        }
+
+        function filterLocations() {
+            updateLocationList();
+        }
+
+        // Utility functions
+        function showOnMap(lat, lng) {
+            // Highlight the specific location on map
+            showNotification(`Location: ${lat.toFixed(6)}, ${lng.toFixed(6)}`, false);
+        }
+
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${isError ? 'error' : ''} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize dashboard
+        updateStats();
+        
+        // Auto-refresh connection status
+        setInterval(() => {
+            if (socket.connected) {
+                updateConnectionStatus(true);
+            } else {
+                updateConnectionStatus(false);
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

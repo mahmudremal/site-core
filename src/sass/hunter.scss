@@ -30,7 +30,7 @@ td.xpo_border.xpo_p-2.xpo_text-white {
 .col-odds-min-points,
 .col-hunters-sq-mi,
 .col-additional-units {
-  width: 100px;
+  width: unset;
 }
 .col-tags-given {
   width: 70px;
@@ -46,3 +46,21 @@ td.xpo_border.xpo_p-2.xpo_text-white {
     color: #135242 !important;
   }
  }
+
+ .draw-calculation-themetext {
+    font-family: 'Poppins',Helvetica,Arial,Lucida,sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: rgb(152 122 86);
+    text-align: center;
+    text-shadow: 0.08em 0.08em 0.08em #100F0F;
+    transition: letter-spacing 300ms ease 0ms;
+ }
+
+
+
+
+// body.page.page-id-250316 {overflow-y: auto !important;visibility: visible !important;}
+// body.page.page-id-250316 .container {max-width: unset;width: 100% !important;padding-top: unset !important;}
+// body.page.page-id-250316 .xpo_overflow-auto.xpo_scrollbar-thin {overflow: unset !important;height: unset !important;}
+// body.page.page-id-250316 #hunting-record-table {height: auto;position: relative;}

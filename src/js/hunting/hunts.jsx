@@ -129,6 +129,8 @@ export default function DrawTool({ params }) {
         'notes'
     ];
 
+    const titleRef = useRef(null);
+
     const fetchFilters = async () => {
         fetch(`${rest_url}hunts/filters`)
         .then(res => res.json())
@@ -281,7 +283,7 @@ export default function DrawTool({ params }) {
                     <div className="xpo_flex xpo_flex-col">
                         <div className="xpo_grid xpo_grid-cols-1 sm:xpo_grid-cols-[1fr_1fr_1fr] xpo_items-center xpo_space-x-4 xpo_p-3 xpo_border-bottom xpo_border-b-2 xpo_border-solid">
                             <div className="xpo_flex xpo_items-center xpo_space-x-4 xpo_w-full xpo_justify-center sm:xpo_justify-start">
-                                <span className="xpo_font-semibold xpo_text-xl">{__('Draw research tools')}</span>
+                                <span ref={titleRef} className="xpo_font-semibold xpo_text-xl">{__('Draw research tools')}</span>
                             </div>
                             <div className="xpo_flex xpo_justify-center xpo_space-x-2">
                                 {/* xpo_bg-white xpo_shadow-lg xpo_p-3 xpo_rounded-lg */}
@@ -298,7 +300,7 @@ export default function DrawTool({ params }) {
                                                     <div
                                                         key={i}
                                                         className={`xpo_flex xpo_flex-col xpo_cursor-pointer xpo_justify-start xpo_items-center xpo_text-center xpo_gap-2 xpo_p-2 xpo_rounded-md ${filters.species == s.id ? 'xpo_bg-[#135242] xpo_text-white' : 'xpo_text-[#135242]'}`} // xpo_bg-[#987A56] && xpo_text-[#987A56]
-                                                        onClick={e => setFilters(prev => ({...prev, species: s.id}))}
+                                                        onClick={e => sleep(300).then(() => setFilters(prev => ({...prev, species: s.id}))).then(() => sleep(1500).then(() => titleRef.current && titleRef.current.click()))}
                                                     >
                                                         {/* {AllIcons?.[s.name.toUpperCase()] ? <img src={AllIcons[s.name.toUpperCase()]} className="xpo_h-20 xpo_aspect-square" style={{filter: filters.species == s.id ? 'brightness(100)' : 'unset'}} /> : <svg width="30px" height="42px"><use xlinkHref={`#${s.name.replaceAll(' ', '-').toLowerCase()}`}></use></svg>} */}
                                                         <img src={AllIcons[s.name.toUpperCase()]} className="xpo_h-20 xpo_aspect-square" style={{filter: filters.species == s.id ? 'brightness(100)' : 'unset'}} />
@@ -318,33 +320,32 @@ export default function DrawTool({ params }) {
                                                 <span type="button" className="xpo_cursor-pointer xpo_text-start xpo_text-sm" onClick={e => setFilters(prev => ({...prev, weapon: ''}))}>{__('Clear Selection')}</span>
                                             </div>
                                             <div className="xpo_grid xpo_gap-2 xpo_grid-cols-2 md:xpo_grid-cols-3 xpo_leading-none">
-                                                <div
-                                                    className={`xpo_flex xpo_flex-col xpo_cursor-pointer xpo_justify-center xpo_items-center xpo_text-center xpo_gap-2 xpo_p-2 xpo_rounded-md ${filterOptions.weapons.map(w => w.id).every(i => filters.weapon.split(',').includes(i)) ? 'xpo_bg-[#135242] xpo_text-white' : 'xpo_text-[#135242]'}`}
-                                                    // .filter(w => AllIcons?.[w.name.toUpperCase()])
-                                                    onClick={e => setFilters(prev => ({...prev, weapon: filterOptions.weapons.map(w => w.id).join(',')}))}
-                                                >
-                                                    {/* <svg width="30px" height="42px"><use xlinkHref={`#crosshair`}></use></svg> */}
-                                                    <Crosshair size={50} />
-                                                    <span>{__('Any Weapon')}</span>
-                                                </div>
                                                 {filterOptions.weapons.sort((a, b) => a._order - b._order).map((s, i) => (
                                                     <div
                                                         key={i}
                                                         className={`xpo_flex xpo_flex-col xpo_cursor-pointer xpo_justify-center xpo_items-center xpo_text-center xpo_gap-2 xpo_p-2 xpo_rounded-md ${filters.weapon.split(',').includes(s.id) ? 'xpo_bg-[#135242] xpo_text-white' : 'xpo_text-[#135242]'}`}
-                                                        onClick={e => setFilters(prev => {
+                                                        onClick={e => sleep(300).then(() => 
+                                                        setFilters(prev => {
                                                             const prevs = prev.weapon.split(',').filter(i => i);
                                                             if (prevs.includes(s.id)) {
                                                                 return {...prev, weapon: prevs.filter(i => i != s.id).join(',')};
                                                             }
                                                             prevs.push(s.id);
                                                             return {...prev, weapon: prevs.join(',')};
-                                                        })}
+                                                        })
+                                                    ).then(() => sleep(1500).then(() => titleRef.current && titleRef.current.click()))}
                                                     >
                                                         {/* {AllIcons?.[s.name.toUpperCase()] ? <img src={AllIcons[s.name.toUpperCase()]} className="xpo_h-20 xpo_aspect-square" style={{filter: filters.weapon.split(',').includes(s.id) ? 'brightness(100)' : 'unset'}} /> : <svg width="30px" height="42px"><use xlinkHref={`#${s.name.replaceAll(' ', '-').toLowerCase()}`}></use></svg>} */}
                                                         <img src={AllIcons[s.name.toUpperCase()]} className="xpo_h-20 xpo_aspect-square" style={{filter: filters.weapon.split(',').includes(s.id) ? 'brightness(100)' : 'unset'}} />
                                                         <span>{s.name}</span>
                                                     </div>
                                                 ))}
+                                                <div onClick={e => sleep(300).then(() => setFilters(prev => ({...prev, weapon: filterOptions.weapons.map(w => w.id).join(',')}))).then(() => sleep(1500).then(() => titleRef.current && titleRef.current.click()))} className={`xpo_flex xpo_flex-col xpo_cursor-pointer xpo_justify-center xpo_items-center xpo_text-center xpo_gap-2 xpo_p-2 xpo_rounded-md ${filterOptions.weapons.map(w => w.id).every(i => filters.weapon.split(',').includes(i)) ? 'xpo_bg-[#135242] xpo_text-white' : 'xpo_text-[#135242]'}`}>
+                                                    {/* <svg width="30px" height="42px"><use xlinkHref={`#crosshair`}></use></svg> */}
+                                                    <Crosshair size={50} />
+                                                    <span>{__('Any Weapon')}</span>
+                                                </div>
+
                                             </div>
                                         </div>
                                     </Dropdown>
@@ -382,7 +383,7 @@ export default function DrawTool({ params }) {
                                                             {/* .slice(0, 5) */}
                                                             <p className="xpo_mb-6 xpo_flex xpo_items-center xpo_gap-2 xpo_text-gray-700">🐾 {filterOptions.species.filter(s => AllIcons?.[s.name.toUpperCase()]).sort((a, b) => a._order - b._order).map(s => `${s.name} `)}</p>
 
-                                                            <div className="xpo_grid xpo_grid-cols-4 xpo_gap-y-3 xpo_gap-x-6 xpo_text-gray-800">
+                                                            <div className="xpo_grid xpo_grid-cols-2 md:xpo_grid-cols-4 xpo_gap-y-3 xpo_gap-x-6 xpo_text-gray-800">
                                                                 {filterOptions.units.map((u, i) => (
                                                                     <label key={i} className="xpo_flex xpo_items-center xpo_space-x-2 xpo_cursor-pointer xpo_select-none">
                                                                         <input type="checkbox" className="xpo_accent-primary-400 xpo_cursor-pointer" defaultChecked={filters.units.split(',').find(unit => unit == u.name)} onChange={e => setFilters(prev => ({...prev, units: e.target.checked ? [...prev.units.split(',').filter(i => i), u.name].join(',') : prev.units.split(',').filter(i => i).filter(unit => unit != u.name).join(',')}))} />
@@ -578,37 +579,54 @@ export default function DrawTool({ params }) {
 
                                     <button
                                         className="xpo_relative xpo_bg-white xpo_border xpo_border-gray-300 xpo_rounded xpo_px-3 xpo_py-1 xpo_text-sm"
-                                        onClick={e => setPopup(
-                                            <div className="xpo_inset-0 xpo_z-50 xpo_flex xpo_items-center xpo_justify-center xpo_bg-black xpo_bg-opacity-40">
-                                                <div className="xpo_bg-white xpo_rounded-md xpo_shadow-lg xpo_w-full xpo_max-w-md xpo_p-6 xpo_relative xpo_flex xpo_flex-col">
-                                                    <div className="xpo_flex xpo_justify-center xpo_items-center xpo_relative xpo_border-b xpo_pb-4">
-                                                        <h2 className="xpo_text-lg xpo_font-semibold">{__('Share Data')}</h2>
-                                                        <X size={24} type="button" onClick={e => setPopup(null)} className="xpo_absolute xpo_-top-2 xpo_-right-2 xpo_z-10 xpo_cursor-pointer" />
-                                                    </div>
+                                        onClick={e => sleep(300).then(() => e.target.disabled = true).then(async () => 
+                                            await axios.post(`${rest_url}hunts/share`, {filter_data: filters})
+                                            .then(res => res.data)
+                                            .then(res => {
+                                                if (res.error) {
+                                                    throw new Error(res.error);
+                                                }
+                                                if (!res?.shortcode) {
+                                                    throw new Error(__('Share link failed to generate', 'site-core'));
+                                                }
+                                                return res.shortcode;
+                                            })
+                                            .then(shortcode => 
+                                                setPopup(
+                                                    <div className="xpo_inset-0 xpo_z-50 xpo_flex xpo_items-center xpo_justify-center xpo_bg-black xpo_bg-opacity-40">
+                                                        <div className="xpo_bg-white xpo_rounded-md xpo_shadow-lg xpo_w-full xpo_max-w-md xpo_p-6 xpo_relative xpo_flex xpo_flex-col">
+                                                            <div className="xpo_flex xpo_justify-center xpo_items-center xpo_relative xpo_border-b xpo_pb-4">
+                                                                <h2 className="xpo_text-lg xpo_font-semibold">{__('Share Data')}</h2>
+                                                                <X size={24} type="button" onClick={e => setPopup(null)} className="xpo_absolute xpo_-top-2 xpo_-right-2 xpo_z-10 xpo_cursor-pointer" />
+                                                            </div>
 
-                                                    <p className="xpo_mt-4 xpo_text-center xpo_text-sm xpo_text-gray-700">{__('Share this search with other HUNT ARIZONA ALL PAID Members!')}</p>
+                                                            <p className="xpo_mt-4 xpo_text-center xpo_text-sm xpo_text-gray-700">{__('Share this search with other HUNT ARIZONA ALL PAID Members!')}</p>
 
-                                                    <div className="xpo_mt-6 xpo_flex xpo_items-center xpo_space-x-3">
-                                                        <input
-                                                            readOnly
-                                                            type="text"
-                                                            value={`${location.href.replace(location.search, '')}?f=${btoa(JSON.stringify(filters))}`}
-                                                            className="xpo_flex-1 xpo_border xpo_border-gray-300 xpo_rounded xpo_px-4 xpo_py-2 xpo_text-sm xpo_select-all"
-                                                        />
-                                                        <button
-                                                            type="button"
-                                                            onClick={e => 
-                                                                sleep(100)
-                                                                .then(res => navigator.clipboard.writeText(`${location.href.replace(location.search, '')}?f=${btoa(JSON.stringify(filters))}`))
-                                                                .then(() => e.target.innerHTML = __('Copied'))
-                                                                .then(async () => await sleep(2000))
-                                                                .finally(() => e.target.innerHTML = __('Copy Link'))
-                                                            }
-                                                            className="xpo_bg-[#135242]/90 xpo_text-white xpo_px-4 xpo_py-2 xpo_rounded xpo_text-sm xpo_font-semibold hover:xpo_bg-[#135242]"
-                                                        >{__('Copy Link')}</button>
+                                                            <div className="xpo_mt-6 xpo_flex xpo_items-center xpo_space-x-3">
+                                                                <input
+                                                                    readOnly
+                                                                    type="text"
+                                                                    value={`${location.href.replace(location.search, '')}?f=${shortcode}`}
+                                                                    className="xpo_flex-1 xpo_border xpo_border-gray-300 xpo_rounded xpo_px-4 xpo_py-2 xpo_text-sm xpo_select-all"
+                                                                />
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={e => 
+                                                                        sleep(100)
+                                                                        .then(res => navigator.clipboard.writeText(`${location.href.replace(location.search, '')}?f=${shortcode}`))
+                                                                        .then(() => e.target.innerHTML = __('Copied'))
+                                                                        .then(async () => await sleep(2000))
+                                                                        .finally(() => e.target.innerHTML = __('Copy Link'))
+                                                                    }
+                                                                    className="xpo_bg-[#135242]/90 xpo_text-white xpo_px-4 xpo_py-2 xpo_rounded xpo_text-sm xpo_font-semibold hover:xpo_bg-[#135242]"
+                                                                >{__('Copy Link')}</button>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
+                                                )
+                                            )
+                                            .catch(err => alert(err?.message))
+                                            .finally(() => e.target.disabled = false)
                                         )}
                                     >{__('Share')}</button>
                                     
@@ -854,7 +872,7 @@ export default function DrawTool({ params }) {
                                                     {(
                                                         viewType == 2 ? tableColumns.slice(0, 8) : tableColumns
                                                     ).map((col, index) => (
-                                                        <th key={index} className={`xpo_sticky xpo_top-0 xpo_border xpo_px-4 xpo_py-2 xpo_bg-gray-100 xpo_text-gray-900 xpo_whitespace-normal ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''} ${`col-${tablecolumnclass[index]}`}`}>{viewType == 2 && index == 7 ? __('View') : col}</th>
+                                                        <th key={index} className={`xpo_sticky xpo_top-0 xpo_border xpo_px-4 xpo_py-2 xpo_bg-gray-100 xpo_text-gray-900 xpo_whitespace-normal ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : ''} ${`col-${tablecolumnclass[index]}`}`}>{viewType == 2 && index == 7 ? __('View') : col}</th>
                                                     ))}
                                                 </tr>
                                             </thead>
@@ -876,16 +894,16 @@ export default function DrawTool({ params }) {
                                                     ) : (
                                                         hunts.map((hunt, hIndex) => viewType == 2 ? (
                                                             <tr key={hIndex}>
-                                                                {/* <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.app_year}</td> */}
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.document_id}</td>
-                                                                {/* <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt?.state?.name}</td> */}
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.gmu?.name}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.bag_type?.name}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.species.name || ''}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.weapon?.name}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.start_date || __('N/A')} - {hunt.end_date || __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.user_odds || __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>
+                                                                {/* <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.app_year}</td> */}
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.document_id}</td>
+                                                                {/* <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt?.state?.name}</td> */}
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.gmu?.name}</td>
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.bag_type?.name}</td>
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.species.name || ''}</td>
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.weapon?.name}</td>
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.start_date || __('N/A')} - {hunt.end_date || __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.user_odds || __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>
                                                                     <Eye
                                                                         type="button"
                                                                         onClick={(e) => setPopup(
@@ -936,16 +954,16 @@ export default function DrawTool({ params }) {
                                                             </tr>
                                                         ) : (
                                                             <tr key={hIndex}>
-                                                                {/* <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.app_year || __('N/A')}</td> */}
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.document_id || __('N/A')}</td>
-                                                                {/* <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt?.state?.name || __('N/A')}</td> */}
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.gmu?.name || __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.bag_type?.name || __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.species.name || __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.weapon?.name || __('N/A')}</td>
-                                                                {/* <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.season_type || __('N/A')}</td> */}
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.start_date ? strtotime(hunt.start_date).format('MMM, DD') : __('N/A')} - {hunt.end_date ? strtotime(hunt.end_date).format('MMM, DD') : __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{
+                                                                {/* <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.app_year || __('N/A')}</td> */}
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.document_id || __('N/A')}</td>
+                                                                {/* <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt?.state?.name || __('N/A')}</td> */}
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.gmu?.name || __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.bag_type?.name || __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.species.name || __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.weapon?.name || __('N/A')}</td>
+                                                                {/* <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.season_type || __('N/A')}</td> */}
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.start_date ? strtotime(hunt.start_date).format('MMM, DD') : __('N/A')} - {hunt.end_date ? strtotime(hunt.end_date).format('MMM, DD') : __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{
                                                                     sprintf(__('%s%s @ %s pts'),
                                                                     ((hunt.odds[points] / 
                                                                         // hunt.odds[hunt.odds.length + 1]
@@ -953,14 +971,14 @@ export default function DrawTool({ params }) {
                                                                     ) * (hunt.user_odds * 100) / 100).toFixed(1)
                                                                     , '%', points)
                                                                 }</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{false && hunt.user_odds ? hunt.user_odds.toFixed(3) : __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.tags_given || __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.harvest_rate ? hunt.harvest_rate.toFixed(2) + '%' : __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.gmu?.public_sqmi ? hunt.gmu.public_sqmi.toFixed(2) : __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{(hunt.gmu?.public_ratio).toFixed(0)}%</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.hunters_per_sqmi ? hunt.hunters_per_sqmi.toFixed(2) : __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.additional_units || __('N/A')}</td>
-                                                                <td className={`xpo_border xpo_p-2 xpo_text-white ${viewType == 1 ? '!xpo_p-0 xpo_text-[16px]' : ''}`}>{hunt.notes || __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{false && hunt.user_odds ? hunt.user_odds.toFixed(3) : __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.tags_given || __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.harvest_rate ? hunt.harvest_rate.toFixed(2) + '%' : __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.gmu?.public_sqmi ? hunt.gmu.public_sqmi.toFixed(2) : __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{(hunt.gmu?.public_ratio).toFixed(0)}%</td>
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.hunters_per_sqmi ? hunt.hunters_per_sqmi.toFixed(2) : __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.additional_units || __('N/A')}</td>
+                                                                <td className={`xpo_border xpo_text-white ${viewType == 1 ? '!xpo_p-0 !xpo_px-2 xpo_text-[16px]' : 'xpo_p-2'}`}>{hunt.notes || __('N/A')}</td>
                                                             </tr>
                                                         ))
                                                     )}

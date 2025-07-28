@@ -26,7 +26,7 @@ class Assets {
 		add_action('wp_enqueue_scripts', [ $this, 'register_styles' ]);
 		add_action('wp_enqueue_scripts', [ $this, 'register_scripts' ]);
 		add_action('admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ], 10, 1);
-		add_filter('partnershipmang/siteconfig', [ $this, 'siteConfig' ], 1, 1);
+		add_filter('sitecorejs/siteconfig', [ $this, 'siteConfig' ], 1, 1);
 	}
 
 	/**
@@ -65,7 +65,7 @@ class Assets {
 		// wp_register_style('site-core-admin', WP_SITECORE_BUILD_CSS_URI . '/admin.css', [], $this->filemtime(WP_SITECORE_BUILD_CSS_DIR_PATH . '/admin.css'), 'all');
 		// wp_register_script('site-core-admin', WP_SITECORE_BUILD_JS_URI . '/admin.js', [], $this->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/admin.js'), true);
 		// wp_register_script('site-core-setting', WP_SITECORE_BUILD_JS_URI . '/setting.js', [], $this->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/setting.js'), true);
-		// wp_localize_script('site-core-admin', 'siteCoreConfig', apply_filters('partnershipmang/siteconfig', []));
+		// wp_localize_script('site-core-admin', 'siteCoreConfig', apply_filters('sitecorejs/siteconfig', []));
 		// if ($curr_page == 'settings_page_site-core') {
 		// 	wp_enqueue_script('site-core-setting');
 		// }

@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
 
-const location_host = `https://${location.host}/vivianeokorie`;
+const location_host = `https://${location.host}`;
 
 export const nl2br = (str) => {
     if (typeof str !== 'string') return str;
@@ -16,8 +16,8 @@ export const site_url = (url) => {
     if (url.startsWith('/')) {
         url = url.substring(1);
     }
-    // return `${location_host}/${url}`;
-    return chrome.runtime.getURL(url);
+    return `${window?.siteCoreConfig?.site_url??location.origin}/${url}`;
+    // return chrome.runtime.getURL(url);
 }
 export const home_route = (url) => {
     if (url.startsWith('/')) {
@@ -38,14 +38,14 @@ export const rest_url = (url) => {
         url = url.substring(1);
     }
     // return site_url(`wp-json/${url}`);
-    return `${location_host}/wp-json/${url}`;
+    return `${window?.wpApiSettings?.root ?? `${location_host}/wp-json/`}${url}`;
 }
 
 export const app_url = (url) => {
     if (url.startsWith('/')) {
         url = url.substring(1);
     }
-    return `${siteCoreConfig?.appURI}/${url}`
+    return `${window?.siteCoreConfig?.appURI}/${url}`
 }
 
 export const get_page = () => {
@@ -58,7 +58,7 @@ export const request_headers = () => {
     return {
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${siteCoreConfig.ajax_nonce}`
+            'Authorization': `Bearer ${window?.siteCoreConfig.ajax_nonce}`
         }
     }
 }

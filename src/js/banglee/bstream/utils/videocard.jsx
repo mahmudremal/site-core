@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Play, Eye, Clock, MoreVertical, Bookmark, Share2 } from 'lucide-react';
+import { home_route } from '@banglee/core';
+import { Link } from 'react-router-dom';
+import { __ } from '@js/utils';
 
 const VideoCard = ({ video = {} }) => {
   const { 
@@ -7,7 +10,7 @@ const VideoCard = ({ video = {} }) => {
     channel = 'Unknown Channel', 
     views = 0, 
     time = 'Just now', 
-    thumbnail = null, 
+    thumbnail_url: thumbnail = null, 
     id: videoId = null,
     duration = null,
     video_url = null,
@@ -80,7 +83,10 @@ const VideoCard = ({ video = {} }) => {
   };
 
   return (
-    <div className="xpo_group xpo_relative">
+    <Link
+      className="xpo_group xpo_relative"
+      to={home_route('bstream', `/watch/${videoId}`)}
+    >
       <div
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -183,7 +189,7 @@ const VideoCard = ({ video = {} }) => {
                   className="xpo_w-10 xpo_h-10 xpo_rounded-full xpo_object-cover"
                 />
               ) : (
-                <div className="xpo_w-10 xpo_h-10 xpo_rounded-full xpo_bg-gradient-to-br xpo_from-blue-400 xpo_to-purple-500 xpo_flex xpo_items-center xpo_justify-center xpo_text-white xpo_font-semibold xpo_text-sm">
+                <div className="xpo_w-10 xpo_h-10 xpo_rounded-full xpo_bg-gradient-to-br xpo_from-primary-400 xpo_to-purple-500 xpo_flex xpo_items-center xpo_justify-center xpo_text-white xpo_font-semibold xpo_text-sm">
                   {channel.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -213,7 +219,7 @@ const VideoCard = ({ video = {} }) => {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

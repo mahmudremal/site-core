@@ -259,7 +259,7 @@ class bStreamAddon {
         // ============= VIDEO MANAGEMENT =============
         
         // Get all videos with pagination and filtering
-        router.get('/bstream/videos', (req, res) => {
+        router.get('/bstream/api/videos', (req, res) => {
             const { page = 1, limit = 20, category, search, user_id, sort = 'created_at', order = 'DESC' } = req.query;
             const offset = (page - 1) * limit;
             
@@ -303,7 +303,7 @@ class bStreamAddon {
         });
 
         // Upload video with metadata
-        router.post('/bstream/videos/upload', upload.fields([
+        router.post('/bstream/api/videos/upload', upload.fields([
             { name: 'video', maxCount: 1 },
             { name: 'thumbnail', maxCount: 1 }
         ]), (req, res) => {
@@ -341,7 +341,7 @@ class bStreamAddon {
         });
 
         // Get single video with detailed info
-        router.get('/bstream/videos/:id', (req, res) => {
+        router.get('/bstream/api/videos/:id', (req, res) => {
             const { id } = req.params;
             const { user_id } = req.query;
             
@@ -379,7 +379,7 @@ class bStreamAddon {
         });
 
         // Update video information
-        router.put('/bstream/videos/:id', (req, res) => {
+        router.put('/bstream/api/videos/:id', (req, res) => {
             const { id } = req.params;
             const { user_id, title, description, tags, category, privacy } = req.body;
             
@@ -407,7 +407,7 @@ class bStreamAddon {
         });
 
         // Delete video
-        router.delete('/bstream/videos/:id', (req, res) => {
+        router.delete('/bstream/api/videos/:id', (req, res) => {
             const { id } = req.params;
             const { user_id } = req.body;
             
@@ -448,7 +448,7 @@ class bStreamAddon {
         // ============= COMMENTS SYSTEM =============
         
         // Get comments for a video
-        router.get('/bstream/videos/:id/comments', (req, res) => {
+        router.get('/bstream/api/videos/:id/comments', (req, res) => {
             const { id } = req.params;
             const { page = 1, limit = 20, sort = 'created_at', order = 'DESC' } = req.query;
             const offset = (page - 1) * limit;
@@ -475,7 +475,7 @@ class bStreamAddon {
         });
 
         // Add comment
-        router.post('/bstream/videos/:id/comments', (req, res) => {
+        router.post('/bstream/api/videos/:id/comments', (req, res) => {
             const { id } = req.params;
             const { user_id, content, parent_id } = req.body;
             
@@ -501,7 +501,7 @@ class bStreamAddon {
         });
 
         // Get replies for a comment
-        router.get('/bstream/comments/:id/replies', (req, res) => {
+        router.get('/bstream/api/comments/:id/replies', (req, res) => {
             const { id } = req.params;
             
             const query = `
@@ -520,7 +520,7 @@ class bStreamAddon {
         });
 
         // Delete comment
-        router.delete('/bstream/comments/:id', (req, res) => {
+        router.delete('/bstream/api/comments/:id', (req, res) => {
             const { id } = req.params;
             const { user_id } = req.body;
             
@@ -552,7 +552,7 @@ class bStreamAddon {
         // ============= LIKES/DISLIKES =============
         
         // Like/dislike video
-        router.post('/bstream/videos/:id/like', (req, res) => {
+        router.post('/bstream/api/videos/:id/like', (req, res) => {
             const { id } = req.params;
             const { user_id, type } = req.body; // 'like' or 'dislike'
             
@@ -589,7 +589,7 @@ class bStreamAddon {
         });
 
         // Like/dislike comment
-        router.post('/bstream/comments/:id/like', (req, res) => {
+        router.post('/bstream/api/comments/:id/like', (req, res) => {
             const { id } = req.params;
             const { user_id } = req.body;
             
@@ -616,7 +616,7 @@ class bStreamAddon {
         // ============= LIVE STREAMING =============
         
         // Create live stream
-        router.post('/bstream/streams/create', (req, res) => {
+        router.post('/bstream/api/streams/create', (req, res) => {
             const { user_id, title, description, category } = req.body;
             const streamKey = this.generateStreamKey();
             
@@ -639,7 +639,7 @@ class bStreamAddon {
         });
 
         // Start live stream
-        router.post('/bstream/streams/:id/start', (req, res) => {
+        router.post('/bstream/api/streams/:id/start', (req, res) => {
             const { id } = req.params;
             const { user_id } = req.body;
             
@@ -672,7 +672,7 @@ class bStreamAddon {
         });
 
         // End live stream
-        router.post('/bstream/streams/:id/end', (req, res) => {
+        router.post('/bstream/api/streams/:id/end', (req, res) => {
             const { id } = req.params;
             const { user_id } = req.body;
             
@@ -699,7 +699,7 @@ class bStreamAddon {
         });
 
         // Get live streams
-        router.get('/bstream/streams/live', (req, res) => {
+        router.get('/bstream/api/streams/live', (req, res) => {
             const { page = 1, limit = 20, category } = req.query;
             const offset = (page - 1) * limit;
             
@@ -738,7 +738,7 @@ class bStreamAddon {
         });
 
         // Watch live stream
-        router.get('/bstream/streams/watch/:id', (req, res) => {
+        router.get('/bstream/api/streams/watch/:id', (req, res) => {
             const { id } = req.params;
             const { user_id } = req.query;
             
@@ -774,7 +774,7 @@ class bStreamAddon {
         // ============= SUBSCRIPTIONS =============
         
         // Subscribe to channel
-        router.post('/bstream/subscribe', (req, res) => {
+        router.post('/bstream/api/subscribe', (req, res) => {
             const { subscriber_id, channel_id, notifications = true } = req.body;
             
             // Check if already subscribed
@@ -800,7 +800,7 @@ class bStreamAddon {
         });
 
         // Unsubscribe from channel
-        router.post('/bstream/unsubscribe', (req, res) => {
+        router.post('/bstream/api/unsubscribe', (req, res) => {
             const { subscriber_id, channel_id } = req.body;
             
             this.db.query(`DELETE FROM ${this.tables.subscriptions} WHERE subscriber_id = ? AND channel_id = ?`, 
@@ -819,7 +819,7 @@ class bStreamAddon {
         });
 
         // Get user subscriptions
-        router.get('/bstream/subscriptions/:userId', (req, res) => {
+        router.get('/bstream/api/subscriptions/:userId', (req, res) => {
             const { userId } = req.params;
             
             const query = `
@@ -837,7 +837,7 @@ class bStreamAddon {
         });
 
         // Get subscription feed
-        router.get('/bstream/feed/:userId', (req, res) => {
+        router.get('/bstream/api/feed/:userId', (req, res) => {
             const { userId } = req.params;
             const { page = 1, limit = 20 } = req.query;
             const offset = (page - 1) * limit;
@@ -866,7 +866,7 @@ class bStreamAddon {
         // ============= PLAYLISTS =============
         
         // Create playlist
-        router.post('/bstream/playlists', (req, res) => {
+        router.post('/bstream/api/playlists', (req, res) => {
             const { user_id, title, description, privacy = 'public' } = req.body;
             
             const query = `INSERT INTO ${this.tables.playlists} (user_id, title, description, privacy) VALUES (?, ?, ?, ?)`;
@@ -881,7 +881,7 @@ class bStreamAddon {
         });
 
         // Get user playlists
-        router.get('/bstream/playlists/user/:userId', (req, res) => {
+        router.get('/bstream/api/playlists/user/:userId', (req, res) => {
             const { userId } = req.params;
             const { includePrivate = false } = req.query;
             
@@ -901,7 +901,7 @@ class bStreamAddon {
         });
 
         // Get playlist with videos
-        router.get('/bstream/playlists/:id', (req, res) => {
+        router.get('/bstream/api/playlists/:id', (req, res) => {
             const { id } = req.params;
             
             // Get playlist info
@@ -933,7 +933,7 @@ class bStreamAddon {
         });
 
         // Add video to playlist
-        router.post('/bstream/playlists/:id/videos', (req, res) => {
+        router.post('/bstream/api/playlists/:id/videos', (req, res) => {
             const { id } = req.params;
             const { user_id, video_id } = req.body;
             
@@ -974,7 +974,7 @@ class bStreamAddon {
         });
 
         // Remove video from playlist
-        router.delete('/bstream/playlists/:id/videos/:videoId', (req, res) => {
+        router.delete('/bstream/api/playlists/:id/videos/:videoId', (req, res) => {
             const { id, videoId } = req.params;
             const { user_id } = req.body;
             
@@ -1008,7 +1008,7 @@ class bStreamAddon {
         // ============= WATCH HISTORY =============
         
         // Record watch history
-        router.post('/bstream/watch', (req, res) => {
+        router.post('/bstream/api/watch', (req, res) => {
             const { user_id, video_id, watch_duration, completed = false } = req.body;
             
             // Check if already watched
@@ -1035,7 +1035,7 @@ class bStreamAddon {
         });
 
         // Get watch history
-        router.get('/bstream/history/:userId', (req, res) => {
+        router.get('/bstream/api/history/:userId', (req, res) => {
             const { userId } = req.params;
             const { page = 1, limit = 20 } = req.query;
             const offset = (page - 1) * limit;
@@ -1064,7 +1064,7 @@ class bStreamAddon {
         // ============= SEARCH =============
         
         // Search videos
-        router.get('/bstream/search', (req, res) => {
+        router.get('/bstream/api/search', (req, res) => {
             const { q, type = 'video', category, duration, upload_date, sort = 'relevance', page = 1, limit = 20, user_id } = req.query;
             const offset = (page - 1) * limit;
             
@@ -1183,7 +1183,7 @@ class bStreamAddon {
         });
 
         // Get search suggestions
-        router.get('/bstream/search/suggestions', (req, res) => {
+        router.get('/bstream/api/search/suggestions', (req, res) => {
             const { q } = req.query;
             
             if (!q || q.length < 2) {
@@ -1210,7 +1210,7 @@ class bStreamAddon {
         // ============= REPORTS =============
         
         // Report video/comment
-        router.post('/bstream/report', (req, res) => {
+        router.post('/bstream/api/report', (req, res) => {
             const { user_id, video_id, comment_id, reason, description } = req.body;
             
             if (!video_id && !comment_id) {
@@ -1228,7 +1228,7 @@ class bStreamAddon {
         // ============= CHANNEL MANAGEMENT =============
         
         // Create/update channel
-        router.post('/bstream/channels', upload.fields([
+        router.post('/bstream/api/channels', upload.fields([
             { name: 'avatar', maxCount: 1 },
             { name: 'banner', maxCount: 1 }
         ]), (req, res) => {
@@ -1281,7 +1281,7 @@ class bStreamAddon {
         });
 
         // Get channel info
-        router.get('/bstream/channels/:userId', (req, res) => {
+        router.get('/bstream/api/channels/:userId', (req, res) => {
             const { userId } = req.params;
             
             const query = `
@@ -1305,7 +1305,7 @@ class bStreamAddon {
         // ============= ANALYTICS =============
         
         // Get video analytics
-        router.get('/bstream/analytics/video/:id', (req, res) => {
+        router.get('/bstream/api/analytics/video/:id', (req, res) => {
             const { id } = req.params;
             const { user_id } = req.query;
             
@@ -1337,7 +1337,7 @@ class bStreamAddon {
                 });
             });
         });
-        router.get('/bstream/analytics/channel/:userId', (req, res) => {
+        router.get('/bstream/api/analytics/channel/:userId', (req, res) => {
             const { userId } = req.params;
             const { user_id } = req.query;
             
@@ -1368,7 +1368,7 @@ class bStreamAddon {
         });
 
         // Get detailed analytics with date range
-        router.get('/bstream/analytics/detailed/:userId', (req, res) => {
+        router.get('/bstream/api/analytics/detailed/:userId', (req, res) => {
             const { userId } = req.params;
             const { user_id, days = 30 } = req.query;
             
@@ -1438,7 +1438,7 @@ class bStreamAddon {
         // ============= NOTIFICATIONS =============
         
         // Get user notifications
-        router.get('/bstream/notifications/:userId', (req, res) => {
+        router.get('/bstream/api/notifications/:userId', (req, res) => {
             const { userId } = req.params;
             const { limit = 20, offset = 0, unread_only = 'false' } = req.query;
             
@@ -1460,7 +1460,7 @@ class bStreamAddon {
         });
 
         // Mark notification as read
-        router.put('/bstream/notifications/:id/read', (req, res) => {
+        router.put('/bstream/api/notifications/:id/read', (req, res) => {
             const { id } = req.params;
             const { user_id } = req.body;
             
@@ -1486,7 +1486,7 @@ class bStreamAddon {
         });
 
         // Mark all notifications as read
-        router.put('/bstream/notifications/:userId/read-all', (req, res) => {
+        router.put('/bstream/api/notifications/:userId/read-all', (req, res) => {
             const { userId } = req.params;
             
             this.db.query(
@@ -1500,7 +1500,7 @@ class bStreamAddon {
         });
 
         // Delete notification
-        router.delete('/bstream/notifications/:id', (req, res) => {
+        router.delete('/bstream/api/notifications/:id', (req, res) => {
             const { id } = req.params;
             const { user_id } = req.query;
             
@@ -1524,7 +1524,7 @@ class bStreamAddon {
         // ============= ADMIN ROUTES =============
         
         // Get all reports (admin only)
-        router.get('/bstream/admin/reports', (req, res) => {
+        router.get('/bstream/api/admin/reports', (req, res) => {
             const { status = 'pending', limit = 50, offset = 0 } = req.query;
             
             let query = `
@@ -1554,7 +1554,7 @@ class bStreamAddon {
         });
 
         // Update report status (admin only)
-        router.put('/bstream/admin/reports/:id', (req, res) => {
+        router.put('/bstream/api/admin/reports/:id', (req, res) => {
             const { id } = req.params;
             const { status } = req.body;
             
@@ -1576,7 +1576,7 @@ class bStreamAddon {
         });
 
         // Get platform statistics (admin only)
-        router.get('/bstream/admin/stats', (req, res) => {
+        router.get('/bstream/api/admin/stats', (req, res) => {
             const statsQueries = {
                 totalVideos: `SELECT COUNT(*) as count FROM ${this.tables.videos}`,
                 totalChannels: `SELECT COUNT(*) as count FROM ${this.tables.channels}`,
@@ -1611,7 +1611,7 @@ class bStreamAddon {
         // ============= TRENDING & RECOMMENDATIONS =============
         
         // Get trending videos
-        router.get('/bstream/trending', (req, res) => {
+        router.get('/bstream/api/trending', (req, res) => {
             const { category, limit = 20, time_range = '7' } = req.query;
             
             let query = `
@@ -1641,7 +1641,7 @@ class bStreamAddon {
         });
 
         // Get recommended videos for user
-        router.get('/bstream/recommendations/:userId', (req, res) => {
+        router.get('/bstream/api/recommendations/:userId', (req, res) => {
             const { userId } = req.params;
             const { limit = 20 } = req.query;
             
@@ -1682,7 +1682,7 @@ class bStreamAddon {
         // ============= UTILITY ROUTES =============
         
         // Get categories
-        router.get('/bstream/categories', (req, res) => {
+        router.get('/bstream/api/categories', (req, res) => {
             const query = `
                 SELECT category, COUNT(*) as video_count
                 FROM ${this.tables.videos}
@@ -1698,7 +1698,7 @@ class bStreamAddon {
         });
 
         // Health check
-        router.get('/bstream/health', (req, res) => {
+        router.get('/bstream/api/health', (req, res) => {
             res.json({ 
                 status: 'healthy', 
                 timestamp: new Date().toISOString(),

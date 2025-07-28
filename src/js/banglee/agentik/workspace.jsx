@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Plus, ChevronRight, Users, Calendar, Settings, Search } from 'lucide-react';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
-import { home_route } from '@banglee/core';
+import { home_route, NavMenu } from '@banglee/core';
 import { __, Popup } from '@js/utils';
 import { sprintf } from 'sprintf-js';
 
@@ -152,6 +152,7 @@ const SingleWorkspacePage = () => {
 
   return (
     <div className="xpo_min-h-screen xpo_bg-gray-50">
+      <NavMenu />
       <div className="xpo_max-w-7xl xpo_mx-auto xpo_p-6">
         {/* Workspace Header */}
         {workspace && (

@@ -143,6 +143,7 @@ class McpAddon {
     }
 
     async insertOrUpdateElement(addonName, elementName, elementType) {
+        elementName = elementName || 'n/a';
         return new Promise((resolve, reject) => {
             const query = `INSERT INTO ${this.tables.elements} (addon_name, element_name, element_type) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE updated_at = CURRENT_TIMESTAMP`;
             this.db.query(query, [addonName, elementName, elementType], (err) => {

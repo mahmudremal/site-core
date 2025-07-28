@@ -25,6 +25,7 @@ class Translations {
         add_action('shutdown', [$this, 'update_trans_list']);
 		add_action('rest_api_init', [$this, 'rest_api_init']);
         add_filter('partnership/security/api/abilities', [$this, 'api_abilities'], 10, 3);
+        add_action('elementor/dynamic_tags/register', [$this, 'register_dynamic_tags'], 10, 1);
 	}
     public function rest_api_init() {
         register_rest_route('sitecore/v1', '/languages', [
@@ -71,6 +72,14 @@ class Translations {
                 ]
             ]
 		]);
+    }
+
+    public function register_dynamic_tags($dynamic_tags) {
+        if (!class_exists('ElementorPro\Modules\DynamicTags\Module')) {
+            return;
+        }
+        include_once WP_SITECORE_DIR_PATH . '/inc/widgets/tags/translations.php';
+        $dynamic_tags->register(new Elementor_Translations_Tags());
     }
 
     public function api_abilities($abilities, $_route, $user_id) {

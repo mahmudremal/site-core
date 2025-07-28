@@ -7,7 +7,7 @@ class ClarityAddon {
         this.logEvent = logEvent;
         this.name = "clarity";
         this.apiKey = process.env.MS_CLARITY_APIKEY;
-        this.baseUrl = "https://www.clarity.ms/api/v1";
+        this.baseUrl = process.env.MS_CLARITY_ENDPOINT || "https://www.clarity.ms/api/v1";
         this.headers = {
             "Authorization": `Bearer ${this.apiKey}`,
             "Content-Type": "application/json",

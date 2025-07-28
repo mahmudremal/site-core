@@ -21,7 +21,10 @@ class HuntsClient {
             const params = JSON.parse(container.dataset.params);
             if (location.search) {
                 const searchParams = new URLSearchParams(location.search);
-                if (searchParams.get('f')) {
+                if (params._filters && params._filters != '') {
+                    params._filters = JSON.parse(params._filters);
+                }
+                if (!params._filters && searchParams.get('f')) {
                     params._filters = JSON.parse(atob(searchParams.get('f')));
                 }
             }

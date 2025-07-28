@@ -15,17 +15,18 @@ const SRC_DIR = path.resolve(__dirname, 'src');
 
 module.exports = {
   entry: {
+      // affiliate: JS_DIR + '/affiliate.js',
       // setting: JS_DIR + '/setting.js',
       // pricing: JS_DIR + '/pricing.js',
       // visitor: JS_DIR + '/visitor.js',
       // invoice: JS_DIR + '/invoice.js',
       // public: JS_DIR + '/public.js',
       // editor: JS_DIR + '/editor.js',
-      server: JS_DIR + '/server.js',
+      // server: JS_DIR + '/server.js',
       // media: JS_DIR + '/media.js',
       // admin: JS_DIR + '/admin.js',
       // popup: JS_DIR + '/popup.js',
-    // hunts: JS_DIR + '/hunts.js',
+    hunts: JS_DIR + '/hunts.js',
       // task: JS_DIR + '/task.js',
       // pwa: JS_DIR + '/pwa.js',
       // cdn: JS_DIR + '/cdn.js',

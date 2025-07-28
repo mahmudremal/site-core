@@ -24,6 +24,7 @@ class Hunts {
 			'documents'       => $wpdb->prefix . 'hunts_documents',
 			'applications'    => $wpdb->prefix . 'hunts_applications',
 			'odds'            => $wpdb->prefix . 'hunts_odds',
+			'shortner'		  => $wpdb->prefix . 'hunts_shortner',
 		];
 		$this->currentImportPoint = 0;
 		// Load events
@@ -31,7 +32,6 @@ class Hunts {
 	}
 
     protected function setup_hooks() {
-
 		add_action('rest_api_init', [$this, 'register_routes']);
         add_action('wp_enqueue_scripts', [$this, 'register_scripts']);
         add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
@@ -323,6 +323,20 @@ class Hunts {
 			]
 		]);
 
+		// /bulk_import
+		register_rest_route('sitecore/v1', '/hunts/share', [
+			'methods' => 'POST',
+			'callback' => [$this, 'api_get_share_shortner'],
+			'permission_callback' => '__return_true',
+			'args' => [
+				'filter_data'      => [
+					'type'        => 'object',
+					'required'    => true,
+					'description' => 'A csv file content matching to our template.'
+				],
+			]
+		]);
+
 	}
 
     public function register_activation_hook() {
@@ -435,6 +449,16 @@ class Hunts {
 				type VARCHAR(50)
 			) $charset_collate;"
 		);
+
+		// Shortner
+		dbDelta(
+			"CREATE TABLE IF NOT EXISTS {$this->tables->shortner} (
+				id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+				shortcode VARCHAR(50) NOT NULL,
+				visited INT NOT NULL DEFAULT 0,
+				filters TEXT
+			) $charset_collate;"
+		);
     }
 
     public function register_deactivation_hook() {
@@ -447,7 +471,7 @@ class Hunts {
 	public function register_scripts() {
         wp_register_script('site-core-hunts', WP_SITECORE_BUILD_JS_URI . '/hunts.js', [], Assets::filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/hunts.js'), true);
         wp_register_style('site-core-hunts', WP_SITECORE_BUILD_CSS_URI . '/hunts.css', [], Assets::filemtime(WP_SITECORE_BUILD_CSS_DIR_PATH . '/hunts.css'), 'all');
-		wp_localize_script('site-core-hunts', 'siteCoreConfig', apply_filters('partnershipmang/siteconfig', [
+		wp_localize_script('site-core-hunts', 'siteCoreConfig', apply_filters('sitecorejs/siteconfig', [
 			'_in' => is_user_logged_in(),
 			'rest_url' => rest_url('sitecore/v1'),
 			'publicPath' => WP_SITECORE_BUILD_URI . '/',
@@ -653,7 +677,7 @@ class Hunts {
 		
 		$_cached = get_transient('hunts_filters_data');
 		if ($_cached) {
-			return rest_ensure_response($_cached);
+			// return rest_ensure_response($_cached);
 		}
 		
 		// Fetch data from database
@@ -1568,10 +1592,52 @@ class Hunts {
 	}
 
 
+	public function api_get_share_shortner(WP_REST_Request $request) {
+		$filter_data = $request->get_param('filter_data');$response = null;
+		// $filter_data = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', stripslashes(html_entity_decode($filter_data))), true);
+		// 
+		$stringfied_filters = json_encode($filter_data);
+		global $wpdb;
+		$_exists = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT id, shortcode FROM {$this->tables->shortner} WHERE filters = %s", $stringfied_filters
+			)
+		);
+		if ($_exists) {
+			$response = (array) $_exists;
+			$response['error'] = $wpdb->last_error;
+		} else {
+			$shortcode = uniqid('h');
+			$inserted = $wpdb->insert(
+				$this->tables->shortner,
+				['shortcode' => $shortcode, 'filters' => $stringfied_filters],
+				['%s', '%s']
+			);
+			$response = [
+				'id' => $wpdb->insert_id,
+				'shortcode' => $shortcode,
+				// 'filters' => $filter_data,
+				'error' => $inserted ? null : $wpdb->last_error
+			];
+		}
+		// 
+		return rest_ensure_response($response);
+	}
 
 
 	public function hunting_table_shortcode($atts) {
 		if (apply_filters('pm_project/system/isactive', 'hunts-disabled')) {return __('Hunting record application disabled by admin.', 'site-core');}
+		$_filters = isset($_GET['f']) ? $_GET['f'] : '';
+		if (!empty($_filters)) {
+			global $wpdb;
+			$data = $wpdb->get_row(
+				$wpdb->prepare(
+					"SELECT filters FROM {$this->tables->shortner} WHERE shortcode = %s", $_filters
+				)
+			);
+			$_filters = $data && !empty($data->filters) ? $data->filters : '';
+
+		}
 		$atts = shortcode_atts([
 			'state' => '',
 			'points' => 0,
@@ -1580,7 +1646,8 @@ class Hunts {
 			'pointsType' => 'BONUS',
 			'resident' => false,
 			'page' => 1,
-			'per_page' => 10
+			'per_page' => 10,
+			'_filters' => $_filters
 		], $atts, 'hunting-record-table');
 		$atts = array_map('sanitize_text_field', $atts);
 
@@ -1590,7 +1657,7 @@ class Hunts {
 
 		ob_start();
 		?>
-		<div id="hunting-record-table" data-params='<?php echo esc_attr(json_encode($atts)); ?>'></div>
+		<div id="hunting-record-table" data-params="<?php echo esc_attr(json_encode($atts)); ?>"></div>
 		<style>#hunting-record-table {top: 0;left: 0;width: 100%;height: 100vh;margin: auto;padding: unset;position: fixed;max-width: unset;}</style>
 		<style>.xpo_bg-paper {background: radial-gradient(circle, #e0c48f 0%, #b68b4c 100%);}.xpo_font-vintage {font-family: 'Georgia', serif;}.beer-horn-flip {transform: rotateY(180deg) translateY(-50%);margin-top: 0 !important;}</style>
 		<?php
@@ -1625,55 +1692,63 @@ class Hunts {
 		
 		$atts = shortcode_atts(array(
 			'title' => __('Restricted Access', 'site-core'),
-			'description' => __('Sign up for the ALL PAID HINT ARIZONA MEMBERSHIP & APPLICATION SERVICE today for full access.', 'site-core'),
-			'button_text' => __('Sign Up', 'site-core'),
+			'description' => __('Only available to ALL PAID HUNT ARIZONA members. Sign up for the ALL PAID HUNT ARIZONA MEMBERSHIP & APPLICATION SERVICE today for full access.', 'site-core'),
+			'button_text' => __('Become a Member', 'site-core'),
 			'login_text' => __('Already an ALL PAID HUNT ARIZONA Member?', 'site-core'),
 			'login_link_text' => __('Log in here.', 'site-core'),
 			'buy_url' => site_url('/checkout/?add-to-cart=247331'),
-			'login_url' => site_url('/my-account/'),
-			'benefits_title' => __('Membership Benefits Include', 'site-core'),
+			'login_url' => site_url('/my-account/?redirect_to=' . urlencode(get_the_permalink())),
+			'benefits_title' => __('Membership Benefits Include:', 'site-core'),
 		), $atts);
 
 		ob_start();
 		?>
 		<div class="xpo_mx-auto xpo_text-center xpo_p-0 md:xpo_p-4 md:xpo_pt-0 xpo_relative xpo_rounded-md xpo_w-full xpo_max-w-3xl">
-			<div class="xpo_absolute xpo_-left-14 xpo_-translate-y-1/2 xpo_w-[150px] xpo_h-full xpo_bg-center xpo_bg-contain xpo_bg-no-repeat xpo_top-1/3" style="background-image: url('<?php echo esc_url(WP_SITECORE_BUILD_URI . '/images/7021c278bcbf3785c459.png'); ?>');"></div>
-			<div class="xpo_absolute xpo_-right-14 xpo_-translate-y-1/2 xpo_w-[150px] xpo_h-full xpo_bg-center xpo_bg-contain xpo_bg-no-repeat beer-horn-flip xpo_top-1/3" style="background-image: url('<?php echo esc_url(WP_SITECORE_BUILD_URI . '/images/7021c278bcbf3785c459.png'); ?>');"></div>
 			<div class="xpo_flex xpo_items-center xpo_gap-3">
 				<div class="xpo_flex xpo_flex-col xpo_items-center xpo_gap-3 xpo_text-[#5c3b10] xpo_text-center xpo_justify-center xpo_w-full">
-					<h1 class="xpo_text-3xl md:xpo_text-5xl xpo_font-bold xpo_tracking-wide">ARIZONA OUTFITTERS</h1>
-					<h2 class="xpo_text-3xl md:xpo_text-5xl xpo_font-bold xpo_tracking-wide">DRAW TOOL</h2>
+					<img decoding="async" src="https://huntarizona.com/wp-content/uploads/2025/07/AZO-Draw-Odds-Tool-Logo-2-300x300.png" width="238" height="238" alt="Arizone outftters draw tools" class="wp-image-251654 alignnone size-medium">
+					<!-- <h1 class="xpo_text-3xl md:xpo_text-7xl xpo_font-bold xpo_tracking-wide draw-calculation-themetext">ARIZONA OUTFITTERS</h1>
+					<h2 class="xpo_text-3xl md:xpo_text-7xl xpo_font-bold xpo_tracking-wide draw-calculation-themetext">DRAW TOOL</h2> -->
 				</div>
 			</div>
 
 			<div class="xpo_w-full xpo_relative">
-				<div class="">
+				<div class="xpo_absolute xpo_-left-14 xpo_-translate-y-1/2 xpo_w-[150px] xpo_h-full xpo_bg-center xpo_bg-contain xpo_bg-no-repeat xpo_top-1/3" style="background-image: url('<?php echo esc_url(WP_SITECORE_BUILD_URI . '/images/7021c278bcbf3785c459.png'); ?>');"></div>
+				<div class="xpo_absolute xpo_-right-14 xpo_-translate-y-1/2 xpo_w-[150px] xpo_h-full xpo_bg-center xpo_bg-contain xpo_bg-no-repeat beer-horn-flip xpo_top-1/3" style="background-image: url('<?php echo esc_url(WP_SITECORE_BUILD_URI . '/images/7021c278bcbf3785c459.png'); ?>');"></div>
+				<div class="xpo_z-10 xpo_relative" style="font-family: 'Poppins',Helvetica,Arial,Lucida,sans-serif;">
 					<div class="xpo_flex xpo_flex-nowrap xpo_justify-center">
 						<div class="">
 							<div class="xpo_bg-[#987A56] xpo_border-8 xpo_border-solid xpo_border-[#5c3b10] xpo_inline-block xpo_p-8 xpo_rounded-md xpo_shadow-lg">
 								<div class="md:xpo_w-[550px]">
 									<div class="xpo_flex xpo_flex-col xpo_gap-6 xpo_mb-6">
 
-										<div class="">
+										<div class="draw-calculation-themetext">
 											<div class="xpo_text-center xpo_relative">
-												<h2 class="xpo_text-2xl xpo_font-bold xpo_text-white xpo_mb-4">
+												<h3 class="xpo_font-bold xpo_text-white xpo_mb-4" style="font-size: 42px;">
 													<?php echo esc_html($atts['title']); ?>
-												</h2>
-												<p class="xpo_text-white xpo_mb-6">
+												</h3>
+												<p class="xpo_text-2xl xpo_text-white xpo_mb-6">
 													<?php echo esc_html($atts['description']); ?>
 												</p>
-												<a href="<?php echo esc_url($atts['buy_url']); ?>" class="xpo_bg-[#135242] hover:xpo_bg-blue-600 xpo_text-white xpo_px-6 xpo_py-2 xpo_rounded xpo_inline-flex xpo_items-center xpo_gap-2 xpo_mx-auto xpo_mb-4" target="_blank">
+												<a href="<?php echo esc_url($atts['buy_url']); ?>" class="xpo_bg-[#135242] hover:xpo_bg-[#135242]/60 xpo_text-white xpo_px-6 xpo_py-2 xpo_rounded xpo_inline-flex xpo_items-center xpo_gap-2 xpo_mx-auto xpo_mb-4" target="_blank">
 													<?php echo esc_html($atts['button_text']); ?>
 												</a>
-												<p class="xpo_text-sm xpo_text-white xpo_mb-6">
+												<p class="xpo_text-white xpo_mb-6">
 													<?php echo esc_html($atts['login_text']); ?>
-													<a href="<?php echo esc_url($atts['login_url']); ?>" class="xpo_text-white xpo_underline">
+													<a href="<?php echo esc_url($atts['login_url']); ?>" class="xpo_block xpo_text-white xpo_underline">
 														<?php echo esc_html($atts['login_link_text']); ?>
 													</a>
 												</p>
 												<div class="xpo_text-left">
-													<h3 class="xpo_font-semibold xpo_text-white xpo_mb-2"><?php echo esc_html($atts['benefits_title']); ?></h3>
-													<ul class="xpo_list-disc xpo_list-inside xpo_text-white xpo_space-y-1">
+													<h3 class="xpo_text-3xl xpo_font-semibold xpo_text-white xpo_mb-2" style="margin-top: 30px;"><?php echo esc_html($atts['benefits_title']); ?></h3>
+													<ul class="xpo_list-disc xpo_list-inside xpo_text-white xpo_space-y-1 !xpo_pb-0">
+														<li><?php echo esc_html(__('Arizona Combo Hunt & Fish License', 'site-core')); ?></li>
+														<li><?php echo esc_html(__('Combo Hunt & Fish License Renewal', 'site-core')); ?></li>
+														<li><?php echo esc_html(__('Draw Application (unlimited species)', 'site-core')); ?></li>
+														<li><?php echo esc_html(__('Point Guard Plus', 'site-core')); ?></li>
+														<li><?php echo esc_html(__('Big Game Super Raffle (unlimited species)', 'site-core')); ?></li>
+														<li><?php echo esc_html(__('Migratory Bird & Federal Waterfowl Stamp', 'site-core')); ?></li>
+														<li><?php echo esc_html(__('Tag Fees When You Are Drawn', 'site-core')); ?></li>
 														<li><?php echo esc_html(__('Real-time draw odds calculations', 'site-core')); ?></li>
 														<li><?php echo esc_html(__('Historical trends and charts', 'site-core')); ?></li>
 														<li><?php echo esc_html(__('Expert hunting insights', 'site-core')); ?></li>
@@ -1690,7 +1765,7 @@ class Hunts {
 				</div>
 			</div>
 
-			<p class="xpo_text-[#5c3b10] xpo_mt-6 xpo_max-w-3xl xpo_mx-auto">Use this tool to estimate your draw chances for big game hunts in Arizona based on species, units, hunt type, residency, and your bonus point profile. Updated annually using the latest AZGFD data.</p>
+			<p class="xpo_text-[#5c3b10] xpo_mt-6 xpo_max-w-3xl xpo_mx-auto"><?php echo esc_html(__('Use this tool to estimate your draw chances for big game hunts in Arizona based on species, units, hunt type, residency, weapon of choice, and your bonus point profile. Updated annually using the latest AZGFD data.', 'site-core')); ?></p>
 		</div>
 		<style>.beer-horn-flip {--tw-scale-x: -1;}</style>
 		<?php

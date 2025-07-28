@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import App from './App';
+import App from './content';
 import { tailwind_install } from '@js/utils';
 
 class Banglee {

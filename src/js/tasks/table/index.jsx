@@ -4,6 +4,7 @@ import 'react-phone-input-2/lib/style.css';
 import request from '@common/request';
 import { home_url, rest_url, notify, sleep, strtotime } from '@functions';
 import { ChevronsLeft, ChevronsRight, Eye, Loader, Save, SquarePen, Store, Trash2, X } from "lucide-react";
+import { sprintf } from 'sprintf-js';
 
 const __ = (t, d = null) => t;
 
@@ -135,7 +136,15 @@ const TaskTable = ({ config }) => {
                               <div className="xpo_block xpo_mt-2 xpo_max-w-lg">
                                 <div>
                                   <p>
-                                    {Object.keys(task).map(k => <><b className="xpo_mr-2 xpo_uppercase">{k.replaceAll('_', ' ')} :</b><span key={k}>{task[k]}</span><br /></>)}
+                                    {Object.keys(task).map(k => 
+                                      <span key={k}>
+                                        <b className="xpo_mr-2 xpo_uppercase">
+                                          {sprintf(__('%s:'), k.replaceAll('_', ' '))}
+                                        </b>
+                                        <span>{task[k]}</span>
+                                        <br />
+                                      </span>
+                                    )}
                                   </p>
                                 </div>
                               </div>

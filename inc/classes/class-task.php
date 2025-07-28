@@ -490,10 +490,11 @@ class Task {
         ]);
         ?>
         <div class="wrap" id="automated_task_table" data-config="<?php echo esc_attr($config); ?>">
-            <h2><?php _e('Jobs', 'site-core'); ?></h2>
+            <h2><?php echo esc_html(__('Jobs', 'site-core')); ?></h2>
         </div>
         <?php
         wp_enqueue_script('task-onboarding', WP_SITECORE_BUILD_JS_URI . '/task.js', [], Assets::filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/task.js'), true);
+        wp_enqueue_style('site-core');
     }
 
     public function screen_option() {
