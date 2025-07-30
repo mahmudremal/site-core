@@ -18,13 +18,13 @@ class Contract {
 
     protected function __construct() {
         global $wpdb;
-        $this->contract_table = $wpdb->prefix . 'partnership_contracts';
-        $this->column_table = $wpdb->prefix . 'partnership_contract_columns';
-        $this->card_table = $wpdb->prefix . 'partnership_contract_cards';
-        $this->member_table = $wpdb->prefix . 'partnership_contract_card_members';
-        $this->checklist_table = $wpdb->prefix . 'partnership_contract_checklists';
-        $this->comment_table = $wpdb->prefix . 'partnership_contract_comments';
-        $this->attachment_table = $wpdb->prefix . 'partnership_contract_attachments';
+        $this->contract_table = $wpdb->prefix . 'sitecore_contracts';
+        $this->column_table = $wpdb->prefix . 'sitecore_contract_columns';
+        $this->card_table = $wpdb->prefix . 'sitecore_contract_cards';
+        $this->member_table = $wpdb->prefix . 'sitecore_contract_card_members';
+        $this->checklist_table = $wpdb->prefix . 'sitecore_contract_checklists';
+        $this->comment_table = $wpdb->prefix . 'sitecore_contract_comments';
+        $this->attachment_table = $wpdb->prefix . 'sitecore_contract_attachments';
         $this->setup_hooks();
     }
 
@@ -32,9 +32,9 @@ class Contract {
         add_action('init', [$this, 'add_custom_rewrite']);
         add_action('rest_api_init', [$this, 'register_routes']);
         add_action('wp_enqueue_scripts', [$this, 'register_scripts']);
-        add_filter('partnership/invoice/paid', [$this, 'invoice_paid'], 10, 3);
+        add_filter('sitecore/invoice/paid', [$this, 'invoice_paid'], 10, 3);
         add_action('template_redirect', [$this, 'handle_pricing_payment_template']);
-        add_filter('partnership/security/api/abilities', [$this, 'api_abilities'], 10, 3);
+        add_filter('sitecore/security/api/abilities', [$this, 'api_abilities'], 10, 3);
         register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
         register_deactivation_hook( WP_SITECORE__FILE__, [$this, 'register_deactivation_hook'] );
     }

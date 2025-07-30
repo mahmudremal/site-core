@@ -14,8 +14,8 @@ class Payment_Tabby {
     }
 
     protected function setup_hooks() {
-        add_filter('partnership/payment/gateways',          [ $this, 'push_gateways'], 10, 1);
-        add_filter('partnership/payment/gateway/switched',  [ $this, 'switch_gateways'], 10, 3);
+        add_filter('sitecore/payment/gateways',          [ $this, 'push_gateways'], 10, 1);
+        add_filter('sitecore/payment/gateway/switched',  [ $this, 'switch_gateways'], 10, 3);
         add_filter('tap/payment/charge/payload',            [ $this, 'tap_payment_charge_payload'], 10, 3);
         add_filter('payment/provider/match',                [ $this, 'payment_provider_match'], 10, 3);
     }

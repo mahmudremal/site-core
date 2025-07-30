@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "User Evaluation and Moderation",
+  "type": "object",
+  "description": "Schema for AI-based validation and handling of potentially fake or bot accounts.",
+  "properties": {
+    "isValid": {
+      "type": "boolean",
+      "description": "Indicates if the user is confirmed to be valid. Should only be true if verification is certain."
+    },
+    "suspiciousActivity": {
+      "type": "boolean",
+      "description": "Set to true if strong indicators of bot/fake behavior are present."
+    },
+    "actions": {
+      "type": "object",
+      "description": "AI-determined action to perform based on user evaluation.",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["approve", "unapprove", "delete", "welcome"],
+          "description": "Action to apply to the account."
+        },
+        "welcomeMessage": {
+          "type": ["string", "null"],
+          "description": "Optional welcome message. Only relevant if status is 'welcome'. Can be null or empty."
+        },
+        "unapproveReason": {
+          "type": ["string", "null"],
+          "description": "Optional reason for unapproving the user. Provide only if applicable."
+        }
+      },
+      "required": ["status"]
+    }
+  },
+  "required": ["actions"]
+}

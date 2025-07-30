@@ -15,16 +15,16 @@ class Hunts {
 	protected function __construct() {
 		global $wpdb;
         $this->tables = (object) [
-			'species'         => $wpdb->prefix . 'hunts_species',
-			'weapons'         => $wpdb->prefix . 'hunts_weapons',
-			'states'          => $wpdb->prefix . 'hunts_states',
-			'bag_types'       => $wpdb->prefix . 'hunts_bag_types',
-			'gmu'             => $wpdb->prefix . 'hunts_gmu',
-			'seasons'         => $wpdb->prefix . 'hunts_seasons',
-			'documents'       => $wpdb->prefix . 'hunts_documents',
-			'applications'    => $wpdb->prefix . 'hunts_applications',
-			'odds'            => $wpdb->prefix . 'hunts_odds',
-			'shortner'		  => $wpdb->prefix . 'hunts_shortner',
+			'species'         => $wpdb->prefix . 'sitecore_hunts_species',
+			'weapons'         => $wpdb->prefix . 'sitecore_hunts_weapons',
+			'states'          => $wpdb->prefix . 'sitecore_hunts_states',
+			'bag_types'       => $wpdb->prefix . 'sitecore_hunts_bag_types',
+			'gmu'             => $wpdb->prefix . 'sitecore_hunts_gmu',
+			'seasons'         => $wpdb->prefix . 'sitecore_hunts_seasons',
+			'documents'       => $wpdb->prefix . 'sitecore_hunts_documents',
+			'applications'    => $wpdb->prefix . 'sitecore_hunts_applications',
+			'odds'            => $wpdb->prefix . 'sitecore_hunts_odds',
+			'shortner'		  => $wpdb->prefix . 'sitecore_hunts_shortner',
 		];
 		$this->currentImportPoint = 0;
 		// Load events

@@ -20,7 +20,7 @@ class Error {
     protected function __construct() {
         $this->setup_hooks();
         global $wpdb;
-        $this->table_name = $wpdb->prefix . 'error_reports'; // Define the table for storing errors
+        $this->table_name = $wpdb->prefix . 'sitecore_error_reports'; // Define the table for storing errors
     }
 
     protected function setup_hooks() {

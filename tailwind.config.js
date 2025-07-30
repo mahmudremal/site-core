@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'class',
-  prefix: 'xpo_', // 
-  content: [...Array(10)].map((u, i) => `./src/js/hunting/${[...Array(i + 1)].map(o => '**/').join('')}*.{js,jsx,ts,tsx}`),
+  prefix: 'xpo_', // /hunting
+  content: [...Array(10)].map((u, i) => `./src/js/${[...Array(i + 1)].map(o => '**/').join('')}*.{js,jsx,ts,tsx}`),
   theme: {
     extend: {
       colors: {

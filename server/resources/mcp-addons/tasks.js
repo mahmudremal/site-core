@@ -18,7 +18,7 @@ class TasksAddon {
         return [
             {
                 title: "Get a Task",
-                name: "get_a_task",
+                name: "tasks_get_a_task",
                 description: "Fetch the next pending task from the system",
                 inputSchema: {
                     status: z.string().optional().default("pending"),
@@ -34,12 +34,11 @@ class TasksAddon {
                         if (excluded_ids.length > 0) {
                             excluded_ids.forEach(id => params.append("excluded_ids[]", id));
                         }
-
                         const resp = await axios.get(`${this.apiBase}/search?${params.toString()}`);
                         if (resp.status !== 200) {
-                            return { success: false, error: `HTTP Error: ${resp.status}` };
+                            return { success: false, error: `HTTP Error: ${resp.status}: ${resp.message}` };
                         }
-                        if (resp.data && resp.data.message === "No tasks available") {
+                        if (resp.data && !resp.data?.success) {
                             return { success: false, error: "No tasks available" };
                         }
                         return { success: true, task: resp.data };
@@ -50,7 +49,7 @@ class TasksAddon {
             },
             {
                 title: "Submit Task Result",
-                name: "submit_task",
+                name: "tasks_submit",
                 description: "Submit the result of a completed task",
                 inputSchema: {
                     task_id: z.number(),

@@ -30,7 +30,7 @@ class Payment_Sslcommerz {
         add_filter('partnersmanagerpayment/verify',                [ $this, 'verify_transaction'  ], 10, 3);
         add_filter('partnersmanagerpayment/refund_payment',        [ $this, 'refund_transaction'  ], 10, 4);
         add_filter('partnersmanagerpayment/webhook',               [ $this, 'handle_webhook'      ], 10, 1);
-        add_filter('partnership/payment/gateways',                 [ $this, 'push_gateways'], 10, 1);
+        add_filter('sitecore/payment/gateways',                 [ $this, 'push_gateways'], 10, 1);
     }
 
     public function push_gateways($gateways) {

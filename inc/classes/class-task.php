@@ -13,7 +13,7 @@ class Task {
 
     protected function __construct() {
         global $wpdb;
-        $this->table = $wpdb->prefix . 'partnership_tasks';
+        $this->table = $wpdb->prefix . 'sitecore_tasks';
         $this->setup_hooks();
         $this->setup_job_seeking_hooks();
     }
@@ -22,10 +22,10 @@ class Task {
         add_action('admin_menu', [$this, 'add_plugin_page']);
         add_action('rest_api_init', [$this, 'rest_api_init']);
         add_filter('set-screen-option', [$this, 'set_screen'], 10, 3);
-		add_action('partnership/create_task', [$this, 'create_task'], 10, 3);
+		add_action('sitecore/create_task', [$this, 'create_task'], 10, 3);
         add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
         add_action('admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ], 10, 1);
-        add_filter('partnership/security/api/abilities', [$this, 'api_abilities'], 10, 3);
+        add_filter('sitecore/security/api/abilities', [$this, 'api_abilities'], 10, 3);
         register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
         register_deactivation_hook(WP_SITECORE__FILE__, [$this, 'register_deactivation_hook']);
     }
@@ -40,6 +40,10 @@ class Task {
     public function rest_api_init() {
         register_rest_route('sitecore/v1', '/tasks', [
             'methods' => 'GET', 'callback' => [$this, 'tasks_list'],
+            'permission_callback' => '__return_true'
+        ]);
+        register_rest_route('sitecore/v1', '/tasks/insights', [
+            'methods' => 'GET', 'callback' => [$this, 'tasks_insights'],
             'permission_callback' => '__return_true'
         ]);
         register_rest_route('sitecore/v1', '/tasks/search', [
@@ -204,9 +208,35 @@ class Task {
         return $response;
     }
     
+    public function tasks_insights(WP_REST_Request $request) {
+        $response = [];global $wpdb;
+        $search = (string) $request->get_param('search')??'';
+        $status = (string) $request->get_param('status')??'all';
+
+        $where = '1 = 1';
+        
+        if (!empty($search)) {
+            $searchLike = '%' . $wpdb->esc_like($search) . '%';
+            $where .= $wpdb->prepare("(task_object LIKE %s OR task_desc LIKE %s OR task_submission LIKE %s)", $searchLike, $searchLike, $searchLike);
+        }
+        
+        if (!in_array($status, ['all', 'any'])) {
+            $status = sanitize_text_field($status);
+            $where .= $wpdb->prepare(' AND status = %s', $status);
+        }
+        
+        $response = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT task_type, COUNT(*) AS total FROM {$this->table} WHERE {$where} GROUP BY task_type;"
+            )
+        );
+        return rest_ensure_response($response);
+    }
+    
     public function tasks_search(WP_REST_Request $request) {
         global $wpdb;
 
+        $search = $request->get_param('search');
         $status = $request->get_param('status') ?? 'any';
         $task_type = $request->get_param('task_type') ?? 'any';
         $excluded_ids = $request->get_param('excluded_ids') ? implode(',', array_map('intval', $request->get_param('excluded_ids'))) : null;
@@ -214,6 +244,11 @@ class Task {
         // Build the query dynamically
         $query = "SELECT * FROM {$this->table} WHERE 1=1";
         $query_conditions = [];
+
+        if (!empty($search)) {
+            $searchLike = '%' . $wpdb->esc_like($search) . '%';
+            $query_conditions[] = $wpdb->prepare("(task_object LIKE %s OR task_desc LIKE %s OR task_submission LIKE %s)", $searchLike, $searchLike, $searchLike);
+        }
 
         if ($status !== 'any') {
             $query_conditions[] = $wpdb->prepare("status = %s", $status);
@@ -294,8 +329,8 @@ class Task {
     
     public function task_submit( WP_REST_Request $request ) {
         global $wpdb;$params = $request->get_params();
-        $task_id = $request->get_param( 'task_id' );
-        $data = $request->get_param( 'data' );
+        $task_id = $request->get_param('task_id');
+        $data = $request->get_param('data');
 
         $_performed = $this->perform_task($task_id, $data);
         if ($_performed && !is_wp_error($_performed)) {
@@ -445,21 +480,21 @@ class Task {
     }
     
     protected function setup_job_seeking_hooks() {
-        add_action('post_inserted',function($a,$b,$c,$d){if(!$c){do_action('partnership/create_task','post_seo',['post_id'=>$a,'type'=>$b->post_type],sprintf('Review the SEO for the new %s titled "%s". Analyze the title, meta description, URL slug, headings (H1-H6), image alt text, and internal/external linking. Ensure they are optimized for relevant keywords, readability, and align with SEO best practices to improve search engine visibility and organic traffic potential for this content type.',$b->post_type,$b->post_title));}},10,4);
-        add_action('wp_insert_post', function($a,$b,$c){if(!$c){do_action('partnership/create_task','seo_improvements',['post_id'=>$a],sprintf('Analyze the newly created post titled "%s" for SEO. Content, etc., will be fetched via API. Review title, metadata (date, cats, tags). Suggest title improvements, relevant keywords, categories, tags.',esc_html($b->post_title)));}},10,3);
-        add_action('add_attachment',function($a){$b=get_post_mime_type($a);$c=basename(get_attached_file($a));$d=wp_get_attachment_metadata($a);do_action('partnership/create_task','media_seo',['post_id'=>$a,'mime'=>$b,'metadata'=>$d,'file'=>$c],sprintf('Review the SEO details for the newly uploaded media file "%s" (MIME type: %s). Ensure a descriptive title, relevant caption, appropriate alt text, and a comprehensive description are set. Optimize these elements with relevant keywords to enhance search engine indexing and accessibility. Consider the visual content and its context within the site.',$c,$b));},10,1);
-        add_action('comment_post',function($a,$b,$c){do_action('partnership/create_task','comment_moderation',['post_id'=>$a,'content'=>$c['comment'],'email'=>$c['comment_author_email'],'author'=>$c['comment_author'],'ip'=>$c['comment_author_IP']],sprintf('Review the newly posted comment (ID: %d) by "%s" (%s) with IP address %s. Analyze the content for spam, hate speech, profanity, irrelevant links, or any violation of community guidelines. Determine if the comment should be approved, held for moderation, or marked as spam. Content: "%s"',$a,$c['comment_author'],$c['comment_author_email'],$c['comment_author_IP'],$c['comment']));},10,3);
-        add_action('user_register',function($a){$b=get_userdata($a);if($b){do_action('partnership/create_task','new_user_onboarding',['post_id'=>$a,'login'=>$b->user_login,'email'=>$b->user_email,'name'=>$b->display_name],sprintf('Initiate the onboarding process for the new user "%s" (username: %s, email: %s). This may involve sending a welcome email with essential information, guiding them to complete their profile details, explaining key website features, and assigning any necessary initial roles or permissions based on their registration context.',$b->display_name,$b->user_login,$b->user_email));}},10,1);
+        add_action('post_inserted',function($a,$b,$c,$d){if(!$c){do_action('sitecore/create_task','post_seo',['post_id'=>$a,'type'=>$b->post_type],sprintf('Review the SEO for the new %s titled "%s". Analyze the title, meta description, URL slug, headings (H1-H6), image alt text, and internal/external linking. Ensure they are optimized for relevant keywords, readability, and align with SEO best practices to improve search engine visibility and organic traffic potential for this content type.',$b->post_type,$b->post_title));}},10,4);
+        add_action('wp_insert_post', function($a,$b,$c){if(!$c){do_action('sitecore/create_task','seo_improvements',['post_id'=>$a],sprintf('Analyze the newly created post titled "%s" for SEO. Content, etc., will be fetched via API. Review title, metadata (date, cats, tags). Suggest title improvements, relevant keywords, categories, tags.',esc_html($b->post_title)));}},10,3);
+        add_action('add_attachment',function($a){$b=get_post_mime_type($a);$c=basename(get_attached_file($a));$d=wp_get_attachment_metadata($a);do_action('sitecore/create_task','media_seo',['post_id'=>$a,'mime'=>$b,'metadata'=>$d,'file'=>$c],sprintf('Review the SEO details for the newly uploaded media file "%s" (MIME type: %s). Ensure a descriptive title, relevant caption, appropriate alt text, and a comprehensive description are set. Optimize these elements with relevant keywords to enhance search engine indexing and accessibility. Consider the visual content and its context within the site.',$c,$b));},10,1);
+        add_action('comment_post',function($a,$b,$c){do_action('sitecore/create_task','comment_moderation',['post_id'=>$a,'content'=>$c['comment'],'email'=>$c['comment_author_email'],'author'=>$c['comment_author'],'ip'=>$c['comment_author_IP']],sprintf('Review the newly posted comment (ID: %d) by "%s" (%s) with IP address %s. Analyze the content for spam, hate speech, profanity, irrelevant links, or any violation of community guidelines. Determine if the comment should be approved, held for moderation, or marked as spam. Content: "%s"',$a,$c['comment_author'],$c['comment_author_email'],$c['comment_author_IP'],$c['comment']));},10,3);
+        add_action('user_register',function($a){$b=get_userdata($a);if($b){do_action('sitecore/create_task','new_user_onboarding',['post_id'=>$a,'login'=>$b->user_login,'email'=>$b->user_email,'name'=>$b->display_name],sprintf('Initiate the onboarding process for the new user "%s" (username: %s, email: %s). This may involve sending a welcome email with essential information, guiding them to complete their profile details, explaining key website features, and assigning any necessary initial roles or permissions based on their registration context.',$b->display_name,$b->user_login,$b->user_email));}},10,1);
         // WooCommerece
-        add_action('woocommerce_new_order',function($a){$b=wc_get_order($a);if($b){$c=$b->get_order_number();$d=$b->get_billing_email();$e=$b->get_formatted_order_total();$f=$b->get_shipping_address();$g=$b->get_billing_address();$h=$b->get_items();do_action('partnership/create_task','order_processing',['post_id'=>$a,'number'=>$c,'email'=>$d,'total'=>$e,'shipping'=>$f,'billing'=>$g,'items'=>$h],sprintf('Process new WooCommerce order #%s (Total: %s) placed by %s. Verify order details, check inventory for all items, and initiate the fulfillment process according to the shipping address: %s. If any items are out of stock or there are any issues, flag the order for manual review. Also, consider sending an initial order confirmation to the customer (%s).',$c,$e,$d,$f,$d));}},10,1);
-        add_action('woocommerce_payment_complete',function($a){$b=wc_get_order($a);if($b){$c=$b->get_order_number();$d=$b->get_shipping_method();$e=$b->get_billing_email();do_action('partnership/create_task','payment_completed',['post_id'=>$a,'number'=>$c,'shipping'=>$d,'email'=>$e],sprintf('Payment has been completed for WooCommerce order #%s. Update the order status to "processing" and prepare for shipment using the selected method: %s. Notify the customer (%s) about the successful payment and provide an estimated shipping timeframe or tracking information if available.',$c,$d,$e));}},10,1);
-        add_action('woocommerce_order_status_changed',function($a,$b,$c){$d=wc_get_order($a);if($d){$e=$d->get_order_number();$f=$d->get_billing_email();do_action('partnership/create_task','order_status_update',['post_id'=>$a,'number'=>$e,'old'=>$b,'new'=>$c,'email'=>$f],sprintf('The status of WooCommerce order #%s for customer %s has changed from "%s" to "%s". Based on this new status, take the appropriate next steps. For example, if the status is "processing", initiate shipping; if "completed", send a shipment confirmation and potential follow-up; if "cancelled" or "refunded", process accordingly and notify the customer.',$e,$f,$b,$c));}},10,3);
+        add_action('woocommerce_new_order',function($a){$b=wc_get_order($a);if($b){$c=$b->get_order_number();$d=$b->get_billing_email();$e=$b->get_formatted_order_total();$f=$b->get_shipping_address();$g=$b->get_billing_address();$h=$b->get_items();do_action('sitecore/create_task','order_processing',['post_id'=>$a,'number'=>$c,'email'=>$d,'total'=>$e,'shipping'=>$f,'billing'=>$g,'items'=>$h],sprintf('Process new WooCommerce order #%s (Total: %s) placed by %s. Verify order details, check inventory for all items, and initiate the fulfillment process according to the shipping address: %s. If any items are out of stock or there are any issues, flag the order for manual review. Also, consider sending an initial order confirmation to the customer (%s).',$c,$e,$d,$f,$d));}},10,1);
+        add_action('woocommerce_payment_complete',function($a){$b=wc_get_order($a);if($b){$c=$b->get_order_number();$d=$b->get_shipping_method();$e=$b->get_billing_email();do_action('sitecore/create_task','payment_completed',['post_id'=>$a,'number'=>$c,'shipping'=>$d,'email'=>$e],sprintf('Payment has been completed for WooCommerce order #%s. Update the order status to "processing" and prepare for shipment using the selected method: %s. Notify the customer (%s) about the successful payment and provide an estimated shipping timeframe or tracking information if available.',$c,$d,$e));}},10,1);
+        add_action('woocommerce_order_status_changed',function($a,$b,$c){$d=wc_get_order($a);if($d){$e=$d->get_order_number();$f=$d->get_billing_email();do_action('sitecore/create_task','order_status_update',['post_id'=>$a,'number'=>$e,'old'=>$b,'new'=>$c,'email'=>$f],sprintf('The status of WooCommerce order #%s for customer %s has changed from "%s" to "%s". Based on this new status, take the appropriate next steps. For example, if the status is "processing", initiate shipping; if "completed", send a shipment confirmation and potential follow-up; if "cancelled" or "refunded", process accordingly and notify the customer.',$e,$f,$b,$c));}},10,3);
         // necessery hooks
-        add_action('switch_theme',function($a,$b){do_action('partnership/create_task','theme_switch_review',['name'=>$a,'version'=>$b->get('Version')],sprintf('The active WordPress theme has been switched to "%s" (version: %s). Review the website\'s front-end and back-end for any potential layout issues, broken functionalities, widget misplacements, or compatibility problems introduced by the new theme. Check if any theme-specific configurations or settings need to be adjusted. Ensure the site remains visually consistent and fully functional after the theme switch.',$a,$b->get('Version')));},10,2);
-        add_action('activated_plugin',function($a){$b=get_plugin_data(WP_PLUGIN_DIR.'/'.$a);do_action('partnership/create_task','plugin_activation_review',['name'=>$b['Name'],'version'=>$b['Version'],'author'=>$b['Author'],'description'=>$b['Description']],sprintf('The plugin "%s" (version: %s) by %s has been activated. Review the plugin\'s description: "%s". Ensure it integrates correctly with the website and other active plugins without causing any conflicts. Check its settings for optimal configuration and determine if any immediate actions or setup steps are required for its proper functioning. Consider its impact on site performance and security.',esc_html($b['Name']),esc_html($b['Version']),esc_html($b['Author']),esc_html($b['Description'])));},10,1);
+        // add_action('switch_theme',function($a,$b){do_action('sitecore/create_task','theme_switch_review',['name'=>$a,'version'=>$b->get('Version')],sprintf('The active WordPress theme has been switched to "%s" (version: %s). Review the website\'s front-end and back-end for any potential layout issues, broken functionalities, widget misplacements, or compatibility problems introduced by the new theme. Check if any theme-specific configurations or settings need to be adjusted. Ensure the site remains visually consistent and fully functional after the theme switch.',$a,$b->get('Version')));},10,2);
+        // add_action('activated_plugin',function($a){$b=get_plugin_data(WP_PLUGIN_DIR.'/'.$a);do_action('sitecore/create_task','plugin_activation_review',['name'=>$b['Name'],'version'=>$b['Version'],'author'=>$b['Author'],'description'=>$b['Description']],sprintf('The plugin "%s" (version: %s) by %s has been activated. Review the plugin\'s description: "%s". Ensure it integrates correctly with the website and other active plugins without causing any conflicts. Check its settings for optimal configuration and determine if any immediate actions or setup steps are required for its proper functioning. Consider its impact on site performance and security.',esc_html($b['Name']),esc_html($b['Version']),esc_html($b['Author']),esc_html($b['Description'])));},10,1);
         // Form submission
-        add_action('elementor_pro/forms/new_record',function($r){$n=$r->get_form_settings('form_name');$d=array_column($r->get_field_data(),'value','id');do_action('partnership/create_task','elem_form',['name'=>$n,'data'=>$d],sprintf('Process Elementor form "%s" submission: %s. Determine next action based on form purpose (e.g., contact->notify, newsletter->subscribe).',$n,json_encode($d)));},10,1);
-        add_action('metform/form/submission_success',function($fid,$eid){$f=\MetForm\Core\Forms\Manager::get_instance()->get_form($fid);$fn=$f->form_name??'Unnamed Metform';$ed=metform_get_entry_data($eid);$pd=wp_list_pluck($ed,'value','label');do_action('partnership/create_task','metform_submit',['post_id'=>$fid,'name'=>$fn,'entry'=>$eid,'data'=>$pd],sprintf('Process Metform "%s" (ID:%d, Entry:%d) submission: %s. Determine next action based on form purpose (e.g., contact->notify, newsletter->subscribe, payment->verify).',$fn,$fid,$eid,json_encode($pd)));},10,2);
+        add_action('elementor_pro/forms/new_record',function($r){$n=$r->get_form_settings('form_name');$d=array_column($r->get_field_data(),'value','id');do_action('sitecore/create_task','elem_form',['name'=>$n,'data'=>$d],sprintf('Process Elementor form "%s" submission: %s. Determine next action based on form purpose (e.g., contact->notify, newsletter->subscribe).',$n,json_encode($d)));},10,1);
+        add_action('metform/form/submission_success',function($fid,$eid){$f=\MetForm\Core\Forms\Manager::get_instance()->get_form($fid);$fn=$f->form_name??'Unnamed Metform';$ed=metform_get_entry_data($eid);$pd=wp_list_pluck($ed,'value','label');do_action('sitecore/create_task','metform_submit',['post_id'=>$fid,'name'=>$fn,'entry'=>$eid,'data'=>$pd],sprintf('Process Metform "%s" (ID:%d, Entry:%d) submission: %s. Determine next action based on form purpose (e.g., contact->notify, newsletter->subscribe, payment->verify).',$fn,$fid,$eid,json_encode($pd)));},10,2);
 
     }
 
@@ -546,7 +581,7 @@ class Task {
 
     public function get_attachment_schema(WP_REST_Request $request) {
         $file_name = $request->get_param('file_name') ?? null;
-        $file_path = WP_SITECORE_DIR_PATH . '/src/js/tasks/schemas/'. $file_name .'.json';
+        $file_path = WP_SITECORE_DIR_PATH . '/templates/schemas/'. $file_name .'.json';
         if ($file_name && file_exists($file_path) && ! is_dir($file_path)) {
             $file_content = file_get_contents($file_path);
             $file_content = json_decode($file_content);
@@ -555,9 +590,571 @@ class Task {
         return new WP_REST_Response(new WP_Error('not_found', 'File not found'), 404);
     }
 
-    public function perform_task($task_id, $data) {
+    public function perform_task($task_id, $submitted_data) {
+        global $wpdb;
+
+        $table = $this->table;
+
+        // Fetch the task
+        $task = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE id = %d", $task_id));
+        if (!$task) {
+            return new WP_Error('task_not_found', 'No task found with the given ID.', ['status' => 404]);
+        }
+
+        $task_type = $task->task_type;
+        $task->task_object = maybe_unserialize($task->task_object);
+        $submitted_data = is_array($submitted_data) ? $submitted_data : json_decode($submitted_data, true);
+
+        // Load schema file
+        $schema_path = WP_SITECORE_DIR_PATH . '/templates/schemas/' . sanitize_file_name($task_type) . '.json';
+        if (!file_exists($schema_path)) {
+            return new WP_Error('schema_not_found', 'Schema file not found for task type: ' . esc_html($task_type));
+        }
+
+        $schema = json_decode(file_get_contents($schema_path), true);
+        if (!$schema || json_last_error() !== JSON_ERROR_NONE) {
+            return new WP_Error('invalid_schema', 'Failed to parse schema for task type: ' . esc_html($task_type));
+        }
+
+        try {
+            switch ($task_type) {
+                case 'seo_improvements':
+                    $post = $submitted_data['post'] ?? null;
+                    $meta = $submitted_data['postmeta'] ?? [];
+
+                    if (!$post || empty($post['post_id'])) {
+                        return new WP_Error('missing_post_id', 'Post ID is required for seo_improvements task.');
+                    }
+
+                    $post_id = (int) $post['post_id'];
+
+                    // Prepare post data for update
+                    $post_update = ['ID' => $post_id];
+                    if (isset($post['post_title'])) {
+                        $post_update['post_title'] = wp_strip_all_tags($post['post_title']);
+                    }
+                    if (isset($post['post_content'])) {
+                        $post_update['post_content'] = $post['post_content'];
+                    }
+                    if (isset($post['post_status'])) {
+                        $post_update['post_status'] = $post['post_status'];
+                    }
+                    if (isset($post['post_date'])) {
+                        $post_update['post_date'] = $post['post_date'];
+                    }
+                    // Update the post
+                    $result = wp_update_post($post_update, true);
+                    if (is_wp_error($result)) {
+                        return $result;
+                    }
+                    // Update post meta
+                    foreach ($meta as $key => $value) {
+                        update_post_meta($post_id, sanitize_key($key), maybe_serialize($value));
+                    }
+                    break;
+                case 'post_seo':
+                    $post_id = $task->task_object['post_id'] ?? 0;
+                    if (!$post_id || get_post_status($post_id) === false) {
+                        return new WP_Error('invalid_post', 'Invalid or missing post_id.');
+                    }
+
+                    $title = $submitted_data['title'] ?? '';
+                    $slug = $submitted_data['slug'] ?? '';
+                    $focus_keyword = $submitted_data['focusKeyword'] ?? '';
+                    $meta_description = $submitted_data['metaDescription'] ?? '';
+                    $seo_analysis = $submitted_data['seoAnalysis'] ?? [];
+                    $actions = $submitted_data['actions'] ?? [];
+
+                    if (empty($actions)) {
+                        return new WP_Error('missing_actions', 'No actionable instructions provided.');
+                    }
+
+                    // Apply title update
+                    if (!empty($actions['modifyTitle']) && !empty($title)) {
+                        wp_update_post([
+                            'ID' => $post_id,
+                            'post_title' => wp_strip_all_tags($title)
+                        ]);
+                    }
+
+                    // Apply slug update
+                    if (!empty($actions['updateSlug']) && !empty($slug)) {
+                        wp_update_post([
+                            'ID' => $post_id,
+                            'post_name' => sanitize_title($slug)
+                        ]);
+                    }
+
+                    // Apply meta description
+                    if (!empty($actions['updateMetaDescription']) && !empty($meta_description)) {
+                        update_post_meta($post_id, '_aioseo_description', sanitize_text_field($meta_description));
+                        update_post_meta($post_id, '_yoast_wpseo_metadesc', sanitize_text_field($meta_description));
+                    }
+
+                    // Apply focus keyword
+                    if (!empty($actions['addFocusKeyword']) && !empty($focus_keyword)) {
+                        update_post_meta($post_id, '_aioseo_focuskw', sanitize_text_field($focus_keyword));
+                        update_post_meta($post_id, '_yoast_wpseo_focuskw', sanitize_text_field($focus_keyword));
+                    }
+
+                    // Optionally store SEO analysis report as JSON
+                    if (!empty($seo_analysis)) {
+                        update_post_meta($post_id, '_seo_analysis_report', wp_json_encode($seo_analysis));
+                    }
+
+                    break;
+                case 'payment_completed':
+                    $order_id = $submitted_data['orderId'] ?? '';
+                    $payment = $submitted_data['paymentDetails'] ?? [];
+                    $customer = $submitted_data['customerDetails'] ?? [];
+                    $actions = $submitted_data['actions'] ?? [];
+
+                    if (empty($order_id) || empty($payment) || empty($customer) || empty($actions)) {
+                        return new WP_Error('missing_fields', 'Required payment_completed fields are missing.');
+                    }
+
+                    $wc_order = wc_get_order($order_id);
+                    if (!$wc_order) {
+                        return new WP_Error('invalid_order', 'The provided order ID is not valid.');
+                    }
+
+                    // Update order note with payment info
+                    $note = sprintf(
+                        'Payment completed: %s %s via %s (Transaction ID: %s)',
+                        wc_price($payment['amount'], ['currency' => $payment['currency']]),
+                        $payment['currency'],
+                        $payment['paymentMethod'],
+                        $payment['transactionId']
+                    );
+                    $wc_order->add_order_note($note);
+
+                    // Update status if needed
+                    if ($wc_order->get_status() !== 'processing') {
+                        $wc_order->update_status('processing', 'Order marked as processing after payment completion.');
+                    }
+
+                    // Send emails
+                    $email_content = $actions['emailContent'] ?? [];
+
+                    if (!empty($actions['sendEmailToCustomer']) && !empty($customer['email']) && !empty($email_content['customerEmail'])) {
+                        wp_mail($customer['email'], 'Your Order Payment is Complete', $email_content['customerEmail']);
+                    }
+
+                    if (!empty($actions['notifyAdmin']) && !empty($email_content['adminEmail'])) {
+                        wp_mail(get_option('admin_email'), 'Payment Completed - Order #' . $wc_order->get_order_number(), $email_content['adminEmail']);
+                    }
+
+                    if (!empty($email_content['supplierEmail'])) {
+                        wp_mail('supplier@example.com', 'Supplier Notification - Payment Completed', $email_content['supplierEmail']);
+                    }
+
+                    if (!empty($email_content['shopManagerEmail'])) {
+                        wp_mail('shop.manager@example.com', 'Shop Manager Notification - Payment Completed', $email_content['shopManagerEmail']);
+                    }
+
+                    break;
+                case 'order_status_update':
+                    $order_id = $submitted_data['orderId'] ?? '';
+                    $new_status = $submitted_data['newStatus'] ?? '';
+                    $customer = $submitted_data['customerDetails'] ?? [];
+                    $summary = $submitted_data['orderSummary'] ?? [];
+                    $reason = $submitted_data['statusChangeReason'] ?? '';
+                    $actions = $submitted_data['actions'] ?? [];
+
+                    if (empty($order_id) || empty($new_status) || empty($customer) || empty($summary) || empty($actions)) {
+                        return new WP_Error('missing_data', 'Required fields are missing in order_status_update task.');
+                    }
+
+                    $wc_order = wc_get_order($order_id);
+                    if (!$wc_order) {
+                        return new WP_Error('invalid_order', 'Order not found.');
+                    }
+
+                    // Update order status
+                    if ($wc_order->get_status() !== $new_status) {
+                        $note = 'Order status changed to "' . $new_status . '"';
+                        if (!empty($reason)) {
+                            $note .= ' - Reason: ' . $reason;
+                        }
+                        $wc_order->update_status($new_status, $note);
+                    }
+
+                    // Send emails
+                    $email_content = $actions['emailContent'] ?? [];
+
+                    if (!empty($actions['sendEmailToCustomer']) && !empty($customer['email']) && !empty($email_content['customerEmail'])) {
+                        wp_mail($customer['email'], 'Order Status Updated', $email_content['customerEmail']);
+                    }
+
+                    if (!empty($actions['notifyAdmin']) && !empty($email_content['adminEmail'])) {
+                        wp_mail(get_option('admin_email'), 'Order Status Changed - #' . $wc_order->get_order_number(), $email_content['adminEmail']);
+                    }
+
+                    break;
+                case 'order_processing':
+                    $order_id = $submitted_data['orderId'] ?? '';
+                    $customer = $submitted_data['customerDetails'] ?? [];
+                    $items = $submitted_data['orderItems'] ?? [];
+                    $payment = $submitted_data['paymentDetails'] ?? [];
+                    $analysis = $submitted_data['analysis'] ?? [];
+                    $actions = $submitted_data['actions'] ?? [];
+
+                    if (empty($order_id) || empty($customer) || empty($items) || empty($payment) || empty($analysis) || empty($actions)) {
+                        return new WP_Error('missing_data', 'Required fields are missing in order_processing task.');
+                    }
+
+                    $wc_order = wc_get_order($order_id);
+                    if (!$wc_order) {
+                        return new WP_Error('invalid_order', 'Order not found.');
+                    }
+
+                    // Address correction (if any)
+                    if (!empty($analysis['isAddressCorrected']) && !empty($analysis['addressCorrections'])) {
+                        $corrections = $analysis['addressCorrections'];
+                        $address_update = [];
+
+                        if (!empty($corrections['correctedAddressLine1'])) {
+                            $address_update['address_1'] = $corrections['correctedAddressLine1'];
+                        }
+                        if (!empty($corrections['correctedCity'])) {
+                            $address_update['city'] = $corrections['correctedCity'];
+                        }
+                        if (!empty($corrections['correctedPostalCode'])) {
+                            $address_update['postcode'] = $corrections['correctedPostalCode'];
+                        }
+
+                        if (!empty($address_update)) {
+                            $wc_order->set_address($address_update, 'shipping');
+                            $wc_order->save();
+                        }
+                    }
+
+                    // Add order note from feedback
+                    if (!empty($analysis['feedback'])) {
+                        $wc_order->add_order_note('AI Order Feedback: ' . sanitize_text_field($analysis['feedback']));
+                    }
+
+                    // Email notifications
+                    $email_content = $actions['emailContent'] ?? [];
+
+                    if (!empty($actions['sendEmailToCustomer']) && !empty($customer['email']) && !empty($email_content['customerEmail'])) {
+                        wp_mail($customer['email'], 'Your Order is Being Processed', $email_content['customerEmail']);
+                    }
+
+                    if (!empty($actions['sendEmailToAdmin']) && !empty($email_content['adminEmail'])) {
+                        wp_mail(get_option('admin_email'), 'New Order Processing - #' . $wc_order->get_order_number(), $email_content['adminEmail']);
+                    }
+
+                    break;
+                case 'new_user_onboarding':
+                    $user_id = $task->task_object['post_id'] ?? 0;
+                    $user = get_userdata($user_id);
+
+                    if (!$user || !get_user_by('ID', $user_id)) {
+                        return new WP_Error('invalid_user', 'User not found.');
+                    }
+
+                    $actions = $submitted_data['actions'] ?? [];
+                    if (empty($actions['status'])) {
+                        return new WP_Error('missing_status', 'No action status provided for user onboarding.');
+                    }
+
+                    $status = $actions['status'];
+                    $welcome_message = $actions['welcomeMessage'] ?? '';
+                    $unapprove_reason = $actions['unapproveReason'] ?? '';
+
+                    switch ($status) {
+                        case 'approve':
+                            // Optionally update user meta or flags to mark as approved
+                            update_user_meta($user_id, 'user_status', 'approved');
+                            break;
+
+                        case 'unapprove':
+                            // Optionally mark as pending or blocked
+                            update_user_meta($user_id, 'user_status', 'unapproved');
+                            if (!empty($unapprove_reason)) {
+                                update_user_meta($user_id, 'unapprove_reason', sanitize_text_field($unapprove_reason));
+                            }
+                            break;
+
+                        case 'delete':
+                            require_once ABSPATH . 'wp-admin/includes/user.php';
+                            wp_delete_user($user_id);
+                            break;
+
+                        case 'welcome':
+                            if (!empty($user->user_email) && !empty($welcome_message)) {
+                                wp_mail($user->user_email, 'Welcome to ' . get_bloginfo('name'), $welcome_message);
+                            }
+                            break;
+
+                        default:
+                            return new WP_Error('invalid_action', 'Unrecognized onboarding action: ' . esc_html($status));
+                    }
+
+                    break;
+                case 'metform_submit':
+                    $form_id = $submitted_data['formId'] ?? '';
+                    $entry = $submitted_data['entry'] ?? [];
+                    $description = $submitted_data['formDescription'] ?? '';
+                    $analysis = $submitted_data['analysis'] ?? [];
+                    $actions = $submitted_data['actions'] ?? [];
+
+                    if (empty($form_id) || empty($entry) || empty($analysis) || empty($actions)) {
+                        return new WP_Error('missing_data', 'Missing required fields in MetForm submission.');
+                    }
+
+                    // Log entry analysis as post meta or custom storage if needed
+                    $log_entry = [
+                        'form_id' => $form_id,
+                        'submitted_fields' => $entry['submittedFields'] ?? [],
+                        'submitted_at' => $entry['timestamp'] ?? current_time('mysql'),
+                        'form_description' => $description,
+                        'validity' => $analysis['entryValidity'] ?? null,
+                        'intent' => $analysis['purposeAnalysis'] ?? '',
+                        'feedback' => $analysis['feedback'] ?? []
+                    ];
+
+                    // Store log as option (you may want to move this to DB or a custom table)
+                    add_option('metform_entry_log_' . wp_generate_password(8, false), wp_json_encode($log_entry));
+
+                    // Send email if requested
+                    if (!empty($actions['sendEmailNotification'])) {
+                        $recipient = get_option('admin_email');
+                        $subject = 'New MetForm Submission (Form ID: ' . esc_html($form_id) . ')';
+                        $body = "Purpose: " . $description . "\n\n";
+
+                        if (!empty($entry['submittedFields'])) {
+                            $body .= "Submitted Fields:\n";
+                            foreach ($entry['submittedFields'] as $key => $value) {
+                                $body .= esc_html($key) . ': ' . esc_html($value) . "\n";
+                            }
+                        }
+
+                        $body .= "\nIntent Analysis: " . ($analysis['purposeAnalysis'] ?? 'N/A') . "\n";
+                        $body .= "Valid Entry: " . (!empty($analysis['entryValidity']) ? 'Yes' : 'No') . "\n";
+
+                        if (!empty($analysis['feedback'])) {
+                            $body .= "\nFeedback:\n- " . implode("\n- ", array_map('esc_html', $analysis['feedback']));
+                        }
+
+                        wp_mail($recipient, $subject, $body);
+                    }
+
+                    // Handle redirect URL or display message if needed
+                    if (!empty($actions['redirectUrl'])) {
+                        update_option('metform_redirect_' . $form_id, esc_url_raw($actions['redirectUrl']));
+                    }
+
+                    if (!empty($actions['displayMessage'])) {
+                        update_option('metform_message_' . $form_id, sanitize_text_field($actions['displayMessage']));
+                    }
+
+                    break;
+                case 'media_seo':
+                    $filename = $submitted_data['filename'] ?? '';
+                    if (empty($filename)) {
+                        return new WP_Error('missing_filename', 'Media filename is required.');
+                    }
+
+                    $media_id = $task->task_object['post_id']; // ?? attachment_url_to_postid(wp_upload_dir()['baseurl'] . '/' . ltrim($filename, '/'));
+
+                    if (!$media_id) {
+                        return new WP_Error('media_not_found', 'No media found for the provided filename.' . json_encode($task));
+                    }
+
+                    $update_args = [
+                        'ID' => $media_id,
+                        'post_title' => sanitize_text_field($submitted_data['title'] ?? ''),
+                        'post_name' => sanitize_title($submitted_data['slug'] ?? ''),
+                        'post_excerpt' => sanitize_text_field($submitted_data['caption'] ?? ''),
+                        'post_content' => sanitize_textarea_field($submitted_data['description'] ?? '')
+                    ];
+                    wp_update_post($update_args);
+
+                    update_post_meta($media_id, '_wp_attachment_image_alt', sanitize_text_field($submitted_data['altText'] ?? ''));
+                    update_post_meta($media_id, '_media_keywords', array_map('sanitize_text_field', $submitted_data['keywords'] ?? []));
+                    update_post_meta($media_id, '_media_meta_description', sanitize_textarea_field($submitted_data['metaDescription'] ?? ''));
+
+                    if (!empty($submitted_data['schema'])) {
+                        update_post_meta($media_id, '_media_schema_headline', sanitize_text_field($submitted_data['schema']['headline'] ?? ''));
+                        update_post_meta($media_id, '_media_schema_description', sanitize_textarea_field($submitted_data['schema']['description'] ?? ''));
+                    }
+
+                    break;
+                case 'elem_form':
+                    $form_id = sanitize_text_field($submitted_data['formId'] ?? '');
+                    $entry = $submitted_data['entry']['submittedFields'] ?? [];
+                    $timestamp = $submitted_data['entry']['timestamp'] ?? '';
+                    $description = sanitize_text_field($submitted_data['formDescription'] ?? '');
+                    $analysis = $submitted_data['analysis'] ?? [];
+                    $actions = $submitted_data['actions'] ?? [];
+
+                    // Optionally log or store the submission
+                    $log_entry = [
+                        'form_id' => $form_id,
+                        'timestamp' => $timestamp,
+                        'description' => $description,
+                        'analysis' => $analysis,
+                        'entry' => $entry
+                    ];
+                    // Example: store in a custom log post type or custom table if needed
+
+                    // Perform actions
+                    if (!empty($actions['sendEmailNotification'])) {
+                        $to = get_option('admin_email');
+                        $subject = "New Elem Form Submission (Form ID: {$form_id})";
+                        $body = "Form submitted at: {$timestamp}\n\nDescription: {$description}\n\nSubmitted Fields:\n";
+                        foreach ($entry as $key => $value) {
+                            $body .= "{$key}: {$value}\n";
+                        }
+                        $body .= "\n---\nPurpose Analysis: {$analysis['purposeAnalysis']}\nFeedback:\n";
+                        foreach ($analysis['feedback'] as $note) {
+                            $body .= "- {$note}\n";
+                        }
+                        wp_mail($to, $subject, $body);
+                    }
+
+                    // Optionally return data to redirect or display message
+                    if (!empty($actions['redirectUrl'])) {
+                        wp_redirect(esc_url_raw($actions['redirectUrl']));
+                        exit;
+                    }
+
+                    if (!empty($actions['displayMessage'])) {
+                        echo esc_html($actions['displayMessage']);
+                    }
+
+                    break;
+                case 'create_content':
+                    $content_type = sanitize_text_field($submitted_data['contentType'] ?? '');
+                    $outline = $submitted_data['outline'] ?? [];
+                    $seo_data = $submitted_data['seoData'] ?? [];
+
+                    // Construct post content from outline
+                    $generated_content = '';
+                    if (!empty($outline['headings'])) {
+                        foreach ($outline['headings'] as $heading) {
+                            $generated_content .= "<h2>" . esc_html($heading) . "</h2>\n";
+                        }
+                    }
+                    if (!empty($outline['keyPoints'])) {
+                        foreach ($outline['keyPoints'] as $point_data) {
+                            $generated_content .= "<h3>" . esc_html($point_data['point']) . "</h3>\n";
+                            $generated_content .= "<p>" . esc_html($point_data['explanation']) . "</p>\n";
+                        }
+                    }
+
+                    // Prepare post arguments
+                    $post_data = $seo_data['posts'] ?? [];
+                    $post_args = [
+                        'post_title'   => sanitize_text_field($post_data['post_title'] ?? 'Untitled'),
+                        'post_content' => $post_data['post_content'] ?? $generated_content,
+                        'post_status'  => sanitize_text_field($post_data['post_status'] ?? 'draft'),
+                        'post_type'    => ($content_type === 'customPostType') ? 'custom_post_type' : 'post',
+                    ];
+
+                    if (!empty($post_data['post_date'])) {
+                        $post_args['post_date'] = sanitize_text_field($post_data['post_date']);
+                    }
+
+                    $post_id = wp_insert_post($post_args);
+
+                    if (is_wp_error($post_id)) {
+                        error_log('Error creating content: ' . $post_id->get_error_message());
+                        break;
+                    }
+
+                    // Save post meta
+                    if (!empty($seo_data['postmeta']) && is_array($seo_data['postmeta'])) {
+                        foreach ($seo_data['postmeta'] as $meta) {
+                            update_post_meta($post_id, sanitize_key($meta['meta_key']), wp_kses_post($meta['meta_value']));
+                        }
+                    }
+
+                    // Save Yoast indexable fields (if Yoast is installed and compatible)
+                    if (!empty($seo_data['yoast_indexable'])) {
+                        $yoast_meta = $seo_data['yoast_indexable'];
+
+                        $yoast_mapping = [
+                            '_yoast_wpseo_title' => 'title',
+                            '_yoast_wpseo_metadesc' => 'description',
+                            '_yoast_wpseo_focuskw' => 'primary_focus_keyword',
+                            '_yoast_wpseo_focuskw_score' => 'primary_focus_keyword_score',
+                            '_yoast_wpseo_readability_score' => 'readability_score',
+                            '_yoast_wpseo_is_cornerstone' => 'is_cornerstone',
+                            '_yoast_wpseo_robots_index' => 'is_robots_noindex',
+                            '_yoast_wpseo_robots_follow' => 'is_robots_nofollow',
+                            '_yoast_wpseo_twitter_title' => 'twitter_title',
+                            '_yoast_wpseo_twitter_description' => 'twitter_description',
+                            '_yoast_wpseo_opengraph-title' => 'open_graph_title',
+                            '_yoast_wpseo_opengraph-description' => 'open_graph_description',
+                            '_yoast_wpseo_estimated_reading_time_minutes' => 'estimated_reading_time_minutes',
+                        ];
+
+                        foreach ($yoast_mapping as $meta_key => $field_key) {
+                            if (isset($yoast_meta[$field_key])) {
+                                update_post_meta($post_id, $meta_key, wp_kses_post($yoast_meta[$field_key]));
+                            }
+                        }
+                    }
+
+                    break;
+                case 'comment_moderation':
+                    $comment_id     = absint($submitted_data['commentId']);
+                    $status         = sanitize_text_field($submitted_data['status']);
+                    $needs_editing  = filter_var($submitted_data['needsEditing'] ?? false, FILTER_VALIDATE_BOOLEAN);
+                    $edited_content = $submitted_data['editedContent'] ?? '';
+                    $reply_required = filter_var($submitted_data['replyRequired'] ?? false, FILTER_VALIDATE_BOOLEAN);
+                    $reply_content  = $submitted_data['replyContent'] ?? '';
+                    $spam_reasons   = $submitted_data['spamReasons'] ?? [];
+
+                    // Update comment status
+                    wp_set_comment_status($comment_id, $status);
+
+                    // Update comment content if needed
+                    if ($needs_editing && !empty($edited_content)) {
+                        wp_update_comment([
+                            'comment_ID'      => $comment_id,
+                            'comment_content' => wp_kses_post($edited_content)
+                        ]);
+                    }
+
+                    // Add reply if required
+                    if ($reply_required && !empty($reply_content)) {
+                        $parent_comment = get_comment($comment_id);
+                        if ($parent_comment) {
+                            wp_insert_comment([
+                                'comment_post_ID'      => $parent_comment->comment_post_ID,
+                                'comment_parent'       => $comment_id,
+                                'comment_content'      => wp_kses_post($reply_content),
+                                'user_id'              => get_current_user_id(),
+                                'comment_author'       => 'Admin',
+                                'comment_author_email' => get_option('admin_email'),
+                                'comment_approved'     => 1,
+                                'comment_date'         => current_time('mysql')
+                            ]);
+                        }
+                    }
+
+                    // Store spam reasons if provided
+                    if (!empty($spam_reasons) && is_array($spam_reasons)) {
+                        update_comment_meta($comment_id, '_spam_reasons', array_map('sanitize_text_field', $spam_reasons));
+                    }
+
+                    break;
+
+
+                default:
+                    return new WP_Error('unsupported_task', 'No logic defined for task type: ' . esc_html($task_type));
+            }
+        } catch (Exception $e) {
+            return new WP_Error('task_execution_failed', $e->getMessage(), ['exception' => $e]);
+        }
+
         return true;
     }
+
 
     public function get_keys($key_id = false) {
         return [];

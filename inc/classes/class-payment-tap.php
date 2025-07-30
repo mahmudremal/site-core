@@ -18,10 +18,10 @@ class Payment_Tap {
         add_filter('partnersmanagerpayment/refund_payment',        [ $this, 'tap_refund'        ], 10, 4);
         add_filter('partnersmanagerpayment/payout',                [ $this, 'tap_payout'        ], 10, 3);
         add_filter('partnersmanagerpayment/webhook',               [ $this, 'tap_handle_webhook'], 10, 1);
-        add_filter('partnership/payment/gateways',                 [ $this, 'push_gateways'], 10, 1);
-        add_filter('partnership/payment/gateway/switched',         [ $this, 'switch_gateways'], 10, 3);
-        add_filter('partnership/payment/card/submit',              [ $this, 'card_submit'], 10, 4);
-        add_filter('partnership/payment/transection/verify',       [ $this, 'transection_verify'], 10, 4);
+        add_filter('sitecore/payment/gateways',                 [ $this, 'push_gateways'], 10, 1);
+        add_filter('sitecore/payment/gateway/switched',         [ $this, 'switch_gateways'], 10, 3);
+        add_filter('sitecore/payment/card/submit',              [ $this, 'card_submit'], 10, 4);
+        add_filter('sitecore/payment/transection/verify',       [ $this, 'transection_verify'], 10, 4);
     }
 
     private function secret_key() {

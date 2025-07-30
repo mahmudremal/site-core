@@ -21,7 +21,7 @@ class Users {
 
     protected function setup_hooks() {
         add_filter('rest_api_init', [$this, 'rest_api_init']);
-        add_filter('partnership/security/api/abilities', [$this, 'api_abilities'], 10, 3);
+        add_filter('sitecore/security/api/abilities', [$this, 'api_abilities'], 10, 3);
     }
     
     public function rest_api_init() {

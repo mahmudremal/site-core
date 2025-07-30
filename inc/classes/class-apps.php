@@ -14,8 +14,8 @@ class Apps {
 
     protected function __construct() {
         global $wpdb;
-        $this->table = $wpdb->prefix . 'partnership_apps';
-        $this->keys_table = $wpdb->prefix . 'partnership_app_keys';
+        $this->table = $wpdb->prefix . 'sitecore_apps';
+        $this->keys_table = $wpdb->prefix . 'sitecore_app_keys';
         $this->setup_hooks();
     }
 

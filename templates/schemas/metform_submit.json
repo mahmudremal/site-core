@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MetForm Entry Analysis",
+  "type": "object",
+  "description": "Schema for analyzing MetForm submissions using AI.",
+  "properties": {
+    "formId": {
+      "type": "string",
+      "description": "Unique identifier for the submitted MetForm."
+    },
+    "entry": {
+      "type": "object",
+      "description": "Contains the user-submitted form data.",
+      "properties": {
+        "submittedFields": {
+          "type": "object",
+          "description": "Key-value pairs of submitted form fields.",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Submission time of the form entry."
+        }
+      },
+      "required": ["submittedFields", "timestamp"]
+    },
+    "formDescription": {
+      "type": "string",
+      "description": "Purpose of the form, used for contextual analysis."
+    },
+    "analysis": {
+      "type": "object",
+      "description": "AI-based review of the form submission.",
+      "properties": {
+        "entryValidity": {
+          "type": "boolean",
+          "description": "Whether the entry complies with validation logic or business rules."
+        },
+        "purposeAnalysis": {
+          "type": "string",
+          "description": "AI's interpretation of the intent behind the form entry."
+        },
+        "feedback": {
+          "type": "array",
+          "description": "Suggestions, corrections, or notes based on entry content.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        }
+      },
+      "required": ["entryValidity", "purposeAnalysis"]
+    },
+    "actions": {
+      "type": "object",
+      "description": "Actions that should follow the analysis.",
+      "properties": {
+        "sendEmailNotification": {
+          "type": "boolean",
+          "description": "Whether to notify someone via email."
+        },
+        "redirectUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "Optional URL to redirect the user to after submission."
+        },
+        "displayMessage": {
+          "type": "string",
+          "description": "Optional message shown to the user after submission."
+        }
+      },
+      "required": ["sendEmailNotification"]
+    }
+  },
+  "required": ["formId", "entry", "formDescription", "analysis", "actions"]
+}

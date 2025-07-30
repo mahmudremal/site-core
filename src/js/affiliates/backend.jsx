@@ -45,7 +45,7 @@ const Affiliates = () => {
         const [deleting, setDeleting] = useState(null);
     
         return (
-            <div className="xpo_block">
+            <div className="xpo_block xpo_max-w-2xl">
                 <h3 className="xpo_text-lg xpo_font-semibold xpo_text-gray-900 xpo_mb-4">
                     {__('Confirm Deletion', 'site-core')}
                 </h3>
@@ -87,7 +87,7 @@ const Affiliates = () => {
         }
     
         return (
-            <div className="xpo_block">
+            <div className="xpo_block xpo_max-w-2xl">
                 <h3 className="xpo_text-lg xpo_font-semibold xpo_text-gray-900 xpo_mb-4">
                     {__('Link Details', 'site-core')}
                 </h3>
@@ -148,7 +148,7 @@ const Affiliates = () => {
         const [linkForm, setLinkForm] = useState({ id: 0, data: '', comments: '', shortcode: '', ...data });
 
         return (
-            <form className="xpo_block" onSubmit={e => {
+            <form className="xpo_block xpo_max-w-2xl" onSubmit={e => {
                 e.preventDefault();
                 axios.post(rest_url(`sitecore/v1/affiliates/link/${linkForm?.id}`), linkForm)
                 .then(() => setPopup(null))

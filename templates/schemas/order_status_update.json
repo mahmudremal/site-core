@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Order Status Update Handler",
+  "type": "object",
+  "description": "Used by AI to perform dynamic tasks on WooCommerce order status changes.",
+  "properties": {
+    "orderId": {
+      "type": "string",
+      "description": "Unique identifier for the WooCommerce order."
+    },
+    "newStatus": {
+      "type": "string",
+      "enum": ["pending", "processing", "completed", "cancelled", "failed", "refunded"],
+      "description": "New status assigned to the order."
+    },
+    "customerDetails": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name of the customer."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Email address of the customer."
+        },
+        "phone": {
+          "type": "string",
+          "description": "Customer's phone number."
+        }
+      },
+      "required": ["name", "email"]
+    },
+    "orderSummary": {
+      "type": "object",
+      "properties": {
+        "itemsCount": {
+          "type": "integer",
+          "description": "Total quantity of items in the order."
+        },
+        "totalAmount": {
+          "type": "number",
+          "description": "Total order value including tax and shipping."
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code (e.g., USD, EUR, BDT)."
+        }
+      },
+      "required": ["itemsCount", "totalAmount", "currency"]
+    },
+    "statusChangeReason": {
+      "type": "string",
+      "description": "Reason provided for changing the order status, if applicable."
+    },
+    "actions": {
+      "type": "object",
+      "description": "Tasks triggered based on the status update.",
+      "properties": {
+        "sendEmailToCustomer": {
+          "type": "boolean",
+          "description": "Whether to notify the customer via email."
+        },
+        "notifyAdmin": {
+          "type": "boolean",
+          "description": "Whether to alert the admin of the status change."
+        },
+        "emailContent": {
+          "type": "object",
+          "description": "Content of the email(s) to be dispatched.",
+          "properties": {
+            "customerEmail": {
+              "type": "string",
+              "description": "Email content for the customer."
+            },
+            "adminEmail": {
+              "type": "string",
+              "description": "Email content for the admin."
+            }
+          },
+          "required": ["customerEmail", "adminEmail"]
+        }
+      },
+      "required": ["sendEmailToCustomer", "notifyAdmin"]
+    }
+  },
+  "required": [
+    "orderId",
+    "newStatus",
+    "customerDetails",
+    "orderSummary",
+    "actions"
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "SEO Optimization Task",
+  "description": "This schema represents fields related to SEO enhancement without modifying core article content.",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Suggested SEO-optimized title for the post."
+    },
+    "slug": {
+      "type": "string",
+      "description": "Suggested SEO-friendly URL slug (kebab-case, lowercase, no stop words)."
+    },
+    "focusKeyword": {
+      "type": "string",
+      "description": "Primary keyword the post should rank for."
+    },
+    "metaDescription": {
+      "type": "string",
+      "description": "Suggested meta description for search engine snippets."
+    },
+    "seoAnalysis": {
+      "type": "object",
+      "description": "Detailed analysis of current SEO health.",
+      "properties": {
+        "readabilityScore": {
+          "type": "string",
+          "enum": ["poor", "ok", "good", "great"],
+          "description": "Readability assessment based on structure, length, and flow."
+        },
+        "focusKeywordUsage": {
+          "type": "boolean",
+          "description": "Whether the focus keyword is used in key areas (title, meta, first paragraph, etc.)."
+        },
+        "metaDescriptionLength": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 160,
+          "description": "Character count of the meta description."
+        },
+        "titleLength": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Character count of the title."
+        },
+        "recommendations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Actionable suggestions to improve SEO performance."
+        }
+      },
+      "required": ["readabilityScore", "focusKeywordUsage", "metaDescriptionLength", "titleLength"]
+    },
+    "actions": {
+      "type": "object",
+      "description": "Control flags to indicate what fields should be applied or updated.",
+      "properties": {
+        "updateMetaDescription": {
+          "type": "boolean",
+          "description": "Whether to apply the suggested meta description."
+        },
+        "addFocusKeyword": {
+          "type": "boolean",
+          "description": "Whether to apply the suggested focus keyword."
+        },
+        "modifyTitle": {
+          "type": "boolean",
+          "description": "Whether to apply the suggested title."
+        },
+        "updateSlug": {
+          "type": "boolean",
+          "description": "Whether to apply the suggested slug."
+        }
+      },
+      "required": ["updateMetaDescription", "addFocusKeyword"]
+    }
+  },
+  "required": ["title", "slug", "focusKeyword", "metaDescription", "seoAnalysis", "actions"]
+}

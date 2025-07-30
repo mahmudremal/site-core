@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WooCommerce Payment Completed Event",
+  "type": "object",
+  "description": "Schema used by AI to handle actions when a WooCommerce order payment is completed.",
+  "properties": {
+    "orderId": {
+      "type": "string",
+      "description": "Unique identifier for the WooCommerce order associated with the completed payment."
+    },
+    "paymentDetails": {
+      "type": "object",
+      "description": "Detailed information about the completed payment.",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "description": "Total amount charged for the payment."
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code for the payment (e.g., USD, EUR, BDT)."
+        },
+        "paymentMethod": {
+          "type": "string",
+          "enum": ["credit_card", "paypal", "stripe", "bank_transfer", "cash_on_delivery", "manual"],
+          "description": "The method used for the payment."
+        },
+        "transactionId": {
+          "type": "string",
+          "description": "Unique identifier for the payment transaction."
+        }
+      },
+      "required": ["amount", "currency", "paymentMethod", "transactionId"]
+    },
+    "customerDetails": {
+      "type": "object",
+      "description": "Basic information about the customer who made the payment.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name of the customer."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Email address of the customer."
+        }
+      },
+      "required": ["name", "email"]
+    },
+    "actions": {
+      "type": "object",
+      "description": "Follow-up actions to take based on the payment completion.",
+      "properties": {
+        "sendEmailToCustomer": {
+          "type": "boolean",
+          "description": "Whether to send a confirmation email to the customer."
+        },
+        "notifyAdmin": {
+          "type": "boolean",
+          "description": "Whether to notify the admin about the completed payment."
+        },
+        "emailContent": {
+          "type": "object",
+          "description": "Prepared email contents for each recipient.",
+          "properties": {
+            "customerEmail": {
+              "type": "string",
+              "description": "Content of the email to send to the customer."
+            },
+            "adminEmail": {
+              "type": "string",
+              "description": "Content of the email to send to the admin."
+            },
+            "supplierEmail": {
+              "type": "string",
+              "description": "Content of the email to send to the supplier."
+            },
+            "shopManagerEmail": {
+              "type": "string",
+              "description": "Content of the email to send to the shop manager."
+            }
+          },
+          "required": [
+            "customerEmail",
+            "adminEmail",
+            "supplierEmail",
+            "shopManagerEmail"
+          ]
+        }
+      },
+      "required": ["sendEmailToCustomer", "notifyAdmin"]
+    }
+  },
+  "required": ["orderId", "paymentDetails", "customerDetails", "actions"]
+}

@@ -35,8 +35,8 @@ class Security {
 		});
 
 		
-		add_filter('partnership/security/verify/permission', [$this, 'default_permission'], 10, 2);
-		// return apply_filters('partnership/security/verify/permission', false);
+		add_filter('sitecore/security/verify/permission', [$this, 'default_permission'], 10, 2);
+		// return apply_filters('sitecore/security/verify/permission', false);
 		add_action('rest_api_init', [$this, 'rest_api_init']);
 	}
 
@@ -157,7 +157,7 @@ class Security {
 			return $data;
 		}
 		// print_r($data);wp_die();
-		$result = apply_filters('partnership/security/permission/approval', $data !== false, $request);
+		$result = apply_filters('sitecore/security/permission/approval', $data !== false, $request);
 		return $result;
 	}
 

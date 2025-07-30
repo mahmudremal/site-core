@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Media SEO Task",
+  "description": "SEO enhancement instructions for WordPress media/attachments.",
+  "properties": {
+    "mediaType": {
+      "type": "string",
+      "enum": ["image", "video", "audio", "document"],
+      "description": "Type of the media item."
+    },
+    "title": {
+      "type": "string",
+      "description": "SEO-optimized title for the media item."
+    },
+    "slug": {
+      "type": "string",
+      "description": "URL-friendly slug for the media item (typically matches filename without extension)."
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the media item (used in content and SEO)."
+    },
+    "altText": {
+      "type": "string",
+      "description": "Descriptive alternative text for accessibility and SEO."
+    },
+    "caption": {
+      "type": "string",
+      "description": "Brief caption for media display (optional)."
+    },
+    "filename": {
+      "type": "string",
+      "description": "Media filename with extension (e.g., banner-hero.jpg)."
+    },
+    "keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Relevant SEO keywords associated with the media."
+    },
+    "metaDescription": {
+      "type": "string",
+      "description": "Meta description summarizing the media content."
+    },
+    "schema": {
+      "type": "object",
+      "description": "Optional schema.org structured data fields for enhanced SEO.",
+      "properties": {
+        "headline": {
+          "type": "string",
+          "description": "Schema headline for the media."
+        },
+        "description": {
+          "type": "string",
+          "description": "Schema description for the media."
+        }
+      },
+      "required": ["headline", "description"]
+    }
+  },
+  "required": [
+    "mediaType",
+    "title",
+    "slug",
+    "description",
+    "altText",
+    "filename",
+    "keywords",
+    "metaDescription",
+    "schema"
+  ]
+}

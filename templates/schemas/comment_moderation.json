@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Comment Moderation",
+  "type": "object",
+  "description": "Schema for moderating user comments.",
+  "properties": {
+    "commentId": {
+      "type": "string",
+      "description": "Unique identifier for the comment.",
+      "example": "abc123"
+    },
+    "author": {
+      "type": "string",
+      "description": "Name of the comment author.",
+      "example": "John Doe"
+    },
+    "content": {
+      "type": "string",
+      "description": "Original content of the comment.",
+      "example": "This is a great post! I really enjoyed reading it."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["approve", "unapprove", "spam", "trash"],
+      "description": "Moderation status of the comment.",
+      "example": "approve"
+    },
+    "needsEditing": {
+      "type": "boolean",
+      "description": "Flag to indicate if the comment needs editing.",
+      "example": true
+    },
+    "editedContent": {
+      "type": "string",
+      "description": "Edited version of the comment, if applicable.",
+      "example": "This is an outstanding post! I really loved reading it."
+    },
+    "replyRequired": {
+      "type": "boolean",
+      "description": "Indicates if a reply is needed.",
+      "example": false
+    },
+    "replyContent": {
+      "type": "string",
+      "description": "Suggested reply content.",
+      "example": "Thank you for your comment! We appreciate your feedback."
+    },
+    "spamReasons": {
+      "type": "array",
+      "description": "Reasons the comment was flagged as spam.",
+      "items": { "type": "string" },
+      "example": ["contains links", "offensive language"]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the comment was created.",
+      "example": "2025-05-07T12:00:00Z"
+    }
+  },
+  "required": [
+    "commentId",
+    "author",
+    "content",
+    "status",
+    "createdAt"
+  ]
+}

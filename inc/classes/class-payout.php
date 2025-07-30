@@ -11,12 +11,12 @@ class Payout {
     
 	protected function __construct() {
         global $wpdb;
-        $this->payout_table = $wpdb->prefix . 'partnership_payouts';
+        $this->payout_table = $wpdb->prefix . 'sitecore_payouts';
 		$this->setup_hooks();
 	}
 	protected function setup_hooks() {
 		add_action('rest_api_init', [$this, 'register_routes']);
-        add_filter('partnership/security/api/abilities', [$this, 'api_abilities'], 10, 3);
+        add_filter('sitecore/security/api/abilities', [$this, 'api_abilities'], 10, 3);
         register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
         register_deactivation_hook(WP_SITECORE__FILE__, [$this, 'register_deactivation_hook']);
 	}
@@ -248,7 +248,7 @@ class Payout {
                 'description' => 'Payout to account ' . $_payout->account_id
             ];
             // Execute the payment using the appropriate method
-            $_payment_executed = apply_filters('partnership/payment/payout', null, $payload, $_payout->method);
+            $_payment_executed = apply_filters('sitecore/payment/payout', null, $payload, $_payout->method);
             if (is_wp_error($_payment_executed)) {
                 return new WP_Error('payment_execution_error', $_payment_executed->get_error_message(), ['status' => 500]);
             }

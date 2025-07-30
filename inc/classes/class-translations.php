@@ -24,7 +24,7 @@ class Translations {
         add_shortcode('__', [$this, 'translate_shortcode']);
         add_action('shutdown', [$this, 'update_trans_list']);
 		add_action('rest_api_init', [$this, 'rest_api_init']);
-        add_filter('partnership/security/api/abilities', [$this, 'api_abilities'], 10, 3);
+        add_filter('sitecore/security/api/abilities', [$this, 'api_abilities'], 10, 3);
         add_action('elementor/dynamic_tags/register', [$this, 'register_dynamic_tags'], 10, 1);
 	}
     public function rest_api_init() {

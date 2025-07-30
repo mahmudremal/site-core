@@ -1,8 +1,13 @@
-const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
-const cors = require('cors');
-const path = require('path');
+const Server = require('./server/index');
+const server = new Server();
+server.start();
+
+
+// const express = require('express');
+// const http = require('http');
+// const socketIo = require('socket.io');
+// const cors = require('cors');
+// const path = require('path');
 
 // const app = express();
 // const server = http.createServer(app);

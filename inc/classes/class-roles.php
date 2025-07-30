@@ -27,7 +27,7 @@ class Roles {
         add_filter('pm_project/settings/fields', [$this, 'settings'], 4, 1);
         add_filter('admin_init', [$this, 'restrict_partnership_roles_admin_access']);
         add_action('after_setup_theme', [$this, 'disable_toolbar_for_partnership_roles']);
-        add_filter('partnership/security/permission/approval', [$this, 'api_permission_approval'], 10, 2);
+        add_filter('sitecore/security/permission/approval', [$this, 'api_permission_approval'], 10, 2);
     }
 
     public function register_routes() {
@@ -248,7 +248,7 @@ class Roles {
         }
         $_route = str_replace('/sitecore/v1/', '', $_route);
         // 
-        $_abilities = apply_filters('partnership/security/api/abilities', [], $_route, $user_id);
+        $_abilities = apply_filters('sitecore/security/api/abilities', [], $_route, $user_id);
         if (empty($_abilities)) {return $permission;}
         // 
         return $this->has_ability($_abilities, $user_id);

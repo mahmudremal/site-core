@@ -13,14 +13,14 @@ class Radar {
 
     protected function __construct() {
         global $wpdb;
-        $this->table = $wpdb->prefix . 'partnership_radars';
+        $this->table = $wpdb->prefix . 'sitecore_radars';
         $this->setup_hooks();
     }
 
     protected function setup_hooks() {
         add_action('rest_api_init', [$this, 'rest_api_init']);
         add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
-        add_filter('partnership/security/api/abilities', [$this, 'api_abilities'], 10, 3);
+        add_filter('sitecore/security/api/abilities', [$this, 'api_abilities'], 10, 3);
         register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
         register_deactivation_hook(WP_SITECORE__FILE__, [$this, 'register_deactivation_hook']);
     }

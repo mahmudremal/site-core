@@ -21,7 +21,7 @@ class Referral {
         add_action('template_redirect', [$this, 'maybe_set_referral_cookie']);
 		add_action('user_register', [$this, 'track_referral_on_register'], 10, 1);
 		add_action('create_referral_record', [$this, 'create_referral_record'], 10, 2);
-        add_filter('partnership/security/api/abilities', [$this, 'api_abilities'], 10, 3);
+        add_filter('sitecore/security/api/abilities', [$this, 'api_abilities'], 10, 3);
 		add_action('woocommerce_order_status_completed', [$this, 'track_referral_on_order'], 10, 1);
 	}
 	public function register_referral_post_type() {

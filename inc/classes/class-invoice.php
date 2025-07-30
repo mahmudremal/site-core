@@ -15,9 +15,9 @@ class Invoice {
 
     protected function __construct() {
         global $wpdb;
-        $this->invoice_table = $wpdb->prefix . 'partnership_invoices';
-        $this->item_table = $wpdb->prefix . 'partnership_invoice_items';
-        $this->meta_table = $wpdb->prefix . 'partnership_invoice_meta';
+        $this->invoice_table = $wpdb->prefix . 'sitecore_invoices';
+        $this->item_table = $wpdb->prefix . 'sitecore_invoice_items';
+        $this->meta_table = $wpdb->prefix . 'sitecore_invoice_meta';
         $this->setup_hooks();
     }
 
@@ -27,7 +27,7 @@ class Invoice {
         add_action('wp_enqueue_scripts', [$this, 'register_scripts']);
         add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
         add_action('template_redirect', [$this, 'handle_invoice_payment_template']);
-        add_filter('partnership/security/api/abilities', [$this, 'api_abilities'], 10, 3);
+        add_filter('sitecore/security/api/abilities', [$this, 'api_abilities'], 10, 3);
         register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
         register_deactivation_hook(WP_SITECORE__FILE__, [$this, 'register_deactivation_hook']);
     }
@@ -503,7 +503,7 @@ class Invoice {
             }
         }
         
-        $_3rd_jobs = apply_filters('partnership/invoice/paid', true, $invoice, $_updated);
+        $_3rd_jobs = apply_filters('sitecore/invoice/paid', true, $invoice, $_updated);
 
         if (!$_3rd_jobs || is_wp_error($_3rd_jobs)) {
             return new WP_Error('invoice_paid_error', __('Failed to mark invoice as paid.', 'site-core'));

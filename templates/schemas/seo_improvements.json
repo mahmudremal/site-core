@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "post": {
+      "type": "object",
+      "properties": {
+        "post_id": {
+          "type": "integer",
+          "description": "ID of the post to update"
+        },
+        "post_title": {
+          "type": "string",
+          "description": "Title of the post"
+        },
+        "post_content": {
+          "type": "string",
+          "description": "Content of the post"
+        },
+        "post_status": {
+          "type": "string",
+          "enum": ["publish", "draft", "pending", "private", "future", "trash"],
+          "description": "Status of the post"
+        },
+        "post_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date of post publication in ISO 8601 format"
+        }
+      },
+      "required": ["post_id"]
+    },
+    "postmeta": {
+      "type": "object",
+      "description": "Key-value pairs of post metadata",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "required": ["post"]
+}

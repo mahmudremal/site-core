@@ -26,7 +26,7 @@ class Payment {
         add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
         add_action('wp_ajax_nopriv_payment_webhook', [$this, 'handle_webhook']);
 
-        add_filter('partnership/payment/payout', [$this, 'payout_payment'], 1, 3);
+        add_filter('sitecore/payment/payout', [$this, 'payout_payment'], 1, 3);
     }
 
     public function add_payment_rewrite_rules() {
@@ -261,7 +261,7 @@ class Payment {
     }
 
     public function get_payment_gateways(WP_REST_Request $request) {
-        $response = apply_filters('partnership/payment/gateways', []);
+        $response = apply_filters('sitecore/payment/gateways', []);
         return rest_ensure_response($response);
     }
 
@@ -271,7 +271,7 @@ class Payment {
         if (!$user_id) {
             return new WP_Error('user_not_found', 'User not found.', ['status' => 404]);
         }
-        $response = apply_filters('partnership/payment/gateway/switched', null, $gateway, $user_id);
+        $response = apply_filters('sitecore/payment/gateway/switched', null, $gateway, $user_id);
         if (! $response) {$response = ['type' => 'none'];}
         return rest_ensure_response($response);
     }
@@ -280,7 +280,7 @@ class Payment {
         $gateway = $request->get_param('gateway');
         $params = $request->get_params();
         $user_id = Security::get_instance()->user_id;
-        $response = apply_filters('partnership/payment/card/submit', null, $params, $gateway, $user_id);
+        $response = apply_filters('sitecore/payment/card/submit', null, $params, $gateway, $user_id);
         return rest_ensure_response($response);
     }
     public function remove_payment_card(WP_REST_Request $request) {
@@ -322,7 +322,7 @@ class Payment {
         $gateway = $request->get_param('gateway');
         $transection_id = $request->get_param('transection_id');
         $user_id = Security::get_instance()->user_id;
-        $response = apply_filters('partnership/payment/transection/verify', null, $transection_id, $gateway, $user_id);
+        $response = apply_filters('sitecore/payment/transection/verify', null, $transection_id, $gateway, $user_id);
         return rest_ensure_response($response);
     }
 

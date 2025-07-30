@@ -26,7 +26,7 @@ export default function Application({ children }) {
     const config = {};
 
     useEffect(() => {
-        handleFullScreen();
+        // handleFullScreen();
         setLoading(false);
     }, []);
 

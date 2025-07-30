@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Form Submission Processing",
+  "type": "object",
+  "description": "Schema for analyzing and processing a submitted form entry using AI.",
+  "properties": {
+    "formId": {
+      "type": "string",
+      "description": "Unique identifier for the form being submitted."
+    },
+    "entry": {
+      "type": "object",
+      "description": "The actual form entry data submitted by the user.",
+      "properties": {
+        "submittedFields": {
+          "type": "object",
+          "description": "Key-value pairs of submitted form fields.",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of when the form was submitted."
+        }
+      },
+      "required": ["submittedFields", "timestamp"]
+    },
+    "formDescription": {
+      "type": "string",
+      "description": "A brief description of the form’s intent to help AI interpret the entry."
+    },
+    "analysis": {
+      "type": "object",
+      "description": "AI-generated analysis based on the form entry.",
+      "properties": {
+        "entryValidity": {
+          "type": "boolean",
+          "description": "Whether the submitted entry passes form validation and rules."
+        },
+        "purposeAnalysis": {
+          "type": "string",
+          "description": "AI-inferred purpose of the submission, based on its contents."
+        },
+        "feedback": {
+          "type": "array",
+          "description": "List of issues, suggestions, or improvements for the entry.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        }
+      },
+      "required": ["entryValidity", "purposeAnalysis"]
+    },
+    "actions": {
+      "type": "object",
+      "description": "Actions to perform after analyzing the submission.",
+      "properties": {
+        "sendEmailNotification": {
+          "type": "boolean",
+          "description": "Whether an email should be sent based on the submission."
+        },
+        "redirectUrl": {
+          "type": "string",
+          "description": "URL to redirect the user after form submission (if needed).",
+          "format": "uri"
+        },
+        "displayMessage": {
+          "type": "string",
+          "description": "Custom message to show the user post-submission."
+        }
+      },
+      "required": ["sendEmailNotification"]
+    }
+  },
+  "required": ["formId", "entry", "formDescription", "analysis", "actions"]
+}

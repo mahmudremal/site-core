@@ -21,9 +21,9 @@ class Visitor {
         $this->_visit_id        = null;
         $this->visitor_table    = [];
         $this->session_key      = 'pmsute_trks';
-        $this->visitor_table    = $wpdb->prefix . 'partnership_visitor';
-        $this->activity_table   = $wpdb->prefix . 'partnership_visit_activity';
-        $this->events_table     = $wpdb->prefix . 'partnership_visit_events';
+        $this->visitor_table    = $wpdb->prefix . 'sitecore_visitor';
+        $this->activity_table   = $wpdb->prefix . 'sitecore_visit_activity';
+        $this->events_table     = $wpdb->prefix . 'sitecore_visit_events';
         $this->setup_hooks();
         $this->setup_events();
     }

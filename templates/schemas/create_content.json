@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "AI Article Writing with SEO Mapping",
+  "description": "Schema guiding AI to write structured content with WordPress + Yoast SEO mapping.",
+  "properties": {
+    "contentType": {
+      "type": "string",
+      "enum": ["article", "post", "page", "customPostType", "webPage", "email", "socialMedia"],
+      "description": "The type of content being created."
+    },
+    "outline": {
+      "type": "object",
+      "description": "Structure of the content, including headings and key points.",
+      "properties": {
+        "headings": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Main section headings."
+        },
+        "keyPoints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "point": {
+                "type": "string",
+                "description": "Key point heading."
+              },
+              "explanation": {
+                "type": "string",
+                "description": "Detailed explanation of the point."
+              }
+            },
+            "required": ["point", "explanation"]
+          },
+          "description": "Detailed explanations under each heading."
+        }
+      },
+      "required": ["headings", "keyPoints"]
+    },
+    "seoData": {
+      "type": "object",
+      "description": "Mapped data relevant to WordPress and Yoast SEO plugin.",
+      "properties": {
+        "posts": {
+          "type": "object",
+          "properties": {
+            "post_id": { "type": "number" },
+            "post_title": { "type": "string" },
+            "post_content": { "type": "string" },
+            "post_status": {
+              "type": "string",
+              "enum": ["publish", "draft", "pending", "private", "future", "trash"]
+            },
+            "post_date": { "type": "string", "format": "date-time" }
+          },
+          "required": ["post_title", "post_content"]
+        },
+        "postmeta": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "meta_key": { "type": "string" },
+              "meta_value": { "type": "string" }
+            },
+            "required": ["meta_key", "meta_value"]
+          }
+        },
+        "yoast_indexable": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "description": { "type": "string" },
+            "primary_focus_keyword": { "type": "string" },
+            "primary_focus_keyword_score": { "type": "number" },
+            "readability_score": { "type": "number" },
+            "is_cornerstone": { "type": "boolean" },
+            "is_robots_noindex": { "type": "boolean" },
+            "is_robots_nofollow": { "type": "boolean" },
+            "twitter_title": { "type": "string" },
+            "twitter_description": { "type": "string" },
+            "open_graph_title": { "type": "string" },
+            "open_graph_description": { "type": "string" },
+            "estimated_reading_time_minutes": { "type": "number" }
+          }
+        }
+      }
+    }
+  },
+  "required": ["contentType", "outline"],
+  "if": {
+    "properties": {
+      "contentType": {
+        "enum": ["article", "post", "page", "customPostType"]
+      }
+    }
+  },
+  "then": {
+    "required": ["seoData"]
+  }
+}

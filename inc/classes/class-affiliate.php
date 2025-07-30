@@ -12,8 +12,8 @@ class Affiliate {
 	protected function __construct() {
 		global $wpdb;
 		$this->tables = (object) [
-			'links'  => $wpdb->prefix . 'affiliate_links',
-			'visits' => $wpdb->prefix . 'affiliate_visits',
+			'links'  => $wpdb->prefix . 'sitecore_affiliate_links',
+			'visits' => $wpdb->prefix . 'sitecore_affiliate_visits',
 		];
 		$this->setup_hooks();
 		$this->setup_pageditors();
@@ -304,7 +304,7 @@ class Affiliate {
 	public function admin_enqueue_scripts($curr_page) {
         if ($curr_page != 'toplevel_page_affiliate-links') {return;}
         if (apply_filters('pm_project/system/isactive', 'affiliate-paused')) {return;}
-        wp_enqueue_script('site-core-affiliate', WP_SITECORE_BUILD_JS_URI . '/affiliate.js', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/affiliate.js'), true);
+        wp_enqueue_script('site-core-affiliate', WP_SITECORE_BUILD_JS_URI . '/links.js', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/links.js'), true);
     }
 
 	public function settings($args) {

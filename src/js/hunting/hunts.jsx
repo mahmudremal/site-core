@@ -60,7 +60,7 @@ export default function DrawTool({ params }) {
         points: 0,
         units: '',
         page: 1,
-        ...params?._filters??{}
+        // ...params?._filters??{}
     };
     const [points, setPoints] = useState(0);
     const [email, setEmail] = useState('');
@@ -80,7 +80,7 @@ export default function DrawTool({ params }) {
         totalPages: 1
     });
     const [popup, setPopup] = useState(null);
-    const [filters, setFilters] = useState({...defFilters, first_time: 'yes'});
+    const [filters, setFilters] = useState({...defFilters, ...params?._filters??{}, first_time: 'yes'});
     const [dateRange, setDateRange] = useState([
         {
             startDate: new Date(),
@@ -272,6 +272,19 @@ export default function DrawTool({ params }) {
     //         </div>
     //     );
     // }
+
+    const triggire_outside = (e = null) => {
+        e && e.preventDefault();
+        const targetElement = document.body;
+        const mouseDownEvent = new MouseEvent('mousedown', {
+            bubbles: true,
+            cancelable: true,
+            clientX: 0,
+            clientY: 0
+        });
+        targetElement.dispatchEvent(mouseDownEvent);
+
+    }
     
 
     return (
@@ -307,6 +320,9 @@ export default function DrawTool({ params }) {
                                                         <span>{s.name}</span>
                                                     </div>
                                                 ))}
+                                            </div>
+                                            <div className="xpo_flex xpo_items-center xpo_justify-end xpo_mt-5">
+                                                <button type="button" className="xpo_bg-gray-100 xpo_rounded xpo_px-3 xpo_py-1 xpo_text-sm xpo_min-w-36 xpo_cursor-pointer" onClick={triggire_outside}>{__('Apply')}</button>
                                             </div>
                                         </div>
                                     </Dropdown>
@@ -346,6 +362,9 @@ export default function DrawTool({ params }) {
                                                     <span>{__('Any Weapon')}</span>
                                                 </div>
 
+                                            </div>
+                                            <div className="xpo_flex xpo_items-center xpo_justify-end xpo_mt-5">
+                                                <button type="button" className="xpo_bg-gray-100 xpo_rounded xpo_px-3 xpo_py-1 xpo_text-sm xpo_min-w-36 xpo_cursor-pointer" onClick={triggire_outside}>{__('Apply')}</button>
                                             </div>
                                         </div>
                                     </Dropdown>
