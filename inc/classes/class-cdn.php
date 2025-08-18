@@ -33,7 +33,7 @@ class Cdn {
         add_filter('media_row_actions', [$this, 'media_row_actions'], 10, 3);
         add_filter('wp_get_attachment_url', [$this, 'wp_get_attachment_url'], 10, 2);
         add_action('admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ], 10, 1);
-        add_filter('wp_get_attachment_image_src', [$this, 'wp_get_attachment_image_src'], 10, 3);
+        add_filter('wp_get_attachment_image_src', [$this, 'wp_get_attachment_image_src'], 10, 4);
         add_filter('wp_update_attachment_metadata', [$this, 'wp_update_attachment_metadata'], 10, 2);
         add_filter('intermediate_image_sizes_advanced', [$this, 'intermediate_image_sizes_advanced'], 10, 3);
 
@@ -317,12 +317,22 @@ class Cdn {
         ];
     }
 
-    public function wp_get_attachment_image_src($image, $attachment_id, $size) {
+    public function wp_get_attachment_image_src($image, $attachment_id, $size, $icon = false) {
         if (apply_filters('pm_project/system/isactive', 'cdn-paused')) {return $image;}
         if ($this->get_cdn_host() === 'media') {return $image;}
         $dimensions = [];
 
-        [$dimensions['width'], $dimensions['height']] = $size;
+        if (is_array($size)) {
+            [$dimensions['width'], $dimensions['height']] = $size;
+        } else if (is_string($size)) {
+            $meta = wp_get_attachment_metadata($attachment_id);
+            if (isset($meta['sizes'][$size])) {
+                $dimensions['width'] = $meta['sizes'][$size]['width'];
+                $dimensions['height'] = $meta['sizes'][$size]['height'];
+            }
+        } else {}
+
+        if (empty($dimensions)) {return $image;}
 
         $url = $this->get_resized_url($attachment_id, [
             'w' => $dimensions['width'],
@@ -372,7 +382,7 @@ class Cdn {
     public function wp_update_attachment_metadata($metadata, $attachment_id) {
         if (apply_filters('pm_project/system/isactive', 'cdn-paused')) {return $metadata;}
         if ($this->get_cdn_host() === 'media') {return $metadata;}
-        $sizes = wp_get_registered_image_subsizes();
+        $sizes = $metadata['sizes'] ?? wp_get_registered_image_subsizes();
         if (empty($sizes)) {return $metadata;}
         // 
         foreach ($sizes as $size => $size_data) {
@@ -493,10 +503,17 @@ class Cdn {
         if (!empty($attr['srcset'])) {return $attr;}
         // $image_sizes = get_intermediate_image_sizes();
         $metadata = wp_get_attachment_metadata($image_id);
-        if (!empty($size) && isset($metadata['sizes'][$size])) {
-            $image_size = $metadata['sizes'][$size];
-            $image_link = $this->wp_get_attachment_image_src(null, $image_id, [$image_size['width'], $image_size['height']]);
-            if ($image_link) {$attr['src'] = $image_link[0];}
+        if (!empty($size)) {
+            if (is_array($size)) {
+                $metadata['sizes'] = [];
+                $metadata['sizes'][implode('x', $size)] = ['width' => $size[0], 'height' => $size[1]];
+            } else if (isset($metadata['sizes'][$size])) {
+                $image_size = $metadata['sizes'][$size];
+                $image_link = $this->wp_get_attachment_image_src(null, $image_id, [$image_size['width'], $image_size['height']]);
+                if ($image_link) {$attr['src'] = $image_link[0];}
+            } else {
+                // print_r($size);wp_die('Site is under maintinance');
+            }
         }
         $sources = [];
         foreach ($metadata['sizes'] as $size_key => $size) {

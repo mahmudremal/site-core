@@ -22,7 +22,7 @@ export const Popup = ({ onClose = null, showCross = true, backdrop = true, backd
   );
 }
 
-export const __ = (t) => t;
+export const __ = (text, domain) => text;
 
 export const ClipboardInput = ({ text }) => {
   const [copySuccess, setCopySuccess] = useState('');

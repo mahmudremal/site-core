@@ -15,11 +15,12 @@ class Task {
         global $wpdb;
         $this->table = $wpdb->prefix . 'sitecore_tasks';
         $this->setup_hooks();
+        $this->allow_remote_request();
         $this->setup_job_seeking_hooks();
     }
 
     protected function setup_hooks() {
-        add_action('admin_menu', [$this, 'add_plugin_page']);
+        add_action('admin_menu', [$this, 'add_menu_page']);
         add_action('rest_api_init', [$this, 'rest_api_init']);
         add_filter('set-screen-option', [$this, 'set_screen'], 10, 3);
 		add_action('sitecore/create_task', [$this, 'create_task'], 10, 3);
@@ -124,7 +125,7 @@ class Task {
         global $wpdb;
         $wpdb->query("DROP TABLE IF EXISTS {$this->table}");
     }
-    
+
     public function settings($args) {
 		$args['task']		= [
 			'title'							=> __('Task', 'site-core'),
@@ -156,7 +157,26 @@ class Task {
 		];
         return $args;
     }
-    
+
+    public function allow_remote_request() {
+		add_action('rest_api_init', function () {
+			remove_filter('rest_pre_serve_request', 'rest_send_cors_headers');
+		
+			add_filter('rest_pre_serve_request', function ($value) {
+				header("Access-Control-Allow-Origin: *");
+				header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+				header("Access-Control-Allow-Headers: Content-Type, Authorization");
+				return $value;
+			});
+		}, 15);
+		
+		add_action('init', function () {
+			header("Access-Control-Allow-Origin: *");
+			header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+			header("Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization");
+		});
+    }
+
 	public function admin_enqueue_scripts($curr_page) {
         if ($curr_page != 'settings_page_site-core') {return;}
         wp_enqueue_script('site-core-setting', WP_SITECORE_BUILD_JS_URI . '/setting.js', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/setting.js'), true);
@@ -207,7 +227,7 @@ class Task {
         $response->header('X-WP-TotalPages', (int) $total_pages);
         return $response;
     }
-    
+
     public function tasks_insights(WP_REST_Request $request) {
         $response = [];global $wpdb;
         $search = (string) $request->get_param('search')??'';
@@ -232,7 +252,7 @@ class Task {
         );
         return rest_ensure_response($response);
     }
-    
+
     public function tasks_search(WP_REST_Request $request) {
         global $wpdb;
 
@@ -287,7 +307,7 @@ class Task {
         }
         return new WP_REST_Response($latest_task, 200);
     }
-    
+
     public function task_update(WP_REST_Request $request) {
         global $wpdb;
     
@@ -315,7 +335,7 @@ class Task {
     
         return new WP_Error( 'rest_post_processing_failed', 'Failed to update query', [ 'status' => 500 ] );
     }
-    
+
     public function task_delete( WP_REST_Request $request ) {
         global $wpdb;
         $task_id = $request->get_param( 'task_id' );
@@ -326,7 +346,7 @@ class Task {
         );
         return rest_ensure_response(['success' => $deleted, 'message' => $deleted ? __('Task deleted successfully!', 'site-core') : __('Failed to delete task', 'site-core')]);
     }
-    
+
     public function task_submit( WP_REST_Request $request ) {
         global $wpdb;$params = $request->get_params();
         $task_id = $request->get_param('task_id');
@@ -349,7 +369,7 @@ class Task {
             return rest_ensure_response($_performed);
         }
     }
-    
+
     public function get_post_data( WP_REST_Request $request ) {
         $post_type = $request->get_param( 'post_type' );
         $post_id   = $request->get_param( 'post_id' );
@@ -396,7 +416,7 @@ class Task {
     
         return rest_ensure_response( $response_data );
     }
-    
+
     public function update_post_data( WP_REST_Request $request ) {
         $post_type = $request->get_param( 'post_type' );
 	    $post_id   = $request->get_param( 'post_id' );
@@ -498,8 +518,7 @@ class Task {
 
     }
 
-    
-    public function add_plugin_page() {
+    public function add_menu_page() {
         add_menu_page(
             __('Jobs', 'site-core'),
             __('Jobs', 'site-core'),
@@ -513,7 +532,7 @@ class Task {
     public static function set_screen($status, $option, $value) {
         return ($option === 'jobs_per_page') ? $value : $status;
     }
-    
+
     public function job_listing_admin_menu_page() {
         global $wpdb;
         $statuses = $wpdb->get_col("SELECT DISTINCT status FROM {$this->table}");

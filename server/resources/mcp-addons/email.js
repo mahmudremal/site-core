@@ -14,12 +14,12 @@ class EmailAddon {
             secure: true,
             auth: {
                 user: 'hello@mahmudremal.com',
-                pass: 'hhHQGa5BCA9F'
+                pass: '@#.AyazAnas01?#@'
             }
         };
         this.imapConfig = {
             user: 'hello@mahmudremal.com',
-            password: 'hhHQGa5BCA9F',
+            password: '@#.AyazAnas01?#@',
             host: 'mail.mahmudremal.com',
             port: 993,
             tls: true,

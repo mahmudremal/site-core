@@ -23,6 +23,7 @@ class Affiliate {
 		add_action('init', [$this, 'register_shortcodes']);
 		add_action('admin_menu', [$this, 'add_admin_menu']);
 		add_action('rest_api_init', [$this, 'register_routes']);
+		add_filter('sitecore/llmstxt/content', [$this, 'llmstxt'], 10, 2);
         add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
         add_action('admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ], 10, 1);
 		register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
@@ -337,6 +338,18 @@ class Affiliate {
 		];
         return $args;
     }
+
+	public function llmstxt($output, $lang) {
+		global $wpdb;
+        $_res = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$this->tables->links}"), ARRAY_A);
+		if (count($_res)) {
+			$output .= "My Affiliates:\n";
+		}
+		foreach ($_res as $link) {
+			$output .=  sprintf('- %s: %s', $link['title'], site_url(sprintf('/links/%s/', $link['shortcode']))) . "\n";
+		}
+		return $output;
+	}
 	
 	
 	

@@ -167,6 +167,7 @@ class Llmstxt {
         if (!empty($options)) {
             $output .= sprintf(__('# Custom Directives: %s', 'site-core'), "\n\n". $options) ."\n";
         }
+        $output = apply_filters('sitecore/llmstxt/content', $output, $current_language);
         // Add language links
         if (function_exists('pll_the_languages') && apply_filters('pm_project/system/isactive', 'llmstxt-multilang')) {
             $output .= "\n" . sprintf(__('# Other Language Versions', 'site-core')) . "\n";

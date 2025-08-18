@@ -37,6 +37,7 @@ class Project {
 		Menus::get_instance();
 		Option::get_instance();
 		Assets::get_instance();
+		Emails::get_instance();
 		Llmstxt::get_instance();
 			Affiliate::get_instance();
 		// 		Payout::get_instance();
@@ -60,6 +61,7 @@ class Project {
 		Translations::get_instance();
 		// 	Notifications::get_instance();
 		Instant_Images::get_instance();
+		Store_Manager::get_instance();
 				
 		// 		Payment_Tap::get_instance();
 		// 		Payment_Tabby::get_instance();

@@ -1,5 +1,6 @@
-const { z } = require("zod");
-const axios = require("axios");
+import https from 'https';
+import { z } from "zod";
+import axios from "axios";
 
 class TasksAddon {
     constructor(db, logEvent) {
@@ -18,7 +19,7 @@ class TasksAddon {
         return [
             {
                 title: "Get a Task",
-                name: "tasks_get_a_task",
+                name: "tasks_get",
                 description: "Fetch the next pending task from the system",
                 inputSchema: {
                     status: z.string().optional().default("pending"),
@@ -28,13 +29,16 @@ class TasksAddon {
                 handler: async (args) => {
                     const { status = "pending", task_type = "any", excluded_ids = [] } = args;
                     try {
-                        const params = new URLSearchParams();
-                        if (status) params.append("status", status);
-                        if (task_type) params.append("task_type", task_type);
-                        if (excluded_ids.length > 0) {
-                            excluded_ids.forEach(id => params.append("excluded_ids[]", id));
-                        }
-                        const resp = await axios.get(`${this.apiBase}/search?${params.toString()}`);
+                        const agent = new https.Agent({ rejectUnauthorized: false });
+                        const resp = await axios.get(`${this.apiBase}/search`, {
+                            httpsAgent: agent,
+                            params: {
+                                status,
+                                task_type,
+                                ...(excluded_ids.length > 0 && { "excluded_ids[]": excluded_ids })
+                            }
+                        });
+                        console.log(resp.data)
                         if (resp.status !== 200) {
                             return { success: false, error: `HTTP Error: ${resp.status}: ${resp.message}` };
                         }
@@ -46,6 +50,7 @@ class TasksAddon {
                         return { success: false, error: error.message || "Unknown error" };
                     }
                 }
+
             },
             {
                 title: "Submit Task Result",

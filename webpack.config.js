@@ -15,6 +15,7 @@ const SRC_DIR = path.resolve(__dirname, 'src');
 
 module.exports = {
   entry: {
+      shopmanager: JS_DIR + '/shopmanager.js',
       links: JS_DIR + '/affiliate.js',
       setting: JS_DIR + '/setting.js',
       pricing: JS_DIR + '/pricing.js',
@@ -26,6 +27,7 @@ module.exports = {
       media: JS_DIR + '/media.js',
       admin: JS_DIR + '/admin.js',
       popup: JS_DIR + '/popup.js',
+    emails: JS_DIR + '/emails.js',
     // hunts: JS_DIR + '/hunts.js',
       task: JS_DIR + '/task.js',
       pwa: JS_DIR + '/pwa.js',
