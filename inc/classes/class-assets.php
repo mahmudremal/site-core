@@ -34,24 +34,15 @@ class Assets {
 	 */
 	public function register_styles() {
 		wp_register_style('site-core', WP_SITECORE_DIR_URI . '/styling.css', [], $this->filemtime(WP_SITECORE_DIR_PATH . '/styling.css'), 'all');
-		if (!apply_filters('partnership_manager_screen_active', false)) {return;}
-
-		// Enqueue styles.
-		$version = $this->filemtime(WP_SITECORE_BUILD_CSS_DIR_PATH . '/public.css');
-		// wp_register_style('site-core-public', WP_SITECORE_BUILD_CSS_URI . '/public.css', [], $version, 'all');
-		// wp_register_style('site-core-pricing', WP_SITECORE_BUILD_CSS_URI . '/pricing.css', [], $version, 'all');
-		// wp_register_style('site-core-admin', WP_SITECORE_BUILD_CSS_URI . '/admin.css', [], $this->filemtime(WP_SITECORE_BUILD_CSS_DIR_PATH . '/admin.css'), 'all');
 	}
 
 	/**
 	 * Registers and enqueues frontend scripts.
 	 */
 	public function register_scripts() {
-		if (!apply_filters('partnership_manager_screen_active', false)) {return;}
-
+		// if (!apply_filters('partnership_manager_screen_active', false)) {return;}
 		// Enqueue scripts.
-		// wp_register_script('site-core-public', WP_SITECORE_BUILD_JS_URI . '/public.js', [], $this->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/public.js'), true);
-		// 
+		wp_register_script('site-core', WP_SITECORE_BUILD_JS_URI . '/core.js', [], $this->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/core.js'), true);
 	}
 
 	/**
@@ -61,19 +52,7 @@ class Assets {
 	 */
 	public function admin_enqueue_scripts($curr_page) {
 		wp_register_style('site-core', WP_SITECORE_DIR_URI . '/styling.css', [], $this->filemtime(WP_SITECORE_DIR_PATH . '/styling.css'), 'all');
-		// wp_register_style('site-core-tailwind', WP_SITECORE_DIR_URI . '/assets/tailwind.css', [], $this->filemtime(WP_SITECORE_DIR_PATH . '/assets/tailwind.css'), 'all');
-		// wp_register_style('site-core-admin', WP_SITECORE_BUILD_CSS_URI . '/admin.css', [], $this->filemtime(WP_SITECORE_BUILD_CSS_DIR_PATH . '/admin.css'), 'all');
-		// wp_register_script('site-core-admin', WP_SITECORE_BUILD_JS_URI . '/admin.js', [], $this->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/admin.js'), true);
-		// wp_register_script('site-core-setting', WP_SITECORE_BUILD_JS_URI . '/setting.js', [], $this->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/setting.js'), true);
-		// wp_localize_script('site-core-admin', 'siteCoreConfig', apply_filters('sitecorejs/siteconfig', []));
-		// if ($curr_page == 'settings_page_site-core') {
-		// 	wp_enqueue_script('site-core-setting');
-		// }
-		// if ($curr_page !== 'toplevel_page_pro-tools') {return;}
-		// wp_enqueue_style('site-core-tailwind');
-		// wp_enqueue_style('site-core-admin');
-		// wp_enqueue_script('site-core-admin');
-		// wp_enqueue_style('site-core-public');
+		wp_register_script('site-core', WP_SITECORE_BUILD_JS_URI . '/core.js', [], $this->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/core.js'), true);
 	}
 
 	/**

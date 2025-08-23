@@ -298,14 +298,13 @@ class Affiliate {
 
 	public function admin_page() {
 		echo '<div class="wrap" id="affiliate-links-app"><h1>Affiliate Links</h1></div>';
-		wp_enqueue_style('site-core');
 	}
-
 	
 	public function admin_enqueue_scripts($curr_page) {
         if ($curr_page != 'toplevel_page_affiliate-links') {return;}
         if (apply_filters('pm_project/system/isactive', 'affiliate-paused')) {return;}
-        wp_enqueue_script('site-core-affiliate', WP_SITECORE_BUILD_JS_URI . '/links.js', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/links.js'), true);
+        wp_enqueue_script('site-core');
+        wp_enqueue_style('site-core');
     }
 
 	public function settings($args) {

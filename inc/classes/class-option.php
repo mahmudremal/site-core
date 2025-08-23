@@ -144,6 +144,7 @@ class Option {
 			case 'time':
 			case 'color':
 			case 'url':
+			case 'tel':
 				$html .= '<input id="' . esc_attr($field['id']) . '" type="' . $field['type'] . '" name="' . esc_attr($option_name) . '" placeholder="' . esc_attr($field['placeholder']) . '" value="' . esc_attr($data) . '"' . $this->attributes($field) . '/>' . "\n";
 			break;
 			case 'text_secret':

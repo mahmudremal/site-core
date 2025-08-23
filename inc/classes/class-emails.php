@@ -185,7 +185,8 @@ class Emails {
 
     public function admin_enqueue_scripts($curr_page) {
         if ($curr_page !== 'toplevel_page_email-templates') {return;}
-		wp_register_script('sitecore-emails', WP_SITECORE_BUILD_JS_URI . '/emails.js', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/emails.js'), true);
+        wp_enqueue_script('site-core');
+        wp_enqueue_style('site-core');
     }
 
     public function api_get_emails_templates(WP_REST_Request $request) {
@@ -484,14 +485,12 @@ class Emails {
     
     public function add_admin_menu() {
         add_menu_page(__('Email Templates', 'textdomain'), __('Email Templates', 'textdomain'), 'manage_options', 'email-templates', [$this, 'admin_page'], 'dashicons-email-alt', 20);
-        wp_enqueue_script('sitecore-emails');
-        wp_enqueue_style('site-core');
     }
 
     public function admin_page() {
         remove_all_actions('admin_notices');
         ?>
-        <div id="app_root">
+        <div id="email-editor-screen">
             <div style="padding: 70px 20px;background: red;">
                 <h1 style="color: #fff;line-height: 40px;">Here we'll implement an overview insight without any controls but just to get insignhts about flows, file storages, drive storages, finance, referrals and so on.</h1>
             </div>

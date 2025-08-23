@@ -448,7 +448,8 @@ class Cdn {
         if ($curr_page != 'settings_page_site-core') {return;}
         if (apply_filters('pm_project/system/isactive', 'cdn-paused')) {return;}
         if ($this->get_cdn_host() === 'media') {return;}
-        wp_enqueue_script('site-core-cdn', WP_SITECORE_BUILD_JS_URI . '/cdn.js', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/cdn.js'), true);
+        wp_enqueue_style('site-core');
+        wp_enqueue_script('site-core');
     }
 
     

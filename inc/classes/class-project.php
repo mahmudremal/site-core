@@ -21,6 +21,7 @@ class Project {
 	protected function __construct() {
 		// $this->setup_hunts();
 		$this->setup_hooks();
+		$this->setup_markethia();
 	}
 	protected function setup_hooks() {
 			// Hunts::get_instance();
@@ -29,7 +30,7 @@ class Project {
 			Task::get_instance();
 		// 	Error::get_instance();
 			Utils::get_instance();
-		// 	Radar::get_instance();
+			// Radar::get_instance();
 		Editor::get_instance();
 				Suite::get_instance();
 				// Users::get_instance();
@@ -86,6 +87,11 @@ class Project {
 		// 
 		add_action('init', [$this, 'init'], 1, 0);
 		register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
+	}
+
+	protected function setup_markethia() {
+		Teams::get_instance();
+		Services::get_instance();
 	}
 
 	/**

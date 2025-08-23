@@ -1,12 +1,14 @@
 import { X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
-export const Popup = ({ onClose = null, showCross = true, backdrop = true, backdropClose = true, className = null, bodyClassName = null, children }) => {
+export const Popup = ({ onClose = null, showCross = true, backdrop = true, backdropClose = true, className = null, bodyClassName = null, backdropClassName = null, children }) => {
   if (!className) {className = "xpo_fixed xpo_inset-0 xpo_z-50 xpo_flex xpo_items-center xpo_justify-center";}
   if (!bodyClassName) {bodyClassName = "xpo_relative xpo_z-10 xpo_bg-white xpo_rounded-xl xpo_shadow-lg xpo_p-6 xpo_max-w-full xpo_min-w-[90vw] md:xpo_min-w-[28rem]";}
+  if (!backdropClassName) {backdropClassName = "xpo_absolute xpo_inset-0 xpo_bg-black/40 xpo_bg-opacity-30";}
+  // 
   return (
     <div className={className} aria-modal="true" role="dialog">
-      {backdrop ? <div className="xpo_absolute xpo_inset-0 xpo_bg-black/40 xpo_bg-opacity-30" onClick={e => backdropClose && onClose && onClose(e)} aria-label={__('Close popup')}></div> : null}
+      {backdrop ? <div className={backdropClassName} onClick={e => backdropClose && onClose && onClose(e)} aria-label={__('Close popup')}></div> : null}
       <div className={bodyClassName}>
         {/* xpo_-translate-x-1 xpo_-translate-y-1 */}
         {typeof onClose === 'function' && showCross ? (
@@ -162,6 +164,19 @@ export const tailwind_install = () => {
                 700: '#3D83C1',
                 800: '#2B69A2',
                 900: '#1A4D82',
+              },
+              markethia: {
+                DEFAULT: "#02424F",
+                50:  "#E6F1F3",
+                100: "#CCE3E6",
+                200: "#99C6CC",
+                300: "#66A9B3",
+                400: "#338C99",
+                500: "#007080",
+                600: "#005966",
+                700: "#00434D",
+                800: "#022D33",
+                900: "#01171A",
               },
               'brand-dark': '#1D2327'
             },

@@ -482,8 +482,8 @@ class Store_Manager {
 
     public function admin_enqueue_scripts($curr_page) {
         if ($curr_page !== 'toplevel_page_store-manager') {return;}
+        wp_enqueue_script('site-core');
         wp_enqueue_style('site-core');
-		wp_enqueue_script('sitecore-shopmanager', WP_SITECORE_BUILD_JS_URI . '/shopmanager.js', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/shopmanager.js'), true);
     }
 
     

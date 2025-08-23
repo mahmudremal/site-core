@@ -46,7 +46,7 @@ class Menus {
 				],
 				[
 					'id' 					=> 'general-screen',
-					'label'					=> __('dashboard screen', 'site-core'),
+					'label'					=> __('Dashboard screen', 'site-core'),
 					'description'			=> __("Select a dashboard screen from where we'll apply the dashboard interface", 'site-core'),
 					'type'					=> 'select',
 					'options'				=> $this->get_query(['post_type' => 'page', 'post_status' => 'any', 'type' => 'option', 'limit' => 50]),

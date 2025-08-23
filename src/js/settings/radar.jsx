@@ -5,7 +5,7 @@ import Webcam from 'react-webcam';
 import * as tf from '@tensorflow/tfjs';
 import * as cocossd from '@tensorflow-models/coco-ssd';
 import { Play, StopCircle, Loader2, Download } from 'lucide-react'; 
-import { __ } from '../utils';
+import { __ } from '@js/utils';
 
 const Radar = () => {
     const webcamRef = useRef(null);

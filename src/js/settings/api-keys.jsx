@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Edit, Trash2, Plus, X } from "lucide-react";
 import { sleep } from '@functions';
-import { __, Popup, ClipboardInput } from "../utils";
+import { __, Popup, ClipboardInput } from "@js/utils";
 
 export default function ApiKeysManager() {
   const [apps, setApps] = useState([]);

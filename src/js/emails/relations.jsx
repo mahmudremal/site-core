@@ -414,5 +414,3 @@ const TemplateRelations = () => {
 }
 
 export default TemplateRelations;
-
-
