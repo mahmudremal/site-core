@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp AI Bot Admin</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            prefix: 'xpo_',
+            corePlugins: {
+                preflight: false,
+            }
+        }
+    </script>
+    <style>
+        .xpo_animate-bounce {
+            animation: bounce 1s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(-25%);
+                animation-timing-function: cubic-bezier(0.8,0,1,1);
+            }
+            50% {
+                transform: none;
+                animation-timing-function: cubic-bezier(0,0,0.2,1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        const { createRoot } = ReactDOM;
+        const { Bot, MessageCircle, Send, Clock, User, Smartphone, Wifi, WifiOff, Play, QrCode } = lucide;
+
+        function WABotApp() {
+            const [socket, setSocket] = useState(null);
+            const [isConnected, setIsConnected] = useState(false);
+            const [messages, setMessages] = useState([]);
+            const [pendingMessage, setPendingMessage] = useState(null);
+            const [countdown, setCountdown] = useState(0);
+            const [response, setResponse] = useState('');
+            const [isTyping, setIsTyping] = useState(false);
+            const [qrCode, setQrCode] = useState(null);
+            const [stats, setStats] = useState({
+                whatsappConnected: false,
+                clientConnected: false,
+                pendingMessages: 0,
+                qrAvailable: false,
+                isConnecting: false
+            });
+            
+            const responseInputRef = useRef(null);
+            const typingTimeoutRef = useRef(null);
+
+            useEffect(() => {
+                const newSocket = io();
+                setSocket(newSocket);
+
+                newSocket.on('connect', () => {
+                    setIsConnected(true);
+                });
+
+                newSocket.on('disconnect', () => {
+                    setIsConnected(false);
+                });
+
+                newSocket.on('qr-code', (data) => {
+                    setQrCode(data.qr);
+                });
+
+                newSocket.on('whatsapp-connected', () => {
+                    setQrCode(null);
+                });
+
+                newSocket.on('connection-lost', () => {
+                    setQrCode(null);
+                });
+
+                newSocket.on('new-message', (messageData) => {
+                    setPendingMessage(messageData);
+                    setCountdown(15);
+                });
+
+                newSocket.on('countdown-update', (data) => {
+                    setCountdown(data.countdown);
+                });
+
+                newSocket.on('countdown-paused', () => {
+                    setCountdown(0);
+                });
+
+                newSocket.on('message-sent', (messageData) => {
+                    setMessages(prev => [...prev, messageData]);
+                    setPendingMessage(null);
+                    setCountdown(0);
+                    setResponse('');
+                    setIsTyping(false);
+                });
+
+                const fetchStats = async () => {
+                    try {
+                        const response = await fetch('/status');
+                        const data = await response.json();
+                        setStats(data);
+                    } catch (error) {
+                        console.error('Failed to fetch stats:', error);
+                    }
+                };
+
+                const fetchQR = async () => {
+                    try {
+                        const response = await fetch('/api/qr');
+                        const data = await response.json();
+                        if (data.qr) {
+                            setQrCode(data.qr);
+                        }
+                    } catch (error) {
+                        console.error('Failed to fetch QR:', error);
+                    }
+                };
+
+                const interval = setInterval(() => {
+                    fetchStats();
+                    if (!stats.whatsappConnected) {
+                        fetchQR();
+                    }
+                }, 3000);
+                
+                fetchStats();
+                fetchQR();
+
+                return () => {
+                    newSocket.close();
+                    clearInterval(interval);
+                    if (typingTimeoutRef.current) {
+                        clearTimeout(typingTimeoutRef.current);
+                    }
+                };
+            }, []);
+
+            const handleResponseChange = (e) => {
+                setResponse(e.target.value);
+                
+                if (!isTyping && pendingMessage) {
+                    setIsTyping(true);
+                    socket.emit('user-typing', { messageId: pendingMessage.id });
+                }
+
+                if (typingTimeoutRef.current) {
+                    clearTimeout(typingTimeoutRef.current);
+                }
+
+                typingTimeoutRef.current = setTimeout(() => {
+                    setIsTyping(false);
+                }, 3000);
+            };
+
+            const handleSendMessage = () => {
+                if (response.trim() && pendingMessage) {
+                    socket.emit('send-message', {
+                        messageId: pendingMessage.id,
+                        response: response.trim()
+                    });
+                }
+            };
+
+            const handleLetAI = () => {
+                if (pendingMessage) {
+                    socket.emit('let-ai-respond', { messageId: pendingMessage.id });
+                }
+            };
+
+            const handleKeyPress = (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                }
+            };
+
+            const handleInputFocus = () => {
+                if (pendingMessage && !isTyping) {
+                    setIsTyping(true);
+                    socket.emit('user-typing', { messageId: pendingMessage.id });
+                }
+            };
+
+            return React.createElement('div', { className: "xpo_min-h-screen xpo_bg-gray-100 xpo_p-4" },
+                React.createElement('div', { className: "xpo_max-w-6xl xpo_mx-auto" },
+                    React.createElement('div', { className: "xpo_bg-white xpo_rounded-lg xpo_shadow-lg xpo_overflow-hidden" },
+                        React.createElement('div', { className: "xpo_bg-green-600 xpo_text-white xpo_p-4 xpo_flex xpo_items-center xpo_justify-between" },
+                            React.createElement('div', { className: "xpo_flex xpo_items-center xpo_space-x-3" },
+                                React.createElement(Bot, { className: "xpo_w-8 xpo_h-8" }),
+                                React.createElement('div', null,
+                                    React.createElement('h1', { className: "xpo_text-xl xpo_font-bold" }, "WhatsApp AI Bot Admin"),
+                                    React.createElement('p', { className: "xpo_text-green-100 xpo_text-sm" }, "Manage your automated responses")
+                                )
+                            ),
+                            React.createElement('div', { className: "xpo_flex xpo_items-center xpo_space-x-4" },
+                                React.createElement('div', { className: "xpo_flex xpo_items-center xpo_space-x-2" },
+                                    React.createElement(Smartphone, { className: "xpo_w-4 xpo_h-4" }),
+                                    React.createElement('span', { className: "xpo_text-sm" },
+                                        stats.whatsappConnected ? 'WhatsApp Connected' : (stats.isConnecting ? 'Connecting...' : 'WhatsApp Disconnected')
+                                    ),
+                                    stats.whatsappConnected ? 
+                                        React.createElement(Wifi, { className: "xpo_w-4 xpo_h-4 xpo_text-green-200" }) : 
+                                        React.createElement(WifiOff, { className: "xpo_w-4 xpo_h-4 xpo_text-red-200" })
+                                ),
+                                React.createElement('div', { className: "xpo_flex xpo_items-center xpo_space-x-2" },
+                                    React.createElement('div', { className: `xpo_w-3 xpo_h-3 xpo_rounded-full ${isConnected ? 'xpo_bg-green-300' : 'xpo_bg-red-300'}` }),
+                                    React.createElement('span', { className: "xpo_text-sm" },
+                                        isConnected ? 'Connected' : 'Disconnected'
+                                    )
+                                )
+                            )
+                        ),
+
+                        qrCode ? React.createElement('div', { className: "xpo_bg-yellow-50 xpo_border-b xpo_border-yellow-200 xpo_p-4" },
+                            React.createElement('div', { className: "xpo_flex xpo_items-center xpo_justify-center xpo_space-x-4" },
+                                React.createElement('div', { className: "xpo_text-center" },
+                                    React.createElement('div', { className: "xpo_flex xpo_items-center xpo_justify-center xpo_mb-2" },
+                                        React.createElement(QrCode, { className: "xpo_w-5 xpo_h-5 xpo_mr-2" }),
+                                        React.createElement('span', { className: "xpo_font-medium" }, "Scan QR Code to Connect WhatsApp")
+                                    ),
+                                    React.createElement('img', { 
+                                        src: qrCode, 
+                                        alt: "QR Code", 
+                                        className: "xpo_mx-auto xpo_border xpo_border-gray-300 xpo_rounded xpo_bg-white xpo_p-2",
+                                        style: { maxWidth: '200px' }
+                                    })
+                                )
+                            )
+                        ) : null,
+
+                        React.createElement('div', { className: "xpo_grid xpo_grid-cols-1 xpo_lg:xpo_grid-cols-2 xpo_h-96" },
+                            React.createElement('div', { className: "xpo_border-r xpo_border-gray-200" },
+                                React.createElement('div', { className: "xpo_bg-gray-50 xpo_p-3 xpo_border-b xpo_border-gray-200" },
+                                    React.createElement('h2', { className: "xpo_font-semibold xpo_flex xpo_items-center xpo_space-x-2" },
+                                        React.createElement(MessageCircle, { className: "xpo_w-4 xpo_h-4" }),
+                                        React.createElement('span', null, "Recent Messages")
+                                    )
+                                ),
+                                React.createElement('div', { className: "xpo_overflow-y-auto xpo_h-80 xpo_p-4 xpo_space-y-3" },
+                                    messages.length === 0 ? 
+                                        React.createElement('div', { className: "xpo_text-center xpo_text-gray-500 xpo_py-8" },
+                                            React.createElement(MessageCircle, { className: "xpo_w-12 xpo_h-12 xpo_mx-auto xpo_mb-2 xpo_text-gray-300" }),
+                                            React.createElement('p', null, "No messages yet")
+                                        ) :
+                                        messages.slice(-10).reverse().map((msg, idx) =>
+                                            React.createElement('div', { key: idx, className: "xpo_bg-gray-50 xpo_p-3 xpo_rounded-lg" },
+                                                React.createElement('div', { className: "xpo_flex xpo_items-center xpo_justify-between xpo_mb-2" },
+                                                    React.createElement('span', { className: "xpo_font-medium xpo_text-sm" }, msg.sender),
+                                                    React.createElement('div', { className: "xpo_flex xpo_items-center xpo_space-x-1" },
+                                                        msg.respondedBy === 'AI' ?
+                                                            React.createElement(Bot, { className: "xpo_w-4 xpo_h-4 xpo_text-blue-500" }) :
+                                                            React.createElement(User, { className: "xpo_w-4 xpo_h-4 xpo_text-green-500" }),
+                                                        React.createElement('span', { className: "xpo_text-xs xpo_text-gray-500" }, msg.respondedBy)
+                                                    )
+                                                ),
+                                                React.createElement('p', { className: "xpo_text-sm xpo_text-gray-700 xpo_mb-2" }, msg.text),
+                                                React.createElement('div', { className: "xpo_bg-white xpo_p-2 xpo_rounded xpo_border-l-4 xpo_border-blue-500" },
+                                                    React.createElement('p', { className: "xpo_text-sm xpo_text-gray-800" }, msg.response)
+                                                )
+                                            )
+                                        )
+                                )
+                            ),
+
+                            React.createElement('div', null,
+                                React.createElement('div', { className: "xpo_bg-gray-50 xpo_p-3 xpo_border-b xpo_border-gray-200" },
+                                    React.createElement('h2', { className: "xpo_font-semibold xpo_flex xpo_items-center xpo_space-x-2" },
+                                        React.createElement(Clock, { className: "xpo_w-4 xpo_h-4" }),
+                                        React.createElement('span', null, "Pending Response"),
+                                        countdown > 0 && React.createElement('span', { className: "xpo_bg-red-500 xpo_text-white xpo_text-xs xpo_px-2 xpo_py-1 xpo_rounded-full" },
+                                            countdown + 's'
+                                        )
+                                    )
+                                ),
+                                React.createElement('div', { className: "xpo_p-4 xpo_h-80" },
+                                    pendingMessage ? 
+                                        React.createElement('div', { className: "xpo_h-full xpo_flex xpo_flex-col" },
+                                            React.createElement('div', { className: "xpo_bg-blue-50 xpo_p-3 xpo_rounded-lg xpo_mb-4" },
+                                                React.createElement('div', { className: "xpo_flex xpo_items-center xpo_justify-between xpo_mb-2" },
+                                                    React.createElement('span', { className: "xpo_font-medium" }, pendingMessage.sender),
+                                                    React.createElement('span', { className: "xpo_text-xs xpo_text-gray-500" },
+                                                        new Date(pendingMessage.timestamp).toLocaleTimeString()
+                                                    )
+                                                ),
+                                                React.createElement('p', { className: "xpo_text-gray-700" }, pendingMessage.text)
+                                            ),
+                                            
+                                            React.createElement('div', { className: "xpo_flex-1 xpo_flex xpo_flex-col" },
+                                                React.createElement('label', { className: "xpo_text-sm xpo_font-medium xpo_text-gray-700 xpo_mb-2" },
+                                                    "Your Response:"
+                                                ),
+                                                React.createElement('textarea', {
+                                                    ref: responseInputRef,
+                                                    value: response,
+                                                    onChange: handleResponseChange,
+                                                    onKeyPress: handleKeyPress,
+                                                    onFocus: handleInputFocus,
+                                                    placeholder: "Type your response...",
+                                                    className: "xpo_flex-1 xpo_w-full xpo_p-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_resize-none xpo_focus:outline-none xpo_focus:ring-2 xpo_focus:ring-green-500 xpo_focus:border-transparent"
+                                                }),
+                                                React.createElement('div', { className: "xpo_flex xpo_space-x-2 xpo_mt-3" },
+                                                    React.createElement('button', {
+                                                        onClick: handleSendMessage,
+                                                        disabled: !response.trim(),
+                                                        className: "xpo_flex-1 xpo_bg-green-600 xpo_text-white xpo_px-4 xpo_py-2 xpo_rounded-lg xpo_font-medium xpo_disabled:bg-gray-400 xpo_hover:bg-green-700 xpo_transition-colors xpo_flex xpo_items-center xpo_justify-center xpo_space-x-2"
+                                                    },
+                                                        React.createElement(Send, { className: "xpo_w-4 xpo_h-4" }),
+                                                        React.createElement('span', null, "Send")
+                                                    ),
+                                                    React.createElement('button', {
+                                                        onClick: handleLetAI,
+                                                        className: "xpo_bg-blue-600 xpo_text-white xpo_px-4 xpo_py-2 xpo_rounded-lg xpo_font-medium xpo_hover:bg-blue-700 xpo_transition-colors xpo_flex xpo_items-center xpo_space-x-2"
+                                                    },
+                                                        React.createElement(Play, { className: "xpo_w-4 xpo_h-4" }),
+                                                        React.createElement('span', null, "Let AI")
+                                                    )
+                                                )
+                                            ),
+                                            
+                                            isTyping && React.createElement('div', { className: "xpo_text-sm xpo_text-green-600 xpo_mt-2 xpo_flex xpo_items-center xpo_space-x-2" },
+                                                React.createElement('div', { className: "xpo_flex xpo_space-x-1" },
+                                                    React.createElement('div', { className: "xpo_w-2 xpo_h-2 xpo_bg-green-600 xpo_rounded-full xpo_animate-bounce" }),
+                                                    React.createElement('div', { className: "xpo_w-2 xpo_h-2 xpo_bg-green-600 xpo_rounded-full xpo_animate-bounce", style: {animationDelay: '0.1s'} }),
+                                                    React.createElement('div', { className: "xpo_w-2 xpo_h-2 xpo_bg-green-600 xpo_rounded-full xpo_animate-bounce", style: {animationDelay: '0.2s'} })
+                                                ),
+                                                React.createElement('span', null, "Waiting for your response...")
+                                            )
+                                        ) :
+                                        React.createElement('div', { className: "xpo_h-full xpo_flex xpo_items-center xpo_justify-center xpo_text-center xpo_text-gray-500" },
+                                            React.createElement('div', null,
+                                                React.createElement(Clock, { className: "xpo_w-12 xpo_h-12 xpo_mx-auto xpo_mb-2 xpo_text-gray-300" }),
+                                                React.createElement('p', null, "Waiting for incoming messages...")
+                                            )
+                                        )
+                                )
+                            )
+                        ),
+
+                        React.createElement('div', { className: "xpo_bg-gray-50 xpo_p-4 xpo_border-t xpo_border-gray-200" },
+                            React.createElement('div', { className: "xpo_flex xpo_items-center xpo_justify-between xpo_text-sm xpo_text-gray-600" },
+                                React.createElement('div', { className: "xpo_flex xpo_items-center xpo_space-x-4" },
+                                    React.createElement('span', null, 'Status: ' + (isConnected ? 'Online' : 'Offline')),
+                                    React.createElement('span', null, 'Pending: ' + stats.pendingMessages)
+                                ),
+                                React.createElement('div', { className: "xpo_flex xpo_items-center xpo_space-x-2" },
+                                    React.createElement('div', { className: "xpo_w-2 xpo_h-2 xpo_rounded-full xpo_bg-green-500 xpo_animate-pulse" }),
+                                    React.createElement('span', null, "Bot Active")
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+        }
+
+        const root = createRoot(document.getElementById('root'));root.render(<WABotApp />);
+    </script>
+</body>
+</html>

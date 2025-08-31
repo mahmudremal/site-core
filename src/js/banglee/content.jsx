@@ -36,6 +36,9 @@ const AgentikRoom = lazy(() => import('./agentik/room'));
 const AgentikChat = lazy(() => import('./agentik/chat'));
 const AgentikError = lazy(() => import('./search/error404'));
 
+const Whatsapp = lazy(() => import('./whatsapp'));
+const CrawlerClient = lazy(() => import('./crawler/crawlerBot'));
+
 const Error404 = lazy(() => import('./search/error404'));
 
 export default function Banglee() {
@@ -74,6 +77,9 @@ export default function Banglee() {
                     <Route path={home_route('/agentika/:workspace_id/rooms/:room_id')} element={<AgentikRoom />} />
                     <Route path={home_route('/agentika/:workspace_id/rooms/:room_id/conversations')} element={<AgentikChat />} />
                     <Route path={home_route('/agentika/*')} element={<AgentikError />} />
+
+                    <Route path={home_route('/whatsapp/*')} element={<Whatsapp />} />
+                    <Route path={home_route('/crawler/*')} element={<CrawlerClient />} />
                     
                     <Route path={home_route('/*')} element={<Error404 />} />
 

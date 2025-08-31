@@ -23,7 +23,7 @@ module.exports = {
     //   invoice: JS_DIR + '/invoice.js',
     //   public: JS_DIR + '/public.js',
     //   editor: JS_DIR + '/editor.js',
-    //   server: JS_DIR + '/server.js',
+      server: JS_DIR + '/server.js',
     //   media: JS_DIR + '/media.js',
     //   admin: JS_DIR + '/admin.js',
     //   popup: JS_DIR + '/popup.js',
@@ -33,6 +33,8 @@ module.exports = {
     //   pwa: JS_DIR + '/pwa.js',
       // cdn: JS_DIR + '/cdn.js',
     core: JS_DIR + '/core.js',
+    // wa: path.resolve(__dirname, 'server/app.jsx'),
+    schemaeditor: JS_DIR + '/banglee/whatsapp/schemaeditor.jsx',
 
       // app: JS_DIR + '/app.js',
     // sw: JS_DIR + '/sw.js',

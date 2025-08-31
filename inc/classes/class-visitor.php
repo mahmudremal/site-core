@@ -363,8 +363,6 @@ class Visitor {
             KEY visitor_id_idx (visitor_id)
         ) $charset_collate;";
 
-
-
         $sql_events = "CREATE TABLE IF NOT EXISTS {$this->events_table} (
             id BIGINT NOT NULL AUTO_INCREMENT,
             activity_id BIGINT NOT NULL,

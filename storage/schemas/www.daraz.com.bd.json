@@ -1,0 +1,62 @@
+{
+  "wait4selection": [],
+  "removals": {
+    "header": "header, .header, nav, .navigation",
+    "footer": "footer, .footer",
+    "sidebar": ".sidebar, .ads, .advertisement",
+    "popup": ".popup, .modal, .overlay"
+  },
+  "extract": {
+    "isProduct": "#module_item_gallery_1 > .item-gallery",
+    "product": {
+      "wait4selection": ["#module_product_detail"],
+      "content": ["#module_product_detail", "innerText"],
+      "images": ["#module_item_gallery_1 img", "src"],
+      "price": ["#module_product_price_1 .pdp-price.pdp-price_type_normal", "innerText"],
+      "originalPrice": ["#module_product_price_1 .pdp-price.pdp-price_type_deleted", "innerText"],
+      "discount": ["#module_product_price_1 .pdp-product-price__discount", "innerText"],
+      "title": [".pdp-product-title", "innerText"],
+      "rating": ["#module_product_review", "innerText"],
+      "availability": [".delivery-info, .stock-info", "innerText"],
+      "brand": [".pdp-product-brand", "innerText"],
+      "category": [".breadcrumb_list .breadcrumb_item a", "innerText"],
+      "specifications": [".pdp-general-features .specification-keys .key-li", "innerText"],
+      "reviews": {
+        "selector": null,
+        "count": ["#module_product_review .mod-rating .count", "innerText"],
+        "items": ["#module_product_review .mod-reviews > .item", "innerText"]
+      },
+      "meta": {
+        "title": ["title", "innerText"],
+        "description": ["meta[name='description']", "content"],
+        "ogImage": ["meta[property='og:image']", "content"],
+        "ogTitle": ["meta[property='og:title']", "content"],
+        "ogDescription": ["meta[property='og:description']", "content"],
+        "ogPrice": ["meta[property='product:price:amount']", "content"],
+        "ogCurrency": ["meta[property='product:price:currency']", "content"]
+      },
+      "custom": {
+        "seller": {
+          "name": ["#module_seller_info .seller-name__detail-name", "innerText"],
+          "url": ["#module_seller_info .seller-name__detail-name", "href"],
+          "info": ["#module_seller_info .pdp-seller-info-pc", "innerText"]
+        },
+        "warranty": ["#module_seller_warranty .warranty__options", "innerText"],
+        "delivery": ["#module_seller_delivery .delivery__content", "innerText"]
+      }
+    },
+    "isCategory": "#products",
+    "category": {
+      "wait4selection": ["#products + div [data-qa-locator='product-item']"],
+      "title": ["#products + div span + span", "innerText"],
+      "meta": {
+        "title": ["title", "innerText"],
+        "description": ["meta[name='description']", "content"],
+        "ogImage": ["meta[property='og:image']", "content"],
+        "ogTitle": ["meta[property='og:title']", "content"],
+        "ogDescription": ["meta[property='og:description']", "content"]
+      }
+    },
+    "links": ["[data-qa-locator='general-products'] [data-qa-locator='product-item'] a[title], a.product-item-link, .ant-pagination .ant-pagination-item:not(.ant-pagination-item-active) > a", "href"]
+  }
+}

@@ -1,0 +1,9 @@
+{
+	"id": "1Iu3QzIdQOss1Go",
+	"json": "{\"id\":\"1Iu3QzIdQOss1Go\",\"url\":\"https://pages.daraz.com.bd/wow/gcp/route/daraz/bd/upr/router?hybrid=1&data_prefetch=true&prefetch_replace=1&at_iframe=1&wh_pid=/lazada/channel/bd/weekly-campaigns/privacy-policy\",\"uniqueKey\":\"https://pages.daraz.com.bd/wow/gcp/route/daraz/bd/upr/router?at_iframe=1&data_prefetch=true&hybrid=1&prefetch_replace=1&wh_pid=%2Flazada%2Fchannel%2Fbd%2Fweekly-campaigns%2Fprivacy-policy\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"crawlDepth\":1,\"enqueueStrategy\":\"same-domain\"}}}",
+	"method": "GET",
+	"orderNo": 1756569631591,
+	"retryCount": 0,
+	"uniqueKey": "https://pages.daraz.com.bd/wow/gcp/route/daraz/bd/upr/router?at_iframe=1&data_prefetch=true&hybrid=1&prefetch_replace=1&wh_pid=%2Flazada%2Fchannel%2Fbd%2Fweekly-campaigns%2Fprivacy-policy",
+	"url": "https://pages.daraz.com.bd/wow/gcp/route/daraz/bd/upr/router?hybrid=1&data_prefetch=true&prefetch_replace=1&at_iframe=1&wh_pid=/lazada/channel/bd/weekly-campaigns/privacy-policy"
+}

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WhatsApp Baileys Client</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <!-- Added QR Code library -->
+  <script src="/qrcode.min.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <header class="bg-blue-600 text-white p-4 flex items-center justify-between">
+    <h1 class="text-xl font-semibold">WhatsApp Baileys Client</h1>
+    <div id="connection-status" class="text-sm font-medium">Connecting...</div>
+  </header>
+
+  <main class="flex flex-1 overflow-hidden">
+    <!-- Chat List Section (Disabled) -->
+    <section class="w-80 bg-white border-r border-gray-300 flex flex-col">
+      <div class="p-4 border-b border-gray-300 flex justify-between items-center">
+        <h2 class="font-semibold text-lg text-gray-500">Chats</h2>
+        <button id="refresh-chats" title="Refresh Chats" class="text-gray-400 cursor-not-allowed" disabled>Refresh</button>
+      </div>
+      <div class="p-4 text-gray-500 text-sm">
+        Chat history is temporarily disabled while we upgrade our database.
+      </div>
+    </section>
+
+    <!-- Message Section -->
+    <section class="flex-1 flex flex-col">
+      <div class="p-4 border-b border-gray-300 flex items-center gap-4">
+        <div id="chat-name" class="font-semibold text-lg truncate">Real-time Messages</div>
+      </div>
+      <div id="messages" class="flex-1 p-4 overflow-y-auto bg-gray-50 flex flex-col space-y-3">
+         <p class="text-center text-gray-500">Incoming messages will appear here...</p>
+      </div>
+      <form id="send-message-form" class="p-4 border-t border-gray-300 flex gap-2 bg-white">
+        <input id="jid-input" type="text" placeholder="Enter JID (e.g., 1234567890@s.whatsapp.net)" class="w-1/3 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off" />
+        <input id="message-input" type="text" placeholder="Type a message..." class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off" />
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Send</button>
+      </form>
+    </section>
+
+    <!-- QR Code Section -->
+    <section class="w-64 bg-white border-l border-gray-300 p-4 flex flex-col items-center justify-center">
+      <h2 class="font-semibold text-lg mb-2">QR Code</h2>
+      <div id="qr-container" class="w-52 h-52 flex items-center justify-center">
+        <canvas id="qr-canvas"></canvas>
+        <p id="qr-instruction" class="text-center text-gray-600 text-sm">Scan this QR code with WhatsApp to login</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const socket = io("http://localhost:3001"); // Explicitly connect to the server port
+
+    const connectionStatusEl = document.getElementById('connection-status');
+    const messagesEl = document.getElementById('messages');
+    const sendMessageForm = document.getElementById('send-message-form');
+    const jidInput = document.getElementById('jid-input');
+    const messageInput = document.getElementById('message-input');
+    const qrContainer = document.getElementById('qr-container');
+    const qrCanvas = document.getElementById('qr-canvas');
+    const qrInstruction = document.getElementById('qr-instruction');
+
+    function setConnectionStatus(status) {
+      connectionStatusEl.textContent = `Status: ${status}`;
+      const statusClasses = {
+        connected: 'text-green-400',
+        disconnected: 'text-red-500',
+        qr: 'text-yellow-500',
+        connecting: 'text-yellow-500'
+      };
+      connectionStatusEl.className = `text-sm font-medium ${statusClasses[status] || 'text-yellow-500'}`;
+
+      if (status === 'connected') {
+        qrContainer.innerHTML = '<p class="text-green-500 text-center">Successfully Connected!</p>';
+      }
+    }
+
+    sendMessageForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const jid = jidInput.value.trim();
+      const text = messageInput.value.trim();
+      if (!jid || !text) {
+        alert('Please enter a JID and a message.');
+        return;
+      }
+      socket.emit('send_message', { jid, text });
+      messageInput.value = '';
+    });
+
+    socket.on('connect', () => {
+      setConnectionStatus('connecting');
+      socket.emit('get_status');
+    });
+
+    socket.on('disconnect', () => {
+      setConnectionStatus('disconnected');
+    });
+
+    socket.on('status', ({ status }) => { // status is an object
+      setConnectionStatus(status);
+    });
+
+    socket.on('qr', (qr) => {
+      if (qr) {
+        qrInstruction.style.display = 'block';
+        qrCanvas.style.display = 'block';
+        QRCode.toCanvas(qrCanvas, qr, { width: 200 }, (error) => {
+          if (error) console.error(error);
+          console.log('QR code generated!');
+        });
+      } else {
+        // Hide QR when connection is established
+        qrInstruction.style.display = 'none';
+        qrCanvas.style.display = 'none';
+      }
+    });
+
+    socket.on('new_message', (msg) => {
+        // Remove the initial placeholder message if it exists
+        const placeholder = messagesEl.querySelector('p');
+        if (placeholder) placeholder.remove();
+
+        const div = document.createElement('div');
+        const fromMe = msg.key.fromMe;
+        const sender = fromMe ? 'You' : msg.key.remoteJid;
+        const messageContent = extractMessageContent(msg.message);
+
+        div.className = `max-w-md px-3 py-2 rounded-lg break-words ${fromMe ? 'bg-blue-600 text-white self-end' : 'bg-white text-gray-800 self-start'}`;
+        div.innerHTML = `<div class="font-bold text-sm">${sender}</div><div>${messageContent || '[Unsupported message]'}</div>`;
+        messagesEl.appendChild(div);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    });
+
+    socket.on('message_sent', (data) => {
+        console.log('Message sent confirmation:', data);
+        // Could add a "delivered" tick or similar here
+    });
+
+    socket.on('error', ({ message }) => { // error is an object
+      alert('Server Error: ' + message);
+    });
+
+    // Helper to get text from different message types
+    function extractMessageContent(message) {
+        if (!message) return null;
+        const type = Object.keys(message)[0];
+        const content = message[type];
+        if (type === 'conversation') return content;
+        if (type === 'extendedTextMessage') return content.text;
+        return `[${type.replace('Message', '')}]`;
+    }
+
+  </script>
+</body>
+</html>

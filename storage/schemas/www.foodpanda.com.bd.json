@@ -1,0 +1,55 @@
+{
+  "removals": {
+    "header": "#navbar, .nav-main",
+    "footer": "#navFooter, .footer",
+    "sidebar": "#rhf, .similarities-widget",
+    "ads": ".sponsored-products, [data-component-type='s-ads-metrics']"
+  },
+  "extract": {
+    "isProduct": "#dp-container, #productDetails_feature_div, [data-asin]",
+    "product": {
+      "content": "#feature-bullets, .a-unordered-list.a-nostyle",
+      "images": "#landingImage, #altImages img, .a-dynamic-image",
+      "price": ".a-price-current .a-offscreen, .a-price .a-offscreen",
+      "originalPrice": ".a-price.a-text-price .a-offscreen",
+      "title": "#productTitle, .product-title",
+      "rating": ".a-icon-alt, .reviewCountTextLinkedHistogram .a-link-normal",
+      "availability": "#availability span, .a-color-success, .a-color-price",
+      "brand": ".a-row .a-size-base.po-brand .a-size-base",
+      "category": "#wayfinding-breadcrumbs_feature_div a",
+      "asin": "javascript:document.querySelector('[data-asin]')?.getAttribute('data-asin') || new URLSearchParams(window.location.search).get('dp')?.split('/')[0]",
+      "specifications": "#prodDetails table tr, .a-keyvalue",
+      "reviews": {
+        "selector": "[data-hook='review']",
+        "count": "#acrCustomerReviewText",
+        "items": "[data-hook='review-body'] span"
+      },
+      "meta": {
+        "title": "title",
+        "description": "meta[name='description']",
+        "ogImage": "meta[property='og:image']",
+        "keywords": "meta[name='keywords']"
+      },
+      "custom": {
+        "seller": "#sellerProfileTriggerId, .a-link-normal#sellerProfileTriggerId",
+        "prime": ".a-icon-prime, [aria-label*='Prime']",
+        "delivery": "#mir-layout-DELIVERY_BLOCK, .a-color-secondary.a-size-base"
+      }
+    },
+    "isCategory": ".s-result-list, #search",
+    "category": {
+      "products": "[data-component-type='s-search-result'], .s-result-item",
+      "productTitle": "h2 .a-link-normal, .s-size-mini .a-link-normal",
+      "productPrice": ".a-price .a-offscreen, .a-price-current .a-offscreen",
+      "pagination": ".a-pagination a, .a-last a",
+      "filters": "#departments, .a-section.a-spacing-none",
+      "sorting": "#s-result-sort-select, .a-dropdown-prompt",
+      "meta": {
+        "title": "title",
+        "description": "meta[name='description']",
+        "totalProducts": ".a-color-state.a-text-bold"
+      }
+    },
+    "links": "a[href*='/dp/'], a[href*='/s?'], .s-product-image-container a, .a-link-normal[href*='/dp/']"
+  }
+}

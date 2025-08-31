@@ -1,17 +1,17 @@
 import axios from 'axios';
 import { lazy, Suspense } from 'react';
-// import settings_screen from '../settings';
-// const TaskManager = lazy(() => import('@js/tasks'));
-// const Affiliates = lazy(() => import('@js/affiliates'));
-// const ShopManager = lazy(() => import('@js/shop-manager'));
-// const EmailBuilderApp = lazy(() => import('@js/emails/index'));
+import settings_screen from '../settings';
+const TaskManager = lazy(() => import('@js/tasks'));
+const Affiliates = lazy(() => import('@js/affiliates'));
+const ShopManager = lazy(() => import('@js/shop-manager'));
+const EmailBuilderApp = lazy(() => import('@js/emails/index'));
 const ServicePackage = lazy(() => import('@js/services/package'));
 const ServiceMetaBox = lazy(() => import('@js/services/metabox'));
 const ServiceContracts = lazy(() => import('@js/services/contracts'));
 import { 
-    __,
-    tailwind_install
- } from '@js/utils';
+    __, 
+    tailwind_install 
+} from '@js/utils';
 import { createRoot } from 'react-dom/client';
 
 class SiteCore {
@@ -26,13 +26,13 @@ class SiteCore {
 
     setup_hooks() {
         tailwind_install();
-        // settings_screen();
-        // this.cdnmanager_setup();
-		// this.taskmanager_setup();
-		// this.shopmanager_setup();
-        // this.emailbuilder_setup();
-        // this.linksmanager_setup();
-
+        settings_screen();
+        this.cdnmanager_setup();
+		this.taskmanager_setup();
+		this.shopmanager_setup();
+        this.emailbuilder_setup();
+        this.linksmanager_setup();
+        // 
         window.addEventListener('load', () => {
             this.packagebtn_setup();
         });

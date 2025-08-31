@@ -121,6 +121,8 @@ export const AppsList = () => {
             {name: 'AI', slug: 'ai', color: '#78350F', description: 'AI-powered tools and chat interfaces.'},
             {name: 'Mcp', slug: 'mcp', color: '#0F766E', description: 'Cloud Model context protocol for AI.'},
             {name: 'Agent', slug: 'agentika', color: '#0F766E', description: 'Agentic workspace driven by cloud ai.'},
+            {name: 'Whatsapp', slug: 'whatsapp', color: '#075E54', description: 'Agentic whastapp bot application.'},
+            {name: 'Crawler', slug: 'crawler', color: '#1D4ED8', description: 'Web Scraping crawler.'},
             {name: 'Docs', slug: 'docs', color: '#0F766E', description: 'Collaborative document editing and writing.'},
             {name: 'Sheets', slug: 'sheets', color: '#6D28D9', description: 'Spreadsheet creation and collaboration.'},
             {name: 'Drive', slug: 'drive', color: '#2563EB', description: 'Cloud storage and file sharing.'},

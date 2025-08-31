@@ -1,0 +1,9 @@
+{
+	"id": "Cb6VodrGj4LXz0N",
+	"json": "{\"id\":\"Cb6VodrGj4LXz0N\",\"url\":\"https://helpcenter.daraz.com.bd/page/knowledge?language=en&pageId=11&category=1000001032&scm=1003.4.icms-zebra-100022982-6850452.OTHER_6502233775_7696023&knowledge=1000005321\",\"uniqueKey\":\"https://helpcenter.daraz.com.bd/page/knowledge?category=1000001032&knowledge=1000005321&language=en&pageId=11&scm=1003.4.icms-zebra-100022982-6850452.OTHER_6502233775_7696023\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"crawlDepth\":1,\"enqueueStrategy\":\"same-domain\"}}}",
+	"method": "GET",
+	"orderNo": 1756569811682,
+	"retryCount": 0,
+	"uniqueKey": "https://helpcenter.daraz.com.bd/page/knowledge?category=1000001032&knowledge=1000005321&language=en&pageId=11&scm=1003.4.icms-zebra-100022982-6850452.OTHER_6502233775_7696023",
+	"url": "https://helpcenter.daraz.com.bd/page/knowledge?language=en&pageId=11&category=1000001032&scm=1003.4.icms-zebra-100022982-6850452.OTHER_6502233775_7696023&knowledge=1000005321"
+}

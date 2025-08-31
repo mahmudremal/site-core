@@ -1,0 +1,9 @@
+{
+	"id": "0TwqCAoEyZPcrck",
+	"json": "{\"id\":\"0TwqCAoEyZPcrck\",\"url\":\"https://www.daraz.com.bd/products/xiaomi-mi-band-34-i264299613-s1234707375.html\",\"loadedUrl\":\"https://www.daraz.com.bd/products/xiaomi-mi-band-34-i264299613-s1234707375.html\",\"uniqueKey\":\"https://www.daraz.com.bd/products/xiaomi-mi-band-34-i264299613-s1234707375.html\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"link_id\":1,\"__crawlee\":{\"state\":4}},\"handledAt\":\"2025-08-30T16:00:31.649Z\"}",
+	"method": "GET",
+	"orderNo": null,
+	"retryCount": 0,
+	"uniqueKey": "https://www.daraz.com.bd/products/xiaomi-mi-band-34-i264299613-s1234707375.html",
+	"url": "https://www.daraz.com.bd/products/xiaomi-mi-band-34-i264299613-s1234707375.html"
+}

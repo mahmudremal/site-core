@@ -39,7 +39,7 @@ class McpAddon {
                 }
             }
         );
-        await this.loadMcpAddons();
+        // await this.loadMcpAddons();
         return true;
     }
 
@@ -182,9 +182,9 @@ class McpAddon {
         if (this.server) {
             try {
                 await this.server.close();
-                console.log('Old MCP Server closed');
+                // console.log('Old MCP Server closed');
             } catch (error) {
-                console.error('Error closing old MCP server:', error);
+                // console.error('Error closing old MCP server:', error);
             }
         }
 
@@ -528,7 +528,7 @@ class McpAddon {
     async stop() {
         if (this.server) {
             await this.server.close();
-            console.log('MCP Server stopped');
+            // console.log('MCP Server stopped');
         }
     }
 }

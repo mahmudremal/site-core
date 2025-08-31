@@ -479,7 +479,7 @@ class Emails {
     
     public function load_addons() {
         // include_once WP_SITECORE_DIR_PATH . '/inc/widgets/emails/index.php';
-        include_once WP_SITECORE_DIR_PATH . '\\src\\js\\emails\\emails\\index.php';
+        include_once WP_SITECORE_DIR_PATH . '\\inc\\widgets\\emails\\index.php';
         Emails\Addons::get_instance();
     }
     

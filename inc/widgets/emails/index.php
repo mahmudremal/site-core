@@ -10,8 +10,6 @@ use SITE_CORE\inc\Traits\Singleton;
 class Addons {
     use Singleton;
 
-    protected $addons = [];
-
     protected function __construct() {
         $this->setup_hooks();
         $this->setup_addons();
@@ -22,15 +20,12 @@ class Addons {
     }
 
     protected function setup_addons() {
-        // $addon_files = glob(WP_SITECORE_DIR_PATH . '/inc/widgets/emails/addon-*.php');
-        $addon_files = glob(WP_SITECORE_DIR_PATH . '\\src\\js\\emails\\emails\\addon-*.php');
+        $addon_files = glob(WP_SITECORE_DIR_PATH . '\\inc\\widgets\\emails\\addon-*.php');
+        // $addon_files = glob('./addon-*.php');
         if (empty($addon_files)) {return;}
         foreach ($addon_files as $file) {
             require_once $file;
             $class_name = $this->get_class_name_from_file($file);
-
-            $this->addons[] = $class_name;
-
             // if (class_exists($class_name) && method_exists($class_name, 'get_instance')) {
                 call_user_func([$class_name, 'get_instance']);
             // }

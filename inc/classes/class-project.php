@@ -40,6 +40,7 @@ class Project {
 		Assets::get_instance();
 		Emails::get_instance();
 		Llmstxt::get_instance();
+		Ecommerce::get_instance();
 			Affiliate::get_instance();
 		// 		Payout::get_instance();
 		// 		Stores::get_instance();

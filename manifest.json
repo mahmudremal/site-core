@@ -16,7 +16,8 @@
     "webRequest",
     "webRequestBlocking",
     "<all_urls>",
-    "activeTab"
+    "activeTab",
+    "scripting"
   ],
   "host_permissions": [
     "*://*/*"
@@ -24,7 +25,8 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"]
+      "js": ["bot/socket.io.min.js", "dist/js/schemaeditor.js"],
+      "css": ["styling.css"]
     }
   ],
   "icons": {
@@ -35,5 +37,11 @@
   "notification": {
     "default_title": "New Form Submission",
     "default_icon": "dist/icons/brand/favicon-32x32.png"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["socket.io.min.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

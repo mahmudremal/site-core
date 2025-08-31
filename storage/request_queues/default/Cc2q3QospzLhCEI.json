@@ -1,0 +1,9 @@
+{
+	"id": "Cc2q3QospzLhCEI",
+	"json": "{\"id\":\"Cc2q3QospzLhCEI\",\"url\":\"https://www.daraz.com.bd/xundd/?type=brand\",\"uniqueKey\":\"https://www.daraz.com.bd/xundd?type=brand\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"crawlDepth\":1,\"enqueueStrategy\":\"same-domain\"}}}",
+	"method": "GET",
+	"orderNo": 1756569811682,
+	"retryCount": 0,
+	"uniqueKey": "https://www.daraz.com.bd/xundd?type=brand",
+	"url": "https://www.daraz.com.bd/xundd/?type=brand"
+}

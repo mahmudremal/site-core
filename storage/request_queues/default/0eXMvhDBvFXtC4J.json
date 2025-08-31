@@ -1,0 +1,9 @@
+{
+	"id": "0eXMvhDBvFXtC4J",
+	"json": "{\"id\":\"0eXMvhDBvFXtC4J\",\"url\":\"https://helpcenter.daraz.com.bd/page/knowledge?pageId=11&category=1000001019\",\"uniqueKey\":\"https://helpcenter.daraz.com.bd/page/knowledge?category=1000001019&pageId=11\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"crawlDepth\":1,\"enqueueStrategy\":\"same-domain\"}}}",
+	"method": "GET",
+	"orderNo": 1756569811682,
+	"retryCount": 0,
+	"uniqueKey": "https://helpcenter.daraz.com.bd/page/knowledge?category=1000001019&pageId=11",
+	"url": "https://helpcenter.daraz.com.bd/page/knowledge?pageId=11&category=1000001019"
+}

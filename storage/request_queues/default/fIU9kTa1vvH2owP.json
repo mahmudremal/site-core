@@ -1,0 +1,9 @@
+{
+	"id": "fIU9kTa1vvH2owP",
+	"json": "{\"id\":\"fIU9kTa1vvH2owP\",\"url\":\"https://ai.alimebot.daraz.com.bd/intl/index.htm?from=TwnJ1IESFu&_lang=en-BD\",\"uniqueKey\":\"https://ai.alimebot.daraz.com.bd/intl/index.htm?_lang=en-BD&from=TwnJ1IESFu\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"crawlDepth\":1,\"enqueueStrategy\":\"same-domain\"}}}",
+	"method": "GET",
+	"orderNo": 1756569811682,
+	"retryCount": 0,
+	"uniqueKey": "https://ai.alimebot.daraz.com.bd/intl/index.htm?_lang=en-BD&from=TwnJ1IESFu",
+	"url": "https://ai.alimebot.daraz.com.bd/intl/index.htm?from=TwnJ1IESFu&_lang=en-BD"
+}

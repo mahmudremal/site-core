@@ -1,6 +1,6 @@
 const { z } = require("zod");
 const qrcode = require('qrcode-terminal');
-const { Client, LocalAuth, MessageMedia } = require("whatsapp-web.js");
+// const { Client, LocalAuth, MessageMedia } = require("whatsapp-web.js");
 
 class WhatsAppAddon {
     constructor(db, logEvent) {
@@ -13,6 +13,7 @@ class WhatsAppAddon {
     }
 
     async init() {
+        return;
         this.client = new Client({
             authStrategy: new LocalAuth()
         });

@@ -1,18 +1,34 @@
-const express = require('express');
-const http = require('http');
-const mysql = require('mysql2');
+const { Server: WSServer } = require('socket.io');
 const AddonManager = require('./addonManager');
-const path = require('path');
+const { createServer } = require('http');
+const express = require('express');
+const mysql = require('mysql2');
 const dotenv = require('dotenv');
+const boxen = require('boxen');
+const path = require('path');
+const pino = require('pino');
+const net = require('net');
 dotenv.config();
 
 class Server {
     constructor() {
         this.app = express();
-        this.server = http.createServer(this.app);
+        this.server = createServer(this.app);
+        this.ws = new WSServer(this.server, {
+            cors: {origin: "*", methods: ["GET", "POST"]}
+        });
         this.server.__root = __dirname;
         this.app.set('server', this.server);
+        this.app.set('ws', this.ws);
         this.port = 3000;
+        this.logger = pino({
+            level: 'silent'
+        });
+        this.init();
+    }
+
+    async init() {
+        await this.waitForServer('localhost', 10005);
         this.initDatabase()
         .then(conn => {
             conn.prefix = 'banglee_';
@@ -25,13 +41,27 @@ class Server {
             await this.loadAddons();
             this.postRoutes();
         })
-        .catch(err => console.error("Failed to start the application", err))
-        .finally(() => console.log('Successfully started the application'));
-        
+        .catch(err => this.logger.error({ err }, 'Failed to start the application'))
+        .finally(() => {
+            this.logger.info('Successfully started the application');
+            console.log(boxen(
+                `Banglee Server is running on\nhttp://localhost:${this.port}`,
+                {
+                    margin: 2,
+                    padding: 1,
+                    title: 'Server Started',
+                    titleAlignment: 'center',
+                    textAlignment: 'center',
+                    borderColor: 'green',
+                    borderStyle: 'round',
+                    fullscreen: (width, height) => [width, height - 1]
+                }
+            ));
+        });
     }
 
     initDatabase() {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const conn = mysql.createConnection({
                 host: 'localhost',
                 user: 'root',
@@ -43,7 +73,7 @@ class Server {
 
             conn.connect((err) => {
                 if (err) {
-                    console.error('Database connection failed: ', err);
+                    this.logger.error({ err }, 'Database connection failed!');
                     reject('Database connection failed');
                     return;
                 }
@@ -71,7 +101,7 @@ class Server {
     }
 
     postRoutes() {
-        this.router.get(/^\/(?!api|ws|peerjs|stream)(.*)/, (req, res) => {
+        this.router.get(/^\/(?!api|ws|peerjs|stream|socket\.io)(.*)/, (req, res) => {
             res.sendFile(path.resolve(this.server.__root, 'public/index.html'));
         });
         this.app.use(this.router);
@@ -82,9 +112,60 @@ class Server {
         await this.addonManager.loadAllAddons(this.connection, this.router);
     }
 
+    async waitForServer(host, port, retryInterval = 5000) {
+        let running;let shownToStart;
+        while (!running) {
+            running = await this.checkServerRunning(host, port);
+            if (running) {
+                // console.log('Database server is running. Proceeding to connect...');
+                break;
+            } else {
+                if (!shownToStart) {
+                    shownToStart = true;
+                    console.log(boxen(
+                        'Start your database server please.\nWaiting...',
+                        {
+                            margin: 2,
+                            padding: 1,
+                            title: 'Action Requires',
+                            titleAlignment: 'center',
+                            textAlignment: 'center',
+                            borderColor: 'yellow',
+                            borderStyle: 'round',
+                            fullscreen: (width, height) => [width, height - 1]
+                        }
+                    ));
+                }
+                await new Promise(res => setTimeout(res, retryInterval));
+            }
+        }
+    }
+
+    checkServerRunning(host, port, timeout = 2000) {
+        return new Promise((resolve) => {
+            const socket = new net.Socket();
+            let isAvailable = false;
+            socket.setTimeout(timeout);
+            socket.on('connect', () => {
+                isAvailable = true;
+                socket.destroy();
+            });
+            socket.on('timeout', () => {
+                socket.destroy();
+            });
+            socket.on('error', () => {
+                // error means port is not open
+            });
+            socket.on('close', () => {
+                resolve(isAvailable);
+            });
+            socket.connect(port, host);
+        });
+    }
+
     start() {
         this.server.listen(this.port, () => {
-            console.log(`Server is running on http://localhost:${this.port}`);
+            this.logger.info(`Server is running on http://localhost:${this.port}`);
         });
     }
 

@@ -1,0 +1,3 @@
+I want to create some custom theme template for my ecommerce site which will be exactly like https://www.wish.com/.
+So for this you'll use talwindcss with xpo_ prefix for styling and don't use custom class. I made the architecture and you'll help me refine this. Look i want an outstanding ecommerce site using these templates. so your work should be exceptional for this.
+on every template i detailed what need to do on that template. so regading this you'll do your job. Complete these theme template with tailwidncss with xpo_ prefix. for icons, never put svg instead place [svg icon="icon name"] then i'll place svg there manyally.

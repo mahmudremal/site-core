@@ -1,6 +1,6 @@
 const http = require('http');
 const express = require('express');
-const socketIo = require('socket.io');
+// const socketIo = require('socket.io');
 const Sequelize = require('sequelize');
 const { DataTypes, Op } = Sequelize;
 const path = require('path');
@@ -34,6 +34,7 @@ class HealthMonitoringAddon {
     }
 
     init() {
+        return;
         this.setupSocketIO();
         this.loadCachedIndex();
     }
@@ -140,7 +141,8 @@ class HealthMonitoringAddon {
     }
 
     setupSocketIO() {
-        this.io = socketIo(this.app.get('server')); // Use server instance
+        this.io = this.app.get('ws').of("/health");
+        // this.io = socketIo(this.app.get('server')); // Use server instance
         this.io.on('connection', this.handleSocketConnection.bind(this));
     }
 
