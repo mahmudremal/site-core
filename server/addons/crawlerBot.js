@@ -1,6 +1,7 @@
-const { log, PlaywrightCrawler, Sitemap } = require('crawlee');
+const { log, PlaywrightCrawler, Sitemap, sleep } = require('crawlee');
 const { default: axios, request } = require('axios');
 const { chromium } = require('playwright');
+const { Ollama } = require('ollama');
 const cheerio = require('cheerio');
 const Redis = require('ioredis');
 const path = require('path');
@@ -215,19 +216,27 @@ class ContentExtractor {
         };
     }
 
+    async waitForElement(page, selector) {
+        try {
+            await page.waitForSelector(selector, { timeout: 10000 });
+        } catch (error) {}
+        const html = await page.content();
+        return await cheerio.load(html);
+    }
+
     async extractContent({ page, $, url, request }) {
-        const domain = new URL(url).hostname;
+        const domain = new URL(url).hostname;let html;
         const schema = this.loadDomainSchema(domain);
 
         if (!schema) {
-            console.log(`No schema found for domain: ${domain}, using fallback extraction`);
+            // console.log(`No schema found for domain: ${domain}, using fallback extraction`);
             return null;
         }
 
         try {
             if (schema?.wait4selection?.length) {
                 for (const selector of schema?.wait4selection) {
-                    await page.waitForSelector(selector);
+                    $ = await this.waitForElement(page, selector);
                 }
             }
             
@@ -237,12 +246,7 @@ class ContentExtractor {
                 });
             }
 
-            const extractedData = {
-                url,
-                domain,
-                extract: {},
-                timestamp: Date.now(),
-            };
+            const extractedData = {url, domain, extract: {}, timestamp: Date.now()};
 
             // --- Recursive extractor ---
             const ObjectWalkerExtractor = async (schemaNode) => {
@@ -274,7 +278,7 @@ class ContentExtractor {
                     for (const key of Object.keys(schemaNode)) {
                         if (key === 'wait4selection' && schemaNode?.wait4selection?.length) {
                             for (const selector of schemaNode?.wait4selection) {
-                                await page.waitForSelector(selector);
+                                $ = await this.waitForElement(page, selector);
                             }
                         }
                         result[key] = await ObjectWalkerExtractor(schemaNode[key]);
@@ -300,7 +304,7 @@ class ContentExtractor {
             // --- Category Extraction ---
             if (schema.extract.isCategory) {
                 const isCategory = $(schema.extract.isCategory).length > 0;
-                console.log('Begin Scraping Category', isCategory)
+                // console.log('Begin Scraping Category', isCategory)
                 if (isCategory && schema.extract.category) {
                     extractedData.extract.isCategory = true;
                     extractedData.extract.category = await ObjectWalkerExtractor(schema.extract.category);
@@ -310,20 +314,32 @@ class ContentExtractor {
             // --- Links Extraction ---
             if (schema.extract.links) {
                 extractedData.links = [];
-                $(schema.extract.links[0]).each((i, el) => {
-                    const href = $(el).attr(schema.extract.links[1] || 'href');
-                    if (href && href.startsWith('http')) {
-                        extractedData.links.push(new URL(href, url).href);
+                const [ linkSelector, linkAttr, regix = null ] = schema.extract.links;
+                $(linkSelector).each((i, el) => {
+                    const href = $(el).attr(linkAttr || 'href');
+                    
+                    if (href) {
+                        const link = this.sortURL(href, regix);
+                        link && extractedData.links.push(link);
                     }
                 });
 
                 if (this.crawler && extractedData.links.length > 0) {
-                    const newRequests = extractedData.links.map(link => ({
-                        url: link,
-                        userData: { link_id: request?.userData?.id },
-                    }));
-                    // await this.crawler.addRequests(newRequests);
+                    const newRequests = [];
+                    for (const link of extractedData.links) {
+                        const exists = await this.dbManager.isLinkExists(link);
+                        if (!exists) {
+                            newRequests.push({ url: link, userData: { link_id: request?.userData?.id } });
+                        }
+                    }
+                    if (newRequests.length > 0) {
+                        for await (const { link } of newRequests) {
+                            await this.dbManager.updateURL(0, link)
+                        }
+                        // await this.crawler.addRequests(newRequests);
+                    }
                 }
+
             }
 
             return extractedData;
@@ -331,6 +347,24 @@ class ContentExtractor {
             console.error(`Error extracting content for ${domain}:`, error);
             return null;
         }
+    }
+
+    sortURL(link, regix = null) {
+        if (regix === null) {
+            const host = new URL(link).hostname;
+            const schema = this.loadDomainSchema(host);
+            regix = schema.extract.links?.[2];
+        }
+
+        if (link && regix) {
+            const regex = typeof regix === 'string' ? new RegExp(regix.replace(/^\/|\/$/g, '')) : regix;
+            
+            if (regex.test(link)) {
+                const [ newLink = null ] = link.match(regex);
+                return newLink;
+            }
+        }
+        return null;
     }
 }
 
@@ -340,11 +374,11 @@ class DatabaseManager {
         this.tables = tables;
     }
 
-    async getPendingUrls() {
+    async getPendingUrls({ limit = 50 }) {
         return new Promise((resolve, reject) => {
             this.db.query(
-                `SELECT id AS i, _source_url AS u FROM ${this.tables.links} WHERE _status = 'pending' LIMIT 0, 1000`, 
-                [], 
+                `SELECT id AS i, _source_url AS u FROM ${this.tables.links} WHERE _status = ? LIMIT 0, ?`, 
+                ['pending', limit], 
                 (err, rows) => {
                     if (err) {
                         console.error('Error fetching pending URLs:', err);
@@ -406,7 +440,7 @@ class DatabaseManager {
         return new Promise((resolve, reject) => {
             const isInsert = id === 0;
             const query = isInsert
-                ? `INSERT INTO ${this.tables.links} (_source_url) VALUES (?)`
+                ? `INSERT INTO ${this.tables.links} (_source_url, _status) VALUES (?, 'pending') ON DUPLICATE KEY UPDATE _status = 'pending'`
                 : `UPDATE ${this.tables.links} SET _source_url = ?, _status = 'pending' WHERE id = ?`;
             
             const params = isInsert ? [url] : [url, id];
@@ -432,10 +466,228 @@ class DatabaseManager {
             }
         );
     }
+
+    async isLinkExists(link) {
+        const [rows] = await this.db.promise().query(
+            `SELECT COUNT(*) AS total FROM ${this.tables.links} WHERE _source_url = ?`,
+            [link]
+        );
+        return rows[0].total > 0;
+    }
+
+    async getPendingContents({ limit = 50 }) {
+        return new Promise((resolve, reject) => {
+            this.db.query(
+                `SELECT * FROM ${this.tables.content} WHERE _status = ? LIMIT 0, ?;`, 
+                ['pending', limit], 
+                (err, rows) => {
+                    if (err) {
+                        console.error('Error fetching pending Imports:', err);
+                        reject(err);
+                    } else {
+                        resolve(rows);
+                    }
+                }
+            );
+        });
+    }
+
+    updatePendingContentStatus(id, status = 'failed') {
+        this.db.query(
+            `UPDATE ${this.tables.content} SET _status = ? WHERE id = ?`,
+            [status, id],
+            (err) => {
+                if (err) console.error('Error executing sql:', err);
+            }
+        );
+    }
+
+    
 }
 
-class Crawler {
+class Importer {
     constructor() {
+        this.importing = false;
+        this.ollama = new Ollama({ host: 'http://localhost:11434' });
+    }
+
+    rest_url(url) {
+        if (url.startsWith('/')) {
+            url = url.substring(1);
+        }
+        return `https://core.agency.local/wp-json/${url}`;
+    }
+
+    llm_generate(args, options = {}) {
+        return new Promise(async (resolve, reject) => {
+            const { streamToClient = false, chatId = null, io = null } = options;
+            let fullResponse = '';
+            try {
+                const payload = { model: 'gemma3:1b', prompt: '', stream: true, ...args };
+                // console.log('Payload:', payload);
+
+                const stream = await this.ollama.generate(payload);
+
+                if (payload.stream) {
+                    // Streamed response
+                    for await (const chunk of stream) {
+                        fullResponse += chunk.response;
+                        if (streamToClient && chatId && io) {
+                            io.emit('ai-response-chunk', { chatId, chunk: chunk.response });
+                        }
+                    }
+                    if (streamToClient && chatId && io) {
+                        io.emit('ai-response-end', { chatId });
+                    }
+                } else {
+                    // Non-streamed response (assuming stream is a Promise or similar)
+                    const response = await stream;
+                    fullResponse = response.response || response;
+                }
+
+                resolve(fullResponse);
+
+            } catch (err) {
+                console.error('Error generating AI response:', err?.message || err);
+                reject(err);
+            }
+        });
+    }
+
+
+    get_product_schema() {
+        return {
+            sku: 'string',
+            price: 'string',
+            images: ['url'],
+            sale_price: 'string',
+            description: 'string',
+            short_description: 'string',
+            product_type: 'simple | variable',
+            title: 'string',
+            keywords: ['string'],
+            og_title: 'string',
+            og_description: 'string',
+            og_image: 'string',
+            shipping_vendors: [
+                {
+                    title: 'string',
+                    url: 'url',
+                }
+            ],
+            shipping_warehouses: [],
+            variations: [
+                {
+                    key: 'string',
+                    title: 'string',
+                    sku: 'string',
+                    description: 'string',
+                    price: 'float',
+                    onsale_price: 'float | null',
+                    gallery: ['url']
+                }
+            ],
+            categories: ['text']
+        };
+    }
+
+    prepare_prompt(schema) {
+        // const system = `You are a data processing assistant specialized in preparing e-commerce product data for import.\n\nYour task is to parse scraped product data JSON and transform it into a structured product object matching the exact schema:\n\n${JSON.stringify(this.get_product_schema(), null, 2)}\n\nFollow these instructions strictly:\n- Extract or generate SKU.\n- Normalize prices.\n- Collect images URLs.\n- Use description fields appropriately.\n- Determine product_type.\n- Extract keywords from categories, brand, specifications.\n- Map meta tags.\n- Extract shipping vendor info.\n- Leave shipping_warehouses empty if no data.\n- Populate variations if present.\n- Clean and trim all text.\n- Output only valid JSON matching the schema, no extra text.\n`;
+        const system = `You are an ecommerce store manager responsible for creating accurate product data in JSON format.`;
+
+        // const prompt = `Input JSON:\n${JSON.stringify(schema, null, 2)}\n\nOutput the structured product JSON only.\n`;
+        const prompt = `You're a brilliant ecommerce store manager. Your task is to analyze the entire product details from the user's data, and based on this, you'll prepare a comprehensive product information object for a WooCommerce store. Your response MUST be a valid JSON object, and you must not include any text outside of the user input. Do not invent or hallucinate product data; only use information directly present in the provided text.\n\nProduct details: ${JSON.stringify(schema?.extract??schema, null, 2)}\n\nPlease provide the JSON object following this structure: ${JSON.stringify(this.get_product_schema(), null, 2)}`;
+
+        const template = `{{ .Prompt }}`;
+
+        return {
+            prompt,
+            system,
+            template,
+            stream: false,
+            options: {
+                temperature: 0.2,
+                top_p: 0.9,
+                top_k: 40,
+                repeat_penalty: 1.1,
+                num_ctx: 4096,
+                seed: 42,
+            }
+        };
+    }
+
+    prepare_product(product) {
+        return new Promise((resolve, reject) => {
+            const args = {format: 'json', ...this.prepare_prompt(product.content)};
+            this.llm_generate(args).then(content => {
+                content = JSON.parse(content);
+                // console.log('Generated Content:', content);
+                resolve(content);
+            })
+            .catch(err => reject(err));
+        })
+    }
+
+    teleport_product(product) {
+        const product_id = product?.id??0;
+        axios.post(this.rest_url(`/sitecore/v1/ecommerce/product/${product_id}`), {data: {...product}})
+        .then(res => res.data)
+        .then(({ product_id }) => {
+            axios.post(this.rest_url(`/sitecore/v1/ecommerce/product/${product_id}/metabox`), { meta })
+            .then(res => res.data)
+            .then(res => {
+                this.emitToSockets('imported', [{...product, ssr: res}]);
+            })
+        })
+        .catch(err => console.log('Failed to save', err?.message));
+    }
+
+    emmit_imports_status() {
+        this.emitToSockets('import-status', { importing: this.importing });
+    }
+    
+    start_import() {
+        this.importing = true;
+        this.start_import_process();
+        this.emmit_imports_status();
+    }
+    stop_import() {
+        this.importing = false;
+        this.emmit_imports_status();
+    }
+
+    async start_import_process() {
+        while (this.importing) {
+            try {
+                const [ product = null ] = await this.dbManager.getPendingContents({ limit: 1 });
+                if (product === null) throw new Error('No more pending products to import. Kills process...');
+                product.content = JSON.parse(product.content);let generated;
+                if (!(product.content?.extract?.product || product.content?.extract?.category)) {
+                    await this.dbManager.updatePendingContentStatus(product.id, 'failed');
+                } else {
+                    if (true) {
+                        try {
+                            generated = await this.prepare_product(product);
+                        } catch (err) {}
+                    }
+                    this.teleport_product(generated || product);
+                    // 
+                    // console.log(product, generated);
+                }
+            } catch (err) {
+                console.log(err?.message);
+                this.stop_import();
+            }
+        }
+    }
+
+
+}
+
+
+class Crawler extends Importer {
+    constructor() {
+        super();
         this.sockets = [];
         this.isRunning = false;
         this.schemasPath = path.join(__dirname, '..', 'storage', 'schemas');
@@ -444,7 +696,7 @@ class Crawler {
         this.initializeCrawler();
     }
 
-    initializeCrawler() {
+    initializeCrawler() { 
         log.setLevel(log.LEVELS.OFF);
         // log.setLevel(log.LEVELS.ERROR);
         this.crawler = new PlaywrightCrawler({
@@ -462,20 +714,22 @@ class Crawler {
     }
 
     async handleRequest({ pushData, request, page, log, enqueueLinks }) {
-        const url = request.loadedUrl;
-        log.info("Waiting for scraping data")
+        const pageUrl = request.loadedUrl;
+        // console.log("Waiting for scraping data", pageUrl)
 
         // Let Playwright fully render SPA content
-        await page.waitForLoadState('domcontentloaded');
-        await page.waitForLoadState('networkidle').catch(() => {}); // wait until no network for SPA
+        // await page.waitForLoadState('domcontentloaded');
+        // await page.waitForLoadState('networkidle').catch(() => {}); // wait until no network for SPA
         // await page.waitForSelector('.collection-block-item'); // Wait for the actor cards to render.
 
         const title = await page.title();
-        console.info(`URL: ${url} | Page title: ${title}`, request.userData);
+        // console.log(`URL: ${pageUrl} | Page title: ${title}`, request.userData);
 
         // Emit event for live monitoring
-        this.emitToSockets('crawling', { url, title });
+        this.emitToSockets('crawling', { url: pageUrl, title, id: request.userData.link_id });
 
+        // await sleep(1500);
+        
         // Get full rendered HTML and pass into Cheerio
         const html = await page.content();
         const $ = cheerio.load(html);
@@ -483,14 +737,16 @@ class Crawler {
         // Process content with your existing extractor
         const content = await this.processPageContent({page, request, $, log});
 
+        // console.log(content);
+
         const success = content && !content.failed;
 
         if (success) {
             if (content?.links) delete content.links;
             if (content?.content?.links) delete content.content.links;
-            console.log('Content: ', JSON.stringify(content, null, 2));
-            pushData(content)
-            await this.updateContent(
+            // console.log('Content: ', JSON.stringify(content, null, 2));
+            // pushData(content)
+            await this.dbManager.updateContent(
                 request.userData?.id ?? 0,
                 request.userData.link_id,
                 { url: content?.url || url, data: content }
@@ -498,11 +754,11 @@ class Crawler {
         }
 
         this.updateVisitedAt(request.userData.link_id, success);
+        this.emitToSockets('crawled', { success, url, content, id: request.userData.link_id });
+        
+        // this.isRunning && await this.getPendingOne();
 
-        if (success) {
-            this.emitToSockets('crawled', { url, content });
-        }
-        await enqueueLinks({ strategy: 'same-domain' });
+        // await enqueueLinks({ strategy: 'same-domain' });
     }
 
     handleFailedRequest({ request, log }) {
@@ -542,30 +798,37 @@ class Crawler {
         }
     }
 
-    async crawl() {
-        this.isRunning = true;
-        // console.info('Crawler about to run')
-        const urls = await this.dbManager.getPendingUrls();
-        if (!urls?.length) return;
-        let urlMapped = urls.map(({u, i}) => ({url: u, userData: {link_id: i}}));
-        urlMapped = await Promise.all(urlMapped.map(async row => {
-            if (this.isSitemap(row.url)) {
-                const { urls } = await Sitemap.load(row.url);
-                return urls.map(i => ({ ...row, url: i }));
-            }
-            return [row];
-        }));
-        urlMapped = urlMapped.flat();
-        // console.log(urlMapped)
-        await this.crawler.addRequests(urlMapped);
-        await this.crawler.run();
-        this.isRunning = false;
-        this.emitToSockets('crawl-status', { isRunning: this.isRunning });
+    async getPendingOne(limit = 1) {
+        const [single = null] = await this.dbManager.getPendingUrls({ limit });
+        if (!single && this.isRunning) await this.stopCrawl();
+        const { u: url, i: link_id } = single;
+        if (url) await this.crawler.addRequests([{url: url, userData: {link_id}}]);
+        return Promise.resolve(url);
+        // 
+        // let urlMapped = urls.map(({u, i}) => ({url: u, userData: {link_id: i}}));
+        // urlMapped = await Promise.all(urlMapped.map(async row => {
+        //     if (this.isSitemap(row.url)) {
+        //         const { urls } = await Sitemap.load(row.url);
+        //         return urls.map(i => ({ ...row, url: i }));
+        //     }
+        //     return [row];
+        // })).then(arr => arr.flat());
     }
 
-    stopCrawl() {
-        this.crawler.stop('Paused');
+    async crawl() {
+        this.isRunning = true;
+        // while (this.isRunning) {
+            // console.log('Crawler about to run')
+            await this.getPendingOne(500);
+            await this.crawler.run();
+        // }
+        await this.stopCrawl();
+    }
+
+    async stopCrawl() {
+        await this.crawler.stop('Paused');
         this.isRunning = false;
+        this.emitToSockets('crawl-status', { isRunning: this.isRunning });
     }
 
     isCrawlerRunning() {
@@ -583,14 +846,6 @@ class Crawler {
         .forEach(socket => socket.emit(event, data));
     }
 
-    async updateContent(id, linkId, content) {
-        throw new Error('updateContent method must be implemented by subclass');
-    }
-
-    updateVisitedAt(linkId, success) {
-        throw new Error('updateVisitedAt method must be implemented by subclass');
-    }
-
     isSitemap(url) {
         const sitemapRegex = /\/(sitemap(?:_index)?|\d+)\.xml(\.gz)?$/i;
         return sitemapRegex.test(url);
@@ -605,6 +860,7 @@ class SocketHandler {
 
     async handleConnection(socket) {
         socket.emit('crawl-status', { isRunning: this.crawler.isRunning });
+        socket.emit('import-status', { importing: this.crawler?.importing });
         this.crawler.sockets.push(socket);
 
         this.setupSocketEvents(socket);
@@ -623,10 +879,24 @@ class SocketHandler {
 
         socket.on('update-links', async ({ links }) => {
             try {
-                const linkArray = links.split(',').map(link => link.trim());
-                const insertPromises = linkArray.map(link => this.dbManager.updateURL(0, link));
-                
+                const linkList = links.split(',').map(link => link.trim());
+
+                const processedLinks = await Promise.all(
+                    linkList.map(async link => {
+                        try {
+                            const url = await this.crawler.extractor.sortURL(link);
+                            // console.log(regix, url);
+                            return url || link;
+                        } catch (e) {
+                            // If URL parsing fails or any error occurs, fallback to original link
+                            return link;
+                        }
+                    })
+                );
+
+                const insertPromises = processedLinks.map(link => this.dbManager.updateURL(0, link));
                 await Promise.all(insertPromises);
+
                 
                 if (!this.crawler.isRunning) {
                     this.crawler.crawl();
@@ -640,6 +910,14 @@ class SocketHandler {
                     message: error.message 
                 });
             }
+        });
+
+
+        socket.on('start-imports', () => {
+            this.crawler.start_import();
+        });
+        socket.on('stop-imports', () => {
+            this.crawler.stop_import();
         });
 
         this.setupExtensionEvents(socket);
@@ -657,12 +935,13 @@ class SocketHandler {
             try {
                 const schemaPath = path.join(this.crawler.schemasPath, `${host}.json`);
                 fs.writeFileSync(schemaPath, JSON.stringify(schema, null, 2));
-                console.log(`Schema for ${host} written to ${schemaPath}`, schema);
+                // console.log(`Schema for ${host} written to ${schemaPath}`, schema);
             } catch (error) {
                 console.error(`Error writing schema for ${host}:`, error);
             }
         });
     }
+    
 }
 
 class CrawlerBot extends Crawler {
@@ -746,7 +1025,7 @@ class CrawlerBot extends Crawler {
             )`,
             links: `CREATE TABLE IF NOT EXISTS ${this.tables.links} (
                 id INT AUTO_INCREMENT PRIMARY KEY,
-                _source_url TEXT,
+                _source_url VARCHAR(768) UNIQUE,
                 _created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 _visited_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 _status ENUM('pending', 'completed', 'failed', 'banned') DEFAULT 'pending'

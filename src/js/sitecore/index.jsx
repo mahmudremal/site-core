@@ -8,11 +8,10 @@ const EmailBuilderApp = lazy(() => import('@js/emails/index'));
 const ServicePackage = lazy(() => import('@js/services/package'));
 const ServiceMetaBox = lazy(() => import('@js/services/metabox'));
 const ServiceContracts = lazy(() => import('@js/services/contracts'));
-import { 
-    __, 
-    tailwind_install 
-} from '@js/utils';
+const ProductMetaBox = lazy(() => import('@js/shop-manager/ProductMetabox'));
+import { __, tailwind_install } from '@js/utils';
 import { createRoot } from 'react-dom/client';
+
 
 class SiteCore {
     constructor() {
@@ -25,8 +24,9 @@ class SiteCore {
     }
 
     setup_hooks() {
-        tailwind_install();
         settings_screen();
+        tailwind_install();
+        this.sc_product_setup();
         this.cdnmanager_setup();
 		this.taskmanager_setup();
 		this.shopmanager_setup();
@@ -121,6 +121,16 @@ class SiteCore {
             const root = createRoot(container);root.render(
                 <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
                     <ServiceContracts />
+                </Suspense>
+            );
+        });
+    }
+
+    sc_product_setup() {
+        document.querySelectorAll('#sc_product-metabox').forEach(container => {
+            const root = createRoot(container);root.render(
+                <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
+                    <ProductMetaBox product_id={container.dataset?.product_id} />
                 </Suspense>
             );
         });

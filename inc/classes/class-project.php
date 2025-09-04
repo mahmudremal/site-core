@@ -21,7 +21,7 @@ class Project {
 	protected function __construct() {
 		// $this->setup_hunts();
 		$this->setup_hooks();
-		$this->setup_markethia();
+		// $this->setup_markethia();
 	}
 	protected function setup_hooks() {
 			// Hunts::get_instance();

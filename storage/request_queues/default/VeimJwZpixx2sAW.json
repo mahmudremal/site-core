@@ -1,9 +1,0 @@
-{
-	"id": "VeimJwZpixx2sAW",
-	"json": "{\"id\":\"VeimJwZpixx2sAW\",\"url\":\"https://buyer-helpcenter.daraz.com.bd/s/page\",\"uniqueKey\":\"https://buyer-helpcenter.daraz.com.bd/s/page\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"crawlDepth\":1,\"enqueueStrategy\":\"same-domain\"}}}",
-	"method": "GET",
-	"orderNo": 1756569811682,
-	"retryCount": 0,
-	"uniqueKey": "https://buyer-helpcenter.daraz.com.bd/s/page",
-	"url": "https://buyer-helpcenter.daraz.com.bd/s/page"
-}

@@ -2,6 +2,11 @@
 namespace SITE_CORE\inc;
 use SITE_CORE\inc\Traits\Singleton;
 
+use WP_REST_Response;
+use WP_REST_Request;
+use WP_Error;
+
+
 class Ecommerce {
     use Singleton;
 
@@ -11,18 +16,18 @@ class Ecommerce {
     protected function __construct() {
         global $wpdb;
         $this->tables = (object) [
-            'sessions'     => $wpdb->prefix . 'sitecore_sessions',
-            'carts'        => $wpdb->prefix . 'sitecore_carts',
-            'cart_items'   => $wpdb->prefix . 'sitecore_cart_items',
-            'orders'       => $wpdb->prefix . 'sitecore_orders',
-            'order_items'  => $wpdb->prefix . 'sitecore_order_items',
-            'order_meta'   => $wpdb->prefix . 'sitecore_order_meta',
-            'products_meta' => $wpdb->prefix . 'sitecore_products_meta',
-            'reco_events' => $wpdb->prefix . 'reco_events',
-            'reco_item_meta' => $wpdb->prefix . 'reco_item_meta',
-            'reco_item_sim' => $wpdb->prefix . 'reco_item_sim',
-            'reco_user_topn' => $wpdb->prefix . 'reco_user_topn',
-            'reco_user_interest' => $wpdb->prefix . 'reco_user_interest',
+            'sessions'     => $wpdb->prefix . 'sitecore_ecommerce_sessions',
+            'carts'        => $wpdb->prefix . 'sitecore_ecommerce_carts',
+            'cart_items'   => $wpdb->prefix . 'sitecore_ecommerce_cart_items',
+            'orders'       => $wpdb->prefix . 'sitecore_ecommerce_orders',
+            'order_items'  => $wpdb->prefix . 'sitecore_ecommerce_order_items',
+            'order_meta'   => $wpdb->prefix . 'sitecore_ecommerce_order_meta',
+            'products_meta' => $wpdb->prefix . 'sitecore_ecommerce_products_meta',
+            'reco_events' => $wpdb->prefix . 'sitecore_ecommerce_reco_events',
+            'reco_item_meta' => $wpdb->prefix . 'sitecore_ecommerce_reco_item_meta',
+            'reco_item_sim' => $wpdb->prefix . 'sitecore_ecommerce_reco_item_sim',
+            'reco_user_topn' => $wpdb->prefix . 'sitecore_ecommerce_reco_user_topn',
+            'reco_user_interest' => $wpdb->prefix . 'sitecore_ecommerce_reco_user_interest',
         ];
         $this->setup_hooks();
         $this->init_session();
@@ -30,6 +35,9 @@ class Ecommerce {
     }
 
     protected function setup_hooks() {
+        add_action('save_post', [$this, 'save_meta_boxes']);
+        add_action('add_meta_boxes', [$this, 'add_meta_boxes']);
+        add_action('rest_api_init', [$this, 'register_routes']);
         register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
         register_deactivation_hook(WP_SITECORE__FILE__, [$this, 'register_deactivation_hook']);
     }
@@ -178,23 +186,33 @@ class Ecommerce {
 
     public function register_deactivation_hook() {
         global $wpdb;
-        $tables_to_drop = [
-            $this->tables->sessions,
-            $this->tables->carts,
-            $this->tables->cart_items,
-            $this->tables->orders,
-            $this->tables->order_items,
-            $this->tables->order_meta,
-            $this->tables->products_meta,
-            $this->tables->reco_events,
-            $this->tables->reco_item_meta,
-            $this->tables->reco_item_sim,
-            $this->tables->reco_user_topn,
-            $this->tables->reco_user_interest,
-        ];
-        foreach ($tables_to_drop as $table) {
+        foreach ((array) $this->tables as $table) {
             $wpdb->query("DROP TABLE IF EXISTS {$table}");
         }
+    }
+
+    public function register_routes() {
+		register_rest_route('sitecore/v1', '/ecommerce/product/(?P<product_id>\d+)', [
+			'methods'  => 'POST',
+			'callback' => [$this, 'api_update_product'],
+			'permission_callback' => '__return_true',
+            'args' => [
+                'data'      => ['required'    => true],
+            ]
+		]);
+		register_rest_route('sitecore/v1', '/ecommerce/product/(?P<product_id>\d+)/metabox', [
+			'methods'  => 'GET',
+			'callback' => [$this, 'api_get_product_metabox'],
+			'permission_callback' => '__return_true',
+		]);
+		register_rest_route('sitecore/v1', '/ecommerce/product/(?P<product_id>\d+)/metabox', [
+			'methods'  => 'POST',
+			'callback' => [$this, 'api_update_product_metabox'],
+			'permission_callback' => '__return_true',
+            'args' => [
+                'meta'      => ['required'    => true],
+            ]
+		]);
     }
 
     protected function init_session() {
@@ -255,4 +273,240 @@ class Ecommerce {
     public function get_tables() {
         return $this->tables;
     }
+
+    
+    public function add_meta_boxes() {
+        add_meta_box('product_data', __('Product data', 'site-core'), [$this, 'metabox_callback'], 'sc_product', 'normal', 'default');
+    }
+    public function metabox_callback($post) {
+        // wp_enqueue_style('site-core');
+        wp_enqueue_script('site-core');
+        ?>
+        <div class="xpo_flex xpo_flex-col xpo_gap-3">
+            <!-- <fieldset>
+                <div class="xpo_flex xpo_items-center xpo_gap-2">
+                    <h3><?php esc_html_e('Product data', 'site-core'); ?></h3>
+                </div>
+            </fieldset> -->
+
+            <div id="sc_product-metabox" data-product_id="<?php echo esc_attr($post->ID); ?>">
+                This text should be disappeared within a seconds. if you see this yet, please contact developer.
+            </div>
+        </div>
+        <?php
+    }
+
+    public function save_meta_boxes($post_id) {
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+        if (!current_user_can('edit_post', $post_id)) return;
+        if (!empty($_POST['sc_product-data'])) {
+            // update_post_meta($post_id, 'sc_product-data', maybe_serialize($_POST['sc_product-data']) ?? '');
+        }
+    }
+
+    public function api_update_product(WP_REST_Request $request) {
+        $product_id = (int) $request->get_param('product_id') ?: 0;
+        $product_data = $request->get_param('data') ?: null;
+
+        if (!$product_data || !is_array($product_data)) {
+            return new WP_Error('invalid_data', 'Product data is missing or invalid.', ['status' => 400]);
+        }
+
+        $product_instance = Ecommerce\Addons\Product::get_instance();
+
+        // Prepare post data for wp_insert_post
+        $post_data = [
+            'post_type'   => 'product', // Assuming your product post type is 'product'
+            'post_title'  => sanitize_text_field($product_data['title'] ?? ''),
+            'post_content'=> wp_kses_post($product_data['description'] ?? ''),
+            'post_excerpt'=> wp_kses_post($product_data['short_description'] ?? ''),
+            'post_status' => 'publish',
+        ];
+
+        if ($product_id > 0) {
+            // Update existing product
+            $post_data['ID'] = $product_id;
+            $updated_id = wp_insert_post($post_data);
+            if (is_wp_error($updated_id)) {
+                return new WP_Error('update_failed', 'Failed to update product.', ['status' => 500]);
+            }
+            $product_id = $updated_id;
+        } else {
+            // Insert new product
+            $inserted_id = wp_insert_post($post_data);
+            if (is_wp_error($inserted_id)) {
+                return new WP_Error('insert_failed', 'Failed to insert product.', ['status' => 500]);
+            }
+            $product_id = $inserted_id;
+        }
+
+        // Update product meta
+        // Clear existing meta keys that might be updated
+        $meta_keys_to_clear = [
+            'sku', 'price', 'sale_price', 'product_type', 'keywords', 'og_title', 'og_description', 'og_image',
+            'shipping_vendors', 'shipping_warehouses', 'categories', 'images'
+        ];
+        foreach ($meta_keys_to_clear as $meta_key) {
+            $product_instance->delete_product_meta($product_id, $meta_key);
+        }
+
+        // Add/update meta fields
+        if (!empty($product_data['sku'])) {
+            $product_instance->update_product_meta($product_id, 'sku', sanitize_text_field($product_data['sku']));
+        }
+        if (!empty($product_data['price'])) {
+            $product_instance->update_product_meta($product_id, 'price', sanitize_text_field($product_data['price']));
+        }
+        if (isset($product_data['sale_price'])) {
+            $product_instance->update_product_meta($product_id, 'sale_price', sanitize_text_field($product_data['sale_price']));
+        }
+        if (!empty($product_data['product_type'])) {
+            $product_instance->update_product_meta($product_id, 'product_type', sanitize_text_field($product_data['product_type']));
+        }
+        if (!empty($product_data['keywords']) && is_array($product_data['keywords'])) {
+            $keywords = array_map('sanitize_text_field', $product_data['keywords']);
+            $product_instance->update_product_meta($product_id, 'keywords', $keywords);
+        }
+        if (!empty($product_data['og_title'])) {
+            $product_instance->update_product_meta($product_id, 'og_title', sanitize_text_field($product_data['og_title']));
+        }
+        if (!empty($product_data['og_description'])) {
+            $product_instance->update_product_meta($product_id, 'og_description', sanitize_text_field($product_data['og_description']));
+        }
+        if (!empty($product_data['og_image'])) {
+            $product_instance->update_product_meta($product_id, 'og_image', esc_url_raw($product_data['og_image']));
+        }
+        if (!empty($product_data['shipping_vendors']) && is_array($product_data['shipping_vendors'])) {
+            // Sanitize each vendor
+            $vendors = array_map(function($vendor) {
+                return [
+                    'title' => sanitize_text_field($vendor['title'] ?? ''),
+                    'url'   => esc_url_raw($vendor['url'] ?? ''),
+                ];
+            }, $product_data['shipping_vendors']);
+            $product_instance->update_product_meta($product_id, 'shipping_vendors', $vendors);
+        }
+        if (!empty($product_data['shipping_warehouses']) && is_array($product_data['shipping_warehouses'])) {
+            // Assuming warehouses are simple strings or arrays, sanitize accordingly
+            $warehouses = array_map('sanitize_text_field', $product_data['shipping_warehouses']);
+            $product_instance->update_product_meta($product_id, 'shipping_warehouses', $warehouses);
+        }
+        if (!empty($product_data['categories']) && is_array($product_data['categories'])) {
+            $categories = array_map('sanitize_text_field', $product_data['categories']);
+            $product_instance->update_product_meta($product_id, 'categories', $categories);
+        }
+        if (!empty($product_data['images']) && is_array($product_data['images'])) {
+            $images = array_map('esc_url_raw', $product_data['images']);
+            $product_instance->update_product_meta($product_id, 'images', $images);
+        }
+
+        // Handle variations
+        if (!empty($product_data['variations']) && is_array($product_data['variations'])) {
+            // Get existing variations
+            $existing_variations = $product_instance->get_product_variations($product_id);
+            $existing_variation_map = [];
+            foreach ($existing_variations as $variation_post) {
+                $existing_variation_map[$variation_post->post_title] = $variation_post->ID;
+            }
+
+            // Track variations to keep
+            $variations_to_keep = [];
+
+            foreach ($product_data['variations'] as $variation) {
+                $variation_title = sanitize_text_field($variation['title'] ?? '');
+                if (!$variation_title) {
+                    continue; // Skip invalid variation
+                }
+
+                $variation_data = [
+                    'title' => $variation_title,
+                    'meta'  => [],
+                ];
+
+                // Prepare meta for variation
+                if (!empty($variation['key'])) {
+                    $variation_data['meta']['key'] = sanitize_text_field($variation['key']);
+                }
+                if (!empty($variation['sku'])) {
+                    $variation_data['meta']['sku'] = sanitize_text_field($variation['sku']);
+                }
+                if (!empty($variation['description'])) {
+                    $variation_data['meta']['description'] = wp_kses_post($variation['description']);
+                }
+                if (isset($variation['price'])) {
+                    $variation_data['meta']['price'] = floatval($variation['price']);
+                }
+                if (array_key_exists('onsale_price', $variation)) {
+                    $variation_data['meta']['onsale_price'] = is_null($variation['onsale_price']) ? null : floatval($variation['onsale_price']);
+                }
+                if (!empty($variation['gallery']) && is_array($variation['gallery'])) {
+                    $variation_data['meta']['gallery'] = array_map('esc_url_raw', $variation['gallery']);
+                }
+
+                if (isset($existing_variation_map[$variation_title])) {
+                    // Update existing variation
+                    $variation_id = $existing_variation_map[$variation_title];
+                    wp_update_post([
+                        'ID' => $variation_id,
+                        'post_title' => $variation_title,
+                    ]);
+                    // Delete old meta and update new meta
+                    $old_meta = get_post_meta($variation_id);
+                    foreach ($old_meta as $meta_key => $values) {
+                        foreach ($values as $value) {
+                            delete_post_meta($variation_id, $meta_key, $value);
+                        }
+                    }
+                    if (!empty($variation_data['meta'])) {
+                        foreach ($variation_data['meta'] as $key => $value) {
+                            update_post_meta($variation_id, $key, $value);
+                        }
+                    }
+                    $variations_to_keep[] = $variation_id;
+                } else {
+                    // Create new variation
+                    $variation_id = $product_instance->create_product_variation($product_id, $variation_data);
+                    if ($variation_id) {
+                        $variations_to_keep[] = $variation_id;
+                    }
+                }
+            }
+
+            // Delete variations that are not in the new list
+            foreach ($existing_variations as $existing_variation) {
+                if (!in_array($existing_variation->ID, $variations_to_keep)) {
+                    wp_delete_post($existing_variation->ID, true);
+                }
+            }
+        }
+
+        return rest_ensure_response([
+            'success' => true,
+            'product_id' => $product_id,
+        ]);
+    }
+
+    
+    public function api_get_product_metabox(WP_REST_Request $request) {
+        $product_id = $request->get_param('product_id') ?: 0;
+        if ($product_id) {
+            $meta = Ecommerce\Addons\Product::get_instance()->get_product_meta($product_id);
+            if ($meta) {
+                return rest_ensure_response($meta);
+            }
+        }
+        return rest_ensure_response([]);
+    }
+    public function api_update_product_metabox(WP_REST_Request $request) {
+        $product_id = $request->get_param('product_id') ?: 0;
+        $product_meta = $request->get_param('meta') ?: null;
+        if ($product_id) {
+            foreach ($product_meta as $meta_key => $meta_value) {
+                Ecommerce\Addons\Product::get_instance()->update_product_meta($product_id, $meta_key, $meta_value);
+            }
+            return rest_ensure_response(['success' => true]);
+        }
+        return new WP_Error('invalid_request', 'Invalid post request.', ['status' => 400]);
+    }
+    
 }

@@ -1,27 +1,50 @@
 {
   "requestsFinished": 0,
-  "requestsFailed": 0,
-  "requestsRetries": 0,
-  "requestsFailedPerMinute": 0,
+  "requestsFailed": 1,
+  "requestsRetries": 1,
+  "requestsFailedPerMinute": 2,
   "requestsFinishedPerMinute": 0,
   "requestMinDurationMillis": null,
   "requestMaxDurationMillis": 0,
-  "requestTotalFailedDurationMillis": 0,
+  "requestTotalFailedDurationMillis": 569,
   "requestTotalFinishedDurationMillis": 0,
-  "crawlerStartedAt": "2025-08-30T15:59:31.702Z",
-  "crawlerFinishedAt": null,
-  "statsPersistedAt": "2025-08-30T16:00:31.130Z",
-  "crawlerRuntimeMillis": 1475272,
-  "crawlerLastStartTimestamp": 1756568155858,
-  "requestRetryHistogram": [],
+  "crawlerStartedAt": "2025-09-04T11:18:16.101Z",
+  "crawlerFinishedAt": "2025-09-04T11:18:30.538Z",
+  "statsPersistedAt": "2025-09-04T11:18:30.538Z",
+  "crawlerRuntimeMillis": 23762,
+  "crawlerLastStartTimestamp": 1756984686776,
+  "requestRetryHistogram": [
+    null,
+    null,
+    null,
+    1
+  ],
   "statsId": 0,
-  "requestAvgFailedDurationMillis": null,
+  "requestAvgFailedDurationMillis": 569,
   "requestAvgFinishedDurationMillis": null,
-  "requestTotalDurationMillis": 0,
-  "requestsTotal": 0,
-  "requestsWithStatusCode": {
-    "200": 1
+  "requestTotalDurationMillis": 569,
+  "requestsTotal": 1,
+  "requestsWithStatusCode": {},
+  "errors": {
+    "C:\\Users\\Lenovo\\Local Sites\\agency\\app\\public\\wp-content\\plugins\\site-core\\node_modules\\@crawlee\\playwright\\internals\\utils\\playwright-utils.js:166:17": {
+      "missing error code": {
+        "Error": {
+          "page.goto: net::ERR_EMPTY_RESPONSE at https://www.daraz.com.bd/products/anker-511-20w-i300156790-s1678415325.html": {
+            "count": 1
+          }
+        }
+      }
+    }
   },
-  "errors": {},
-  "retryErrors": {}
+  "retryErrors": {
+    "C:\\Users\\Lenovo\\Local Sites\\agency\\app\\public\\wp-content\\plugins\\site-core\\node_modules\\@crawlee\\playwright\\internals\\utils\\playwright-utils.js:166:17": {
+      "missing error code": {
+        "Error": {
+          "page.goto: net::ERR_EMPTY_RESPONSE at https://www.daraz.com.bd/products/anker-511-20w-i300156790-s1678415325.html": {
+            "count": 3
+          }
+        }
+      }
+    }
+  }
 }

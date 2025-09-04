@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client';
 import { Edit3, X, Save, Eye, EyeOff, Settings } from 'lucide-react';
 import { JsonEditor } from 'json-edit-react';
 import { io } from 'socket.io-client';
+import { __ } from '@js/utils';
+import axios from 'axios';
 
 // Extension React Component
 const SchemaEditorExtension = () => {
@@ -16,6 +18,7 @@ const SchemaEditorExtension = () => {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [isHighlightMode, setIsHighlightMode] = useState(false);
   const [currentPath, setCurrentPath] = useState('');
+  const [linkImport, setLinkImport] = useState(null);
   
   const socketRef = useRef(null);
   const dragRef = useRef(null);
@@ -40,6 +43,7 @@ const SchemaEditorExtension = () => {
       setSiteSchema(data);
       setEditedSchema(data);
       setIsVisible(true);
+      data?.extract && setLinkImport(true);
     });
 
     socketRef.current.on('disconnect', () => {
@@ -52,6 +56,60 @@ const SchemaEditorExtension = () => {
       }
     };
   }, []);
+
+  const allLinksRef = useRef([]);
+  useEffect(() => {
+      if (!linkImport) {
+        allLinksRef.current.forEach(i => i.exim && i.exim.remove());
+        allLinksRef.current = [];
+        return;
+      }
+      allLinksRef.current.forEach(i => i.exim && i.exim.remove());
+
+      const newLinks = [document.body, ...getTopLevelLinks()].map(i => {
+        const isBody = i.nodeName.toLowerCase() === 'body';
+        const exim = document.createElement('button');
+        exim.type = "button";
+        i.appendChild(exim);
+
+        exim.title = __('Send this link to crawler', 'site-core');
+        exim.className = `xpo_items-center xpo_justify-center xpo_flex xpo_absolute xpo_top-2 xpo_right-2 xpo_bg-white hover:xpo_bg-gray-200 xpo_border xpo_border-gray-300 xpo_shadow-sm xpo_h-8 ${isBody ? 'xpo_w-auto xpo_rounded-2 xpo_z-[999]' : 'xpo_w-8 xpo_rounded-full xpo_z-10'}`;
+        exim.innerHTML = `<svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.5" d="M4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12" stroke="#1C274C" strokeWidth="1.5" strokeLinecap="round"/><path d="M12 4L12 14M12 14L15 11M12 14L9 11" stroke="#1C274C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>${isBody ? 'Import all Links' : ''}`;
+        
+        const clickHandler = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const links = isBody ? getTopLevelLinks(document.querySelector('#products + div') || document).map(l => l.href).filter(l => l).join(',') : i.href;
+          socketRef.current && socketRef.current.emit('update-links', { links });
+          if (!isBody) {
+            exim.innerHTML = `<svg width="20px" height="20px" viewBox="0 -0.5 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 12.5L10.167 17L19.5 8" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>`;
+            exim.disabled = true;
+          }
+        };
+
+        exim.addEventListener('click', clickHandler);
+        
+        return { element: i, exim, clickHandler };
+      });
+      allLinksRef.current = newLinks;
+
+      const popstate = (e) => {
+        setLinkImport(true);
+      };
+
+      window.addEventListener('popstate', popstate);
+
+      return () => {
+        allLinksRef.current.forEach(i => {
+          i.exim && i.exim.remove();
+          if (i.clickHandler) {
+            i.exim && i.exim.removeEventListener('click', i.clickHandler);
+          }
+        });
+        window.removeEventListener('popstate', popstate);
+      };
+  }, [linkImport]);
+
 
   // Handle mouse events for dragging
   useEffect(() => {
@@ -418,6 +476,12 @@ const initializeExtension = () => {
   const root = createRoot(extensionContainer);
   root.render(<SchemaEditorExtension />);
 };
+
+function getTopLevelLinks(container = document) {
+  const allLinks = container.querySelectorAll('a[href]:not([href=""]):not([href="#"])');
+  return Array.from(allLinks).filter(link => !link.parentElement.closest('a'));
+}
+
 
 // Wait for DOM to be ready
 if (document.readyState === 'loading') {

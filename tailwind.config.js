@@ -2,7 +2,7 @@
 module.exports = {
   darkMode: 'class',
   prefix: 'xpo_', // /hunting
-  content: ['./server/app.jsx', ...Array(10)].map((u, i) => `./src/js/${[...Array(i + 1)].map(o => '**/').join('')}*.{js,jsx,ts,tsx}`),
+  content: ['./server/app.jsx', './inc/widgets/ecommerce/ProductMetabox.jsx', ...Array(10)].map((u, i) => `./src/js/${[...Array(i + 1)].map(o => '**/').join('')}*.{js,jsx,ts,tsx}`),
   theme: {
     extend: {
       colors: {

@@ -1,9 +1,0 @@
-{
-	"id": "XDScr3AfMJnxRIY",
-	"json": "{\"id\":\"XDScr3AfMJnxRIY\",\"url\":\"https://member.daraz.com.bd/user/logout\",\"uniqueKey\":\"https://member.daraz.com.bd/user/logout\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"crawlDepth\":1,\"enqueueStrategy\":\"same-domain\"}}}",
-	"method": "GET",
-	"orderNo": 1756569811682,
-	"retryCount": 0,
-	"uniqueKey": "https://member.daraz.com.bd/user/logout",
-	"url": "https://member.daraz.com.bd/user/logout"
-}

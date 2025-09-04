@@ -125,7 +125,7 @@ export const tailwind_install = () => {
     script.onload = () => {
       window.tailwind = window.tailwind || {};
       window.tailwind.config = {
-        // prefix: 'xpo_',
+        prefix: 'xpo_',
         theme: {
           extend: {
             colors: {

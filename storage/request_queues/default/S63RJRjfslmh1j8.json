@@ -1,9 +1,0 @@
-{
-	"id": "S63RJRjfslmh1j8",
-	"json": "{\"id\":\"S63RJRjfslmh1j8\",\"url\":\"https://university.daraz.com.bd/?scm=1003.4.icms-zebra-100022982-2888459.OTHER_5476361449_2538025\",\"uniqueKey\":\"https://university.daraz.com.bd?scm=1003.4.icms-zebra-100022982-2888459.OTHER_5476361449_2538025\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"crawlDepth\":1,\"enqueueStrategy\":\"same-domain\"}}}",
-	"method": "GET",
-	"orderNo": 1756569631614,
-	"retryCount": 0,
-	"uniqueKey": "https://university.daraz.com.bd?scm=1003.4.icms-zebra-100022982-2888459.OTHER_5476361449_2538025",
-	"url": "https://university.daraz.com.bd/?scm=1003.4.icms-zebra-100022982-2888459.OTHER_5476361449_2538025"
-}

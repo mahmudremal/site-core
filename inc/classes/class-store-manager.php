@@ -506,21 +506,59 @@ class Store_Manager {
 
     public function api_list_vendors(WP_REST_Request $request): WP_REST_Response {
         global $wpdb;
+        $page = max(1, (int) $request->get_param('page'));
+        $perPage = max(1, (int) $request->get_param('perPage'));
+        $search = trim((string) $request->get_param('q'));
+        $include_ids = array_filter(array_map('intval', (array) $request->get_param('include_ids')));
 
-        $vendors = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$this->tables->vendors} WHERE 1"), ARRAY_A);
+        $offset = ($page - 1) * $perPage;
 
-        if (empty($vendors)) {
-            return new WP_REST_Response([
-                'success' => false,
-                'message' => __('Vendors not found.', 'site-core'),
-            ], 200);
+        $where_clauses = ['1=1'];
+        $params = [];
+
+        if (!empty($search)) {
+            $where_clauses[] = "(business_name LIKE %s OR business_website LIKE %s)";
+            $search_like = '%' . $wpdb->esc_like($search) . '%';
+            $params[] = $search_like;
+            $params[] = $search_like;
         }
 
-        return new WP_REST_Response([
-            'success' => true,
-            'data' => $vendors,
-        ]);
+        $where_sql = implode(' AND ', $where_clauses);
+
+        $include_sql = '';
+        if (!empty($include_ids)) {
+            $placeholders = implode(',', array_fill(0, count($include_ids), '%d'));
+            $include_sql = " OR id IN ($placeholders)";
+        }
+
+        $sql = "SELECT * FROM {$this->tables->vendors} WHERE ($where_sql $include_sql)";
+
+        $all_params = $params;
+        if (!empty($include_ids)) {
+            $all_params = array_merge($all_params, $include_ids);
+        }
+
+        $sql = $wpdb->prepare($sql, ...$all_params);
+
+        $sql .= " ORDER BY id ASC LIMIT %d OFFSET %d";
+        $sql = $wpdb->prepare($sql, $perPage, $offset);
+
+        $vendors = $wpdb->get_results($sql, ARRAY_A);
+        $count_sql = "SELECT COUNT(*) FROM {$this->tables->vendors} WHERE ($where_sql $include_sql)";
+        $count_sql = $wpdb->prepare($count_sql, ...$all_params);
+        $total_items = (int) $wpdb->get_var($count_sql);
+
+        $total_pages = (int) ceil($total_items / $perPage);
+
+        $response_data = ['success' => true, 'data' => $vendors];
+
+        $response = rest_ensure_response($response_data);
+        $response->header('X-WP-Total', $total_items);
+        $response->header('X-WP-TotalPages', $total_pages);
+
+        return $response;
     }
+
 
     public function api_get_vendor(WP_REST_Request $request): WP_REST_Response {
         $vendor_id = (int) $request->get_param('vendor_id');
@@ -539,8 +577,7 @@ class Store_Manager {
         }
 
         return new WP_REST_Response([
-            'success' => true,
-            'data' => $vendor,
+            'success' => true, 'data' => $vendor
         ]);
     }
 
@@ -619,13 +656,46 @@ class Store_Manager {
     }
 
     public function api_list_vendor_warehouses(WP_REST_Request $request): WP_REST_Response {
-        $vendor_id = (int) $request->get_param('vendor_id');
         global $wpdb;
+        $vendor_id = (int) $request->get_param('vendor_id');
+        $page = max(1, (int) $request->get_param('page'));
+        $perPage = max(1, (int) $request->get_param('perPage'));
+        $search = trim((string) $request->get_param('q'));
+        $include_ids = array_filter(array_map('intval', (array) $request->get_param('include_ids')));
 
-        $warehouses = $wpdb->get_results(
-            $wpdb->prepare("SELECT * FROM {$this->tables->warehouse} WHERE vendor_id = %d", $vendor_id),
-            ARRAY_A
-        );
+        $offset = ($page - 1) * $perPage;
+
+        $where_clauses = ['vendor_id = %d'];
+        $params = [$vendor_id];
+
+        if ($search !== '') {
+            $where_clauses[] = "(warehouse_name LIKE %s OR warehouse_address LIKE %s)";
+            $search_like = '%' . $wpdb->esc_like($search) . '%';
+            $params[] = $search_like;
+            $params[] = $search_like;
+        }
+
+        $where_sql = implode(' AND ', $where_clauses);
+
+        $include_sql = '';
+        if (!empty($include_ids)) {
+            $placeholders = implode(',', array_fill(0, count($include_ids), '%d'));
+            $include_sql = " OR id IN ($placeholders)";
+        }
+
+        $sql = "SELECT * FROM {$this->tables->warehouse} WHERE ($where_sql $include_sql)";
+
+        $all_params = $params;
+        if (!empty($include_ids)) {
+            $all_params = array_merge($all_params, $include_ids);
+        }
+
+        $sql = $wpdb->prepare($sql, ...$all_params);
+
+        $sql .= " ORDER BY id ASC LIMIT %d OFFSET %d";
+        $sql = $wpdb->prepare($sql, $perPage, $offset);
+
+        $warehouses = $wpdb->get_results($sql, ARRAY_A);
 
         if (empty($warehouses)) {
             return new WP_REST_Response([
@@ -635,10 +705,19 @@ class Store_Manager {
             ]);
         }
 
-        return new WP_REST_Response([
-            'success' => true,
-            'data' => $warehouses,
-        ]);
+        $count_sql = "SELECT COUNT(*) FROM {$this->tables->warehouse} WHERE ($where_sql $include_sql)";
+        $count_sql = $wpdb->prepare($count_sql, ...$all_params);
+        $total_items = (int) $wpdb->get_var($count_sql);
+
+        $total_pages = (int) ceil($total_items / $perPage);
+
+        $response_data = ['success' => true, 'data' => $warehouses];
+
+        $response = rest_ensure_response($response_data);
+        $response->header('X-WP-Total', $total_items);
+        $response->header('X-WP-TotalPages', $total_pages);
+
+        return $response;
     }
 
     public function api_get_vendor_warehouse(WP_REST_Request $request): WP_REST_Response {
@@ -744,39 +823,49 @@ class Store_Manager {
     }
 
     public function api_list_warehouse_products(WP_REST_Request $request): WP_REST_Response {
-        $per_page = min(24, (int) $request->get_param('per_page'));
-        $warehouse_id = (int) $request->get_param('warehouse_id');
-        $vendor_id = (int) $request->get_param('vendor_id');
-        $page = max(1, (int) $request->get_param('page'));
-        $search = (string) $request->get_param('search');
-        $offset = ($page - 1) * $per_page;
         global $wpdb;
 
-        // Base SQL query
-        $sql_base = !empty($warehouse_id) ? $wpdb->prepare(
-            "SELECT p.*, v.business_name, w.warehouse_title, w.address AS warehouse_address, post.post_title
+        $per_page = min(24, max(1, (int) $request->get_param('per_page')));
+        $page = max(1, (int) $request->get_param('page'));
+        $offset = ($page - 1) * $per_page;
+
+        $warehouse_id = (int) $request->get_param('warehouse_id');
+        $vendor_id = (int) $request->get_param('vendor_id');
+        $search = trim((string) $request->get_param('search'));
+        $search_like = '%' . $wpdb->esc_like($search) . '%';
+
+        $base_sql = "
             FROM {$this->tables->productat} p
-            JOIN {$wpdb->posts} post ON post.id = p.product_id
+            JOIN {$wpdb->posts} post ON post.ID = p.product_id
             JOIN {$this->tables->warehouse} w ON w.id = p.warehouse_id
             JOIN {$this->tables->vendors} v ON w.vendor_id = v.id
-            WHERE p.warehouse_id = %d AND v.id = %d AND post.post_title LIKE %s",
-            $warehouse_id, $vendor_id, '%'.$wpdb->esc_like($search).'%'
-        ) : $wpdb->prepare(
-            "SELECT p.*, v.business_name, w.warehouse_title, w.address AS warehouse_address, post.post_title
-            FROM {$this->tables->productat} p
-            JOIN {$wpdb->posts} post ON post.id = p.product_id
-            JOIN {$this->tables->warehouse} w ON w.id = p.warehouse_id
-            JOIN {$this->tables->vendors} v ON w.vendor_id = v.id
-            WHERE v.id = %d AND post.post_title LIKE %s",
-            $vendor_id, '%'.$wpdb->esc_like($search).'%'
-        );
+            WHERE v.id = %d
+        ";
 
-        // Get total items for pagination
-        $total_items = (int) $wpdb->get_var("SELECT COUNT(*) FROM ({$sql_base}) AS t");
+        $params = [$vendor_id];
 
-        // Modify the SQL query to include pagination
-        $sql = $wpdb->prepare("{$sql_base} LIMIT %d OFFSET %d", $per_page, $offset);
-        $products = $wpdb->get_results($sql, ARRAY_A);
+        if ($warehouse_id > 0) {
+            $base_sql .= " AND p.warehouse_id = %d";
+            $params[] = $warehouse_id;
+        }
+
+        if ($search !== '') {
+            $base_sql .= " AND post.post_title LIKE %s";
+            $params[] = $search_like;
+        }
+
+        $count_sql = "SELECT COUNT(*) " . $base_sql;
+        $total_items = (int) $wpdb->get_var($wpdb->prepare($count_sql, ...$params));
+
+        $select_sql = "
+            SELECT p.*, v.business_name, w.warehouse_title, w.address AS warehouse_address, post.post_title
+            " . $base_sql . "
+            ORDER BY p.id ASC
+            LIMIT %d OFFSET %d
+        ";
+
+        $params_with_limit = array_merge($params, [$per_page, $offset]);
+        $products = $wpdb->get_results($wpdb->prepare($select_sql, ...$params_with_limit), ARRAY_A);
 
         if (empty($products)) {
             return new WP_REST_Response([
@@ -784,7 +873,6 @@ class Store_Manager {
                 'data' => [],
                 'message' => __('No products found for this product.', 'site-core'),
                 'error' => $wpdb->last_error,
-                'sql' => $sql
             ]);
         }
 
@@ -805,36 +893,71 @@ class Store_Manager {
             }
         }
 
-        $max_pages = ceil($total_items / $per_page);
+        $total_pages = (int) ceil($total_items / $per_page);
+
         $response = rest_ensure_response(['success' => true, 'data' => $products]);
         $response->header('X-WP-Total', $total_items);
-        $response->header('X-WP-TotalPages', $max_pages);
+        $response->header('X-WP-TotalPages', $total_pages);
 
         return $response;
     }
+
     
     public function api_get_product_warehouse(WP_REST_Request $request): WP_REST_Response {
-        $product_id = (int) $request->get_param('product_id');
-        $exclude__ids = explode(',', $request->get_param('exclude__ids'));
-        $exclude__ids = array_map(function($i) {return intval($i);}, $exclude__ids);
         global $wpdb;
+        $product_id = (int) $request->get_param('product_id');
+        $exclude__ids = array_filter(array_map('intval', explode(',', (string) $request->get_param('exclude__ids'))));
+        $page = max(1, (int) $request->get_param('page'));
+        $perPage = max(1, (int) $request->get_param('perPage'));
+        $search = trim((string) $request->get_param('q'));
+        $include_ids = array_filter(array_map('intval', (array) $request->get_param('include_ids')));
 
-        // Query to get warehouses that have the specified product
-        $query = "SELECT w.*, v.business_name, v.business_website, v.business_number
-            FROM {$this->tables->warehouse} AS w
-            JOIN {$this->tables->productat} AS p ON w.id = p.warehouse_id
-            JOIN {$this->tables->vendors} AS v ON w.vendor_id = v.id
-            WHERE p.product_id = %d";
-        $query_args = [ $product_id ];
+        $offset = ($page - 1) * $perPage;
+
+        $where_clauses = ['p.product_id = %d'];
+        $params = [$product_id];
+
         if (!empty($exclude__ids)) {
-            $placeholders = implode(',', array_fill(0, count($exclude__ids), '%d'));
-            $query .= " AND w.id NOT IN ($placeholders)";
-            $query_args = array_merge($query_args, $exclude__ids);
+            $placeholders_exclude = implode(',', array_fill(0, count($exclude__ids), '%d'));
+            $where_clauses[] = "w.id NOT IN ($placeholders_exclude)";
+            $params = array_merge($params, $exclude__ids);
         }
-        $warehouses = $wpdb->get_results(
-            $wpdb->prepare($query, ...$query_args),
-            ARRAY_A
-        );
+
+        if ($search !== '') {
+            $where_clauses[] = "(w.warehouse_name LIKE %s OR w.warehouse_address LIKE %s OR v.business_name LIKE %s)";
+            $search_like = '%' . $wpdb->esc_like($search) . '%';
+            $params[] = $search_like;
+            $params[] = $search_like;
+            $params[] = $search_like;
+        }
+
+        $where_sql = implode(' AND ', $where_clauses);
+
+        $include_sql = '';
+        if (!empty($include_ids)) {
+            $placeholders_include = implode(',', array_fill(0, count($include_ids), '%d'));
+            $include_sql = " OR w.id IN ($placeholders_include)";
+        }
+
+        $all_params = $params;
+        if (!empty($include_ids)) {
+            $all_params = array_merge($all_params, $include_ids);
+        }
+
+        $sql = "SELECT w.*, v.business_name, v.business_website, v.business_number
+                FROM {$this->tables->warehouse} AS w
+                JOIN {$this->tables->productat} AS p ON w.id = p.warehouse_id
+                JOIN {$this->tables->vendors} AS v ON w.vendor_id = v.id
+                WHERE ($where_sql $include_sql)
+                ORDER BY w.id ASC
+                LIMIT %d OFFSET %d";
+
+        $all_params[] = $perPage;
+        $all_params[] = $offset;
+
+        $sql = $wpdb->prepare($sql, ...$all_params);
+
+        $warehouses = $wpdb->get_results($sql, ARRAY_A);
 
         if (empty($warehouses)) {
             return new WP_REST_Response([
@@ -844,10 +967,23 @@ class Store_Manager {
             ]);
         }
 
-        return new WP_REST_Response([
-            'success' => true,
-            'data' => $warehouses,
-        ]);
+        $count_sql = "SELECT COUNT(*) 
+                    FROM {$this->tables->warehouse} AS w
+                    JOIN {$this->tables->productat} AS p ON w.id = p.warehouse_id
+                    JOIN {$this->tables->vendors} AS v ON w.vendor_id = v.id
+                    WHERE ($where_sql $include_sql)";
+        $count_sql = $wpdb->prepare($count_sql, ...$all_params);
+        $total_items = (int) $wpdb->get_var($count_sql);
+
+        $total_pages = (int) ceil($total_items / $perPage);
+
+        $response_data = ['success' => true, 'data' => $warehouses];
+
+        $response = rest_ensure_response($response_data);
+        $response->header('X-WP-Total', $total_items);
+        $response->header('X-WP-TotalPages', $total_pages);
+
+        return $response;
     }
 
     public function api_update_product_warehouse(WP_REST_Request $request): WP_REST_Response {

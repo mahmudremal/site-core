@@ -1,9 +1,0 @@
-{
-	"id": "XkjA4cmFbT53kRf",
-	"json": "{\"id\":\"XkjA4cmFbT53kRf\",\"url\":\"https://my.daraz.com.bd/customer/returns/index?requestType=return\",\"uniqueKey\":\"https://my.daraz.com.bd/customer/returns/index?requestType=return\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"crawlDepth\":1,\"enqueueStrategy\":\"same-domain\"}}}",
-	"method": "GET",
-	"orderNo": 1756569811682,
-	"retryCount": 0,
-	"uniqueKey": "https://my.daraz.com.bd/customer/returns/index?requestType=return",
-	"url": "https://my.daraz.com.bd/customer/returns/index?requestType=return"
-}

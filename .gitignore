@@ -9,3 +9,6 @@ dist
 .vscode
 assets
 uploads
+screenshots
+auth_info
+storage

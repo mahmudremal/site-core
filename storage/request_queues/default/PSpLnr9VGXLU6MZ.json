@@ -1,9 +1,0 @@
-{
-	"id": "PSpLnr9VGXLU6MZ",
-	"json": "{\"id\":\"PSpLnr9VGXLU6MZ\",\"url\":\"https://www.daraz.com.bd/wearable-technology/xundd/\",\"uniqueKey\":\"https://www.daraz.com.bd/wearable-technology/xundd\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"crawlDepth\":1,\"enqueueStrategy\":\"same-domain\"}}}",
-	"method": "GET",
-	"orderNo": 1756569811682,
-	"retryCount": 0,
-	"uniqueKey": "https://www.daraz.com.bd/wearable-technology/xundd",
-	"url": "https://www.daraz.com.bd/wearable-technology/xundd/"
-}

@@ -1,9 +1,0 @@
-{
-	"id": "GQRXJbQyhm1ru8T",
-	"json": "{\"id\":\"GQRXJbQyhm1ru8T\",\"url\":\"https://sellercenter.daraz.com.bd/apps/seller/login?scm=1003.4.icms-zebra-100022982-2888459.OTHER_5476361450_2538025&regist=true\",\"uniqueKey\":\"https://sellercenter.daraz.com.bd/apps/seller/login?regist=true&scm=1003.4.icms-zebra-100022982-2888459.OTHER_5476361450_2538025\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"crawlDepth\":1,\"enqueueStrategy\":\"same-domain\"}}}",
-	"method": "GET",
-	"orderNo": 1756569631620,
-	"retryCount": 0,
-	"uniqueKey": "https://sellercenter.daraz.com.bd/apps/seller/login?regist=true&scm=1003.4.icms-zebra-100022982-2888459.OTHER_5476361450_2538025",
-	"url": "https://sellercenter.daraz.com.bd/apps/seller/login?scm=1003.4.icms-zebra-100022982-2888459.OTHER_5476361450_2538025&regist=true"
-}

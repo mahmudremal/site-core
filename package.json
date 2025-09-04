@@ -15,6 +15,9 @@
   },
   "dependencies": {
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@ckeditor/ckeditor5-build-classic": "^41.4.2",
+    "@ckeditor/ckeditor5-editor-classic": "^46.0.2",
+    "@ckeditor/ckeditor5-react": "^11.0.0",
     "@floating-ui/react-dom": "^2.1.4",
     "@hapi/boom": "^10.0.1",
     "@iconify/react": "^5.2.1",

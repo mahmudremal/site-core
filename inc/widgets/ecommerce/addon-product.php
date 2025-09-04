@@ -65,10 +65,10 @@ class Product {
 
     public function get_product($product_id) {
         $product = (object) wp_parse_args(get_post($product_id), [
-            'id' => 1,
+            'id' => 0,
             'sale' => null,
             'clearance' => null,
-            'price' => 123,
+            'price' => 0,
             // ...
         ]);
         return $product;
@@ -86,16 +86,14 @@ class Product {
 
     public function get_product_meta($product_id, $meta_key = '') {
         global $wpdb;
-        if ($meta_key) {
-            return maybe_unserialize($wpdb->get_var($wpdb->prepare(
-                "SELECT meta_value FROM {$this->tables->products_meta} WHERE product_id = %d AND meta_key = %s ORDER BY id DESC LIMIT 1",
-                $product_id, $meta_key
-            )));
+        if (!empty($meta_key)) {
+            return maybe_unserialize(
+                $wpdb->get_var(
+                    $wpdb->prepare("SELECT meta_value FROM {$this->tables->products_meta} WHERE product_id = %d AND meta_key = %s ORDER BY id DESC LIMIT 1", $product_id, $meta_key)
+                )
+            );
         }
-        $results = $wpdb->get_results($wpdb->prepare(
-            "SELECT meta_key, meta_value FROM {$this->tables->products_meta} WHERE product_id = %d",
-            $product_id
-        ), ARRAY_A);
+        $results = $wpdb->get_results($wpdb->prepare("SELECT meta_key, meta_value FROM {$this->tables->products_meta} WHERE product_id = %d", $product_id), ARRAY_A);
         $meta = [];
         foreach ($results as $row) {
             $meta[$row['meta_key']] = maybe_unserialize($row['meta_value']);

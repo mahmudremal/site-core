@@ -57,6 +57,6 @@
         "ogDescription": ["meta[property='og:description']", "content"]
       }
     },
-    "links": ["[data-qa-locator='general-products'] [data-qa-locator='product-item'] a[title], a.product-item-link, .ant-pagination .ant-pagination-item:not(.ant-pagination-item-active) > a", "href"]
+    "links": ["[data-qa-locator='general-products'] [data-qa-locator='product-item'] a[title], a.product-item-link, .ant-pagination .ant-pagination-item:not(.ant-pagination-item-active) > a, a[href^='https://www.daraz.com.bd/products/']", "href", "^(https?:\\/\\/[^/]+\\/products\\/[^.]+\\.html)"]
   }
 }

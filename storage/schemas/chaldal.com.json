@@ -1,55 +1,63 @@
 {
+  "wait4selection": [],
   "removals": {
-    "header": "#navbar, .nav-main",
-    "footer": "#navFooter, .footer",
+    "header": ".headerWrapper",
+    "footer": "#footer",
     "sidebar": "#rhf, .similarities-widget",
-    "ads": ".sponsored-products, [data-component-type='s-ads-metrics']"
+    "ads": ".shoppingCartWrapper, .menuWrapper"
   },
   "extract": {
-    "isProduct": "#dp-container, #productDetails_feature_div, [data-asin]",
+    "isProduct": "#module_item_gallery_1 > .item-gallery",
     "product": {
-      "content": "#feature-bullets, .a-unordered-list.a-nostyle",
-      "images": "#landingImage, #altImages img, .a-dynamic-image",
-      "price": ".a-price-current .a-offscreen, .a-price .a-offscreen",
-      "originalPrice": ".a-price.a-text-price .a-offscreen",
-      "title": "#productTitle, .product-title",
-      "rating": ".a-icon-alt, .reviewCountTextLinkedHistogram .a-link-normal",
-      "availability": "#availability span, .a-color-success, .a-color-price",
-      "brand": ".a-row .a-size-base.po-brand .a-size-base",
-      "category": "#wayfinding-breadcrumbs_feature_div a",
-      "asin": "javascript:document.querySelector('[data-asin]')?.getAttribute('data-asin') || new URLSearchParams(window.location.search).get('dp')?.split('/')[0]",
-      "specifications": "#prodDetails table tr, .a-keyvalue",
+      "wait4selection": [],
+      "content": [".productDetails section.right .details", "innerText"],
+      "images": [".productGallery img", "src"],
+      "price": [".quantityContainer .discountedPriceSection .discountedPrice span[itemprop=price]", "content"],
+      "currency": [".quantityContainer .discountedPriceSection .discountedPrice span[itemprop=priceCurrency]", "content"],
+      "originalPrice": [".quantityContainer .fullPrice span + span", "innerText"],
+      "discount": [".quantityContainer .discount span", "innerText"],
+      "title": [".productDetails section.right div.nameAndSubtext h1[itemprop=name]", "innerText"],
+      "rating": [],
+      "availability": [".quantityContainer link[itemprop=availability]", "href"],
+      "brand": [],
+      "category": [],
+      "specifications": [],
       "reviews": {
-        "selector": "[data-hook='review']",
-        "count": "#acrCustomerReviewText",
-        "items": "[data-hook='review-body'] span"
+        "selector": [],
+        "count": [],
+        "items": []
       },
       "meta": {
-        "title": "title",
-        "description": "meta[name='description']",
-        "ogImage": "meta[property='og:image']",
-        "keywords": "meta[name='keywords']"
+        "title": [".productDetails section.right div.nameAndSubtext h1[itemprop=name]", "innerText"],
+        "description": ["meta[name='description']", "content"],
+        "ogImage": ["meta[property='og:image']", "content"],
+        "ogTitle": ["meta[property='og:title']", "content"],
+        "ogDescription": ["meta[property='og:description']", "content"],
+        "ogPrice": ["meta[property='product:price:amount']", "content"],
+        "ogCurrency": ["meta[property='product:price:currency']", "content"]
       },
       "custom": {
-        "seller": "#sellerProfileTriggerId, .a-link-normal#sellerProfileTriggerId",
-        "prime": ".a-icon-prime, [aria-label*='Prime']",
-        "delivery": "#mir-layout-DELIVERY_BLOCK, .a-color-secondary.a-size-base"
+        "seller": {
+          "name": [],
+          "url": [],
+          "info": []
+        },
+        "warranty": [],
+        "delivery": []
       }
     },
-    "isCategory": ".s-result-list, #search",
+    "isCategory": ".catalogBrowser",
     "category": {
-      "products": "[data-component-type='s-search-result'], .s-result-item",
-      "productTitle": "h2 .a-link-normal, .s-size-mini .a-link-normal",
-      "productPrice": ".a-price .a-offscreen, .a-price-current .a-offscreen",
-      "pagination": ".a-pagination a, .a-last a",
-      "filters": "#departments, .a-section.a-spacing-none",
-      "sorting": "#s-result-sort-select, .a-dropdown-prompt",
+      "wait4selection": [".catalogBrowser"],
+      "title": [".categoryHeader .breadcrumb a span[itemprop=name]", "innerText"],
       "meta": {
-        "title": "title",
-        "description": "meta[name='description']",
-        "totalProducts": ".a-color-state.a-text-bold"
+        "title": [".categoryHeader .breadcrumb a span[itemprop=name]", "innerText"],
+        "description": ["meta[name='description']", "content"],
+        "ogImage": ["meta[property='og:image']", "content"],
+        "ogTitle": ["meta[property='og:title']", "content"],
+        "ogDescription": ["meta[property='og:description']", "content"]
       }
     },
-    "links": "a[href*='/dp/'], a[href*='/s?'], .s-product-image-container a, .a-link-normal[href*='/dp/']"
+    "links": ["[data-qa-locator='general-products'] [data-qa-locator='product-item'] a[title], a.product-item-link, .ant-pagination .ant-pagination-item:not(.ant-pagination-item-active) > a, a[href^='https://www.daraz.com.bd/products/']", "href", "^(https?:\\/\\/[^/]+\\/products\\/[^.]+\\.html)"]
   }
 }
