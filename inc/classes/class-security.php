@@ -28,11 +28,11 @@ class Security {
 			});
 		}, 15);
 		
-		add_action('init', function () {
-			header("Access-Control-Allow-Origin: *");
-			header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-			header("Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization");
-		});
+		// add_action('init', function () {
+		// 	header("Access-Control-Allow-Origin: *");
+		// 	header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+		// 	header("Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization");
+		// });
 
 		
 		add_filter('sitecore/security/verify/permission', [$this, 'default_permission'], 10, 2);

@@ -840,6 +840,7 @@ class Store_Manager {
             JOIN {$this->tables->warehouse} w ON w.id = p.warehouse_id
             JOIN {$this->tables->vendors} v ON w.vendor_id = v.id
             WHERE v.id = %d
+            -- AND post.post_type = 'sc_product'
         ";
 
         $params = [$vendor_id];
@@ -865,18 +866,19 @@ class Store_Manager {
         ";
 
         $params_with_limit = array_merge($params, [$per_page, $offset]);
+        // wp_die($wpdb->prepare($select_sql, ...$params_with_limit));
         $products = $wpdb->get_results($wpdb->prepare($select_sql, ...$params_with_limit), ARRAY_A);
 
         if (empty($products)) {
             return new WP_REST_Response([
-                'success' => true,
                 'data' => [],
+                'success' => true,
                 'message' => __('No products found for this product.', 'site-core'),
                 'error' => $wpdb->last_error,
             ]);
         }
 
-        if (function_exists('wc_get_product')) {
+        if (function_exists('wc_get_product') && false) {
             foreach ($products as $key => $row) {
                 $wc_product = wc_get_product((int) $row['product_id']);
                 if (!$wc_product) continue;
@@ -890,6 +892,11 @@ class Store_Manager {
                     'stock_status' => $wc_product->get_stock_status(),
                     'stock_quantity' => $wc_product->get_stock_quantity(),
                 ];
+            }
+        } else {
+            $product_instance = Ecommerce\Addons\Product::get_instance();
+            foreach ($products as $key => $row) {
+                $products[$key]['product'] = $product_instance->get_product((int) $row['product_id']);
             }
         }
 
@@ -1113,7 +1120,8 @@ class Store_Manager {
                 $results = $wpdb->get_results(
                     $wpdb->prepare(
                         "SELECT p.ID AS id, p.post_title AS product_title FROM {$wpdb->posts} p WHERE p.post_type = %s AND p.post_title LIKE %s OR p.ID = %d;",
-                        'product', '%'.$wpdb->esc_like($search).'%', (int) $search
+                        function_exists('wc_get_product') ? 'product' : 'sc_product',
+                        '%'.$wpdb->esc_like($search).'%', (int) $search
                     ),
                     ARRAY_A
                 );

@@ -193,3 +193,135 @@
 // //   });
 // //   return res.json();
 // // }
+
+
+
+
+
+
+
+class BangleeCoreBackground {
+  constructor() {
+    this.storage = {} // tabId => [{ url, data }]
+    this.activeTabs = {} // tabId => { queue, schema }
+    this.setup_hooks();
+    this.setup_webrequest();
+  }
+
+  setup_hooks() {
+    chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+      const tabId = sender.tab.id
+
+      if (msg.type === 'START_SCRAPE') {
+        const links = this.extract_links(msg.schema.store.selectors)
+        this.activeTabs[tabId] = {
+          queue: [...links],
+          schema: msg.schema
+        }
+        this.storage[tabId] = []
+        this.open_scrape_window(tabId)
+      }
+
+      if (msg.type === 'PRODUCT_SCRAPED') {
+        this.add_scraped(tabId, msg.url, msg.data)
+        this.open_scrape_window(tabId)
+      }
+
+      if (msg.type === 'NEXT_PAGE') {
+        chrome.tabs.sendMessage(tabId, { type: 'TRIGGER_NEXT_PAGE' })
+      }
+
+      if (msg.type === 'PAGE_READY') {
+        const links = this.extract_links(msg.schema.store.selectors)
+        this.activeTabs[tabId].queue = [...links]
+        this.open_scrape_window(tabId)
+      }
+    })
+  }
+
+  extract_links(selector) {
+    return []
+  }
+
+  add_scraped(tabId, url, data) {
+    this.storage[tabId] = this.storage[tabId] || []
+    this.storage[tabId].push({ url, data })
+  }
+
+  open_scrape_window(tabId) {
+    const tabSession = this.activeTabs[tabId]
+    if (!tabSession || tabSession.queue.length === 0) {
+      chrome.tabs.sendMessage(tabId, { type: 'CHECK_PAGINATION' })
+      return
+    }
+
+    const nextUrl = tabSession.queue.shift()
+    chrome.windows.create({
+      url: nextUrl,
+      type: 'popup',
+      width: 800,
+      height: 600
+    }, (win) => {
+      // Optionally track windowId if needed
+    })
+  }
+
+setup_webrequest() {
+chrome.webRequest.onCompleted.addListener((details) => {
+  if (details.url.includes("mtop.global.detail.web.getDetailInfo")) {
+    console.log("Request Completed:", details);
+    const tabId = details.tabId;
+    if (tabId === -1) {
+      console.warn("Invalid tabId, cannot attach debugger.");
+      return;
+    }
+
+    chrome.tabs.get(tabId, (tab) => {
+      if (chrome.runtime.lastError || !tab) {
+        console.warn("Tab not available:", chrome.runtime.lastError);
+        return;
+      }
+
+      chrome.debugger.attach({ tabId }, "1.3", () => {
+        if (chrome.runtime.lastError) {
+          console.error("Debugger attach failed:", chrome.runtime.lastError.message);
+          return;
+        }
+        chrome.debugger.sendCommand({ tabId }, "Network.enable");
+
+        const onEvent = (source, method, params) => {
+          if (source.tabId !== tabId) return;
+          if (method === "Network.responseReceived") {
+            if (params.response.url.includes("mtop.global.detail.web.getDetailInfo")) {
+              chrome.debugger.sendCommand({ tabId }, "Network.getResponseBody", { requestId: params.requestId }, (response) => {
+                if (chrome.runtime.lastError) {
+                  console.error("GetResponseBody failed:", chrome.runtime.lastError.message);
+                  return;
+                }
+                console.log("Response body:", response.body);
+                // Detach debugger if you want
+                // chrome.debugger.detach({ tabId });
+              });
+            }
+          }
+        };
+
+        chrome.debugger.onEvent.addListener(onEvent);
+
+        // Optionally detach debugger on tab close
+        chrome.tabs.onRemoved.addListener((closedTabId) => {
+          if (closedTabId === tabId) {
+            chrome.debugger.detach({ tabId });
+            chrome.debugger.onEvent.removeListener(onEvent);
+          }
+        });
+      });
+    });
+  }
+}, { urls: ["https://acs-m.daraz.com.bd/h5/*"] });
+
+}
+  
+}
+
+new BangleeCoreBackground();

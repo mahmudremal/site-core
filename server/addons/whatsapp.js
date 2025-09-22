@@ -29,7 +29,7 @@ class WhatsappAddon extends AppServer {
     }
 
     register(router) {
-        this.connect();
+        // this.connect();
         // this.configureExpress();
         this.configureSocket();
     }

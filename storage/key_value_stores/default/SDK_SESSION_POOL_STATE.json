@@ -1,9 +1,9 @@
 {
-  "usableSessionsCount": 5,
-  "retiredSessionsCount": 1,
+  "usableSessionsCount": 24,
+  "retiredSessionsCount": 9,
   "sessions": [
     {
-      "id": "session_fGxjhXgjh7",
+      "id": "session_oZ5tkjiJBO",
       "cookieJar": {
         "version": "tough-cookie@5.1.2",
         "storeType": "MemoryCookieStore",
@@ -16,14 +16,14 @@
       "userData": {},
       "maxErrorScore": 3,
       "errorScoreDecrement": 0.5,
-      "expiresAt": "2025-09-04T12:08:16.844Z",
-      "createdAt": "2025-09-04T11:18:16.844Z",
+      "expiresAt": "2025-09-16T18:07:30.819Z",
+      "createdAt": "2025-09-16T17:17:30.819Z",
       "usageCount": 0,
       "maxUsageCount": 50,
       "errorScore": 0
     },
     {
-      "id": "session_PX4evEBX5y",
+      "id": "session_7DuiNb9FDS",
       "cookieJar": {
         "version": "tough-cookie@5.1.2",
         "storeType": "MemoryCookieStore",
@@ -36,14 +36,14 @@
       "userData": {},
       "maxErrorScore": 3,
       "errorScoreDecrement": 0.5,
-      "expiresAt": "2025-09-04T12:08:16.855Z",
-      "createdAt": "2025-09-04T11:18:16.855Z",
-      "usageCount": 4,
+      "expiresAt": "2025-09-16T18:07:30.832Z",
+      "createdAt": "2025-09-16T17:17:30.832Z",
+      "usageCount": 6,
       "maxUsageCount": 50,
-      "errorScore": 6
+      "errorScore": 10
     },
     {
-      "id": "session_oJCBS952Fg",
+      "id": "session_0z65v3OPz7",
       "cookieJar": {
         "version": "tough-cookie@5.1.2",
         "storeType": "MemoryCookieStore",
@@ -56,14 +56,14 @@
       "userData": {},
       "maxErrorScore": 3,
       "errorScoreDecrement": 0.5,
-      "expiresAt": "2025-09-04T12:08:29.359Z",
-      "createdAt": "2025-09-04T11:18:29.359Z",
+      "expiresAt": "2025-09-16T18:07:30.863Z",
+      "createdAt": "2025-09-16T17:17:30.863Z",
       "usageCount": 0,
       "maxUsageCount": 50,
       "errorScore": 0
     },
     {
-      "id": "session_nXghFThmCF",
+      "id": "session_uE1ThtHZ0e",
       "cookieJar": {
         "version": "tough-cookie@5.1.2",
         "storeType": "MemoryCookieStore",
@@ -76,14 +76,14 @@
       "userData": {},
       "maxErrorScore": 3,
       "errorScoreDecrement": 0.5,
-      "expiresAt": "2025-09-04T12:08:29.547Z",
-      "createdAt": "2025-09-04T11:18:29.547Z",
+      "expiresAt": "2025-09-16T18:08:32.476Z",
+      "createdAt": "2025-09-16T17:18:32.476Z",
       "usageCount": 0,
       "maxUsageCount": 50,
       "errorScore": 0
     },
     {
-      "id": "session_SiFrMZvwhZ",
+      "id": "session_bQnWhJz1Gt",
       "cookieJar": {
         "version": "tough-cookie@5.1.2",
         "storeType": "MemoryCookieStore",
@@ -96,14 +96,34 @@
       "userData": {},
       "maxErrorScore": 3,
       "errorScoreDecrement": 0.5,
-      "expiresAt": "2025-09-04T12:08:29.703Z",
-      "createdAt": "2025-09-04T11:18:29.703Z",
+      "expiresAt": "2025-09-16T18:08:32.479Z",
+      "createdAt": "2025-09-16T17:18:32.479Z",
+      "usageCount": 6,
+      "maxUsageCount": 50,
+      "errorScore": 10
+    },
+    {
+      "id": "session_4s9LUT7L9H",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:08:32.880Z",
+      "createdAt": "2025-09-16T17:18:32.880Z",
       "usageCount": 0,
       "maxUsageCount": 50,
       "errorScore": 0
     },
     {
-      "id": "session_41viRfdxbd",
+      "id": "session_YVkfvlzrse",
       "cookieJar": {
         "version": "tough-cookie@5.1.2",
         "storeType": "MemoryCookieStore",
@@ -116,11 +136,964 @@
       "userData": {},
       "maxErrorScore": 3,
       "errorScoreDecrement": 0.5,
-      "expiresAt": "2025-09-04T12:08:29.706Z",
-      "createdAt": "2025-09-04T11:18:29.706Z",
-      "usageCount": 1,
+      "expiresAt": "2025-09-16T18:09:33.788Z",
+      "createdAt": "2025-09-16T17:19:33.788Z",
+      "usageCount": 0,
       "maxUsageCount": 50,
-      "errorScore": 1
+      "errorScore": 0
+    },
+    {
+      "id": "session_q9OvKeLhxm",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:09:33.791Z",
+      "createdAt": "2025-09-16T17:19:33.791Z",
+      "usageCount": 6,
+      "maxUsageCount": 50,
+      "errorScore": 10
+    },
+    {
+      "id": "session_qTudgQhGFJ",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:09:34.128Z",
+      "createdAt": "2025-09-16T17:19:34.128Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_MWiIk9gJAO",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:10:36.408Z",
+      "createdAt": "2025-09-16T17:20:36.408Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_bYZAxe6uAC",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:10:36.412Z",
+      "createdAt": "2025-09-16T17:20:36.412Z",
+      "usageCount": 6,
+      "maxUsageCount": 50,
+      "errorScore": 10
+    },
+    {
+      "id": "session_DZJr0iRytq",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:10:36.534Z",
+      "createdAt": "2025-09-16T17:20:36.534Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_IdXbtjqHcD",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:11:37.911Z",
+      "createdAt": "2025-09-16T17:21:37.911Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_5SrZS1nBQ8",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": [
+          {
+            "key": "_uab_collina",
+            "value": "175804330654186250149029",
+            "expires": "2026-10-21T17:21:46.542Z",
+            "domain": "www.daraz.com.bd",
+            "path": "/products",
+            "hostOnly": true,
+            "creation": "2025-09-16T17:21:54.156Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "__wpkreporterwid_",
+            "value": "68f09987-0eea-4fd9-bc88-dbe63d152e80",
+            "expires": "2026-03-15T17:21:47.838Z",
+            "domain": "www.daraz.com.bd",
+            "path": "/products",
+            "hostOnly": true,
+            "creation": "2025-09-16T17:21:54.158Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "hng",
+            "value": "BD|en-BD|BDT|050",
+            "expires": "2025-10-16T17:21:38.903Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.158Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "hng.sig",
+            "value": "GmxwVkwgEL8dCgIPVk5XUSqi82_lfa7i_Om8V7ut9Ok",
+            "expires": "2025-10-16T17:21:38.903Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.168Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "EGG_SESS",
+            "value": "S_Gs1wHo9OvRHCMp98md7PQ-3-O1FmQvESsf_g5cTTVXcieBDLbzqbMe86BRH8fcRg7lgAgC1DcpzltMlGjYA3ntXuzsWQm3RD6YKZ2xF50aCmeL89sSOlhP0vT8QAsDUMnJ96B8GP1PTUFGtqkjsxN88NZLaE5vNJuZNVgiE8M=",
+            "expires": "2025-09-17T17:21:38.903Z",
+            "domain": "www.daraz.com.bd",
+            "path": "/",
+            "secure": true,
+            "httpOnly": true,
+            "hostOnly": true,
+            "creation": "2025-09-16T17:21:54.171Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "lzd_cid",
+            "value": "2637ef91-de3a-4f84-ba63-3bd684b0f157",
+            "expires": "2026-09-17T01:21:42.014Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "secure": true,
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.171Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "lzd_sid",
+            "value": "1783386442ad9cc2f4e9c17717016720",
+            "expires": "2025-09-16T18:11:54.154Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "secure": true,
+            "httpOnly": true,
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.171Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "_tb_token_",
+            "value": "ef15ebeeeb133",
+            "expires": "2025-09-16T18:11:54.154Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "secure": true,
+            "httpOnly": true,
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.171Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "lwrid",
+            "value": "AgGZU4vo%2BqAcFzWsyJ00X39uI%2BOq",
+            "expires": "2026-03-15T17:22:39.783Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.172Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "t_fv",
+            "value": "1758043304705",
+            "expires": "2026-10-21T17:21:44.705Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.172Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "t_uid",
+            "value": "lsk0iTOLJXrQrKFkauncg1mHBttxl4PK",
+            "expires": "2026-10-21T17:21:44.706Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.172Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "t_sid",
+            "value": "T2xMT9hr1nTVxImaqddNdJnjy1Q4TcXU",
+            "expires": "2025-09-16T17:52:39.000Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.172Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "utm_channel",
+            "value": "NA",
+            "expires": "2025-09-16T17:52:39.000Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.172Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "_gcl_au",
+            "value": "1.1.2147048163.1758043307",
+            "expires": "2025-12-15T17:21:46.000Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.172Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "xlly_s",
+            "value": "1",
+            "expires": "2025-09-19T17:21:46.000Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "secure": true,
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.172Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "cna",
+            "value": "qopQIZZwtSACAWenD+VUzvSH",
+            "expires": "2026-10-21T17:21:46.951Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "secure": true,
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.172Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "_ga_PC3XY01BZ9",
+            "value": "GS2.1.s1758043308$o1$g0$t1758043308$j60$l0$h671103098",
+            "expires": "2026-10-21T17:21:48.075Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.173Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "_ga",
+            "value": "GA1.3.177176534.1758043308",
+            "expires": "2026-10-21T17:21:48.316Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.173Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "_gid",
+            "value": "GA1.3.1662128342.1758043308",
+            "expires": "2025-09-17T17:21:48.000Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.173Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "_gat_UA-53331019-1",
+            "value": "1",
+            "expires": "2025-09-16T17:22:48.000Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.174Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "_m_h5_tk",
+            "value": "15b9fab1a03de988112ba3dac2e94ce7_1758051950064",
+            "expires": "2025-09-23T17:21:50.114Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "secure": true,
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.174Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "_m_h5_tk_enc",
+            "value": "3c69f6e29d3d1d8f23198a57126dd5c0",
+            "expires": "2025-09-23T17:21:50.115Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "secure": true,
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.174Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "tfstk",
+            "value": "fUWxBCV-Dz4DW3yxT1NuIU2rFKITKtIV4ZSIIFYm1aQRAMuD1PP21dIvrtYcmGO9XUs6jE4wmFK1fUk00lrNWlQMyoWDSscsBUbPmdjXsRLO-UEwjSSGeNpVEsDMorJOfwvT-y23KKS2Tda3-gqysFJ6fRY15zwZddJ_-z23KiS2QZszpJSOVuKMjAt15CZJVhTWCFs08ILCDkNwaRKGoesXPNbGFn3HRiT-CAZMDIElcUH6VT5t1oGBzSkhUNXC4zXhp31I83J-GuE-_f8yq3L3xXGVh5p92eq82flwG3-J-uE-_fRX43L34wlZ_QQA.",
+            "expires": "2026-03-15T17:22:40.000Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:21:54.175Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "_fbp",
+            "value": "fb.2.1758043317813.312109521626371050",
+            "expires": "2025-12-15T17:21:57.000Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:22:42.356Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          },
+          {
+            "key": "epssw",
+            "value": "10*KDhssZh1BuYtz-xeUNdsuw394I3PhLPy3m1ssshsssF9t-FeO-ibkORrsssss7D0b-sywGWvtbQ0u-azTgkQZN8wkr8kejW2XR1sCpanzFsazRWfsssazkDUsd7IALWzrB34zs5su7ZOGpikfW4yBVJnOwXtEk_EzwaX5Ahw6uDML4a5uuTNdyLKOaXtcLEByEHPysfmh-FN3soSUOrykS1ss7VZORassR5ssOeZUOJATpwR-CFLfs..",
+            "expires": "2026-03-15T17:21:58.389Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:22:42.356Z",
+            "lastAccessed": "2025-09-16T17:22:43.440Z"
+          }
+        ]
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:11:37.914Z",
+      "createdAt": "2025-09-16T17:21:37.914Z",
+      "usageCount": 11,
+      "maxUsageCount": 50,
+      "errorScore": 14.5
+    },
+    {
+      "id": "session_GS8w3JNO8W",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:11:51.474Z",
+      "createdAt": "2025-09-16T17:21:51.474Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_rb0gpOkuij",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:11:54.924Z",
+      "createdAt": "2025-09-16T17:21:54.924Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_hEKaJ75Rmm",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:12:39.001Z",
+      "createdAt": "2025-09-16T17:22:39.001Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_7H3JfG8R5l",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:12:43.063Z",
+      "createdAt": "2025-09-16T17:22:43.063Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_Nc6Dlexy6b",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:12:55.735Z",
+      "createdAt": "2025-09-16T17:22:55.735Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_5w0w7kzAtU",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:12:55.740Z",
+      "createdAt": "2025-09-16T17:22:55.740Z",
+      "usageCount": 10,
+      "maxUsageCount": 50,
+      "errorScore": 18
+    },
+    {
+      "id": "session_AfQ1TpzBZr",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:13:58.014Z",
+      "createdAt": "2025-09-16T17:23:58.014Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_aQp7JjVYYn",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:14:01.532Z",
+      "createdAt": "2025-09-16T17:24:01.532Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_KNsJSXHpLM",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:15:02.207Z",
+      "createdAt": "2025-09-16T17:25:02.207Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_AdciKTvo9a",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:15:02.209Z",
+      "createdAt": "2025-09-16T17:25:02.209Z",
+      "usageCount": 6,
+      "maxUsageCount": 50,
+      "errorScore": 10
+    },
+    {
+      "id": "session_jXw9FCicRI",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:15:02.218Z",
+      "createdAt": "2025-09-16T17:25:02.218Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_2ibkC43WdN",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:16:04.375Z",
+      "createdAt": "2025-09-16T17:26:04.375Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_qcE6sCMzxz",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:16:04.377Z",
+      "createdAt": "2025-09-16T17:26:04.377Z",
+      "usageCount": 10,
+      "maxUsageCount": 50,
+      "errorScore": 18
+    },
+    {
+      "id": "session_ZDJ8ecSoEQ",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:16:31.632Z",
+      "createdAt": "2025-09-16T17:26:31.632Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_UMSDNt9SFA",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:17:05.977Z",
+      "createdAt": "2025-09-16T17:27:05.977Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_0OfI3Ndvkw",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:17:41.717Z",
+      "createdAt": "2025-09-16T17:27:41.717Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_fzU2ljffti",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": [
+          {
+            "key": "hng",
+            "value": "BD|en-BD|BDT|050",
+            "expires": "2025-10-16T17:27:43.429Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:28:16.668Z",
+            "lastAccessed": "2025-09-16T17:28:43.342Z"
+          },
+          {
+            "key": "hng.sig",
+            "value": "GmxwVkwgEL8dCgIPVk5XUSqi82_lfa7i_Om8V7ut9Ok",
+            "expires": "2025-10-16T17:27:43.429Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:28:16.668Z",
+            "lastAccessed": "2025-09-16T17:28:43.342Z"
+          },
+          {
+            "key": "EGG_SESS",
+            "value": "S_Gs1wHo9OvRHCMp98md7P1h8VIJXYoRAU2fu_l7EfCUoAkzsB9Htd91t_QR0qDNXMagVCMlGqGh1qyx15ujydTQurnm7YXgRZXfaezDw6muHJcMCXQJiSdCM_KaNMB503oMjtITgHCQM8_-_QLWcJegG0TwOdIAdwZrAnEp13o=",
+            "expires": "2025-09-17T17:27:43.429Z",
+            "domain": "www.daraz.com.bd",
+            "path": "/",
+            "secure": true,
+            "httpOnly": true,
+            "hostOnly": true,
+            "creation": "2025-09-16T17:28:16.668Z",
+            "lastAccessed": "2025-09-16T17:28:43.342Z"
+          },
+          {
+            "key": "lwrid",
+            "value": "AgGZU5F6a0oQJnJcYbD8X39uI%2BOq",
+            "expires": "2026-03-15T17:28:08.595Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:28:16.668Z",
+            "lastAccessed": "2025-09-16T17:28:43.342Z"
+          },
+          {
+            "key": "t_fv",
+            "value": "1758043669705",
+            "expires": "2026-10-21T17:27:49.706Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:28:16.668Z",
+            "lastAccessed": "2025-09-16T17:28:43.342Z"
+          },
+          {
+            "key": "t_uid",
+            "value": "LpvFKGJFmMslUJYg1d1mr7TEbe1E68GL",
+            "expires": "2026-10-21T17:27:49.706Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:28:16.668Z",
+            "lastAccessed": "2025-09-16T17:28:43.342Z"
+          },
+          {
+            "key": "t_sid",
+            "value": "0aVhd55a4KGjMrPdztQH74pMB7Tnnl8U",
+            "expires": "2025-09-16T17:58:08.000Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:28:16.668Z",
+            "lastAccessed": "2025-09-16T17:28:43.342Z"
+          },
+          {
+            "key": "utm_channel",
+            "value": "NA",
+            "expires": "2025-09-16T17:58:08.000Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:28:16.668Z",
+            "lastAccessed": "2025-09-16T17:28:43.342Z"
+          },
+          {
+            "key": "_m_h5_tk",
+            "value": "2612236b8ff407d87c4c2188bb4d3a7c_1758051592462",
+            "expires": "2025-09-23T17:27:52.587Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "secure": true,
+            "hostOnly": false,
+            "creation": "2025-09-16T17:28:16.668Z",
+            "lastAccessed": "2025-09-16T17:28:43.342Z"
+          },
+          {
+            "key": "_m_h5_tk_enc",
+            "value": "a3f9632c028fce42a8008de3c3d88c0a",
+            "expires": "2025-09-23T17:27:52.587Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "secure": true,
+            "hostOnly": false,
+            "creation": "2025-09-16T17:28:16.668Z",
+            "lastAccessed": "2025-09-16T17:28:43.342Z"
+          },
+          {
+            "key": "lzd_cid",
+            "value": "7871718d-e89d-41b2-ad4c-94f855b6dfa3",
+            "expires": "2026-09-17T01:27:52.759Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "secure": true,
+            "hostOnly": false,
+            "creation": "2025-09-16T17:28:16.668Z",
+            "lastAccessed": "2025-09-16T17:28:43.342Z"
+          },
+          {
+            "key": "lzd_sid",
+            "value": "194c19f5f3f93ead569111c3d76b25b6",
+            "expires": "2025-09-16T18:18:16.668Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "secure": true,
+            "httpOnly": true,
+            "hostOnly": false,
+            "creation": "2025-09-16T17:28:16.668Z",
+            "lastAccessed": "2025-09-16T17:28:43.342Z"
+          },
+          {
+            "key": "_tb_token_",
+            "value": "38be315ebbb5f",
+            "expires": "2025-09-16T18:18:16.668Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "secure": true,
+            "httpOnly": true,
+            "hostOnly": false,
+            "creation": "2025-09-16T17:28:16.669Z",
+            "lastAccessed": "2025-09-16T17:28:43.342Z"
+          },
+          {
+            "key": "tfstk",
+            "value": "fpAoBBb6kLWS7rZl5xfSep_cfDJHPu1BTHFdv6IE3iSb2uFJ8wfH-H4dL01JtKxHbgSdp_Q3TH8awg8Ry67e2ibpy0gWi9YHx9BPwL3HiNIc9UIpzXfVPNKhd4sdYMxp8L3x6fLWP6Cetcht6q-mWadlYkCEE4T-hcnt6jLWP61EXHpbSjv5Ri7P8gPEotSfR85eY6SVkUS0tLWx47xEWiPUTIk5EGYzpWPeiaXuFUSDeLdcrljOLlJvZItp_GIB8guz3RPIuWItiewQdT7fwGgmoouiA1gHNq00dJ6PlZjtoq2QdT7foG3moRuCUZ_5X",
+            "expires": "2026-03-15T17:28:09.000Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:28:16.669Z",
+            "lastAccessed": "2025-09-16T17:28:43.342Z"
+          },
+          {
+            "key": "cna",
+            "value": "F4xQIVXJwksCAWenD+V/FX1Z",
+            "expires": "2026-10-21T17:28:09.683Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-09-16T17:28:16.669Z",
+            "lastAccessed": "2025-09-16T17:28:43.342Z"
+          },
+          {
+            "key": "xlly_s",
+            "value": "1",
+            "expires": "2025-09-19T17:28:09.000Z",
+            "domain": "daraz.com.bd",
+            "path": "/",
+            "secure": true,
+            "hostOnly": false,
+            "creation": "2025-09-16T17:28:16.669Z",
+            "lastAccessed": "2025-09-16T17:28:43.342Z"
+          }
+        ]
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:17:41.721Z",
+      "createdAt": "2025-09-16T17:27:41.721Z",
+      "usageCount": 7,
+      "maxUsageCount": 50,
+      "errorScore": 10
+    },
+    {
+      "id": "session_CYpl4W3fi5",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:18:08.029Z",
+      "createdAt": "2025-09-16T17:28:08.029Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_VwJlx1DXQv",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-09-16T18:18:43.217Z",
+      "createdAt": "2025-09-16T17:28:43.217Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
     }
   ]
 }

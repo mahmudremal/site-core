@@ -1,14 +1,21 @@
 import axios from 'axios';
 import { lazy, Suspense } from 'react';
-import settings_screen from '../settings';
 const TaskManager = lazy(() => import('@js/tasks'));
 const Affiliates = lazy(() => import('@js/affiliates'));
+const StoreFront = lazy(() => import('@js/store-front'));
 const ShopManager = lazy(() => import('@js/shop-manager'));
 const EmailBuilderApp = lazy(() => import('@js/emails/index'));
 const ServicePackage = lazy(() => import('@js/services/package'));
 const ServiceMetaBox = lazy(() => import('@js/services/metabox'));
 const ServiceContracts = lazy(() => import('@js/services/contracts'));
 const ProductMetaBox = lazy(() => import('@js/shop-manager/ProductMetabox'));
+
+const Radar = lazy(() => import('@js/settings/radar'));
+const PostTypes = lazy(() => import('@js/settings/post-types'));
+const RoleBased = lazy(() => import('@js/settings/role-based'));
+const AppsApiKeys = lazy(() => import('@js/settings/api-keys'));
+const TaskConfig = lazy(() => import('@js/settings/task-config'));
+
 import { __, tailwind_install } from '@js/utils';
 import { createRoot } from 'react-dom/client';
 
@@ -24,8 +31,9 @@ class SiteCore {
     }
 
     setup_hooks() {
-        settings_screen();
         tailwind_install();
+        this.sc_store_front();
+        this.settings_screen();
         this.sc_product_setup();
         this.cdnmanager_setup();
 		this.taskmanager_setup();
@@ -35,6 +43,86 @@ class SiteCore {
         // 
         window.addEventListener('load', () => {
             this.packagebtn_setup();
+        });
+    }
+
+    settings_screen() {
+        document.querySelectorAll('#roles-assign-interface').forEach(async field => {
+            const container = field.parentElement;
+            container.previousElementSibling.remove();
+            if (container) {
+                // await this.tailwind_install();
+                container.innerHTML = '';
+                container.setAttribute('colspan', 2);
+                const config = JSON.parse(field.dataset.config);
+                const root = createRoot(container);root.render(
+                    <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
+                        <RoleBased config={config} />
+                    </Suspense>
+                );
+            }
+        });
+        document.querySelectorAll('#apps-api-keys').forEach(async field => {
+            const container = field.parentElement;
+            container.previousElementSibling.remove();
+            if (container) {
+                // await this.tailwind_install();
+                container.innerHTML = '';
+                container.setAttribute('colspan', 2);
+                const config = JSON.parse(field.dataset.config);
+                const root = createRoot(container);root.render(
+                    <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
+                        <AppsApiKeys config={config} />
+                    </Suspense>
+                );
+            }
+        });
+        document.querySelectorAll('#task-config-interface').forEach(async field => {
+            const container = field.parentElement;
+            container.previousElementSibling.remove();
+            if (container) {
+                // await this.tailwind_install();
+                container.innerHTML = '';
+                container.setAttribute('colspan', 2);
+                const config = JSON.parse(field.dataset.config);
+                const root = createRoot(container);root.render(
+                    <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
+                        <TaskConfig config={config} />
+                    </Suspense>
+                );
+            }
+        });
+        document.querySelectorAll('#radar-interface').forEach(async field => {
+            const container = field.parentElement;
+            container.previousElementSibling.remove();
+            if (container) {
+                // await this.tailwind_install();
+                container.innerHTML = '';
+                container.setAttribute('colspan', 2);
+                const config = JSON.parse(field.dataset.config);
+                const root = createRoot(container);root.render(
+                    <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
+                        <Radar config={config} />
+                    </Suspense>
+                );
+            }
+        });
+        document.querySelectorAll('#llmstxt-posttypes').forEach(async field => {
+            const container = field.parentElement;
+            container.previousElementSibling.remove();
+            if (container) {
+                const cpts = JSON.parse(field.dataset.cpts);
+                const inputName = field.name;
+                const inputValue = field.value;
+                // await this.tailwind_install();
+                container.innerHTML = '';
+                container.setAttribute('colspan', 2);
+                const root = createRoot(container);root.render(
+                    <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
+                        <PostTypes name={inputName} value={inputValue} cpts={cpts} />
+                    </Suspense>
+                );
+            }
         });
     }
 
@@ -131,6 +219,16 @@ class SiteCore {
             const root = createRoot(container);root.render(
                 <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
                     <ProductMetaBox product_id={container.dataset?.product_id} />
+                </Suspense>
+            );
+        });
+    }
+
+    sc_store_front() {
+        document.querySelectorAll('.sc_store-front').forEach(container => {
+            const root = createRoot(container);root.render(
+                <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
+                    <StoreFront />
                 </Suspense>
             );
         });

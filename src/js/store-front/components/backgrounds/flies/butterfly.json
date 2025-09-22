@@ -1,0 +1,146 @@
+{
+  "name": "swallowtailButterfly",
+  "dimensions": { "width": 80, "height": 80 },
+  "parts": [
+    {
+      "name": "body",
+      "type": "ellipse",
+      "props": { "cx": 40, "cy": 50, "rx": 8, "ry": 20, "fill": "#4b3b2b" },
+      "motions": {
+        "sway": { "rotation": [-5, 5], "duration": 3, "repeat": -1, "yoyo": true, "ease": "sine.inOut" }
+      }
+    },
+    {
+      "name": "leftForewing",
+      "type": "path",
+      "props": {
+        "d": "M40 50 Q10 20 30 10 Q50 20 40 50 Z",
+        "fill": "#f4d35e",
+        "stroke": "#222",
+        "strokeWidth": 1.5,
+        "opacity": 0.95
+      },
+      "motions": {
+        "flap": {
+          "rotation": [0, 30],
+          "origin": "40 50",
+          "duration": 0.4,
+          "repeat": -1,
+          "yoyo": true,
+          "ease": "sine.inOut"
+        }
+      }
+    },
+    {
+      "name": "rightForewing",
+      "type": "path",
+      "props": {
+        "d": "M40 50 Q70 20 50 10 Q30 20 40 50 Z",
+        "fill": "#f4d35e",
+        "stroke": "#222",
+        "strokeWidth": 1.5,
+        "opacity": 0.95
+      },
+      "motions": {
+        "flap": {
+          "rotation": [0, -30],
+          "origin": "40 50",
+          "duration": 0.4,
+          "repeat": -1,
+          "yoyo": true,
+          "ease": "sine.inOut"
+        }
+      }
+    },
+    {
+      "name": "leftHindwing",
+      "type": "path",
+      "props": {
+        "d": "M40 60 Q5 70 20 80 Q40 75 40 60 Z",
+        "fill": "#1b3a4b",
+        "stroke": "#222",
+        "strokeWidth": 1.2,
+        "opacity": 0.9
+      },
+      "motions": {
+        "flap": {
+          "rotation": [0, 20],
+          "origin": "40 60",
+          "duration": 0.5,
+          "repeat": -1,
+          "yoyo": true,
+          "ease": "sine.inOut"
+        }
+      }
+    },
+    {
+      "name": "rightHindwing",
+      "type": "path",
+      "props": {
+        "d": "M40 60 Q75 70 60 80 Q40 75 40 60 Z",
+        "fill": "#1b3a4b",
+        "stroke": "#222",
+        "strokeWidth": 1.2,
+        "opacity": 0.9
+      },
+      "motions": {
+        "flap": {
+          "rotation": [0, -20],
+          "origin": "40 60",
+          "duration": 0.5,
+          "repeat": -1,
+          "yoyo": true,
+          "ease": "sine.inOut"
+        }
+      }
+    },
+    {
+      "name": "head",
+      "type": "circle",
+      "props": { "cx": 40, "cy": 35, "r": 6, "fill": "#3a2f1b" },
+      "motions": {}
+    },
+    {
+      "name": "eyeLeft",
+      "type": "circle",
+      "props": { "cx": 35, "cy": 33, "r": 2, "fill": "#000" },
+      "motions": {}
+    },
+    {
+      "name": "eyeRight",
+      "type": "circle",
+      "props": { "cx": 45, "cy": 33, "r": 2, "fill": "#000" },
+      "motions": {}
+    },
+    {
+      "name": "antennaLeft",
+      "type": "path",
+      "props": {
+        "d": "M38 30 Q35 20 30 25",
+        "stroke": "#3a2f1b",
+        "strokeWidth": 1.5,
+        "fill": "none"
+      },
+      "motions": {}
+    },
+    {
+      "name": "antennaRight",
+      "type": "path",
+      "props": {
+        "d": "M42 30 Q45 20 50 25",
+        "stroke": "#3a2f1b",
+        "strokeWidth": 1.5,
+        "fill": "none"
+      },
+      "motions": {}
+    }
+  ],
+  "flight": {
+    "defaultPath": [
+      { "x": 0, "y": 100, "z": 0, "orientation": "side" },
+      { "x": 300, "y": 50, "z": 0.3, "orientation": "top" },
+      { "x": 600, "y": 100, "z": 0, "orientation": "side" }
+    ],
+    "speed": 6
+  }
+}

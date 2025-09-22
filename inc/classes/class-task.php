@@ -159,6 +159,7 @@ class Task {
     }
 
     public function allow_remote_request() {
+        return;
 		add_action('rest_api_init', function () {
 			remove_filter('rest_pre_serve_request', 'rest_send_cors_headers');
 		
@@ -500,6 +501,7 @@ class Task {
     }
     
     protected function setup_job_seeking_hooks() {
+        return;
         add_action('post_inserted',function($a,$b,$c,$d){if(!$c){do_action('sitecore/create_task','post_seo',['post_id'=>$a,'type'=>$b->post_type],sprintf('Review the SEO for the new %s titled "%s". Analyze the title, meta description, URL slug, headings (H1-H6), image alt text, and internal/external linking. Ensure they are optimized for relevant keywords, readability, and align with SEO best practices to improve search engine visibility and organic traffic potential for this content type.',$b->post_type,$b->post_title));}},10,4);
         add_action('wp_insert_post', function($a,$b,$c){if(!$c){do_action('sitecore/create_task','seo_improvements',['post_id'=>$a],sprintf('Analyze the newly created post titled "%s" for SEO. Content, etc., will be fetched via API. Review title, metadata (date, cats, tags). Suggest title improvements, relevant keywords, categories, tags.',esc_html($b->post_title)));}},10,3);
         add_action('add_attachment',function($a){$b=get_post_mime_type($a);$c=basename(get_attached_file($a));$d=wp_get_attachment_metadata($a);do_action('sitecore/create_task','media_seo',['post_id'=>$a,'mime'=>$b,'metadata'=>$d,'file'=>$c],sprintf('Review the SEO details for the newly uploaded media file "%s" (MIME type: %s). Ensure a descriptive title, relevant caption, appropriate alt text, and a comprehensive description are set. Optimize these elements with relevant keywords to enhance search engine indexing and accessibility. Consider the visual content and its context within the site.',$c,$b));},10,1);

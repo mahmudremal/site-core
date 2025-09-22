@@ -85,10 +85,10 @@ class Template {
     }
 
     public function wp_enqueue_scripts() {
-        wp_enqueue_script('tailwind-cdn', 'https://cdn.tailwindcss.com/', array(), null, true);
-        $tailwind_config = ['prefix' => 'xpo_'];
-        $inline_script = 'window.tailwind = window.tailwind || {}; window.tailwind.config = ' . wp_json_encode( $tailwind_config ) . ';';
-        wp_add_inline_script( 'tailwind-cdn', $inline_script );
+        // wp_enqueue_script('tailwind-cdn', 'https://cdn.tailwindcss.com/', array(), null, true);
+        // $tailwind_config = ['prefix' => 'xpo_'];
+        // $inline_script = 'window.tailwind = window.tailwind || {}; window.tailwind.config = ' . wp_json_encode( $tailwind_config ) . ';';
+        // wp_add_inline_script( 'tailwind-cdn', $inline_script );
     }
     
     function theme_header_menu_hook() {

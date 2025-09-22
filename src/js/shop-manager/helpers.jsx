@@ -1,0 +1,2 @@
+export const trim_phone_number = (text) => text.replaceAll(' ', '').replaceAll('(', '').replaceAll(')', '').replaceAll('-', '').replaceAll('+', '');
+export const wa_phone_number = (text) => `https://wa.me/${trim_phone_number(text)}`

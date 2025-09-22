@@ -11,13 +11,15 @@
     "default_icon": "dist/icons/brand/favicon-32x32.png"
   },
   "permissions": [
+    "tabs",
     "storage",
-    "notifications",
-    "webRequest",
-    "webRequestBlocking",
-    "<all_urls>",
+    "debugger",
     "activeTab",
-    "scripting"
+    "scripting",
+    "webRequest",
+    "<all_urls>",
+    "notifications",
+    "webRequestBlocking"
   ],
   "host_permissions": [
     "*://*/*"
@@ -25,7 +27,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["bot/socket.io.min.js", "dist/js/schemaeditor.js"],
+      "js": ["dist/js/schemaeditor.js"],
       "css": ["styling.css"]
     }
   ],
@@ -33,10 +35,6 @@
     "32": "dist/icons/brand/favicon-32x32.png",
     "192": "dist/icons/brand/android-chrome-192x192.png",
     "512": "dist/icons/brand/android-chrome-512x512.png"
-  },
-  "notification": {
-    "default_title": "New Form Submission",
-    "default_icon": "dist/icons/brand/favicon-32x32.png"
   },
   "web_accessible_resources": [
     {

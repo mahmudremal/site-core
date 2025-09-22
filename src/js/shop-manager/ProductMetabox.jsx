@@ -2,15 +2,17 @@
  * This component is made for the product edit screen metabox. It is similar to the WooCommerce Product data metabox but with some differences.
  * All details are explained in the documentation ./GEMINI.md
  */
-import { Trash2, Settings, Spline, Warehouse, Truck, Globe, Link, Cog, GripVertical, ChevronDown, ImagePlus, X, Save } from "lucide-react";
+import { Trash2, Settings, Spline, Warehouse, Truck, Globe, Link, Cog, GripVertical, ChevronDown, ImagePlus, X, Save, Images, ListChecks, Split } from "lucide-react";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { __, Popup } from "@js/utils";
-import { rest_url } from "@functions";
+import { rest_url, notify } from "@functions";
 import { sprintf } from "sprintf-js";
 import axios from "axios";
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { id } from "date-fns/locale";
+import { NodeBuilderFlags } from "typescript";
 
 // Helper component for form fields
 const FormField = ({ label, help, children }) => (
@@ -69,9 +71,9 @@ const Select = ({ children, ...props }) => <select className="xpo_w-full xpo_p-2
 const Button = ({ children, onClick, variant = 'primary', disabled = false }) => {
     const baseClasses = "xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_flex xpo_items-center xpo_gap-2 xpo_transition-colors";
     const variants = {
-        primary: "xpo_bg-blue-600 xpo_text-white hover:xpo_bg-blue-700 disabled:xpo_bg-blue-400",
+        primary: "xpo_bg-blue-600 xpo_text-scwhite hover:xpo_bg-blue-700 disabled:xpo_bg-blue-400",
         secondary: "xpo_bg-gray-200 xpo_text-gray-800 hover:xpo_bg-gray-300 disabled:xpo_bg-gray-100",
-        danger: "xpo_bg-red-600 xpo_text-white hover:xpo_bg-red-700 disabled:xpo_bg-red-400",
+        danger: "xpo_bg-red-600 xpo_text-scwhite hover:xpo_bg-red-700 disabled:xpo_bg-red-400",
     };
     return (
         <button 
@@ -102,6 +104,14 @@ const GeneralTab = ({ meta, onMetaChange }) => (
         <FormField label={__('Sale Price', 'site-core')}>
             <TextInput type="number" value={meta.sale_price} onChange={e => onMetaChange('sale_price', e.target.value)} />
         </FormField>
+        <FormField label={__('Currency', 'site-core')}>
+            <Select defaultValue={meta.currency} onChange={e => onMetaChange('currency', e.target.value)}>
+                <option value="bdt">{__('BDT - Bangladeshi Taka', 'site-core')}</option>
+                <option value="inr">{__('INR - Indian Rupee', 'site-core')}</option>
+                <option value="usd">{__('USD - US Dollar', 'site-core')}</option>
+                <option value="eur">{__('EUR - Euro', 'site-core')}</option>
+            </Select>
+        </FormField>
         <FormField label={__('Description', 'site-core')}>
             <Textarea value={meta.description} onChange={data => onMetaChange('description', data)} />
         </FormField>
@@ -118,51 +128,393 @@ const GeneralTab = ({ meta, onMetaChange }) => (
     </div>
 );
 
-const ConfirmDelete = ({ id, onConfirm, onCancel }) => (
-    <div className="xpo_p-6">
-        <h3 className="xpo_text-lg xpo_font-bold">{__('Confirm Deletion', 'site-core')}</h3>
-        <p className="xpo_my-4">{__('Are you sure you want to delete this variation? This action cannot be undone.', 'site-core')}</p>
-        <div className="xpo_flex xpo_justify-end xpo_gap-4 xpo_mt-6">
-            <Button variant="secondary" onClick={onCancel}>{__('Cancel', 'site-core')}</Button>
-            <Button variant="danger" onClick={onConfirm}>{__('Confirm', 'site-core')}</Button>
+const ConfirmDelete = ({ id, message = null, onConfirm, onCancel }) => {
+    if (!message) message = __('Are you sure you want to delete this item? This action cannot be undone.', 'site-core');
+    return (
+        <div className="xpo_p-6">
+            <h3 className="xpo_text-lg xpo_font-bold">{__('Confirm Deletion', 'site-core')}</h3>
+            <p className="xpo_my-4">{message}</p>
+            <div className="xpo_flex xpo_justify-end xpo_gap-4 xpo_mt-6">
+                <Button variant="secondary" onClick={onCancel}>{__('Cancel', 'site-core')}</Button>
+                <Button variant="danger" onClick={onConfirm}>{__('Confirm', 'site-core')}</Button>
+            </div>
         </div>
-    </div>
-);
+    )
+};
 
-const VariationsTab = ({ meta, onMetaChange }) => {
+const AttributesTab = ({ attributes, setAttributes, product_id }) => {
+    const [popup, setPopup] = useState(null);
+    const [openAttribute, setOpenAttribute] = useState(null);
+    
+    useEffect(() => {
+        if (attributes?.length) return;
+        const delay = setTimeout(() => {
+            axios.get(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/attributes`))
+            .then(res => res.data)
+            .then(res => setAttributes(res));
+        }, 1500);
+
+        return () => clearTimeout(delay);
+    }, []);
+
+    const addAttribute = useCallback(async () => {
+        const label = await prompt(__('Enter Attribute Name', 'site-core'), `Attribute #${Date.now()}`);
+        if (!label) return;
+        const newAttribute = {
+            type: 'select',
+            label: label,
+        };
+        axios.post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/attributes/0`), {attribute_data: newAttribute})
+        .then(res => res.data)
+        .then(data => data?.id && setAttributes([...attributes, {id: data.id, ...newAttribute}]))
+        .catch(err => notify.error(err));
+    }, [attributes, setAttributes]);
+
+    const removeAttribute = useCallback((variation_id) => {
+        const updatedAttributes = attributes.filter(v => v.id !== variation_id);
+        axios.delete(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/attributes/${variation_id}`))
+        .then(() => {setPopup(null);setAttributes(updatedAttributes);})
+        .catch(err => notify.error(err));
+    }, [attributes, setAttributes]);
+
+    const handleAttributeChange = useCallback((id, key, value) => {
+        const updated = attributes.map(v => v.id === id ? { ...v, [key]: value } : v);
+        setAttributes(updated);
+    }, [attributes, setAttributes]);
+
+    const SingleAttribute = ({ v }) => {
+        const [attribute, setAttribute] = useState({...v});
+        const [firstCall, setFirstCall] = useState(null);
+
+        useEffect(() => {
+            console.log('Changes made')
+            if (!firstCall) return setFirstCall(true);
+            const delay = setTimeout(() => {
+                const { id: attribute_id, items = [], ...attribute_data } = attribute;
+                axios.post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/attributes/${attribute_id}`), {attribute_data})
+                .catch(err => notify.error(err));
+            }, 1500);
+            return () => clearTimeout(delay);
+        }, [attribute]);
+
+
+        const addItem = useCallback(async () => {
+            const label = await prompt(__('Enter Item Name', 'site-core'), `Item #${Date.now()}`);
+            if (!label) return;
+            const newItem = {
+                name: label,
+                slug: label.toLowerCase().replaceAll(' ', '-'),
+            };
+            const { id: attribute_id } = attribute;
+            axios.post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/attributes/${attribute_id}/items/0`), {item_data: newItem})
+            .then(res => res.data)
+            .then(data => data?.id && setItems(prev => [...prev, {...newItem, attribute_id, id: data.id}]))
+            .catch(err => notify.error(err));
+        }, [attribute, setAttribute]);
+        
+        const AttributeItem = ({ item: data }) => {
+            const [item, setItem] = useState({...data})
+            const [firstCall, setFirstCall] = useState(null);
+            
+            useEffect(() => {
+                if (!firstCall) return setFirstCall(true);
+                const delay = setTimeout(() => {
+                    const { id: attribute_id } = attribute;
+                    const { id: item_id, ...item_data } = item;
+                    axios.post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/attributes/${attribute_id}/items/${item_id}`), {item_data})
+                    .catch(err => notify.error(err));
+                }, 1500);
+                
+                return () => clearTimeout(delay);
+            }, [item]);
+            
+            return (
+                <div>
+                    <input
+                        type="text"
+                        defaultValue={item.name}
+                        onChange={e => setItem(prev => ({...prev, name: e.target.value}))}
+                    />
+                </div>
+            )
+        }
+        
+        return (
+            <div className="xpo_p-4 xpo_border-t xpo_border-gray-200 xpo_bg-scwhite xpo_flex xpo_flex-col xpo_gap-4">
+                <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4">
+                    <TextInput 
+                        value={attribute.label || ''} 
+                        placeholder={__('Attribute Label', 'site-core')} 
+                        onChange={e => setAttribute(prev => ({...prev, label: e.target.value}))} 
+                    />
+                    <Select 
+                        value={attribute.type || ''} 
+                        placeholder={__('Type', 'site-core')} 
+                        onChange={e => setAttribute(prev => ({...prev, type: e.target.value}))} 
+                    >
+                        <option value="select">{__('Select', 'site-core')}</option>
+                        <option value="color">{__('Color', 'site-core')}</option>
+                        <option value="checkbox">{__('Checkbox', 'site-core')}</option>
+                    </Select>
+                </div>
+                <div className="xpo_w-full xpo_min-h-24">
+                    <h2>{__('Attribute Items', 'site-core')}</h2>
+                    <div className="xpo_flex xpo_flex-col xpo_gap-2">
+                        {attribute.items.map((item, itemI) => <AttributeItem key={itemI} item={item} />)}
+                    </div>
+                    <Button type="button" onClick={addItem}>{__('Add new', 'site-core')}</Button>
+                </div>
+            </div>
+        )
+    }
+    
+    return (
+        <div className="xpo_space-y-4">
+            <div className="xpo_space-y-2">
+                {attributes.map((v, index) => (
+                    <div key={v.id} className="xpo_bg-gray-50 xpo_border xpo_border-gray-200 xpo_rounded">
+                        <div className="xpo_flex xpo_items-center xpo_p-3">
+                            <GripVertical className="xpo_cursor-move xpo_text-gray-400" size={20} />
+                            <span className="xpo_font-semibold xpo_ml-2">{v.label || `Attribute #${index + 1}`}</span>
+                            <div className="xpo_ml-auto xpo_flex xpo_items-center xpo_gap-2">
+                                <button onClick={() => setOpenAttribute(prev => prev === v.id ? null : v.id)} className="xpo_p-1 xpo_transition-transform">
+                                    <ChevronDown size={20} className={`xpo_transition-transform ${openAttribute === v.id ? 'xpo_rotate-180' : ''}`} />
+                                </button>
+                                <button onClick={() => setPopup(<ConfirmDelete message={__('Are you sure you want to delete this attribute? This action cannot be fatal. Cause this will remove all variations regarding this attribute from all products on your store.', 'site-core')} id={v.id} onConfirm={() => removeAttribute(v.id)} onCancel={() => setPopup(null)} />)} className="xpo_p-1 xpo_text-red-500 hover:xpo_text-red-700 xpo_transition-colors">
+                                    <Trash2 size={16} />
+                                </button>
+                            </div>
+                        </div>
+                        {openAttribute === v.id && (<SingleAttribute v={v} />)}
+                    </div>
+                ))}
+            </div>
+            <div className="xpo_mt-4">
+                <Button onClick={addAttribute}>{__('Add Attribute', 'site-core')}</Button>
+            </div>
+            {popup && <Popup onClose={() => setPopup(null)}>{popup}</Popup>}
+        </div>
+    );
+}
+
+const VariationsTab = ({ variations = [], onMetaChange, attributes = [], product_id }) => {
     const [openVariation, setOpenVariation] = useState(null);
     const [popup, setPopup] = useState(null);
 
-    const variations = meta.variations || [];
+    useEffect(() => {
+        const delay = setTimeout(() => {
+            axios.get(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations`))
+            .then(res => res.data)
+            // .then(res => setVariations(res));
+        }, 1500);
 
-    const addVariation = useCallback(() => {
+        return () => clearTimeout(delay);
+    }, [variations]);
+
+    const addVariation = useCallback((attr) => {
         const newVariation = {
-            id: `new_${Date.now()}`,
+            // id: 0,
             sku: '',
-            title: '',
-            images: [],
-            isNew: true,
+            price: '',
+            product_id,
+            gallery: [],
             sale_price: '',
             description: '',
-            priceOverride: '',
-            name: `Variation #${variations.length + 1}`,
+            specifications: [],
+            title: `Variation #${variations.length + 1}`,
         };
-        onMetaChange('variations', [...variations, newVariation]);
+        axios.post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations/0`), {variation_data: newVariation, attributes: attr})
+        .then(res => res.data)
+        .then(data => data?.id && onMetaChange([...variations, {id: data.id, ...newVariation}]))
+        .catch(err => notify.error(err));
     }, [variations, onMetaChange]);
 
-    const removeVariation = useCallback((id) => {
-        const updatedVariations = variations.filter(v => v.id !== id);
-        onMetaChange('variations', updatedVariations);
-        setPopup(null);
+    const removeVariation = useCallback((variation_id) => {
+        const updatedVariations = variations.filter(v => v.id !== variation_id);
+        axios.delete(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations/${variation_id}`))
+        .then(() => {setPopup(null);onMetaChange(updatedVariations);})
+        .catch(err => notify.error(err));
     }, [variations, onMetaChange]);
 
     const handleVariationChange = useCallback((id, key, value) => {
         const updated = variations.map(v => v.id === id ? { ...v, [key]: value } : v);
-        onMetaChange('variations', updated);
+        onMetaChange(updated);
     }, [variations, onMetaChange]);
 
+    const SingleVariation = ({ v }) => {
+        const [variation, setVariation] = useState({...v});
+        const [firstCall, setFirstCall] = useState(null);
+
+        useEffect(() => {
+            console.log('Changes made')
+            if (!firstCall) return setFirstCall(true);
+            const delay = setTimeout(() => {
+                const { id: variation_id, ...variation_data } = variation;
+                axios.post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations/${variation_id}`), {variation_data})
+                .catch(err => notify.error(err));
+            }, 1500);
+            return () => clearTimeout(delay);
+        }, [variation]);
+
+        const SpecificationsPopup = ({ items }) => {
+            const [specifications, setSpecifications] = useState(items);
+
+            useEffect(() => {
+                const delay = setTimeout(() => {
+                    setVariation(prev => ({...prev, specifications}));
+                }, 1500);
+                
+                return () => clearTimeout(delay);
+            }, [specifications]);
+            
+            return (
+                <div>
+                    <div className="xpo_flex xpo_flex-col xpo_gap-3">
+                        {specifications.map((row, rowIndex) => (
+                            <div key={rowIndex} className="xpo_p-4 xpo_flex xpo_gap-3">
+                                <TextInput
+                                    value={row.label || ''}
+                                    placeholder={__('Label', 'site-core')}
+                                    onChange={e => setSpecifications(prev => prev.map((spec, specIndex) => specIndex == rowIndex ? {...spec, label: e.target.value} : spec))}
+                                />
+                                <TextInput
+                                    value={row.value || ''}
+                                    placeholder={__('Value', 'site-core')}
+                                    onChange={e => setSpecifications(prev => prev.map((spec, specIndex) => specIndex == rowIndex ? {...spec, value: e.target.value} : spec))}
+                                />
+                            </div>
+                        ))}
+                        <div>
+                            <button
+                                type="button"
+                                onClick={() => setSpecifications(prev => [...prev, {label: '', value: ''}])}
+                                className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_flex xpo_items-center xpo_gap-2 xpo_transition-colors xpo_bg-gray-600 xpo_text-scwhite hover:xpo_bg-gray-700 disabled:xpo_bg-gray-400 xpo_cursor-pointer"
+                            >{__('Add Item', 'site-core')}</button>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+
+        const GalleryPopup = ({ items }) => {
+            const [gallery, setGallery] = useState(items);
+            const [isFirstDrop, setIsFirstDrop] = useState(null);
+
+            useEffect(() => {
+                if (!isFirstDrop) return setIsFirstDrop(true);
+                const delay = setTimeout(() => {
+                    console.log('Gallery changed')
+                    setVariation(prev => ({...prev, gallery: gallery}));
+                }, 1500);
+                
+                return () => clearTimeout(delay);
+            }, [gallery]);
+            
+            return (
+                <div>
+                    <div className="xpo_flex xpo_flex-col xpo_gap-3">
+                        {gallery.map((row, rowIndex) => (
+                            <div key={rowIndex} className="xpo_p-4 xpo_flex xpo_gap-3">
+                                <TextInput
+                                    value={row.url || ''}
+                                    placeholder={__('Full Image URL', 'site-core')}
+                                    onChange={e => setGallery(prev => prev.map((i, iIndex) => iIndex == rowIndex ? {...i, url: e.target.value} : i))}
+                                />
+                                <TextInput
+                                    value={row.thumbnail || ''}
+                                    placeholder={__('Thumbnail URL', 'site-core')}
+                                    onChange={e => setGallery(prev => prev.map((i, iIndex) => iIndex == rowIndex ? {...i, thumbnail: e.target.value} : i))}
+                                />
+                            </div>
+                        ))}
+                        <div>
+                            <button
+                                type="button"
+                                onClick={() => setGallery(prev => [...prev, {url: '', thumbnail: ''}])}
+                                className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_flex xpo_items-center xpo_gap-2 xpo_transition-colors xpo_bg-gray-600 xpo_text-scwhite hover:xpo_bg-gray-700 disabled:xpo_bg-gray-400 xpo_cursor-pointer"
+                            >{__('Add Item', 'site-core')}</button>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+        
+        return (
+            <div className="xpo_p-4 xpo_border-t xpo_border-gray-200 xpo_bg-scwhite">
+                <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4">
+                    <TextInput 
+                        value={variation.title || ''} 
+                        placeholder={__('Variation Name', 'site-core')} 
+                        onChange={e => setVariation(prev => ({...prev, title: e.target.value}))} 
+                    />
+                    <TextInput 
+                        value={variation.sku || ''} 
+                        placeholder={__('SKU', 'site-core')} 
+                        onChange={e => setVariation(prev => ({...prev, sku: e.target.value}))} 
+                    />
+                </div>
+                <div className="xpo_mt-4">
+                    <Textarea 
+                        value={variation.description || ''} 
+                        onChange={data => setVariation(prev => ({...prev, description: data}))} 
+                    />
+                </div>
+                <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4 xpo_mt-4">
+                    <TextInput 
+                        type="number" 
+                        value={variation.price || ''} 
+                        placeholder={__('Regular Price', 'site-core')} 
+                        onChange={e => setVariation(prev => ({...prev, price: e.target.value}))} 
+                    />
+                    <TextInput 
+                        type="number" 
+                        value={variation.sale_price || ''} 
+                        placeholder={__('Sale price', 'site-core')} 
+                        onChange={e => setVariation(prev => ({...prev, sale_price: e.target.value}))} 
+                    />
+                </div>
+                <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4 xpo_mt-4">
+                    <button
+                        type="button"
+                        onClick={() => setPopup(<GalleryPopup items={variation.gallery} />)}
+                        className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_flex xpo_items-center xpo_gap-2 xpo_transition-colors xpo_bg-gray-600 xpo_text-scwhite hover:xpo_bg-gray-700 disabled:xpo_bg-gray-400 xpo_cursor-pointer">{__('Gallery', 'site-core')}</button>
+                    <button
+                        type="button"
+                        onClick={() => setPopup(<SpecificationsPopup items={variation.specifications} />)}
+                        className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_flex xpo_items-center xpo_gap-2 xpo_transition-colors xpo_bg-gray-600 xpo_text-scwhite hover:xpo_bg-gray-700 disabled:xpo_bg-gray-400 xpo_cursor-pointer">{__('Specifications', 'site-core')}</button>
+                </div>
+            </div>
+        )
+    }
+
+    const SelectAttributes = () => {
+        const [selected, setSelected] = useState([]);
+
+        return (
+            <div className="xpo_flex xpo_flex-col xpo_gap-3">
+                <h2>{__('Select an attribute', 'site-core')}</h2>
+                <div>
+                    Selected: {selected.map((s, sI) => <span key={sI}>{s.label}</span>)}
+                </div>
+                <select multiple={true} onSelect={e => setSelected(prev => [...prev, attributes.find(att => att.label == e.target.value)])}>
+                    {attributes.map((att, attI) => <option key={attI} value={att.label}>{att.label}</option>)}
+                </select>
+                <Button
+                    type="button"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        addVariation(selected);
+                        setPopup(null);
+                    }}
+                >
+                    {__('Create Variation', 'site-core')}
+                </Button>
+            </div>
+        )
+    }
+    
     return (
-        <div>
+        <div className="xpo_space-y-4">
             <div className="xpo_space-y-2">
                 {variations.map((v, index) => (
                     <div key={v.id} className="xpo_bg-gray-50 xpo_border xpo_border-gray-200 xpo_rounded">
@@ -178,47 +530,17 @@ const VariationsTab = ({ meta, onMetaChange }) => {
                                 </button>
                             </div>
                         </div>
-                        {openVariation === v.id && (
-                            <div className="xpo_p-4 xpo_border-t xpo_border-gray-200 xpo_bg-white">
-                                <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4">
-                                    <TextInput 
-                                        placeholder={__('Variation Name', 'site-core')} 
-                                        value={v.title || ''} 
-                                        onChange={e => handleVariationChange(v.id, 'title', e.target.value)} 
-                                    />
-                                    <TextInput 
-                                        placeholder={__('SKU', 'site-core')} 
-                                        value={v.sku || ''} 
-                                        onChange={e => handleVariationChange(v.id, 'sku', e.target.value)} 
-                                    />
-                                </div>
-                                <div className="xpo_mt-4">
-                                    <Textarea 
-                                        value={v.description || ''} 
-                                        onChange={data => handleVariationChange(v.id, 'description', data)} 
-                                    />
-                                </div>
-                                <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4 xpo_mt-4">
-                                    <TextInput 
-                                        type="number" 
-                                        placeholder={__('Price Override', 'site-core')} 
-                                        value={v.priceOverride || ''} 
-                                        onChange={e => handleVariationChange(v.id, 'priceOverride', e.target.value)} 
-                                    />
-                                    <TextInput 
-                                        type="number" 
-                                        placeholder={__('Sale price', 'site-core')} 
-                                        value={v.sale_price || ''} 
-                                        onChange={e => handleVariationChange(v.id, 'sale_price', e.target.value)} 
-                                    />
-                                </div>
-                            </div>
-                        )}
+                        {openVariation === v.id && (<SingleVariation v={v} />)}
                     </div>
                 ))}
             </div>
-            <div className="xpo_mt-4">
-                <Button onClick={addVariation}>{__('Add Variation', 'site-core')}</Button>
+            <div className="xpo_mt-4 xpo_flex xpo_flex-wrap xpo_gap-4 xpo_items-center">
+                <Button onClick={(e) => {
+                    e.preventDefault();
+                    const attributesList = attributes.map(a => ({...a, items: a.items.split(',').map(i => i.trim()).filter(i => i)}));
+                    console.log(items)
+                }}>{__('Generate Variations', 'site-core')}</Button>
+                <Button onClick={() => setPopup(<SelectAttributes />)}>{__('Add Variation', 'site-core')}</Button>
             </div>
             {popup && <Popup onClose={() => setPopup(null)}>{popup}</Popup>}
         </div>
@@ -285,6 +607,173 @@ const SeoTab = ({ meta, onMetaChange }) => {
             </FormField>
         </div>
     );
+};
+
+const Specifications = ({ meta, onMetaChange }) => {
+  const [specifications, setSpecifications] = useState(meta?.specifications ?? []);
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      onMetaChange('specifications', specifications);
+    }, 1000);
+    return () => clearTimeout(delay);
+  }, [specifications]);
+
+  const handleSpecChange = (index, field, value) => {
+    setSpecifications((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [field]: value };
+      return updated;
+    });
+  };
+
+  const addSpecification = () => {
+    setSpecifications((prev) => [...prev, { label: '', value: '' }]);
+  };
+
+  const removeSpecification = (index) => {
+    setSpecifications((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div className="xpo_divide-y xpo_divide-gray-200">
+      <FormField label={__('Specifications', 'site-core')} help={__('Add product specifications')}>
+        {specifications.map((spec, index) => (
+          <div key={index} className="xpo_flex xpo_space-x-2 xpo_mb-2">
+            <input
+              type="text"
+              className="xpo_flex-1 xpo_p-2 xpo_border xpo_border-gray-300 xpo_rounded-md"
+              placeholder={__('Label', 'site-core')}
+              value={spec.label}
+              onChange={e => handleSpecChange(index, 'label', e.target.value)}
+            />
+            <input
+              type="text"
+              className="xpo_flex-1 xpo_p-2 xpo_border xpo_border-gray-300 xpo_rounded-md"
+              placeholder={__('Value', 'site-core')}
+              value={spec.value}
+              onChange={e => handleSpecChange(index, 'value', e.target.value)}
+            />
+            <button
+              type="button"
+              className="xpo_text-red-600 xpo_hover:text-red-800"
+              onClick={() => removeSpecification(index)}
+              aria-label={__('Remove specification', 'site-core')}
+            >
+              &times;
+            </button>
+          </div>
+        ))}
+
+        <button
+          type="button"
+          className="xpo_mt-2 xpo_px-4 xpo_py-2 xpo_bg-blue-600 xpo_text-scwhite xpo_rounded-md xpo_hover:bg-blue-700"
+          onClick={addSpecification}
+        >
+          {__('Add Specification', 'site-core')}
+        </button>
+      </FormField>
+    </div>
+  );
+};
+
+const ProductGallery = ({ meta, onMetaChange }) => {
+  const [gallery, setGallery] = useState(meta?.gallery ?? []);
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      onMetaChange('gallery', gallery);
+    }, 1000);
+    return () => clearTimeout(delay);
+  }, [gallery]);
+
+  const openMediaLibrary = (index) => {
+    const frame = wp.media({
+      title: __('Select or Upload Image', 'site-core'),
+      button: {
+        text: __('Use this image', 'site-core'),
+      },
+      multiple: false,
+    });
+
+    frame.on('select', () => {
+      const attachment = frame.state().get('selection').first().toJSON();
+      setGallery((prev) => {
+        const updated = [...prev];
+        updated[index] = { id: attachment.id, url: attachment.url };
+        return updated;
+      });
+    });
+
+    frame.open();
+  };
+
+  const handleUrlChange = (index, url) => {
+    setGallery((prev) => {
+      const updated = [...prev];
+      updated[index] = { id: null, url };
+      return updated;
+    });
+  };
+
+  const addGalleryItem = () => {
+    setGallery((prev) => [...prev, { id: null, url: '' }]);
+  };
+
+  const removeGalleryItem = (index) => {
+    setGallery((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div className="xpo_divide-y xpo_divide-gray-200">
+      <FormField label={__('Product Gallery', 'site-core')} help={__('Add product gallery images')}>
+        {gallery.map((item, index) => (
+          <div key={index} className="xpo_flex xpo_items-center xpo_space-x-2 xpo_mb-4">
+            <div className="xpo_w-24 xpo_h-24 xpo_border xpo_border-gray-300 xpo_rounded-md xpo_flex xpo_items-center xpo_justify-center xpo_overflow-hidden">
+              {item.url ? (
+                <img src={item.url} alt="" className="xpo_object-cover xpo_w-full xpo_h-full" />
+              ) : (
+                <span className="xpo_text-gray-400">{__('No image', 'site-core')}</span>
+              )}
+            </div>
+            <div className="xpo_flex-1">
+              <input
+                type="text"
+                className="xpo_w-full xpo_p-2 xpo_border xpo_border-gray-300 xpo_rounded-md"
+                placeholder={__('Image URL', 'site-core')}
+                value={item.url}
+                onChange={(e) => handleUrlChange(index, e.target.value)}
+              />
+            </div>
+            <button
+              type="button"
+              className="xpo_bg-gray-200 xpo_px-3 xpo_py-2 xpo_rounded-md xpo_hover:bg-gray-300"
+              onClick={() => openMediaLibrary(index)}
+              aria-label={__('Select from media library', 'site-core')}
+            >
+              {__('Select')}
+            </button>
+            <button
+              type="button"
+              className="xpo_text-red-600 xpo_hover:text-red-800 xpo_text-2xl xpo_font-bold"
+              onClick={() => removeGalleryItem(index)}
+              aria-label={__('Remove gallery image', 'site-core')}
+            >
+              &times;
+            </button>
+          </div>
+        ))}
+
+        <button
+          type="button"
+          className="xpo_mt-2 xpo_px-4 xpo_py-2 xpo_bg-blue-600 xpo_text-scwhite xpo_rounded-md xpo_hover:bg-blue-700"
+          onClick={addGalleryItem}
+        >
+          {__('Add Gallery Image', 'site-core')}
+        </button>
+      </FormField>
+    </div>
+  );
 };
 
 const ShippingTab = ({ meta, onMetaChange }) => {
@@ -379,7 +868,7 @@ const ShippingTab = ({ meta, onMetaChange }) => {
                         </div>
                     )}
                     {autocomShown && vendors.length > 0 && (
-                        <div className="xpo_absolute xpo_z-10 xpo_w-full xpo_mt-1 xpo_bg-white xpo_border xpo_border-gray-300 xpo_rounded-md xpo_shadow-lg xpo_max-h-60 xpo_overflow-y-auto">
+                        <div className="xpo_absolute xpo_z-10 xpo_w-full xpo_mt-1 xpo_bg-scwhite xpo_border xpo_border-gray-300 xpo_rounded-md xpo_shadow-lg xpo_max-h-60 xpo_overflow-y-auto">
                             {vendors.map(vendor => (
                                 <div 
                                     key={vendor.id}
@@ -450,7 +939,7 @@ const ShippingTab = ({ meta, onMetaChange }) => {
                                         <div className={`xpo_w-4 xpo_h-4 xpo_border-2 xpo_rounded ${
                                             isSelected ? 'xpo_bg-green-500 xpo_border-green-500' : 'xpo_border-gray-300'
                                         }`}>
-                                            {isSelected && <div className="xpo_w-full xpo_h-full xpo_text-white xpo_text-xs xpo_flex xpo_items-center xpo_justify-center">✓</div>}
+                                            {isSelected && <div className="xpo_w-full xpo_h-full xpo_text-scwhite xpo_text-xs xpo_flex xpo_items-center xpo_justify-center">✓</div>}
                                         </div>
                                     </div>
                                 </div>
@@ -470,15 +959,26 @@ const PlaceholderTab = ({ label }) => (
 );
 
 export default function ProductMetaBox({ product_id = null }) {
+
+    window.createScProduct = (productPayload, ajaxUrl = '/wp-admin/admin-ajax.php') => {
+        axios.get(ajaxUrl, {params: {action: 'create_sc_product', payload: productPayload}})
+        .then(res => res.data)
+        .then(res => console.log(res))
+        .catch(err => console.log(err?.message));
+    }
+    
+    
+    const [activeTab, setActiveTab] = useState('general');
+    const [variations, setVariations] = useState([]);
+    const [attributes, setAttributes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [popup, setPopup] = useState(null);
-    const [activeTab, setActiveTab] = useState('general');
     const [meta, setMeta] = useState({
         sku: '',
         price: '',
-        images: [],
-        variations: [],
+        gallery: [],
+        currency: 'bdt',
         sale_price: '',
         description: '',
         // status: 'draft',
@@ -492,6 +992,7 @@ export default function ProductMetaBox({ product_id = null }) {
         og_description: '',
         og_image: '',
         canonical_url: '',
+        specifications: [],
         // Shipping fields
         shipping_vendors: [],
         shipping_warehouses: [],
@@ -503,10 +1004,23 @@ export default function ProductMetaBox({ product_id = null }) {
             return;
         }
         
-        axios.get(rest_url(`/sitecore/v1/ecommerce/product/${product_id}/metabox`))
+        axios.get(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox`))
             .then(res => res.data)
             .then(res => {
-                if (res) setMeta(prevMeta => ({ ...prevMeta, ...res }));
+                if (res) setMeta(prevMeta => ({
+                    ...prevMeta,
+                    // ...Object.entries(res).reduce((carry, [key, vals]) => {
+                    //     carry[key] = vals[0] || vals;
+                    //     return carry;
+                    // }, {})
+                    ...res
+                }));
+                return true;
+            })
+            .then(async () => {
+                await axios.get(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations`))
+                .then(res => res.data)
+                .then(res => setVariations(res));
             })
             .catch(err => console.log(err?.message))
             .finally(() => setLoading(false));
@@ -516,9 +1030,13 @@ export default function ProductMetaBox({ product_id = null }) {
         setMeta(prev => ({ ...prev, [key]: value }));
     }, []);
 
+    const handleVariationsChange = useCallback((list) => {
+        setVariations(list);
+    }, []);
+
     const handleSave = useCallback(() => {
         setSaving(true);
-        axios.post(rest_url(`/sitecore/v1/ecommerce/product/${product_id}/metabox`), { meta })
+        axios.post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox`), { meta })
             .then(res => res.data)
             .then(res => {
                 console.log('Saved!', res);
@@ -528,28 +1046,37 @@ export default function ProductMetaBox({ product_id = null }) {
             .finally(() => setSaving(false));
     }, [meta, product_id]);
 
-    const tabs = useMemo(() => [
+    const tabs = [
         { id: 'general', label: __('General', 'site-core'), icon: <Settings size={18} /> },
-        { id: 'variations', label: __('Variations', 'site-core'), icon: <Spline size={18} /> },
-        // { id: 'stock', label: __('Stock Management', 'site-core'), icon: <Warehouse size={18} /> },
-        { id: 'shipping', label: __('Shipping', 'site-core'), icon: <Truck size={18} /> },
+        { id: 'gallery', label: __('Gallery', 'site-core'), icon: <Images size={18} /> },
         { id: 'seo', label: __('SEO', 'site-core'), icon: <Globe size={18} /> },
+        // { id: 'stock', label: __('Stock Management', 'site-core'), icon: <Warehouse size={18} /> },
+        { id: 'variations', label: __('Variations', 'site-core'), icon: <Spline size={18} />, condition: () => meta.product_type == 'variable' },
+        { id: 'attributes', label: __('Attributes', 'site-core'), icon: <Split size={18} />, condition: () => meta.product_type == 'variable' },
+        { id: 'shipping', label: __('Shipping', 'site-core'), icon: <Truck size={18} /> },
+        { id: 'specifications', label: __('Specifications', 'site-core'), icon: <ListChecks size={18} /> },
         // { id: 'linked', label: __('Linked Products', 'site-core'), icon: <Link size={18} /> },
         // { id: 'advanced', label: __('Advanced', 'site-core'), icon: <Cog size={18} /> },
-    ], []);
+    ];
 
     const renderTabContent = () => {
         switch (activeTab) {
             case 'general': 
                 return <GeneralTab meta={meta} onMetaChange={handleMetaChange} />;
             case 'variations': 
-                return <VariationsTab meta={meta} onMetaChange={handleMetaChange} />;
+                return <VariationsTab product_id={product_id} variations={variations} attributes={attributes} onMetaChange={handleVariationsChange} />;
+            case 'attributes': 
+                return <AttributesTab product_id={product_id} attributes={attributes} setAttributes={setAttributes} />;
             case 'stock': 
                 return <PlaceholderTab label="Stock Management" />;
             case 'shipping': 
                 return <ShippingTab meta={meta} onMetaChange={handleMetaChange} />;
             case 'seo': 
                 return <SeoTab meta={meta} onMetaChange={handleMetaChange} />;
+            case 'specifications': 
+                return <Specifications meta={meta} onMetaChange={handleMetaChange} />;
+            case 'gallery': 
+                return <ProductGallery meta={meta} onMetaChange={handleMetaChange} />;
             case 'linked': 
                 return <PlaceholderTab label="Linked Products" />;
             case 'advanced': 
@@ -578,11 +1105,11 @@ export default function ProductMetaBox({ product_id = null }) {
                 {/* Tabs Navigation */}
                 <div className="xpo_w-full">
                     <ul className="xpo_space-y-1">
-                        {tabs.map(tab => (
+                        {tabs.filter(tab => !tab?.condition || tab.condition()).map(tab => (
                             <li key={tab.id}>
                                 <button
                                     onClick={() => setActiveTab(tab.id)}
-                                    className={`xpo_w-full xpo_flex xpo_items-center xpo_gap-3 xpo_p-3 xpo_rounded-md xpo_text-left xpo_font-medium ${activeTab === tab.id ? 'xpo_bg-white xpo_text-blue-600 xpo_shadow-sm' : 'xpo_text-gray-600 hover:xpo_bg-gray-100'}`}
+                                    className={`xpo_w-full xpo_flex xpo_items-center xpo_gap-3 xpo_p-3 xpo_rounded-md xpo_text-left xpo_font-medium ${activeTab === tab.id ? 'xpo_bg-scwhite xpo_text-blue-600 xpo_shadow-sm' : 'xpo_text-gray-600 hover:xpo_bg-gray-100'}`}
                                 >
                                     {tab.icon}
                                     <span>{tab.label}</span>
@@ -593,7 +1120,7 @@ export default function ProductMetaBox({ product_id = null }) {
                 </div>
 
                 {/* Tab Content */}
-                <div className="xpo_w-full xpo_bg-white xpo_p-6 xpo_rounded-lg xpo_shadow-sm">
+                <div className="xpo_w-full xpo_bg-scwhite xpo_p-6 xpo_rounded-lg xpo_shadow-sm">
                     {renderTabContent()}
                 </div>
             </div>

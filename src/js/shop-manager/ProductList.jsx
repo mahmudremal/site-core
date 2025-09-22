@@ -1,47 +1,17 @@
 import axios from 'axios';
 import { sprintf } from 'sprintf-js';
 import { __, Popup } from '@js/utils';
-import { Link, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { rest_url, notify } from '@functions';
-import { 
-  Eye, 
-  Trash2,
-  ArrowLeft,
-  Package,
-  Building,
-  MapPin,
-  DollarSign,
-  Star,
-  Tag,
-  Box,
-  Calendar,
-  Globe,
-  ShoppingCart,
-  Truck,
-  CheckCircle,
-  XCircle,
-  AlertTriangle,
-  Info,
-  Image as ImageIcon,
-  Weight,
-  Ruler,
-  BarChart3,
-  Plus,
-  Warehouse,
-  MessageSquare,
-  Phone,
-  Boxes,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight
-} from 'lucide-react';
 import { ConfirmDialog } from './VendorList';
+import { rest_url, notify } from '@functions';
+import { Link, useParams } from 'react-router-dom';
+import { Eye, Trash2, ArrowLeft, Package, Building, MapPin, DollarSign, Star, Tag, Box, Calendar, Globe, ShoppingCart, Truck, CheckCircle, XCircle, AlertTriangle, Info, Image as ImageIcon, Weight, Ruler, BarChart3, Plus, Warehouse, MessageSquare, Phone, Boxes, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Product Details Popup Component
 const ProductDetailsPopup = ({ product }) => {
   const { vendor_id, warehouse_id = Number(product.warehouse_id) } = useParams();
   const wooProduct = product.product;
+  const metadata = wooProduct?.metadata??{};
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showMore, setShowMore] = useState(null);
   const [warehouses, setWarehouses] = useState([]);
@@ -57,19 +27,20 @@ const ProductDetailsPopup = ({ product }) => {
   }, [showMore]);
   
   const getProductImages = () => {
-    if (!wooProduct?.images) return [{src: wooProduct.image_url, alt: wooProduct.name}];
-    return wooProduct.images.map(img => ({
-      src: img.src || img.url,
-      alt: img.alt || wooProduct.name
+    const images = (wooProduct?.images??wooProduct?.metadata?.gallery).filter(i => i?.url??i?.src);
+    if (!images?.length && wooProduct?.featured_image) return [{src: wooProduct.featured_image, alt: wooProduct?.name??wooProduct?.title}];
+    return images.map(img => ({
+      src: img?.src ?? img.url,
+      alt: img?.alt ?? wooProduct.name
     }));
   };
 
   const getStockStatus = () => {
     if (!wooProduct) return { status: 'unknown', color: 'gray', icon: Info };
     
-    if (wooProduct.stock_status === 'instock') {
+    if (wooProduct?.stock_status === 'instock') {
       return { status: 'In Stock', color: 'green', icon: CheckCircle };
-    } else if (wooProduct.stock_status === 'outofstock') {
+    } else if (wooProduct?.stock_status === 'outofstock') {
       return { status: 'Out of Stock', color: 'red', icon: XCircle };
     } else {
       return { status: 'On Backorder', color: 'yellow', icon: AlertTriangle };
@@ -167,7 +138,7 @@ const WarehouseCard = ({ data = {} }) => {
           {/* Header */}
           <div>
             <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-900 xpo_mb-2">
-              {wooProduct?.name || product.post_title}
+              {wooProduct?.name || (product?.post_title??wooProduct.title)}
             </h2>
             <div className="xpo_flex xpo_items-center xpo_gap-4 xpo_mb-4">
               <div className={`xpo_flex xpo_items-center xpo_gap-1 xpo_px-2 xpo_py-1 xpo_rounded-full xpo_text-sm xpo_bg-${stockInfo.color}-100 xpo_text-${stockInfo.color}-800`}>
@@ -191,18 +162,20 @@ const WarehouseCard = ({ data = {} }) => {
                 <h3 className="xpo_font-semibold xpo_text-gray-900">{__('Pricing', 'site-core')}</h3>
               </div>
               <div className="xpo_space-y-1">
-                {wooProduct.sale_price && wooProduct.sale_price !== wooProduct.regular_price ? (
+                {(wooProduct.sale_price && wooProduct.sale_price !== wooProduct.regular_price) || (
+                  metadata.sale_price && metadata.sale_price !== metadata.price
+                ) ? (
                   <div className="xpo_flex xpo_items-center xpo_gap-2">
                     <span className="xpo_text-2xl xpo_font-bold xpo_text-green-600">
-                      {formatPrice(wooProduct.sale_price)}
+                      {formatPrice(wooProduct?.sale_price??metadata?.sale_price)}
                     </span>
                     <span className="xpo_text-lg xpo_text-gray-500 xpo_line-through">
-                      {formatPrice(wooProduct.regular_price)}
+                      {formatPrice(wooProduct?.regular_price??metadata?.price)}
                     </span>
                   </div>
                 ) : (
                   <span className="xpo_text-2xl xpo_font-bold xpo_text-gray-900">
-                    {formatPrice(wooProduct.regular_price || wooProduct.price)}
+                    {formatPrice(wooProduct?.regular_price??metadata.price)}
                   </span>
                 )}
               </div>
@@ -239,14 +212,14 @@ const WarehouseCard = ({ data = {} }) => {
           {wooProduct && (
             <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4">
               {/* Stock Quantity */}
-              {wooProduct.stock_quantity !== null && (
+              {(wooProduct?.stock_quantity || metadata?.stock) && (
                 <div className="xpo_bg-gray-50 xpo_rounded-lg xpo_p-3">
                   <div className="xpo_flex xpo_items-center xpo_gap-2 xpo_mb-1">
                     <BarChart3 size={16} className="xpo_text-gray-600" />
                     <span className="xpo_text-sm xpo_font-medium xpo_text-gray-700">{__('Stock', 'site-core')}</span>
                   </div>
                   <span className="xpo_text-lg xpo_font-semibold xpo_text-gray-900">
-                    {sprintf(__('%f units', 'site-core'), wooProduct.stock_quantity)}
+                    {wooProduct?.stock_quantity ? sprintf(__('%f units', 'site-core'), wooProduct.stock_quantity) : metadata?.stock}
                   </span>
                 </div>
               )}
@@ -417,7 +390,7 @@ export default function ProductList() {
     setPopup(
       <ConfirmDialog
         title={__('Delete Product', 'site-core')}
-        message={sprintf(__(`Are you sure you want to delete "%s"? This action cannot be undone.`, 'site-core'), product.post_title)}
+        message={sprintf(__(`Are you sure you want to delete "%s"? This action cannot be undone.`, 'site-core'), product?.post_title??product.product.title)}
         onConfirm={async () => {
           axios.delete(rest_url(`/sitecore/v1/storemanager/product/warehouse/${product.warehouse_id}/${product.product_id}`))
           .then(res => res.data)
@@ -435,12 +408,17 @@ export default function ProductList() {
 
   const getProductImage = (product) => {
     // 
-    if (product?.product) {
-      if (product.product?.image_url && product.product.image_url) {
-        return product.product.image_url;
+    const productObj = product?.product;
+    if (productObj) {
+      if (productObj?.featured_image) {
+        return productObj.featured_image;
       }
-      if (product.product?.images && product.product.images.length > 0) {
-        return product.product.images[0].src || product.product.images[0].url;
+      if (productObj?.images?.length) {
+        return productObj.images[0]?.src || productObj.images[0]?.url;
+      }
+      const metadata = productObj?.metadata;
+      if (metadata?.gallery?.length) {
+        return metadata.gallery.find(i => i.url).url;
       }
     }
     return null;
@@ -767,6 +745,7 @@ export default function ProductList() {
               const stockInfo = getStockStatus(product);
               const StockIcon = stockInfo.icon;
               const productImage = getProductImage(product);
+              const productObj = product.product;
 
               return (
                 <div key={product.id} className="xpo_bg-white xpo_rounded-lg xpo_shadow xpo_overflow-hidden hover:xpo_shadow-lg xpo_transition-shadow">
@@ -775,7 +754,7 @@ export default function ProductList() {
                     {productImage ? (
                       <img
                         src={productImage}
-                        alt={product.post_title}
+                        alt={product?.post_title??productObj.title}
                         className="xpo_w-full xpo_h-full xpo_object-cover hover:xpo_scale-105 xpo_transition-transform xpo_duration-300"
                         onError={(e) => {
                           e.target.style.display = 'none';
@@ -794,7 +773,7 @@ export default function ProductList() {
                     </div>
 
                     {/* Featured Badge */}
-                    {product.product?.featured && (
+                    {productObj?.featured && (
                       <div className="xpo_absolute xpo_top-3 xpo_right-3 xpo_flex xpo_items-center xpo_gap-1 xpo_px-2 xpo_py-1 xpo_rounded-full xpo_text-xs xpo_font-medium xpo_bg-yellow-100 xpo_text-yellow-800">
                         <Star size={12} />
                       </div>
@@ -804,7 +783,7 @@ export default function ProductList() {
                   {/* Product Info */}
                   <div className="xpo_p-4">
                     <h3 className="xpo_text-lg xpo_font-semibold xpo_text-gray-900 xpo_mb-2 xpo_line-clamp-2">
-                      {product.post_title}
+                      {product?.post_title??productObj.title}
                     </h3>
 
                     {/* Price */}
@@ -812,9 +791,9 @@ export default function ProductList() {
                       <span className="xpo_text-xl xpo_font-bold xpo_text-green-600">
                         {formatPrice(product)}
                       </span>
-                      {product.product?.sale_price && product.product.sale_price !== product.product.regular_price && (
+                      {productObj?.sale_price && productObj.sale_price !== (productObj?.regular_price??productObj.price) && (
                         <span className="xpo_text-sm xpo_text-gray-500 xpo_line-through xpo_ml-2">
-                          ${product.product.regular_price}
+                          ${productObj?.regular_price??productObj.price}
                         </span>
                       )}
                     </div>

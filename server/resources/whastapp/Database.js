@@ -48,11 +48,11 @@ class Database {
       )`,
       media: `CREATE TABLE IF NOT EXISTS ${this.tables.media} (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        file_name VARCHAR(255),
-        file_path VARCHAR(255),
-        mime_type VARCHAR(255),
+        file_name VARCHAR(255) DEFAULT '',
+        file_path VARCHAR(255) DEFAULT '',
+        mime_type VARCHAR(255) DEFAULT '',
         size INT,
-        created_at TIMESTAMP
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )`,
       messages: `CREATE TABLE IF NOT EXISTS ${this.tables.messages} (
         id VARCHAR(255) PRIMARY KEY,
@@ -91,7 +91,7 @@ class Database {
   }
 
   async upsertContact(contact) {
-    const sql = `INSERT INTO ${this.tables.contacts}(id, name, pushname, is_whatsapp_user, last_seen) VALUES(?, ?, ?, ?, FROM_UNIXTIME(?)) ON DUPLICATE KEY UPDATE name = ?, pushname = ?, last_seen = FROM_UNIXTIME(?)`;
+    const sql = `INSERT INTO ${this.tables.contacts}(id, name, pushname, is_whatsapp_user, last_seen) VALUES (?, ?, ?, ?, FROM_UNIXTIME(?)) ON DUPLICATE KEY UPDATE name = ?, pushname = ?, last_seen = FROM_UNIXTIME(?)`;
     await this.db.execute(sql, [
       contact.id, contact.name || null, contact.pushname || null, true, contact.last_seen || null,
       contact.name || null, contact.pushname || null, contact.last_seen || null
@@ -99,7 +99,7 @@ class Database {
   }
 
   async upsertChat(chat) {
-    await this.db.execute(`INSERT INTO ${this.tables.chats}(id, subject, is_group, unread_count, last_message_id, last_activity) VALUES(?, ?, ?, ?, ?, FROM_UNIXTIME(?)) ON DUPLICATE KEY UPDATE subject = ?, is_group = ?, unread_count = ?, last_message_id = ?, last_activity = FROM_UNIXTIME(?)`, [
+    await this.db.execute(`INSERT INTO ${this.tables.chats}(id, subject, is_group, unread_count, last_message_id, last_activity) VALUES (?, ?, ?, ?, ?, FROM_UNIXTIME(?)) ON DUPLICATE KEY UPDATE subject = ?, is_group = ?, unread_count = ?, last_message_id = ?, last_activity = FROM_UNIXTIME(?)`, [
       chat.id,
       chat.subject || null,
       chat.is_group ? true : false,
@@ -115,7 +115,7 @@ class Database {
   }
 
   async upsertGroup(group) {
-    const sql = `INSERT INTO ${this.tables.groups}(id, subject, created_by, created_at) VALUES(?, ?, ?, FROM_UNIXTIME(?)) ON DUPLICATE KEY UPDATE subject = ?`;
+    const sql = `INSERT INTO ${this.tables.groups}(id, subject, created_by, created_at) VALUES (?, ?, ?, FROM_UNIXTIME(?)) ON DUPLICATE KEY UPDATE subject = ?`;
     await this.db.execute(sql, [
       group.id, group.subject || null, group.created_by || null, group.created_at || null,
       group.subject || null
@@ -124,7 +124,7 @@ class Database {
 
   async setGroupMembers(groupId, members) {
     await this.db.execute(`DELETE FROM ${this.tables.group_members} WHERE group_id = ?`, [groupId]);
-    const sql = `INSERT INTO ${this.tables.group_members}(group_id, jid, is_admin, joined_at) VALUES(?, ?, ?, FROM_UNIXTIME(?))`;
+    const sql = `INSERT INTO ${this.tables.group_members}(group_id, jid, is_admin, joined_at) VALUES (?, ?, ?, FROM_UNIXTIME(?))`;
     const values = members.map(m => [groupId, m.jid, m.isAdmin ? true : false, m.joinedAt || new Date()]);
     await this.db.query(sql, values);
   }
@@ -136,14 +136,14 @@ class Database {
       }
     })
     const { fileName = '', filePath = '', mimeType = 'image/png', size = 0 } = args;
-    const sql = `INSERT INTO ${this.tables.media}(file_name, file_path, mime_type, size, created_at)
-      VALUES(?, ?, ?, ?, NOW())`;
-    const [result] = await this.db.execute(sql, [fileName, filePath, mimeType, size]);
-    return result.insertId;
+    const sql = `INSERT INTO ${this.tables.media}(file_name, file_path, mime_type, size)
+      VALUES (?, ?, ?, ?)`;
+    const result = await this.db.execute(sql, [fileName, filePath, mimeType, size]);
+    return result?.insertId??result[0].insertId;
   }
 
   async saveMessage(msg) {
-    const sql = `INSERT INTO ${this.tables.messages}(id, chat_id, sender_jid, from_me, body, msg_type, timestamp, status, media_id, links, quoted_msg_id) VALUES(?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?), ?, ?, ?, ?) ON DUPLICATE KEY UPDATE status = ?`;
+    const sql = `INSERT INTO ${this.tables.messages}(id, chat_id, sender_jid, from_me, body, msg_type, timestamp, status, media_id, links, quoted_msg_id) VALUES (?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?), ?, ?, ?, ?) ON DUPLICATE KEY UPDATE status = ?`;
     await this.db.execute(sql, [
       msg.id, msg.chat_id, msg.sender_jid, msg.from_me ? true : false, msg.body || null, msg.msg_type || 'text', new Date(msg.timestamp), msg.status || 'received', msg.media_id || null, Array.isArray(msg.links) ? msg.links.join(',') : (msg.links || null), msg.quoted_msg_id || null,
       msg.status || 'received'
@@ -176,12 +176,12 @@ class Database {
   }
 
   async createChannel({ id, name }) {
-    const sql = `INSERT INTO ${this.tables.channels}(id, name, created_at) VALUES(?, ?, FROM_UNIXTIME(?))`;
+    const sql = `INSERT INTO ${this.tables.channels}(id, name, created_at) VALUES (?, ?, FROM_UNIXTIME(?))`;
     await this.db.execute(sql, [id, name, new Date()]);
   }
 
   async addChannelMember(channelId, contactId) {
-    const sql = `INSERT INTO ${this.tables.channel_members}(channel_id, contact_id, joined_at) VALUES(?, ?, FROM_UNIXTIME(?))`;
+    const sql = `INSERT INTO ${this.tables.channel_members}(channel_id, contact_id, joined_at) VALUES (?, ?, FROM_UNIXTIME(?))`;
     await this.db.execute(sql, [channelId, contactId, new Date()]);
   }
 
@@ -191,7 +191,7 @@ class Database {
   }
 
   async saveChannelMessage(msg) {
-    const sql = `INSERT INTO ${this.tables.channel_messages}(id, channel_id, sender_jid, body, msg_type, timestamp, status) VALUES(?, ?, ?, ?, ?, FROM_UNIXTIME(?), ?)`;
+    const sql = `INSERT INTO ${this.tables.channel_messages}(id, channel_id, sender_jid, body, msg_type, timestamp, status) VALUES (?, ?, ?, ?, ?, FROM_UNIXTIME(?), ?)`;
     await this.db.execute(sql, [
       msg.id, msg.channel_id, msg.sender_jid, msg.body, msg.msg_type,
       new Date(msg.timestamp), msg.status || 'sent'

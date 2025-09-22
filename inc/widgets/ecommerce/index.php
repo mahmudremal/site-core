@@ -10,7 +10,7 @@ class Addons {
     }
 
     protected function setup_addons() {
-        $addon_files = glob(WP_SITECORE_DIR_PATH . '\\inc\\widgets\\ecommerce\\addon-*.php');
+        $addon_files = glob(__DIR__ . '/addon-*.php');
         if (empty($addon_files)) {return;}
         foreach ($addon_files as $i => $file) {
             require_once $file;

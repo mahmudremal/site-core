@@ -19,6 +19,7 @@ import {
   Mail
 } from 'lucide-react';
 import { ConfirmDialog } from './VendorList';
+import { wa_phone_number } from './helpers';
 
 export default function VendorDetails() {
   const { vendor_id } = useParams();
@@ -285,30 +286,19 @@ export default function VendorDetails() {
                 </h1>
                 <div className="xpo_flex xpo_flex-wrap xpo_gap-4 xpo_text-sm xpo_text-gray-600">
                   {vendor.business_website && (
-                    <a
-                      href={vendor.business_website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="xpo_flex xpo_items-center xpo_gap-1 hover:xpo_text-blue-600"
-                    >
+                    <a target="_blank" rel="noopener noreferrer" href={vendor.business_website} className="xpo_flex xpo_items-center xpo_gap-1 hover:xpo_text-blue-600">
                       <Building size={14} />
                       {vendor.business_website}
                     </a>
                   )}
                   {vendor.business_email && (
-                    <a
-                      href={`mailto:${vendor.business_email}`}
-                      className="xpo_flex xpo_items-center xpo_gap-1 hover:xpo_text-blue-600"
-                    >
+                    <a href={`mailto:${vendor.business_email}`} className="xpo_flex xpo_items-center xpo_gap-1 hover:xpo_text-blue-600">
                       <Mail size={14} />
                       {vendor.business_email}
                     </a>
                   )}
                   {vendor.business_number && (
-                    <a
-                      href={`tel:${vendor.business_number}`}
-                      className="xpo_flex xpo_items-center xpo_gap-1 hover:xpo_text-blue-600"
-                    >
+                    <a target="_blank" href={wa_phone_number(vendor.business_number)} className="xpo_flex xpo_items-center xpo_gap-1 hover:xpo_text-blue-600">
                       <Phone size={14} />
                       {vendor.business_number}
                     </a>
@@ -378,18 +368,10 @@ export default function VendorDetails() {
                     </div>
                   </div>
                   <div className="xpo_flex xpo_gap-1">
-                    <button
-                      onClick={() => setPopup(<EditWarehouse data={warehouse} />)}
-                      className="xpo_p-1.5 xpo_text-gray-600 hover:xpo_text-blue-600 hover:xpo_bg-blue-50 xpo_rounded xpo_transition-colors"
-                      title={__('Edit warehouse', 'site-core')}
-                    >
+                    <button title={__('Edit warehouse', 'site-core')} onClick={() => setPopup(<EditWarehouse data={warehouse} />)} className="xpo_p-1.5 xpo_text-gray-600 hover:xpo_text-blue-600 hover:xpo_bg-blue-50 xpo_rounded xpo_transition-colors">
                       <Edit size={14} />
                     </button>
-                    <button
-                      onClick={() => handleDeleteWarehouse(warehouse)}
-                      className="xpo_p-1.5 xpo_text-gray-600 hover:xpo_text-red-600 hover:xpo_bg-red-50 xpo_rounded xpo_transition-colors"
-                      title={__('Delete warehouse', 'site-core')}
-                    >
+                    <button title={__('Delete warehouse', 'site-core')} onClick={() => handleDeleteWarehouse(warehouse)} className="xpo_p-1.5 xpo_text-gray-600 hover:xpo_text-red-600 hover:xpo_bg-red-50 xpo_rounded xpo_transition-colors">
                       <Trash2 size={14} />
                     </button>
                   </div>
@@ -410,10 +392,7 @@ export default function VendorDetails() {
                   {warehouse.contact_number && (
                     <div className="xpo_flex xpo_items-center xpo_gap-2">
                       <Phone className="xpo_text-gray-400" size={14} />
-                      <a
-                        href={`tel:${warehouse.contact_number}`}
-                        className="xpo_text-sm xpo_text-gray-600 hover:xpo_text-blue-600"
-                      >
+                      <a href={`tel:${warehouse.contact_number}`} className="xpo_text-sm xpo_text-gray-600 hover:xpo_text-blue-600">
                         {warehouse.contact_number}
                       </a>
                     </div>
@@ -421,12 +400,7 @@ export default function VendorDetails() {
                   {warehouse.whatsapp_number && (
                     <div className="xpo_flex xpo_items-center xpo_gap-2">
                       <MessageSquare className="xpo_text-gray-400" size={14} />
-                      <a
-                        href={`https://wa.me/${warehouse.whatsapp_number.replace(/\D/g, '')}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="xpo_text-sm xpo_text-gray-600 hover:xpo_text-blue-600"
-                      >
+                      <a target="_blank" rel="noopener noreferrer" href={wa_phone_number(warehouse.whatsapp_number)} className="xpo_text-sm xpo_text-gray-600 hover:xpo_text-blue-600">
                         {warehouse.whatsapp_number}
                       </a>
                     </div>
@@ -435,10 +409,7 @@ export default function VendorDetails() {
 
                 {/* Actions */}
                 <div className="xpo_pt-4 xpo_border-t xpo_border-gray-200">
-                  <Link
-                    to={`/vendors/${vendor_id}/warehouses/${warehouse.id}/products`}
-                    className="xpo_flex xpo_items-center xpo_justify-center xpo_gap-2 xpo_w-full xpo_bg-gray-50 hover:xpo_bg-gray-100 xpo_text-gray-700 xpo_px-4 xpo_py-2 xpo_rounded-lg xpo_transition-colors"
-                  >
+                  <Link to={`/vendors/${vendor_id}/warehouses/${warehouse.id}/products`} className="xpo_flex xpo_items-center xpo_justify-center xpo_gap-2 xpo_w-full xpo_bg-gray-50 hover:xpo_bg-gray-100 xpo_text-gray-700 xpo_px-4 xpo_py-2 xpo_rounded-lg xpo_transition-colors">
                     <Package size={16} />
                     {__('View Products', 'site-core')}
                   </Link>

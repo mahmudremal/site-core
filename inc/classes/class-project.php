@@ -26,6 +26,7 @@ class Project {
 	protected function setup_hooks() {
 			// Hunts::get_instance();
 		Cdn::get_instance();
+		Sms::get_instance();
 			Apps::get_instance();
 			Task::get_instance();
 		// 	Error::get_instance();
@@ -36,6 +37,7 @@ class Project {
 				// Users::get_instance();
 				// Roles::get_instance();
 		Menus::get_instance();
+		Redis::get_instance();
 		Option::get_instance();
 		Assets::get_instance();
 		Emails::get_instance();
@@ -60,6 +62,7 @@ class Project {
 			// 	Admin_Menu::get_instance();
 			// 	Partner_Docs::get_instance();
 			// 	Service_Docs::get_instance();
+		Typographics::get_instance();
 		Translations::get_instance();
 		// 	Notifications::get_instance();
 		Instant_Images::get_instance();

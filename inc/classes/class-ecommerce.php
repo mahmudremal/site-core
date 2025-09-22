@@ -28,6 +28,12 @@ class Ecommerce {
             'reco_item_sim' => $wpdb->prefix . 'sitecore_ecommerce_reco_item_sim',
             'reco_user_topn' => $wpdb->prefix . 'sitecore_ecommerce_reco_user_topn',
             'reco_user_interest' => $wpdb->prefix . 'sitecore_ecommerce_reco_user_interest',
+            'reviews' => $wpdb->prefix . 'sitecore_ecommerce_reviews',
+            'wishlist' => $wpdb->prefix . 'sitecore_ecommerce_wishlist',
+            'variations' => $wpdb->prefix . 'sitecore_ecommerce_product_variations',
+            'attributes' => $wpdb->prefix . 'sitecore_ecommerce_product_attributes',
+            'attribute_items' => $wpdb->prefix . 'sitecore_ecommerce_product_attribute_items',
+            'vars_atts_relations' => $wpdb->prefix . 'sitecore_ecommerce_product_vars_atts_relations',
         ];
         $this->setup_hooks();
         $this->init_session();
@@ -36,6 +42,7 @@ class Ecommerce {
 
     protected function setup_hooks() {
         add_action('save_post', [$this, 'save_meta_boxes']);
+        add_filter('body_class', [$this, 'body_class'], 10, 2);
         add_action('add_meta_boxes', [$this, 'add_meta_boxes']);
         add_action('rest_api_init', [$this, 'register_routes']);
         register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
@@ -63,6 +70,32 @@ class Ecommerce {
                 user_agent TEXT,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+
+            'variations' => "id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                product_id VARCHAR(255) UNIQUE NOT NULL,
+                title TEXT NOT NULL,
+                sku VARCHAR(255) DEFAULT '',
+                description LONGTEXT DEFAULT '',
+                price float default 0.00,
+                sale_price float default 0.00,
+                gallery LONGTEXT DEFAULT '',
+                specifications LONGTEXT DEFAULT '',
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+            
+            'attributes' => "id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                label VARCHAR(255) UNIQUE NOT NULL,
+                type VARCHAR(255) DEFAULT 'select',
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+            
+            'attribute_items' => "id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                attribute_id BIGINT(20) UNSIGNED DEFAULT NULL,
+                slug VARCHAR(255) UNIQUE NOT NULL,
+                name VARCHAR(255) UNIQUE NOT NULL,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+
+            'vars_atts_relations' => "id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                variation_id BIGINT(20) UNSIGNED DEFAULT NULL,
+                attribute_id BIGINT(20) UNSIGNED DEFAULT NULL",
             
             'carts' => "id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 session_id BIGINT(20) UNSIGNED NOT NULL,
@@ -176,6 +209,18 @@ class Ecommerce {
                 updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 PRIMARY KEY (user_key, taxonomy, term_id),
                 KEY k_user (user_key)",
+            'reviews' => "id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                rating DECIMAL(2,1) NOT NULL DEFAULT 0.0,
+                product_id BIGINT UNSIGNED NOT NULL,
+                customer_id BIGINT UNSIGNED NOT NULL,
+                message MEDIUMTEXT NOT NULL,
+                attachments JSON,
+                created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+            'wishlist' => "id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                product_id BIGINT UNSIGNED NOT NULL,
+                customer_id BIGINT UNSIGNED NOT NULL,
+                created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP",
         ];
 
         foreach ($tableSchemas as $tableKey => $schema) {
@@ -192,7 +237,7 @@ class Ecommerce {
     }
 
     public function register_routes() {
-		register_rest_route('sitecore/v1', '/ecommerce/product/(?P<product_id>\d+)', [
+		register_rest_route('sitecore/v1', '/ecommerce/products/(?P<product_id>\d+)', [
 			'methods'  => 'POST',
 			'callback' => [$this, 'api_update_product'],
 			'permission_callback' => '__return_true',
@@ -200,17 +245,104 @@ class Ecommerce {
                 'data'      => ['required'    => true],
             ]
 		]);
-		register_rest_route('sitecore/v1', '/ecommerce/product/(?P<product_id>\d+)/metabox', [
+		register_rest_route('sitecore/v1', '/ecommerce/products/(?P<product_id>\d+)/metabox', [
 			'methods'  => 'GET',
 			'callback' => [$this, 'api_get_product_metabox'],
 			'permission_callback' => '__return_true',
 		]);
-		register_rest_route('sitecore/v1', '/ecommerce/product/(?P<product_id>\d+)/metabox', [
+		register_rest_route('sitecore/v1', '/ecommerce/products/(?P<product_id>\d+)/metabox', [
 			'methods'  => 'POST',
 			'callback' => [$this, 'api_update_product_metabox'],
 			'permission_callback' => '__return_true',
             'args' => [
-                'meta'      => ['required'    => true],
+                'meta' => ['required'    => true],
+            ]
+		]);
+		register_rest_route('sitecore/v1', '/ecommerce/products/(?P<product_id>\d+)/metabox/variations', [
+			'methods'  => 'GET',
+			'callback' => [$this, 'api_get_product_variations'],
+			'permission_callback' => '__return_true',
+            'args' => [
+                'product_id' => ['required'    => true],
+            ]
+		]);
+		register_rest_route('sitecore/v1', '/ecommerce/products/(?P<product_id>\d+)/metabox/variations/(?P<variation_id>\d+)', [
+			'methods'  => 'POST',
+			'callback' => [$this, 'api_update_product_variation'],
+			'permission_callback' => '__return_true',
+            'args' => [
+                'product_id' => ['required' => true],
+                'variation_id' => ['required' => true],
+                'variation_data' => ['required' => true],
+            ]
+		]);
+		register_rest_route('sitecore/v1', '/ecommerce/products/(?P<product_id>\d+)/metabox/variations/(?P<variation_id>\d+)', [
+			'methods'  => 'DELETE',
+			'callback' => [$this, 'api_delete_product_variation'],
+			'permission_callback' => '__return_true',
+            'args' => [
+                'product_id' => ['required' => true],
+                'variation_id' => ['required' => true],
+            ]
+		]);
+        /**
+         * Attribute section
+         */
+		register_rest_route('sitecore/v1', '/ecommerce/products/(?P<product_id>\d+)/metabox/attributes', [
+			'methods'  => 'GET',
+			'callback' => [$this, 'api_get_product_attributes'],
+			'permission_callback' => '__return_true',
+            'args' => [
+                'product_id' => ['required'    => true],
+            ]
+		]);
+		register_rest_route('sitecore/v1', '/ecommerce/products/(?P<product_id>\d+)/metabox/attributes/(?P<attribute_id>\d+)', [
+			'methods'  => 'POST',
+			'callback' => [$this, 'api_update_product_attribute'],
+			'permission_callback' => '__return_true',
+            'args' => [
+                'product_id' => ['required' => true],
+                'attribute_id' => ['required' => true],
+                'attribute_data' => ['required' => true],
+            ]
+		]);
+		register_rest_route('sitecore/v1', '/ecommerce/products/(?P<product_id>\d+)/metabox/attributes/(?P<attribute_id>\d+)', [
+			'methods'  => 'DELETE',
+			'callback' => [$this, 'api_delete_product_attribute'],
+			'permission_callback' => '__return_true',
+            'args' => [
+                'product_id' => ['required' => true],
+                'attribute_id' => ['required' => true],
+            ]
+		]);
+		register_rest_route('sitecore/v1', '/ecommerce/products/(?P<product_id>\d+)/metabox/attributes/(?P<attribute_id>\d+)/items', [
+			'methods'  => 'GET',
+			'callback' => [$this, 'api_get_product_attribute_items'],
+			'permission_callback' => '__return_true',
+            'args' => [
+                'product_id' => ['required' => true],
+                'attribute_id' => ['required' => true],
+            ]
+		]);
+		register_rest_route('sitecore/v1', '/ecommerce/products/(?P<product_id>\d+)/metabox/attributes/(?P<attribute_id>\d+)/items/(?P<item_id>\d+)', [
+			'methods'  => 'POST',
+			'callback' => [$this, 'api_update_product_attribute_item'],
+			'permission_callback' => '__return_true',
+            'args' => [
+                'product_id' => ['required' => true],
+                'attribute_id' => ['required' => true],
+                'item_id' => ['required' => true],
+                'item_data' => ['required' => true],
+            ]
+		]);
+		register_rest_route('sitecore/v1', '/ecommerce/products/(?P<product_id>\d+)/metabox/attributes/(?P<attribute_id>\d+)/items/(?P<item_id>\d+)', [
+			'methods'  => 'DELETE',
+			'callback' => [$this, 'api_delete_product_attribute_item'],
+			'permission_callback' => '__return_true',
+            'args' => [
+                'product_id' => ['required' => true],
+                'attribute_id' => ['required' => true],
+                'item_id' => ['required' => true],
             ]
 		]);
     }
@@ -279,7 +411,7 @@ class Ecommerce {
         add_meta_box('product_data', __('Product data', 'site-core'), [$this, 'metabox_callback'], 'sc_product', 'normal', 'default');
     }
     public function metabox_callback($post) {
-        // wp_enqueue_style('site-core');
+        wp_enqueue_style('site-core');
         wp_enqueue_script('site-core');
         ?>
         <div class="xpo_flex xpo_flex-col xpo_gap-3">
@@ -490,7 +622,7 @@ class Ecommerce {
     public function api_get_product_metabox(WP_REST_Request $request) {
         $product_id = $request->get_param('product_id') ?: 0;
         if ($product_id) {
-            $meta = Ecommerce\Addons\Product::get_instance()->get_product_meta($product_id);
+            $meta = Ecommerce\Addons\Product::get_instance()->get_product_meta($product_id, null, null);
             if ($meta) {
                 return rest_ensure_response($meta);
             }
@@ -507,6 +639,105 @@ class Ecommerce {
             return rest_ensure_response(['success' => true]);
         }
         return new WP_Error('invalid_request', 'Invalid post request.', ['status' => 400]);
+    }
+    
+    public function api_get_product_variations(WP_REST_Request $request) {
+        $product_id = $request->get_param('product_id') ?: 0;
+        if ($product_id) {
+            $variations = Ecommerce\Addons\Product::get_instance()->get_product_variations($product_id);
+            if ($variations) {
+                return rest_ensure_response($variations);
+            }
+        }
+        return rest_ensure_response([]);
+    }
+    public function api_update_product_variation(WP_REST_Request $request) {
+        $product_id = $request->get_param('product_id') ?: 0;
+        $variation_id = $request->get_param('variation_id') ?: 0;
+        $variation_data = $request->get_param('variation_data') ?: 0;
+        if ($product_id) {
+            $success = Ecommerce\Addons\Product::get_instance()->update_product_variation($product_id, $variation_id, $variation_data);
+            if ($success) {
+                return rest_ensure_response(empty($variation_id) ? ['id' => $success] : ['success' => $success]);
+            }
+        }
+        return rest_ensure_response([]);
+    }
+    public function api_delete_product_variation(WP_REST_Request $request) {
+        $product_id = $request->get_param('product_id') ?: 0;
+        $variation_id = $request->get_param('variation_id') ?: 0;
+        if ($product_id && $variation_id) {
+            $deleted = Ecommerce\Addons\Product::get_instance()->delete_product_variation($variation_id);
+            if ($deleted) {
+                return rest_ensure_response(['deleted' => $deleted]);
+            }
+        }
+        return rest_ensure_response([]);
+    }
+    
+    public function api_get_product_attributes(WP_REST_Request $request) {
+        $product_id = $request->get_param('product_id') ?: 0;
+        if ($product_id) {
+            $attributes = Ecommerce\Addons\Product::get_instance()->get_product_attributes($product_id);
+            if ($attributes) {
+                return rest_ensure_response($attributes);
+            }
+        }
+        return rest_ensure_response([]);
+    }
+    public function api_update_product_attribute(WP_REST_Request $request) {
+        $product_id = $request->get_param('product_id') ?: 0;
+        $attribute_id = $request->get_param('attribute_id') ?: 0;
+        $attribute_data = $request->get_param('attribute_data') ?: 0;
+        if ($product_id) {
+            $success = Ecommerce\Addons\Product::get_instance()->update_product_attribute($product_id, $attribute_id, $attribute_data);
+            if ($success) {
+                return rest_ensure_response(empty($attribute_id) ? ['id' => $success] : ['success' => $success]);
+            }
+        }
+        return rest_ensure_response([]);
+    }
+    public function api_delete_product_attribute(WP_REST_Request $request) {
+        $product_id = $request->get_param('product_id') ?: 0;
+        $attribute_id = $request->get_param('attribute_id') ?: 0;
+        if ($product_id && $attribute_id) {
+            $deleted = Ecommerce\Addons\Product::get_instance()->delete_product_attribute($attribute_id);
+            if ($deleted) {
+                return rest_ensure_response(['deleted' => $deleted]);
+            }
+        }
+        return rest_ensure_response([]);
+    }
+
+    public function api_update_product_attribute_item(WP_REST_Request $request) {
+        $product_id = $request->get_param('product_id') ?: 0;
+        $attribute_id = $request->get_param('attribute_id') ?: 0;
+        $item_id = $request->get_param('item_id') ?: 0;
+        $item_data = $request->get_param('item_data') ?: 0;
+        if ($product_id) {
+            $success = Ecommerce\Addons\Product::get_instance()->update_product_attribute_item($product_id, $attribute_id, $item_id, $item_data);
+            if ($success) {
+                return rest_ensure_response(empty($attribute_id) ? ['id' => $success] : ['success' => $success]);
+            }
+        }
+        return rest_ensure_response([]);
+    }
+    public function api_delete_product_attribute_item(WP_REST_Request $request) {
+        $product_id = $request->get_param('product_id') ?: 0;
+        $attribute_id = $request->get_param('attribute_id') ?: 0;
+        $item_id = $request->get_param('item_id') ?: 0;
+        if ($product_id && $attribute_id) {
+            $deleted = Ecommerce\Addons\Product::get_instance()->delete_product_attribute_item($item_id);
+            if ($deleted) {
+                return rest_ensure_response(['deleted' => $deleted]);
+            }
+        }
+        return rest_ensure_response([]);
+    }
+
+
+    public function body_class($classes, $css_class) {
+        return array_merge($classes, ['sc_store-front']);
     }
     
 }

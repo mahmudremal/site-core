@@ -9,6 +9,29 @@
   "extract": {
     "isProduct": "#module_item_gallery_1 > .item-gallery",
     "product": {
+      "execute": {
+        "callback": "darazExtractBody",
+        "script": {
+          "jspart": "var __moduleData__ = ",
+          "walker": {
+            "category": "data.tracking.pdt_category",
+            "title": "data.tracking.pdt_name",
+            "featured_image": "data.tracking.pdt_photo",
+            "price": "data.tracking.pdt_price",
+            "sku": "data.tracking.pdt_sku",
+            "seller_id": "data.primaryKey.sellerId",
+
+            "product": {
+              "title": "data.product.title",
+              "description": "data.product.desc",
+              "excerpt": "data.product.highlights"
+            },
+
+            "gallery": "data.skuGalleries[0].map(i => ({thumbnail: i.poster, url: i.src}))",
+            "variations": "data.productOption.skuBase.properties.map(i => ({title: i.name, gallery: i.values.map(gi => ({url: gi?.image, hover: gi?.hoverImage, name: gi?.name, vid: gi?.vid}))}))"
+          }
+        }
+      },
       "wait4selection": ["#module_product_detail"],
       "content": ["#module_product_detail", "innerText"],
       "images": ["#module_item_gallery_1 img", "src"],
@@ -57,6 +80,19 @@
         "ogDescription": ["meta[property='og:description']", "content"]
       }
     },
+    "isStore": "img[alt=storeLogo]",
+    "store": {
+      "wait4selection": [],
+      "title": ["#products + div span + span", "innerText"],
+      "meta": {
+        "title": ["title", "innerText"],
+        "description": ["meta[name='description']", "content"],
+        "ogImage": ["meta[property='og:image']", "content"],
+        "ogTitle": ["meta[property='og:title']", "content"],
+        "ogDescription": ["meta[property='og:description']", "content"]
+      }
+    },
     "links": ["[data-qa-locator='general-products'] [data-qa-locator='product-item'] a[title], a.product-item-link, .ant-pagination .ant-pagination-item:not(.ant-pagination-item-active) > a, a[href^='https://www.daraz.com.bd/products/']", "href", "^(https?:\\/\\/[^/]+\\/products\\/[^.]+\\.html)"]
-  }
+  },
+  "extensionscraper": {}
 }

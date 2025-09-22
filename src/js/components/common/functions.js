@@ -83,6 +83,7 @@ export const timeAgo = (timestamp) => {
 };
 
 export const sleep = (ms) => {
+    if (!ms) return Promise.resolve(true);
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
@@ -130,9 +131,15 @@ class ToastNotification {
         this.dismiss = toast.dismiss;
     }
     success(msg, opt = {}) {
+        if (typeof msg === 'object') {
+            msg = msg?.response?.data?.message??msg?.response?.message??msg?.message??msg;
+        }
         return toast.success(msg, opt)
     }
     error(msg, opt = {}) {
+        if (typeof msg === 'object') {
+            msg = msg?.response?.data?.message??msg?.response?.message??msg?.message??msg;
+        }
         return toast.error(msg, opt)
     }
 }

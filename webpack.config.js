@@ -34,7 +34,7 @@ module.exports = {
       // cdn: JS_DIR + '/cdn.js',
     core: JS_DIR + '/core.js',
     // wa: path.resolve(__dirname, 'server/app.jsx'),
-    schemaeditor: JS_DIR + '/banglee/whatsapp/schemaeditor.jsx',
+    schemaeditor: JS_DIR + '/shop-manager/extension/schemaeditor.jsx',
 
       // app: JS_DIR + '/app.js',
     // sw: JS_DIR + '/sw.js',
@@ -68,6 +68,7 @@ module.exports = {
       '@components': path.resolve(__dirname, 'src/js/components'),
       '@banglee': path.resolve(__dirname, 'src/js/banglee'),
       '@modules': path.resolve(__dirname, 'src/js/modules'),
+      '@sf': path.resolve(__dirname, 'src/js/store-front'),
       '@library': path.resolve(__dirname, 'src/library'),
       '@icons': path.resolve(__dirname, 'src/icons'),
       '@sass': path.resolve(__dirname, 'src/sass'),

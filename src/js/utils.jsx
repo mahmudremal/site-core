@@ -13,8 +13,14 @@ export const Popup = ({ onClose = null, showCross = true, backdrop = true, backd
         {/* xpo_-translate-x-1 xpo_-translate-y-1 */}
         {typeof onClose === 'function' && showCross ? (
           <div className="xpo_absolute xpo_top-1 xpo_right-1">
-            <button type="button" className="xpo_p-0 xpo_border-none xpo_bg-transparent" onClick={(e) => onClose()}>
+            {/* <button type="button" className="xpo_p-0 xpo_border-none xpo_bg-transparent" onClick={(e) => onClose()}>
               <X size={16} />
+            </button> */}
+            <button
+              onClick={() => onClose()}
+              className="xpo_p-2 hover:xpo_bg-gray-100 xpo_rounded-lg"
+            >
+              <X className="xpo_w-5 xpo_h-5" />
             </button>
           </div>
         ) : null}
@@ -125,6 +131,7 @@ export const tailwind_install = () => {
     script.onload = () => {
       window.tailwind = window.tailwind || {};
       window.tailwind.config = {
+        darkMode: '[data-theme="dark"]',
         prefix: 'xpo_',
         theme: {
           extend: {
@@ -178,7 +185,58 @@ export const tailwind_install = () => {
                 800: "#022D33",
                 900: "#01171A",
               },
-              'brand-dark': '#1D2327'
+              
+              scprimary: {
+                DEFAULT: "#0A1D37",
+                50:  "#e1e5ec",
+                100: "#bcc7d8",
+                200: "#8ba1b9",
+                300: "#597b9a",
+                400: "#37567f",
+                500: "#0a1d37",
+                600: "#091931",
+                700: "#061225",
+                800: "#040d1a",
+                900: "#02090f"
+              },
+              scwhite: {
+                DEFAULT: "#F5F7FA",
+                50:  "#FFFFFF",
+                100: "#FDFEFF",
+                200: "#F9FAFC",
+                300: "#F5F7FA",
+                400: "#E9EDF3",
+                500: "#DCE2EB",
+                600: "#C3CBD6",
+                700: "#9FA8B4",
+                800: "#7A8491",
+                900: "#5B626D"
+              },
+              scaccent: {
+                DEFAULT: "#6C5DD3",
+                50:  "#F0EEFC",
+                100: "#DCD8F7",
+                200: "#C1B8F2",
+                300: "#A697ED",
+                400: "#8D7AE5",
+                500: "#6C5DD3",
+                600: "#5E50BB",
+                700: "#4C4097",
+                800: "#393172",
+                900: "#28234F"
+              },
+              'brand-dark': '#1D2327',
+
+
+              'primary-dark': '#0F172A',
+              'primary-light': '#1E293B',
+              'primary-accent': '#F59E0B',
+              'primary-accent-dark': '#B45309',
+              'accent-red': '#DC2626',
+              'primary-dark-text': '#E0E7FF',
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
             },
           },
         },
@@ -194,3 +252,20 @@ export const tailwind_install = () => {
 }
 
 export const home_route = (p) => p;
+
+export const deepMerge = (target, source) => {
+  const output = { ...target }
+  for (const key in source) {
+    if (
+      typeof source[key] === 'object' &&
+      source[key] !== null &&
+      !Array.isArray(source[key])
+    ) {
+      output[key] = deepMerge(target[key] || {}, source[key])
+    } else {
+      output[key] = source[key]
+    }
+  }
+  return output
+}
+

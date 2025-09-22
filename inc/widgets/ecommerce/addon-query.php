@@ -33,15 +33,50 @@ class Query {
             'callback' => [$this, 'ingest_event'],
             'permission_callback' => '__return_true'
         ]);
+
+        register_rest_route('sitecore/v1', '/ecommerce/recommendations/category', [
+            'methods'  => 'GET',
+            'callback' => [$this, 'api_get_recommended_categories'],
+            'permission_callback' => '__return_true',
+        ]);
+    }
+
+    public function api_get_recommended_categories(WP_REST_Request $request) {
+        $categories = $this->get_recommended_categories();
+        return new WP_REST_Response($categories, 200);
+    }
+
+    public function get_recommended_categories() {
+        global $wpdb;
+        $uid = $this->get_reco_uid();
+
+        $results = $wpdb->get_results($wpdb->prepare("
+            SELECT term_id, weight FROM {$this->tables->reco_user_interest}
+            WHERE user_key = %s AND taxonomy = 'category'
+            ORDER BY weight DESC
+            LIMIT 10
+        ", $uid));
+
+        $categories = [];
+        foreach ($results as $row) {
+            $term = get_term($row->term_id, 'sc_product_category');
+            if ($term && !is_wp_error($term)) {
+                $categories[] = [
+                    'id' => $term->term_id,
+                    'name' => $term->name,
+                    'slug' => $term->slug,
+                    'weight' => $row->weight,
+                ];
+            }
+        }
+
+        return $categories;
     }
 
     public function enqueue_scripts() {
-        wp_register_script('reco-js', WP_SITECORE_DIR_PATH . '/src/js/reco.js', [], null, true);
-        wp_localize_script('reco-js', 'RECO_CFG', [
-            'endpoint' => rest_url('reco/v1/event'),
-            'uid' => $this->get_reco_uid()
-        ]);
-        wp_enqueue_script('reco-js');
+        // wp_localize_script('reco-js', 'RECO_CFG', ['uid' => $this->get_reco_uid(), 'endpoint' => rest_url('reco/v1/event')]);
+        wp_enqueue_style('site-core');
+        wp_enqueue_script('site-core');
     }
 
     public function get_reco_uid() {
