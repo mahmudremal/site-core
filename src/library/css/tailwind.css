@@ -17,3 +17,7 @@
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 /* @custom-variant light (&:where([data-theme=light], [data-theme=light] *)); */
+
+.xpo_container {
+  @apply xpo_max-w-7xl xpo_mx-auto xpo_px-4;
+}

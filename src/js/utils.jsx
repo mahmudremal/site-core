@@ -131,7 +131,7 @@ export const tailwind_install = () => {
     script.onload = () => {
       window.tailwind = window.tailwind || {};
       window.tailwind.config = {
-        darkMode: '[data-theme="dark"]',
+        darkMode: 'class', // '[data-theme="dark"]',
         prefix: 'xpo_',
         theme: {
           extend: {
@@ -225,9 +225,9 @@ export const tailwind_install = () => {
                 800: "#393172",
                 900: "#28234F"
               },
+              
+              
               'brand-dark': '#1D2327',
-
-
               'primary-dark': '#0F172A',
               'primary-light': '#1E293B',
               'primary-accent': '#F59E0B',
@@ -268,4 +268,21 @@ export const deepMerge = (target, source) => {
   }
   return output
 }
+
+import CryptoJS from 'crypto-js';
+
+export const encryptString = (data, key) => {
+  if (!data || !key) {
+    throw new Error('Data and key are required for encryption.');
+  }
+  const encryptionKey = CryptoJS.enc.Utf8.parse(key);
+  const iv = CryptoJS.lib.WordArray.random(16);
+  const encrypted = CryptoJS.AES.encrypt(data, encryptionKey, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
+  });
+  const combined = iv.toString(CryptoJS.enc.Base64) + ':' + encrypted.toString();
+  return combined;
+};
 

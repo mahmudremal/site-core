@@ -11,7 +11,7 @@ class Ecommerce {
     use Singleton;
 
     public $tables;
-    protected $session_key = 'sitecore_ecom_visitorid';
+    protected $session_key = 'x-visitor-token';
 
     protected function __construct() {
         global $wpdb;
@@ -34,10 +34,14 @@ class Ecommerce {
             'attributes' => $wpdb->prefix . 'sitecore_ecommerce_product_attributes',
             'attribute_items' => $wpdb->prefix . 'sitecore_ecommerce_product_attribute_items',
             'vars_atts_relations' => $wpdb->prefix . 'sitecore_ecommerce_product_vars_atts_relations',
+
+            'client_addresses' => $wpdb->prefix . 'sitecore_ecommerce_client_addresses',
+
         ];
         $this->setup_hooks();
-        $this->init_session();
+		add_action('init', [$this, 'init_session']);
 		add_action('plugins_loaded', [$this, 'load_addons']);
+        add_filter('sitecorejs/siteconfig', [ $this, 'siteConfig' ], 1, 1);
     }
 
     protected function setup_hooks() {
@@ -65,8 +69,16 @@ class Ecommerce {
         $tableSchemas = [
             'sessions' => "id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 session_key VARCHAR(255) UNIQUE NOT NULL,
+                user_id INT NOT NULL DEFAULT 0,
                 ip_address VARCHAR(45) NOT NULL,
                 location VARCHAR(255) DEFAULT '',
+                latitude VARCHAR(255) DEFAULT '',
+                longitude VARCHAR(255) DEFAULT '',
+                country_code VARCHAR(255) DEFAULT '',
+                country VARCHAR(255) DEFAULT '',
+                timezone VARCHAR(255) DEFAULT '',
+                currency VARCHAR(255) DEFAULT 'BDT',
+                accuracy INT NOT NULL DEFAULT 0,
                 user_agent TEXT,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
@@ -85,6 +97,7 @@ class Ecommerce {
             'attributes' => "id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 label VARCHAR(255) UNIQUE NOT NULL,
                 type VARCHAR(255) DEFAULT 'select',
+                product_id BIGINT(20) UNSIGNED NOT NULL,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
             
             'attribute_items' => "id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -217,10 +230,23 @@ class Ecommerce {
                 attachments JSON,
                 created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+
             'wishlist' => "id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 product_id BIGINT UNSIGNED NOT NULL,
                 customer_id BIGINT UNSIGNED NOT NULL,
                 created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP",
+                
+            'client_addresses' => "id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                user_id BIGINT UNSIGNED NOT NULL,
+                _order BIGINT UNSIGNED NOT NULL,
+                type VARCHAR(36) NOT NULL,
+                name VARCHAR(255) NOT NULL,
+                zipCode VARCHAR(36) NOT NULL,
+                address MEDIUMTEXT NOT NULL,
+                city VARCHAR(255) NOT NULL,
+                phone VARCHAR(36) NOT NULL,
+                isDefault BOOL NOT NULL DEFAULT 0,
+                updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
         ];
 
         foreach ($tableSchemas as $tableKey => $schema) {
@@ -347,29 +373,32 @@ class Ecommerce {
 		]);
     }
 
-    protected function init_session() {
-        if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
-            session_start();
+    public function init_session() {
+        // if (!is_admin()) return false;
+        if (!isset($_COOKIE[$this->session_key])) {
+            $token = bin2hex(random_bytes(32));
+            setcookie($this->session_key, $token, time() + (86400 * 30), "/"); // 30 days
+            return $this->create_session_record(
+                is_user_logged_in() ? get_current_user_id() : 0,
+                $token
+            );
         }
-        
-        if (!isset($_SESSION[$this->session_key])) {
-            $_SESSION[$this->session_key] = $this->generate_session_id();
-            $this->create_session_record();
-        }
+        return false;
     }
 
-    protected function generate_session_id() {
-        return 'sc_' . uniqid() . '_' . time();
-    }
-
-    protected function create_session_record() {
+    protected function create_session_record($user_id, $session_token) {
         global $wpdb;
-        $wpdb->insert($this->tables->sessions, [
-            'session_key' => $_SESSION[$this->session_key],
-            'ip_address' => $this->get_client_ip(),
-            'location' => $this->get_location(),
-            'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
-        ]);
+        $inserted = $wpdb->insert(
+            $this->tables->sessions,
+            [
+                'user_id' => $user_id,
+                'session_key' => $session_token,
+                'ip_address' => $this->get_client_ip(),
+                'location' => $this->get_location(),
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
+            ]
+        );
+        return $inserted;
     }
 
     public function get_client_ip() {
@@ -388,18 +417,38 @@ class Ecommerce {
     }
 
     protected function get_location() {
-        return 'Bangladesh';
+        return '';
+    }
+
+    public function get_session_token() {
+        if(!isset($_COOKIE[$this->session_key])) {
+            return null;
+        }
+        return $_COOKIE[$this->session_key];
     }
 
     public function get_session_id() {
         global $wpdb;
-        if(!isset($_SESSION[$this->session_key])) {
-            return null;
-        }
-        return $wpdb->get_var($wpdb->prepare(
-            "SELECT id FROM {$this->tables->sessions} WHERE session_key = %s",
-            $_SESSION[$this->session_key]
-        ));
+        $token = $this->get_session_token();
+        if (!$token) return null;
+        return $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT id FROM {$this->tables->sessions} WHERE session_key = %s;",
+                $token
+            )
+        );
+    }
+
+    public function get_session() {
+        $token = $this->get_session_token();
+        if (!$token) return null;
+        global $wpdb;
+        return $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT * FROM {$this->tables->sessions} WHERE session_key = %s;",
+                $token
+            )
+        );
     }
 
     public function get_tables() {
@@ -410,6 +459,7 @@ class Ecommerce {
     public function add_meta_boxes() {
         add_meta_box('product_data', __('Product data', 'site-core'), [$this, 'metabox_callback'], 'sc_product', 'normal', 'default');
     }
+
     public function metabox_callback($post) {
         wp_enqueue_style('site-core');
         wp_enqueue_script('site-core');
@@ -629,6 +679,7 @@ class Ecommerce {
         }
         return rest_ensure_response([]);
     }
+
     public function api_update_product_metabox(WP_REST_Request $request) {
         $product_id = $request->get_param('product_id') ?: 0;
         $product_meta = $request->get_param('meta') ?: null;
@@ -651,6 +702,7 @@ class Ecommerce {
         }
         return rest_ensure_response([]);
     }
+
     public function api_update_product_variation(WP_REST_Request $request) {
         $product_id = $request->get_param('product_id') ?: 0;
         $variation_id = $request->get_param('variation_id') ?: 0;
@@ -663,6 +715,7 @@ class Ecommerce {
         }
         return rest_ensure_response([]);
     }
+
     public function api_delete_product_variation(WP_REST_Request $request) {
         $product_id = $request->get_param('product_id') ?: 0;
         $variation_id = $request->get_param('variation_id') ?: 0;
@@ -685,6 +738,7 @@ class Ecommerce {
         }
         return rest_ensure_response([]);
     }
+
     public function api_update_product_attribute(WP_REST_Request $request) {
         $product_id = $request->get_param('product_id') ?: 0;
         $attribute_id = $request->get_param('attribute_id') ?: 0;
@@ -697,6 +751,7 @@ class Ecommerce {
         }
         return rest_ensure_response([]);
     }
+
     public function api_delete_product_attribute(WP_REST_Request $request) {
         $product_id = $request->get_param('product_id') ?: 0;
         $attribute_id = $request->get_param('attribute_id') ?: 0;
@@ -715,13 +770,14 @@ class Ecommerce {
         $item_id = $request->get_param('item_id') ?: 0;
         $item_data = $request->get_param('item_data') ?: 0;
         if ($product_id) {
-            $success = Ecommerce\Addons\Product::get_instance()->update_product_attribute_item($product_id, $attribute_id, $item_id, $item_data);
-            if ($success) {
-                return rest_ensure_response(empty($attribute_id) ? ['id' => $success] : ['success' => $success]);
+            $item_id = Ecommerce\Addons\Product::get_instance()->update_product_attribute_item($product_id, $attribute_id, $item_id, $item_data);
+            if ($item_id) {
+                return rest_ensure_response(empty($item_id) ? ['id' => $item_id] : ['id' => $item_id]);
             }
         }
         return rest_ensure_response([]);
     }
+
     public function api_delete_product_attribute_item(WP_REST_Request $request) {
         $product_id = $request->get_param('product_id') ?: 0;
         $attribute_id = $request->get_param('attribute_id') ?: 0;
@@ -739,5 +795,19 @@ class Ecommerce {
     public function body_class($classes, $css_class) {
         return array_merge($classes, ['sc_store-front']);
     }
+
+    public function siteConfig($args) {
+        $session = $this->get_session();
+        if (!$session) return $args;
+        $newSession = [];
+        foreach ($session as $key => $value) {
+            if (!empty($value)) continue;
+            $newSession[$key] = $value;
+        }
+        if (empty($newSession)) return $args;
+		return wp_parse_args([
+			'session.requires' => $newSession
+		], (array) $args);
+	}
     
 }

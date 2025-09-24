@@ -10,7 +10,8 @@ export const ThemeProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
+    if (theme == 'light') return document.documentElement.classList.remove('xpo_dark');
+    document.documentElement.classList.add('xpo_dark');
   }, [theme]);
 
   return (

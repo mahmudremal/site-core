@@ -152,7 +152,7 @@ export default function CartPage() {
                       <div className="xpo_flex xpo_gap-4">
                         <div className="xpo_flex-shrink-0">
                           <img
-                            src={item.image} alt={item.product_name}
+                            src={item?.product?.featured_image || (item?.product?.metadata?.gallery??[]).find(i => i.url)?.url} alt={item.product_name}
                             className="xpo_w-20 xpo_h-20 xpo_object-cover xpo_rounded-lg"
                           />
                         </div>

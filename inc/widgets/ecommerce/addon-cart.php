@@ -73,9 +73,9 @@ class Cart {
     public function add_to_cart($product_id, $quantity = 1, $variation_id = null, $meta_data = []) {
         global $wpdb;
         
-        if (!get_post($product_id) || get_post_type($product_id) !== 'sc_product') {
-            return new WP_Error('invalid_product', 'Invalid product');
-        }
+        // if (!get_post($product_id) || get_post_type($product_id) !== 'sc_product') {
+        //     return new WP_Error('invalid_product', 'Invalid product');
+        // }
 
         $cart = $this->get_cart();
         $price = Product::get_instance()->get_product_price($product_id, $variation_id);
@@ -300,4 +300,5 @@ class Cart {
             ]);
         }
     }
+
 }

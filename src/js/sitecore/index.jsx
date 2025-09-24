@@ -51,7 +51,6 @@ class SiteCore {
             const container = field.parentElement;
             container.previousElementSibling.remove();
             if (container) {
-                // await this.tailwind_install();
                 container.innerHTML = '';
                 container.setAttribute('colspan', 2);
                 const config = JSON.parse(field.dataset.config);
@@ -66,7 +65,6 @@ class SiteCore {
             const container = field.parentElement;
             container.previousElementSibling.remove();
             if (container) {
-                // await this.tailwind_install();
                 container.innerHTML = '';
                 container.setAttribute('colspan', 2);
                 const config = JSON.parse(field.dataset.config);
@@ -81,7 +79,6 @@ class SiteCore {
             const container = field.parentElement;
             container.previousElementSibling.remove();
             if (container) {
-                // await this.tailwind_install();
                 container.innerHTML = '';
                 container.setAttribute('colspan', 2);
                 const config = JSON.parse(field.dataset.config);
@@ -96,7 +93,6 @@ class SiteCore {
             const container = field.parentElement;
             container.previousElementSibling.remove();
             if (container) {
-                // await this.tailwind_install();
                 container.innerHTML = '';
                 container.setAttribute('colspan', 2);
                 const config = JSON.parse(field.dataset.config);
@@ -114,7 +110,6 @@ class SiteCore {
                 const cpts = JSON.parse(field.dataset.cpts);
                 const inputName = field.name;
                 const inputValue = field.value;
-                // await this.tailwind_install();
                 container.innerHTML = '';
                 container.setAttribute('colspan', 2);
                 const root = createRoot(container);root.render(

@@ -15,11 +15,13 @@ const homePageConfig = [
 
 const componentMap = {
   heroBanner: lazy(() => import('../components/common/HeroBanner')),
-  productCarousel: lazy(() => import('../components/product/ProductCarousel')),
+  // productCarousel: lazy(() => import('../components/product/ProductCarousel')),
   justForYou: lazy(() => import('../components/product/ProductCatalogue')),
   contentBlock: lazy(() => import('../components/common/ContentBlock')),
   categoryGrid: lazy(() => import('../components/category/CategoryGrid')),
 };
+
+
 
 function DynamicPageRenderer({ config }) {
   return (
@@ -40,7 +42,7 @@ const Home = () => {
         <div className="xpo_absolute xpo_h-full xpo_inset-0 xpo_z-0 xpo_pointer-events-none xpo_select-none">
           <MoonlitSky />
         </div>
-        <div className="xpo_container xpo_relative xpo_z-10 xpo_mx-auto xpo_px-4 xpo_py-6 max-w-7xl">
+        <div className="xpo_container xpo_relative xpo_z-10 xpo_mx-auto xpo_px-4 xpo_py-6 xpo_max-w-7xl">
           <HomePageHelmet />
           <Suspense fallback={<div>Loading...</div>}>
             <DynamicPageRenderer config={homePageConfig} />

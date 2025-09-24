@@ -8,13 +8,14 @@ import { __, Popup } from "@js/utils";
 import { rest_url, notify } from "@functions";
 import { sprintf } from "sprintf-js";
 import axios from "axios";
+import AttributesTab from './metabox/AttributesTab';
+import VariationsTab from './metabox/VariationsTab';
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { id } from "date-fns/locale";
-import { NodeBuilderFlags } from "typescript";
 
-// Helper component for form fields
+
+
 const FormField = ({ label, help, children }) => (
     <div className="xpo_grid xpo_grid-cols-1 md:xpo_grid-cols-3 xpo_gap-4 xpo_items-start xpo_py-4">
         <div className="xpo_col-span-1">
@@ -142,410 +143,255 @@ const ConfirmDelete = ({ id, message = null, onConfirm, onCancel }) => {
     )
 };
 
-const AttributesTab = ({ attributes, setAttributes, product_id }) => {
-    const [popup, setPopup] = useState(null);
-    const [openAttribute, setOpenAttribute] = useState(null);
-    
-    useEffect(() => {
-        if (attributes?.length) return;
-        const delay = setTimeout(() => {
-            axios.get(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/attributes`))
-            .then(res => res.data)
-            .then(res => setAttributes(res));
-        }, 1500);
+// const VariationsTab = ({ variations = [], onMetaChange, attributes = [], product_id }) => {
+//     const [openVariation, setOpenVariation] = useState(null);
+//     const [popup, setPopup] = useState(null);
 
-        return () => clearTimeout(delay);
-    }, []);
+//     useEffect(() => {
+//         const delay = setTimeout(() => {
+//             axios.get(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations`))
+//             .then(res => res.data)
+//             // .then(res => setVariations(res));
+//         }, 1500);
 
-    const addAttribute = useCallback(async () => {
-        const label = await prompt(__('Enter Attribute Name', 'site-core'), `Attribute #${Date.now()}`);
-        if (!label) return;
-        const newAttribute = {
-            type: 'select',
-            label: label,
-        };
-        axios.post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/attributes/0`), {attribute_data: newAttribute})
-        .then(res => res.data)
-        .then(data => data?.id && setAttributes([...attributes, {id: data.id, ...newAttribute}]))
-        .catch(err => notify.error(err));
-    }, [attributes, setAttributes]);
+//         return () => clearTimeout(delay);
+//     }, [variations]);
 
-    const removeAttribute = useCallback((variation_id) => {
-        const updatedAttributes = attributes.filter(v => v.id !== variation_id);
-        axios.delete(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/attributes/${variation_id}`))
-        .then(() => {setPopup(null);setAttributes(updatedAttributes);})
-        .catch(err => notify.error(err));
-    }, [attributes, setAttributes]);
+//     const addVariation = useCallback((attr) => {
+//         const newVariation = {
+//             // id: 0,
+//             sku: '',
+//             price: '',
+//             product_id,
+//             gallery: [],
+//             sale_price: '',
+//             description: '',
+//             specifications: [],
+//             title: `Variation #${variations.length + 1}`,
+//         };
+//         axios.post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations/0`), {variation_data: newVariation, attributes: attr})
+//         .then(res => res.data)
+//         .then(data => data?.id && onMetaChange([...variations, {id: data.id, ...newVariation}]))
+//         .catch(err => notify.error(err));
+//     }, [variations, onMetaChange]);
 
-    const handleAttributeChange = useCallback((id, key, value) => {
-        const updated = attributes.map(v => v.id === id ? { ...v, [key]: value } : v);
-        setAttributes(updated);
-    }, [attributes, setAttributes]);
+//     const removeVariation = useCallback((variation_id) => {
+//         const updatedVariations = variations.filter(v => v.id !== variation_id);
+//         axios.delete(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations/${variation_id}`))
+//         .then(() => {setPopup(null);onMetaChange(updatedVariations);})
+//         .catch(err => notify.error(err));
+//     }, [variations, onMetaChange]);
 
-    const SingleAttribute = ({ v }) => {
-        const [attribute, setAttribute] = useState({...v});
-        const [firstCall, setFirstCall] = useState(null);
+//     const handleVariationChange = useCallback((id, key, value) => {
+//         const updated = variations.map(v => v.id === id ? { ...v, [key]: value } : v);
+//         onMetaChange(updated);
+//     }, [variations, onMetaChange]);
 
-        useEffect(() => {
-            console.log('Changes made')
-            if (!firstCall) return setFirstCall(true);
-            const delay = setTimeout(() => {
-                const { id: attribute_id, items = [], ...attribute_data } = attribute;
-                axios.post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/attributes/${attribute_id}`), {attribute_data})
-                .catch(err => notify.error(err));
-            }, 1500);
-            return () => clearTimeout(delay);
-        }, [attribute]);
+//     const SingleVariation = ({ v }) => {
+//         const [variation, setVariation] = useState({...v});
+//         const [firstCall, setFirstCall] = useState(null);
 
+//         useEffect(() => {
+//             console.log('Changes made')
+//             if (!firstCall) return setFirstCall(true);
+//             const delay = setTimeout(() => {
+//                 const { id: variation_id, ...variation_data } = variation;
+//                 axios.post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations/${variation_id}`), {variation_data})
+//                 .catch(err => notify.error(err));
+//             }, 1500);
+//             return () => clearTimeout(delay);
+//         }, [variation]);
 
-        const addItem = useCallback(async () => {
-            const label = await prompt(__('Enter Item Name', 'site-core'), `Item #${Date.now()}`);
-            if (!label) return;
-            const newItem = {
-                name: label,
-                slug: label.toLowerCase().replaceAll(' ', '-'),
-            };
-            const { id: attribute_id } = attribute;
-            axios.post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/attributes/${attribute_id}/items/0`), {item_data: newItem})
-            .then(res => res.data)
-            .then(data => data?.id && setItems(prev => [...prev, {...newItem, attribute_id, id: data.id}]))
-            .catch(err => notify.error(err));
-        }, [attribute, setAttribute]);
-        
-        const AttributeItem = ({ item: data }) => {
-            const [item, setItem] = useState({...data})
-            const [firstCall, setFirstCall] = useState(null);
-            
-            useEffect(() => {
-                if (!firstCall) return setFirstCall(true);
-                const delay = setTimeout(() => {
-                    const { id: attribute_id } = attribute;
-                    const { id: item_id, ...item_data } = item;
-                    axios.post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/attributes/${attribute_id}/items/${item_id}`), {item_data})
-                    .catch(err => notify.error(err));
-                }, 1500);
+//         const SpecificationsPopup = ({ items }) => {
+//             const [specifications, setSpecifications] = useState(items);
+
+//             useEffect(() => {
+//                 const delay = setTimeout(() => {
+//                     setVariation(prev => ({...prev, specifications}));
+//                 }, 1500);
                 
-                return () => clearTimeout(delay);
-            }, [item]);
+//                 return () => clearTimeout(delay);
+//             }, [specifications]);
             
-            return (
-                <div>
-                    <input
-                        type="text"
-                        defaultValue={item.name}
-                        onChange={e => setItem(prev => ({...prev, name: e.target.value}))}
-                    />
-                </div>
-            )
-        }
-        
-        return (
-            <div className="xpo_p-4 xpo_border-t xpo_border-gray-200 xpo_bg-scwhite xpo_flex xpo_flex-col xpo_gap-4">
-                <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4">
-                    <TextInput 
-                        value={attribute.label || ''} 
-                        placeholder={__('Attribute Label', 'site-core')} 
-                        onChange={e => setAttribute(prev => ({...prev, label: e.target.value}))} 
-                    />
-                    <Select 
-                        value={attribute.type || ''} 
-                        placeholder={__('Type', 'site-core')} 
-                        onChange={e => setAttribute(prev => ({...prev, type: e.target.value}))} 
-                    >
-                        <option value="select">{__('Select', 'site-core')}</option>
-                        <option value="color">{__('Color', 'site-core')}</option>
-                        <option value="checkbox">{__('Checkbox', 'site-core')}</option>
-                    </Select>
-                </div>
-                <div className="xpo_w-full xpo_min-h-24">
-                    <h2>{__('Attribute Items', 'site-core')}</h2>
-                    <div className="xpo_flex xpo_flex-col xpo_gap-2">
-                        {attribute.items.map((item, itemI) => <AttributeItem key={itemI} item={item} />)}
-                    </div>
-                    <Button type="button" onClick={addItem}>{__('Add new', 'site-core')}</Button>
-                </div>
-            </div>
-        )
-    }
-    
-    return (
-        <div className="xpo_space-y-4">
-            <div className="xpo_space-y-2">
-                {attributes.map((v, index) => (
-                    <div key={v.id} className="xpo_bg-gray-50 xpo_border xpo_border-gray-200 xpo_rounded">
-                        <div className="xpo_flex xpo_items-center xpo_p-3">
-                            <GripVertical className="xpo_cursor-move xpo_text-gray-400" size={20} />
-                            <span className="xpo_font-semibold xpo_ml-2">{v.label || `Attribute #${index + 1}`}</span>
-                            <div className="xpo_ml-auto xpo_flex xpo_items-center xpo_gap-2">
-                                <button onClick={() => setOpenAttribute(prev => prev === v.id ? null : v.id)} className="xpo_p-1 xpo_transition-transform">
-                                    <ChevronDown size={20} className={`xpo_transition-transform ${openAttribute === v.id ? 'xpo_rotate-180' : ''}`} />
-                                </button>
-                                <button onClick={() => setPopup(<ConfirmDelete message={__('Are you sure you want to delete this attribute? This action cannot be fatal. Cause this will remove all variations regarding this attribute from all products on your store.', 'site-core')} id={v.id} onConfirm={() => removeAttribute(v.id)} onCancel={() => setPopup(null)} />)} className="xpo_p-1 xpo_text-red-500 hover:xpo_text-red-700 xpo_transition-colors">
-                                    <Trash2 size={16} />
-                                </button>
-                            </div>
-                        </div>
-                        {openAttribute === v.id && (<SingleAttribute v={v} />)}
-                    </div>
-                ))}
-            </div>
-            <div className="xpo_mt-4">
-                <Button onClick={addAttribute}>{__('Add Attribute', 'site-core')}</Button>
-            </div>
-            {popup && <Popup onClose={() => setPopup(null)}>{popup}</Popup>}
-        </div>
-    );
-}
+//             return (
+//                 <div>
+//                     <div className="xpo_flex xpo_flex-col xpo_gap-3">
+//                         {specifications.map((row, rowIndex) => (
+//                             <div key={rowIndex} className="xpo_p-4 xpo_flex xpo_gap-3">
+//                                 <TextInput
+//                                     value={row.label || ''}
+//                                     placeholder={__('Label', 'site-core')}
+//                                     onChange={e => setSpecifications(prev => prev.map((spec, specIndex) => specIndex == rowIndex ? {...spec, label: e.target.value} : spec))}
+//                                 />
+//                                 <TextInput
+//                                     value={row.value || ''}
+//                                     placeholder={__('Value', 'site-core')}
+//                                     onChange={e => setSpecifications(prev => prev.map((spec, specIndex) => specIndex == rowIndex ? {...spec, value: e.target.value} : spec))}
+//                                 />
+//                             </div>
+//                         ))}
+//                         <div>
+//                             <button
+//                                 type="button"
+//                                 onClick={() => setSpecifications(prev => [...prev, {label: '', value: ''}])}
+//                                 className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_flex xpo_items-center xpo_gap-2 xpo_transition-colors xpo_bg-gray-600 xpo_text-scwhite hover:xpo_bg-gray-700 disabled:xpo_bg-gray-400 xpo_cursor-pointer"
+//                             >{__('Add Item', 'site-core')}</button>
+//                         </div>
+//                     </div>
+//                 </div>
+//             )
+//         }
 
-const VariationsTab = ({ variations = [], onMetaChange, attributes = [], product_id }) => {
-    const [openVariation, setOpenVariation] = useState(null);
-    const [popup, setPopup] = useState(null);
+//         const GalleryPopup = ({ items }) => {
+//             const [gallery, setGallery] = useState(items);
+//             const [isFirstDrop, setIsFirstDrop] = useState(null);
 
-    useEffect(() => {
-        const delay = setTimeout(() => {
-            axios.get(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations`))
-            .then(res => res.data)
-            // .then(res => setVariations(res));
-        }, 1500);
-
-        return () => clearTimeout(delay);
-    }, [variations]);
-
-    const addVariation = useCallback((attr) => {
-        const newVariation = {
-            // id: 0,
-            sku: '',
-            price: '',
-            product_id,
-            gallery: [],
-            sale_price: '',
-            description: '',
-            specifications: [],
-            title: `Variation #${variations.length + 1}`,
-        };
-        axios.post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations/0`), {variation_data: newVariation, attributes: attr})
-        .then(res => res.data)
-        .then(data => data?.id && onMetaChange([...variations, {id: data.id, ...newVariation}]))
-        .catch(err => notify.error(err));
-    }, [variations, onMetaChange]);
-
-    const removeVariation = useCallback((variation_id) => {
-        const updatedVariations = variations.filter(v => v.id !== variation_id);
-        axios.delete(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations/${variation_id}`))
-        .then(() => {setPopup(null);onMetaChange(updatedVariations);})
-        .catch(err => notify.error(err));
-    }, [variations, onMetaChange]);
-
-    const handleVariationChange = useCallback((id, key, value) => {
-        const updated = variations.map(v => v.id === id ? { ...v, [key]: value } : v);
-        onMetaChange(updated);
-    }, [variations, onMetaChange]);
-
-    const SingleVariation = ({ v }) => {
-        const [variation, setVariation] = useState({...v});
-        const [firstCall, setFirstCall] = useState(null);
-
-        useEffect(() => {
-            console.log('Changes made')
-            if (!firstCall) return setFirstCall(true);
-            const delay = setTimeout(() => {
-                const { id: variation_id, ...variation_data } = variation;
-                axios.post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations/${variation_id}`), {variation_data})
-                .catch(err => notify.error(err));
-            }, 1500);
-            return () => clearTimeout(delay);
-        }, [variation]);
-
-        const SpecificationsPopup = ({ items }) => {
-            const [specifications, setSpecifications] = useState(items);
-
-            useEffect(() => {
-                const delay = setTimeout(() => {
-                    setVariation(prev => ({...prev, specifications}));
-                }, 1500);
+//             useEffect(() => {
+//                 if (!isFirstDrop) return setIsFirstDrop(true);
+//                 const delay = setTimeout(() => {
+//                     console.log('Gallery changed')
+//                     setVariation(prev => ({...prev, gallery: gallery}));
+//                 }, 1500);
                 
-                return () => clearTimeout(delay);
-            }, [specifications]);
+//                 return () => clearTimeout(delay);
+//             }, [gallery]);
             
-            return (
-                <div>
-                    <div className="xpo_flex xpo_flex-col xpo_gap-3">
-                        {specifications.map((row, rowIndex) => (
-                            <div key={rowIndex} className="xpo_p-4 xpo_flex xpo_gap-3">
-                                <TextInput
-                                    value={row.label || ''}
-                                    placeholder={__('Label', 'site-core')}
-                                    onChange={e => setSpecifications(prev => prev.map((spec, specIndex) => specIndex == rowIndex ? {...spec, label: e.target.value} : spec))}
-                                />
-                                <TextInput
-                                    value={row.value || ''}
-                                    placeholder={__('Value', 'site-core')}
-                                    onChange={e => setSpecifications(prev => prev.map((spec, specIndex) => specIndex == rowIndex ? {...spec, value: e.target.value} : spec))}
-                                />
-                            </div>
-                        ))}
-                        <div>
-                            <button
-                                type="button"
-                                onClick={() => setSpecifications(prev => [...prev, {label: '', value: ''}])}
-                                className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_flex xpo_items-center xpo_gap-2 xpo_transition-colors xpo_bg-gray-600 xpo_text-scwhite hover:xpo_bg-gray-700 disabled:xpo_bg-gray-400 xpo_cursor-pointer"
-                            >{__('Add Item', 'site-core')}</button>
-                        </div>
-                    </div>
-                </div>
-            )
-        }
-
-        const GalleryPopup = ({ items }) => {
-            const [gallery, setGallery] = useState(items);
-            const [isFirstDrop, setIsFirstDrop] = useState(null);
-
-            useEffect(() => {
-                if (!isFirstDrop) return setIsFirstDrop(true);
-                const delay = setTimeout(() => {
-                    console.log('Gallery changed')
-                    setVariation(prev => ({...prev, gallery: gallery}));
-                }, 1500);
-                
-                return () => clearTimeout(delay);
-            }, [gallery]);
-            
-            return (
-                <div>
-                    <div className="xpo_flex xpo_flex-col xpo_gap-3">
-                        {gallery.map((row, rowIndex) => (
-                            <div key={rowIndex} className="xpo_p-4 xpo_flex xpo_gap-3">
-                                <TextInput
-                                    value={row.url || ''}
-                                    placeholder={__('Full Image URL', 'site-core')}
-                                    onChange={e => setGallery(prev => prev.map((i, iIndex) => iIndex == rowIndex ? {...i, url: e.target.value} : i))}
-                                />
-                                <TextInput
-                                    value={row.thumbnail || ''}
-                                    placeholder={__('Thumbnail URL', 'site-core')}
-                                    onChange={e => setGallery(prev => prev.map((i, iIndex) => iIndex == rowIndex ? {...i, thumbnail: e.target.value} : i))}
-                                />
-                            </div>
-                        ))}
-                        <div>
-                            <button
-                                type="button"
-                                onClick={() => setGallery(prev => [...prev, {url: '', thumbnail: ''}])}
-                                className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_flex xpo_items-center xpo_gap-2 xpo_transition-colors xpo_bg-gray-600 xpo_text-scwhite hover:xpo_bg-gray-700 disabled:xpo_bg-gray-400 xpo_cursor-pointer"
-                            >{__('Add Item', 'site-core')}</button>
-                        </div>
-                    </div>
-                </div>
-            )
-        }
+//             return (
+//                 <div>
+//                     <div className="xpo_flex xpo_flex-col xpo_gap-3">
+//                         {gallery.map((row, rowIndex) => (
+//                             <div key={rowIndex} className="xpo_p-4 xpo_flex xpo_gap-3">
+//                                 <TextInput
+//                                     value={row.url || ''}
+//                                     placeholder={__('Full Image URL', 'site-core')}
+//                                     onChange={e => setGallery(prev => prev.map((i, iIndex) => iIndex == rowIndex ? {...i, url: e.target.value} : i))}
+//                                 />
+//                                 <TextInput
+//                                     value={row.thumbnail || ''}
+//                                     placeholder={__('Thumbnail URL', 'site-core')}
+//                                     onChange={e => setGallery(prev => prev.map((i, iIndex) => iIndex == rowIndex ? {...i, thumbnail: e.target.value} : i))}
+//                                 />
+//                             </div>
+//                         ))}
+//                         <div>
+//                             <button
+//                                 type="button"
+//                                 onClick={() => setGallery(prev => [...prev, {url: '', thumbnail: ''}])}
+//                                 className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_flex xpo_items-center xpo_gap-2 xpo_transition-colors xpo_bg-gray-600 xpo_text-scwhite hover:xpo_bg-gray-700 disabled:xpo_bg-gray-400 xpo_cursor-pointer"
+//                             >{__('Add Item', 'site-core')}</button>
+//                         </div>
+//                     </div>
+//                 </div>
+//             )
+//         }
         
-        return (
-            <div className="xpo_p-4 xpo_border-t xpo_border-gray-200 xpo_bg-scwhite">
-                <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4">
-                    <TextInput 
-                        value={variation.title || ''} 
-                        placeholder={__('Variation Name', 'site-core')} 
-                        onChange={e => setVariation(prev => ({...prev, title: e.target.value}))} 
-                    />
-                    <TextInput 
-                        value={variation.sku || ''} 
-                        placeholder={__('SKU', 'site-core')} 
-                        onChange={e => setVariation(prev => ({...prev, sku: e.target.value}))} 
-                    />
-                </div>
-                <div className="xpo_mt-4">
-                    <Textarea 
-                        value={variation.description || ''} 
-                        onChange={data => setVariation(prev => ({...prev, description: data}))} 
-                    />
-                </div>
-                <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4 xpo_mt-4">
-                    <TextInput 
-                        type="number" 
-                        value={variation.price || ''} 
-                        placeholder={__('Regular Price', 'site-core')} 
-                        onChange={e => setVariation(prev => ({...prev, price: e.target.value}))} 
-                    />
-                    <TextInput 
-                        type="number" 
-                        value={variation.sale_price || ''} 
-                        placeholder={__('Sale price', 'site-core')} 
-                        onChange={e => setVariation(prev => ({...prev, sale_price: e.target.value}))} 
-                    />
-                </div>
-                <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4 xpo_mt-4">
-                    <button
-                        type="button"
-                        onClick={() => setPopup(<GalleryPopup items={variation.gallery} />)}
-                        className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_flex xpo_items-center xpo_gap-2 xpo_transition-colors xpo_bg-gray-600 xpo_text-scwhite hover:xpo_bg-gray-700 disabled:xpo_bg-gray-400 xpo_cursor-pointer">{__('Gallery', 'site-core')}</button>
-                    <button
-                        type="button"
-                        onClick={() => setPopup(<SpecificationsPopup items={variation.specifications} />)}
-                        className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_flex xpo_items-center xpo_gap-2 xpo_transition-colors xpo_bg-gray-600 xpo_text-scwhite hover:xpo_bg-gray-700 disabled:xpo_bg-gray-400 xpo_cursor-pointer">{__('Specifications', 'site-core')}</button>
-                </div>
-            </div>
-        )
-    }
+//         return (
+//             <div className="xpo_p-4 xpo_border-t xpo_border-gray-200 xpo_bg-scwhite">
+//                 <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4">
+//                     <TextInput 
+//                         value={variation.title || ''} 
+//                         placeholder={__('Variation Name', 'site-core')} 
+//                         onChange={e => setVariation(prev => ({...prev, title: e.target.value}))} 
+//                     />
+//                     <TextInput 
+//                         value={variation.sku || ''} 
+//                         placeholder={__('SKU', 'site-core')} 
+//                         onChange={e => setVariation(prev => ({...prev, sku: e.target.value}))} 
+//                     />
+//                 </div>
+//                 <div className="xpo_mt-4">
+//                     <Textarea 
+//                         value={variation.description || ''} 
+//                         onChange={data => setVariation(prev => ({...prev, description: data}))} 
+//                     />
+//                 </div>
+//                 <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4 xpo_mt-4">
+//                     <TextInput 
+//                         type="number" 
+//                         value={variation.price || ''} 
+//                         placeholder={__('Regular Price', 'site-core')} 
+//                         onChange={e => setVariation(prev => ({...prev, price: e.target.value}))} 
+//                     />
+//                     <TextInput 
+//                         type="number" 
+//                         value={variation.sale_price || ''} 
+//                         placeholder={__('Sale price', 'site-core')} 
+//                         onChange={e => setVariation(prev => ({...prev, sale_price: e.target.value}))} 
+//                     />
+//                 </div>
+//                 <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4 xpo_mt-4">
+//                     <button
+//                         type="button"
+//                         onClick={() => setPopup(<GalleryPopup items={variation.gallery} />)}
+//                         className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_flex xpo_items-center xpo_gap-2 xpo_transition-colors xpo_bg-gray-600 xpo_text-scwhite hover:xpo_bg-gray-700 disabled:xpo_bg-gray-400 xpo_cursor-pointer">{__('Gallery', 'site-core')}</button>
+//                     <button
+//                         type="button"
+//                         onClick={() => setPopup(<SpecificationsPopup items={variation.specifications} />)}
+//                         className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_flex xpo_items-center xpo_gap-2 xpo_transition-colors xpo_bg-gray-600 xpo_text-scwhite hover:xpo_bg-gray-700 disabled:xpo_bg-gray-400 xpo_cursor-pointer">{__('Specifications', 'site-core')}</button>
+//                 </div>
+//             </div>
+//         )
+//     }
 
-    const SelectAttributes = () => {
-        const [selected, setSelected] = useState([]);
+//     const SelectAttributes = () => {
+//         const [selected, setSelected] = useState([]);
 
-        return (
-            <div className="xpo_flex xpo_flex-col xpo_gap-3">
-                <h2>{__('Select an attribute', 'site-core')}</h2>
-                <div>
-                    Selected: {selected.map((s, sI) => <span key={sI}>{s.label}</span>)}
-                </div>
-                <select multiple={true} onSelect={e => setSelected(prev => [...prev, attributes.find(att => att.label == e.target.value)])}>
-                    {attributes.map((att, attI) => <option key={attI} value={att.label}>{att.label}</option>)}
-                </select>
-                <Button
-                    type="button"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        addVariation(selected);
-                        setPopup(null);
-                    }}
-                >
-                    {__('Create Variation', 'site-core')}
-                </Button>
-            </div>
-        )
-    }
+//         return (
+//             <div className="xpo_flex xpo_flex-col xpo_gap-3">
+//                 <h2>{__('Select an attribute', 'site-core')}</h2>
+//                 <div>
+//                     Selected: {selected.map((s, sI) => <span key={sI}>{s.label}</span>)}
+//                 </div>
+//                 <select multiple={true} onSelect={e => setSelected(prev => [...prev, attributes.find(att => att.label == e.target.value)])}>
+//                     {attributes.map((att, attI) => <option key={attI} value={att.label}>{att.label}</option>)}
+//                 </select>
+//                 <Button
+//                     type="button"
+//                     onClick={(e) => {
+//                         e.preventDefault();
+//                         addVariation(selected);
+//                         setPopup(null);
+//                     }}
+//                 >
+//                     {__('Create Variation', 'site-core')}
+//                 </Button>
+//             </div>
+//         )
+//     }
     
-    return (
-        <div className="xpo_space-y-4">
-            <div className="xpo_space-y-2">
-                {variations.map((v, index) => (
-                    <div key={v.id} className="xpo_bg-gray-50 xpo_border xpo_border-gray-200 xpo_rounded">
-                        <div className="xpo_flex xpo_items-center xpo_p-3">
-                            <GripVertical className="xpo_cursor-move xpo_text-gray-400" size={20} />
-                            <span className="xpo_font-semibold xpo_ml-2">{v.title || `Variation #${index + 1}`}</span>
-                            <div className="xpo_ml-auto xpo_flex xpo_items-center xpo_gap-2">
-                                <button onClick={() => setOpenVariation(openVariation === v.id ? null : v.id)} className="xpo_p-1 xpo_transition-transform">
-                                    <ChevronDown size={20} className={`xpo_transition-transform ${openVariation === v.id ? 'xpo_rotate-180' : ''}`} />
-                                </button>
-                                <button onClick={() => setPopup(<ConfirmDelete id={v.id} onConfirm={() => removeVariation(v.id)} onCancel={() => setPopup(null)} />)} className="xpo_p-1 xpo_text-red-500 hover:xpo_text-red-700 xpo_transition-colors">
-                                    <Trash2 size={16} />
-                                </button>
-                            </div>
-                        </div>
-                        {openVariation === v.id && (<SingleVariation v={v} />)}
-                    </div>
-                ))}
-            </div>
-            <div className="xpo_mt-4 xpo_flex xpo_flex-wrap xpo_gap-4 xpo_items-center">
-                <Button onClick={(e) => {
-                    e.preventDefault();
-                    const attributesList = attributes.map(a => ({...a, items: a.items.split(',').map(i => i.trim()).filter(i => i)}));
-                    console.log(items)
-                }}>{__('Generate Variations', 'site-core')}</Button>
-                <Button onClick={() => setPopup(<SelectAttributes />)}>{__('Add Variation', 'site-core')}</Button>
-            </div>
-            {popup && <Popup onClose={() => setPopup(null)}>{popup}</Popup>}
-        </div>
-    );
-};
+//     return (
+//         <div className="xpo_space-y-4">
+//             <div className="xpo_space-y-2">
+//                 {variations.map((v, index) => (
+//                     <div key={v.id} className="xpo_bg-gray-50 xpo_border xpo_border-gray-200 xpo_rounded">
+//                         <div className="xpo_flex xpo_items-center xpo_p-3">
+//                             <GripVertical className="xpo_cursor-move xpo_text-gray-400" size={20} />
+//                             <span className="xpo_font-semibold xpo_ml-2">{v.title || `Variation #${index + 1}`}</span>
+//                             <div className="xpo_ml-auto xpo_flex xpo_items-center xpo_gap-2">
+//                                 <button onClick={() => setOpenVariation(openVariation === v.id ? null : v.id)} className="xpo_p-1 xpo_transition-transform">
+//                                     <ChevronDown size={20} className={`xpo_transition-transform ${openVariation === v.id ? 'xpo_rotate-180' : ''}`} />
+//                                 </button>
+//                                 <button onClick={() => setPopup(<ConfirmDelete id={v.id} onConfirm={() => removeVariation(v.id)} onCancel={() => setPopup(null)} />)} className="xpo_p-1 xpo_text-red-500 hover:xpo_text-red-700 xpo_transition-colors">
+//                                     <Trash2 size={16} />
+//                                 </button>
+//                             </div>
+//                         </div>
+//                         {openVariation === v.id && (<SingleVariation v={v} />)}
+//                     </div>
+//                 ))}
+//             </div>
+//             <div className="xpo_mt-4 xpo_flex xpo_flex-wrap xpo_gap-4 xpo_items-center">
+//                 <Button onClick={(e) => {
+//                     e.preventDefault();
+//                     const attributesList = attributes.map(a => ({...a, items: a.items.split(',').map(i => i.trim()).filter(i => i)}));
+//                     console.log(items)
+//                 }}>{__('Generate Variations', 'site-core')}</Button>
+//                 <Button onClick={() => setPopup(<SelectAttributes />)}>{__('Add Variation', 'site-core')}</Button>
+//             </div>
+//             {popup && <Popup onClose={() => setPopup(null)}>{popup}</Popup>}
+//         </div>
+//     );
+// };
 
 const SeoTab = ({ meta, onMetaChange }) => {
     return (

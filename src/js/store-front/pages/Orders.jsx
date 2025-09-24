@@ -9,13 +9,14 @@ import { useLocale } from '../hooks/useLocale';
 import { useCurrency } from '../hooks/useCurrency';
 import { sprintf } from 'sprintf-js';
 import MoonlitSky from '../components/backgrounds/MoonlitSky';
+import { useAuth } from '../hooks/useAuth';
 
 export default function ReturnsOrdersPage() {
   const { __ } = useLocale();
   const { money } = useCurrency();
-  const { purpose = 'history' } = useParams();
   const { setPopup } = usePopup();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { purpose = 'history' } = useParams();
+  const { loggedin, setLoggedin, user } = useAuth();
   const [trackingOrderId, setTrackingOrderId] = useState('');
 
   const orders = [
@@ -125,7 +126,7 @@ export default function ReturnsOrdersPage() {
       case 'processing':
         return { 
           icon: RefreshCw, 
-          color: 'xpo_text-blue-600 xpo_bg-blue-100', 
+          color: 'xpo_text-scaccent-600 xpo_bg-scaccent-100', 
           label: 'Processing',
           message: 'We are preparing your order for shipment. This usually takes 1-2 business days.',
           attachment: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=300&h=200&fit=crop'
@@ -169,13 +170,13 @@ export default function ReturnsOrdersPage() {
     return (
       <div className="xpo_w-full xpo_max-w-2xl">
         <div className="xpo_flex xpo_justify-between xpo_items-center xpo_mb-6">
-          <h3 className="xpo_text-xl xpo_font-bold xpo_text-gray-900">{__('Order Tracking', 'site-core')}</h3>
+          <h3 className="xpo_text-xl xpo_font-bold xpo_text-gray-900 dark:xpo_text-scwhite">{__('Order Tracking', 'site-core')}</h3>
         </div>
 
-        <div className="xpo_bg-gray-50 xpo_rounded-xl xpo_p-4 xpo_mb-6">
+        <div className="xpo_bg-scwhite/50 xpo_rounded-xl xpo_p-4 xpo_mb-6">
           <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-4">
             <div>
-              <h4 className="xpo_font-semibold xpo_text-gray-900">{sprintf(__('Order #%d', 'site-core'), order.id)}</h4>
+              <h4 className="xpo_font-semibold xpo_text-gray-900">{sprintf(__('Order #%s', 'site-core'), order.id)}</h4>
               <p className="xpo_text-sm xpo_text-gray-600">Placed on {new Date(order.date).toLocaleDateString()}</p>
             </div>
             <div className={`xpo_flex xpo_items-center xpo_gap-2 xpo_px-3 xpo_py-2 xpo_rounded-full ${statusInfo.color}`}>
@@ -201,8 +202,8 @@ export default function ReturnsOrdersPage() {
         </div>
 
         <div className="xpo_mb-6">
-          <h5 className="xpo_font-semibold xpo_text-gray-900 xpo_mb-3">{__('Delivery Address', 'site-core')}</h5>
-          <div className="xpo_bg-scwhite xpo_border xpo_border-gray-200 xpo_rounded-lg xpo_p-4">
+          <h5 className="xpo_font-semibold xpo_text-gray-900 dark:xpo_text-scwhite xpo_mb-3">{__('Delivery Address', 'site-core')}</h5>
+          <div className="xpo_bg-scwhite/70 xpo_border xpo_border-gray-200 xpo_rounded-lg xpo_p-4">
             <div className="xpo_flex xpo_items-start xpo_gap-3">
               <MapPin className="xpo_w-5 xpo_h-5 xpo_text-gray-400 xpo_mt-0.5" />
               <div>
@@ -215,7 +216,7 @@ export default function ReturnsOrdersPage() {
           </div>
         </div>
 
-        <div className="xpo_bg-scwhite xpo_border xpo_border-gray-200 xpo_rounded-lg xpo_p-6">
+        <div className="xpo_bg-scwhite/70 xpo_border xpo_border-gray-200 xpo_rounded-lg xpo_p-6">
           <div className="xpo_flex xpo_items-start xpo_gap-4">
             <div className={`xpo_p-3 xpo_rounded-full ${statusInfo.color}`}>
               <StatusIcon className="xpo_w-6 xpo_h-6" />
@@ -230,16 +231,16 @@ export default function ReturnsOrdersPage() {
 
               {order.status === 'fulfilled' && order.trackingInfo && (
                 <div className="xpo_space-y-4">
-                  <div className="xpo_bg-blue-50 xpo_rounded-lg xpo_p-4">
-                    <h6 className="xpo_font-semibold xpo_text-blue-900 xpo_mb-2">{__('Current Location', 'site-core')}</h6>
-                    <p className="xpo_text-sm xpo_text-blue-700 xpo_mb-2">{order.trackingInfo.currentLocation.address}</p>
-                    <a target="_blank" rel="noopener noreferrer" href={order.trackingInfo.mapLink} className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_text-sm xpo_text-blue-600 hover:xpo_text-blue-800">
+                  <div className="xpo_bg-scaccent-50 xpo_rounded-lg xpo_p-4">
+                    <h6 className="xpo_font-semibold xpo_text-scaccent-900 xpo_mb-2">{__('Current Location', 'site-core')}</h6>
+                    <p className="xpo_text-sm xpo_text-scaccent-700 xpo_mb-2">{order.trackingInfo.currentLocation.address}</p>
+                    <a target="_blank" rel="noopener noreferrer" href={order.trackingInfo.mapLink} className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_text-sm xpo_text-scaccent-600 hover:xpo_text-scaccent-800">
                       <MapPin className="xpo_w-4 xpo_h-4" />
                       {__('View on Google Maps', 'site-core')}
                     </a>
                   </div>
 
-                  <div className="xpo_bg-gray-50 xpo_rounded-lg xpo_p-4">
+                  <div className="xpo_bg-scwhite/50 xpo_rounded-lg xpo_p-4">
                     <h6 className="xpo_font-semibold xpo_text-gray-900 xpo_mb-2">{__('Delivery Contact', 'site-core')}</h6>
                     <div className="xpo_flex xpo_items-center xpo_gap-2 xpo_mb-1">
                       <User className="xpo_w-4 xpo_h-4 xpo_text-gray-500" />
@@ -291,7 +292,7 @@ export default function ReturnsOrdersPage() {
             </h3>
           </div>
 
-          <div className="xpo_bg-gray-50 xpo_rounded-xl xpo_p-6 xpo_mb-6">
+          <div className="xpo_bg-scwhite/50 xpo_rounded-xl xpo_p-6 xpo_mb-6">
             <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-4">
               <div>
                 <h4 className="xpo_font-semibold xpo_text-gray-900">{sprintf(__('Order #%s', 'site-core'), order.id)}</h4>
@@ -315,7 +316,7 @@ export default function ReturnsOrdersPage() {
 
             <div className="xpo_space-y-3">
               {order.items.map((item) => (
-                <div key={item.id} className="xpo_flex xpo_gap-3 xpo_bg-scwhite xpo_rounded-lg xpo_p-3">
+                <div key={item.id} className="xpo_flex xpo_gap-3 xpo_bg-scwhite/70 xpo_rounded-lg xpo_p-3">
                   <img
                     alt={item.name} src={item.image}
                     className="xpo_w-12 xpo_h-12 xpo_object-cover xpo_rounded-lg"
@@ -323,7 +324,7 @@ export default function ReturnsOrdersPage() {
                   <div className="xpo_flex-1">
                     <h5 className="xpo_font-medium xpo_text-gray-900 xpo_text-sm">{item.name}</h5>
                     <div className="xpo_flex xpo_justify-between xpo_items-center xpo_mt-1">
-                      <span className="xpo_text-sm xpo_text-gray-600">{sprintf(__('Qty: %d', 'site-core'), item.quantity)}</span>
+                      <span className="xpo_text-sm xpo_text-gray-600">{sprintf(__('Qty: %s', 'site-core'), item.quantity)}</span>
                       <span className="xpo_font-semibold xpo_text-gray-900">{money(item.price, item.currency)}</span>
                     </div>
                   </div>
@@ -386,7 +387,7 @@ export default function ReturnsOrdersPage() {
                   <div className="xpo_flex-1">
                     <h5 className="xpo_font-medium xpo_text-gray-900">{item.name}</h5>
                     <div className="xpo_flex xpo_justify-between xpo_items-center xpo_mt-2">
-                      <span className="xpo_text-sm xpo_text-gray-600">{sprintf(__('Quantity: %d', 'site-core'), item.quantity)}</span>
+                      <span className="xpo_text-sm xpo_text-gray-600">{sprintf(__('Quantity: %s', 'site-core'), item.quantity)}</span>
                       <span className="xpo_font-semibold xpo_text-gray-900">{money(item.price, item.currency)}</span>
                     </div>
                   </div>
@@ -468,8 +469,8 @@ export default function ReturnsOrdersPage() {
     return (
       <div className="xpo_bg-scwhite/70 xpo_rounded-2xl xpo_shadow-lg xpo_p-8 xpo_text-center xpo_max-w-md xpo_mx-auto">
         <div className="xpo_mb-6">
-          <div className="xpo_w-16 xpo_h-16 xpo_bg-blue-100 xpo_rounded-full xpo_flex xpo_items-center xpo_justify-center xpo_mx-auto xpo_mb-4">
-            <Package className="xpo_w-8 xpo_h-8 xpo_text-blue-600" />
+          <div className="xpo_w-16 xpo_h-16 xpo_bg-scaccent-100 xpo_rounded-full xpo_flex xpo_items-center xpo_justify-center xpo_mx-auto xpo_mb-4">
+            <Package className="xpo_w-8 xpo_h-8 xpo_text-scaccent-600" />
           </div>
           <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-900 xpo_mb-2">{__('Track Your Order', 'site-core')}</h2>
           <p className="xpo_text-gray-600">{__('Enter your order ID to track your package', 'site-core')}</p>
@@ -478,10 +479,10 @@ export default function ReturnsOrdersPage() {
         <div className="xpo_space-y-4">
           <input
             type="text"
-            value={trackingOrderId}
+            defaultValue={trackingOrderId}
             onChange={(e) => setTrackingOrderId(e.target.value)}
             placeholder={__('Enter Order ID (e.g., XPO-2024-001)', 'site-core')}
-            className="xpo_w-full xpo_px-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_focus:ring-2 xpo_focus:ring-blue-500 xpo_focus:border-transparent"
+            className="xpo_w-full xpo_px-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_focus:ring-2 xpo_focus:ring-scaccent-500 xpo_focus:border-transparent"
           />
 
           <button
@@ -490,7 +491,7 @@ export default function ReturnsOrdersPage() {
             className={`xpo_w-full xpo_py-3 xpo_px-6 xpo_rounded-lg xpo_font-medium xpo_transition-colors ${
               !trackingOrderId.trim() || submitting
                 ? 'xpo_bg-gray-300 xpo_text-gray-500 xpo_cursor-not-allowed'
-                : 'xpo_bg-blue-600 xpo_text-scwhite hover:xpo_bg-blue-700'
+                : 'xpo_bg-scaccent-600 xpo_text-scwhite hover:xpo_bg-scaccent-700'
             }`}
           >
             {submitting ? __('Tracking...', 'site-core') : __('Track Order', 'site-core')}
@@ -503,23 +504,19 @@ export default function ReturnsOrdersPage() {
   return (
     <div>
       <SiteHeader />
-      <div className="xpo_relative xpo_min-h-screen">
-        <div className="xpo_absolute xpo_top-0 xpo_left-0 xpo_w-full xpo_h-full xpo_m-auto">
+      <div className="xpo_relative">
+        <div className="xpo_absolute xpo_top-0 xpo_left-0 xpo_w-full xpo_h-full xpo_m-auto xpo_hidden dark:xpo_block">
           <MoonlitSky />
         </div>
         <div className="xpo_container xpo_relative xpo_m-auto xpo_z-10 xpo_pb-12">
-          <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-8">
-            <h1 className="xpo_text-3xl xpo_font-bold xpo_text-gray-900">Returns & Orders</h1>
-            <button
-              onClick={() => setIsLoggedIn(!isLoggedIn)}
-              className="xpo_text-sm xpo_text-scwhite-600 hover:xpo_text-scwhite-800"
-            >
-              {isLoggedIn ? 'Logout (Demo)' : 'Login (Demo)'}
-            </button>
+          <div className="xpo_flex xpo_items-center xpo_justify-between xpo_pt-6 xpo_mb-8">
+            <h1 className="xpo_text-3xl xpo_font-bold xpo_text-gray-900 dark:xpo_text-scwhite">Returns & Orders</h1>
           </div>
 
-          {!isLoggedIn ? (
-            <OrderTrackingForm />
+          {!loggedin ? (
+            <div className="xpo_py-12">
+              <OrderTrackingForm />
+            </div>
           ) : (
             <div className="xpo_space-y-6">
               {orders.map((order) => {
@@ -551,7 +548,7 @@ export default function ReturnsOrdersPage() {
 
                     <div className="xpo_space-y-3 xpo_mb-6">
                       {order.items.map((item) => (
-                        <div key={item.id} className="xpo_flex xpo_gap-4 xpo_bg-gray-50 xpo_rounded-lg xpo_p-3">
+                        <div key={item.id} className="xpo_flex xpo_gap-4 xpo_bg-scwhite/50 xpo_rounded-lg xpo_p-3">
                           <img
                             alt={item.name} src={item.image}
                             className="xpo_w-16 xpo_h-16 xpo_object-cover xpo_rounded-lg"
@@ -559,7 +556,7 @@ export default function ReturnsOrdersPage() {
                           <div className="xpo_flex-1">
                             <h4 className="xpo_font-medium xpo_text-gray-900">{item.name}</h4>
                             <div className="xpo_flex xpo_justify-between xpo_items-center xpo_mt-1">
-                              <span className="xpo_text-sm xpo_text-gray-600">{sprintf(__('Qty: %d', 'site-core'), item.quantity)}</span>
+                              <span className="xpo_text-sm xpo_text-gray-600">{sprintf(__('Qty: %s', 'site-core'), item.quantity)}</span>
                               <span className="xpo_font-semibold xpo_text-gray-900">{money(item.price, item.currency)}</span>
                             </div>
                           </div>
@@ -571,7 +568,7 @@ export default function ReturnsOrdersPage() {
                       {canTrack && (
                         <button
                           onClick={() => setPopup(<TrackingModal order={order} />)}
-                          className="xpo_px-4 xpo_py-2 xpo_bg-blue-600 xpo_text-scwhite xpo_rounded-lg xpo_font-medium hover:xpo_bg-blue-700 xpo_transition-colors xpo_flex xpo_items-center xpo_gap-2"
+                          className="xpo_px-4 xpo_py-2 xpo_bg-scaccent-600 xpo_text-scwhite xpo_rounded-lg xpo_font-medium hover:xpo_bg-scaccent-700 xpo_transition-colors xpo_flex xpo_items-center xpo_gap-2"
                         >
                           <Truck className="xpo_w-4 xpo_h-4" />
                           {__('Track', 'site-core')}
@@ -603,7 +600,7 @@ export default function ReturnsOrdersPage() {
               })}
 
               {orders.length === 0 && (
-                <div className="xpo_bg-scwhite xpo_rounded-2xl xpo_shadow-lg xpo_p-12 xpo_text-center">
+                <div className="xpo_bg-scwhite/70 xpo_rounded-2xl xpo_shadow-lg xpo_p-12 xpo_text-center">
                   <div className="xpo_w-16 xpo_h-16 xpo_bg-gray-100 xpo_rounded-full xpo_flex xpo_items-center xpo_justify-center xpo_mx-auto xpo_mb-4">
                     <Package className="xpo_w-8 xpo_h-8 xpo_text-gray-400" />
                   </div>
@@ -611,7 +608,7 @@ export default function ReturnsOrdersPage() {
                   <p className="xpo_text-gray-600 xpo_mb-6">{__("You haven't placed any orders yet.", 'site-core')}</p>
                   <Link 
                     to="/collections/special"
-                    className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_bg-blue-600 xpo_text-scwhite xpo_px-6 xpo_py-3 xpo_rounded-lg xpo_font-medium hover:xpo_bg-blue-700 xpo_transition-colors"
+                    className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_bg-scaccent-600 xpo_text-scwhite xpo_px-6 xpo_py-3 xpo_rounded-lg xpo_font-medium hover:xpo_bg-scaccent-700 xpo_transition-colors"
                   >
                     <Package className="xpo_w-4 xpo_h-4" />
                     {__('Start Shopping', 'site-core')}

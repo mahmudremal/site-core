@@ -12,6 +12,7 @@ import { Popup } from '@js/utils';
 import { useLocale } from "../../hooks/useLocale";
 import { useCurrency } from "../../hooks/useCurrency";
 import { sprintf } from "sprintf-js";
+import MoonlitSky from "../backgrounds/MoonlitSky";
 
 export default function ProductCard({ product, className = '' }) {
     const { __ } = useLocale();
@@ -138,7 +139,19 @@ export const ProductCard2 = ({ product: prod, viewMode = 'card' }) => {
                     </div>
                 </div>
             </Link>
-            {popup && (<Popup onClose={() => setPopup(null)}>{popup}</Popup>)}
+            {popup && (
+                <Popup
+                    className="xpo_fixed xpo_inset-0 xpo_z-50 xpo_flex xpo_items-center xpo_justify-center"
+                    bodyClassName="xpo_relative xpo_z-10 xpo_bg-scwhite dark:xpo_bg-scprimary xpo_text-scprimary dark:xpo_text-scwhite xpo_rounded-xl xpo_shadow-lg xpo_p-6 xpo_max-w-full xpo_min-w-[90vw] md:xpo_min-w-[28rem]"
+                    backdropClassName="xpo_absolute xpo_inset-0 xpo_bg-black/40 dark:xpo_bg-scprimary/40 xpo_bg-opacity-30"
+                    onClose={() => setPopup(null)}
+                >
+                    <div className="xpo_absolute xpo_top-0 xpo_left-0 xpo_w-full xpo_h-full xpo_hidden dark:xpo_block">
+                        <MoonlitSky moon={false} />
+                    </div>
+                    <div className="xpo_relative xpo_z-10">{popup}</div>
+                </Popup>
+            )}
         </>
     )
 }

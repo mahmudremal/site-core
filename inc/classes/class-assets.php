@@ -43,6 +43,7 @@ class Assets {
 		// if (!apply_filters('partnership_manager_screen_active', false)) {return;}
 		// Enqueue scripts.
 		wp_register_script('site-core', WP_SITECORE_BUILD_JS_URI . '/core.js', [], $this->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/core.js'), true);
+		wp_localize_script('site-core', 'siteCoreConfig', apply_filters('sitecorejs/siteconfig', []));
 	}
 
 	/**
@@ -53,6 +54,7 @@ class Assets {
 	public function admin_enqueue_scripts($curr_page) {
 		wp_register_style('site-core', WP_SITECORE_DIR_URI . '/styling.css', [], $this->filemtime(WP_SITECORE_DIR_PATH . '/styling.css'), 'all');
 		wp_register_script('site-core', WP_SITECORE_BUILD_JS_URI . '/core.js', [], $this->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/core.js'), true);
+		// wp_localize_script('site-core', 'siteCoreConfig', apply_filters('sitecorejs/siteconfig', []));
 	}
 
 	/**
@@ -81,12 +83,12 @@ class Assets {
 			'appURI'			=> WP_SITECORE_DIR_URI,
 			'i18n'				=> [],
 			// 'locale'			=> get_user_meta(get_current_user_id(), 'partnership_dashboard_locale', true), // get_user_locale(),
-			'user_id'			=> get_current_user_id(),
-			'isSignUp'			=> strpos($_SERVER['REQUEST_URI'], 'signup') !== false,
-			'pages'				=> [
-				'privacy'		=> get_the_permalink(apply_filters('pm_project/system/getoption', 'general-policy', null)),
-				'terms'			=> get_the_permalink(apply_filters('pm_project/system/getoption', 'general-policy', null)),
-			]
+			// 'user_id'			=> get_current_user_id(),
+			// 'isSignUp'			=> strpos($_SERVER['REQUEST_URI'], 'signup') !== false,
+			// 'pages'				=> [
+			// 	'privacy'		=> get_the_permalink(apply_filters('pm_project/system/getoption', 'general-policy', null)),
+			// 	'terms'			=> get_the_permalink(apply_filters('pm_project/system/getoption', 'general-policy', null)),
+			// ]
 		], (array) $args);
 	}
 

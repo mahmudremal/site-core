@@ -23,6 +23,7 @@ function App() {
         <Route path="checkout" element={<CheckoutPage />} />
         <Route path="my-bookmark" element={<WishlistPage />} />
         <Route path="clients-portal/my/:section" element={<AccountPage />} />
+        <Route path="/auth/:type/:user_id/:verifyMethod/:token" element={<LoginPage />} />
         <Route path="orders/:purpose" element={<ReturnsOrdersPage />} />
         <Route path="collections/:type" element={<CollectionsPage />} />
         <Route path="collections-tags/:type" element={<CollectionsPage />} />

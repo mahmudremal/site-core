@@ -205,4 +205,7 @@ class Order {
             'redirect_url' => home_url("/order-confirmation/{$order->order_number}"),
         ]);
     }
+
+    
+    
 }

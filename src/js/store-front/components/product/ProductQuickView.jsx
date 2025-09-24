@@ -124,26 +124,26 @@ export default function ProductQuickView({ prod = {} }) {
             </div>
 
             <div>
-              <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-800 xpo_mb-2">{product.title}</h2>
+              <h2 className="xpo_text-2xl xpo_font-bold xpo_mb-2">{product.title}</h2>
               <div className="xpo_flex xpo_items-center xpo_space-x-2 xpo_mb-2">
                 <div className="xpo_flex">{renderStars(Math.round(product.average_rating || 0))}</div>
-                <span className="xpo_text-sm xpo_text-gray-600">{sprintf(__('(%d Reviews)', 'site-core'), product.reviews_count || 0)}</span>
+                <span className="xpo_text-sm">{sprintf(__('(%d Reviews)', 'site-core'), product.reviews_count || 0)}</span>
               </div>
               <div className="xpo_text-xl xpo_font-semibold xpo_text-scprimary-600 xpo_mb-4">
                 {money(product.metadata.sale_price, product.metadata.currency)}
                 {product.metadata.price && product.metadata.price !== product.metadata.sale_price && (
-                  <span className="xpo_text-sm xpo_text-gray-500 xpo_line-through xpo_ml-2">
+                  <span className="xpo_text-sm xpo_line-through xpo_ml-2">
                     {money(product.metadata.price, product.metadata.currency)}
                   </span>
                 )}
               </div>
-              <p className="xpo_text-gray-700 xpo_mb-4">{product.metadata.short_description}</p>
+              <p className="xpo_mb-4">{product.metadata.short_description}</p>
 
               {product.variations && Object.keys(product.variations).map((variationKey) => {
                 const variation = product.variations[variationKey];
                 return (
                   <div key={variationKey} className="xpo_mb-4">
-                    <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700 xpo_mb-1">
+                    <label className="xpo_block xpo_text-sm xpo_font-medium xpo_mb-1">
                       {variation.label || variationKey}
                     </label>
                     {variation.type === 'color' ? (
@@ -180,7 +180,7 @@ export default function ProductQuickView({ prod = {} }) {
               })}
 
               <div className="xpo_mb-4">
-                <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700 xpo_mb-1">Quantity</label>
+                <label className="xpo_block xpo_text-sm xpo_font-medium xpo_mb-1">Quantity</label>
                 <div className="xpo_flex xpo_items-center xpo_border xpo_border-gray-300 xpo_rounded-md xpo_w-max">
                   <button type="button" onClick={decrementQty} aria-label="Decrease quantity" className="xpo_px-3 xpo_py-1 xpo_text-xl hover:xpo_bg-gray-100">-</button>
                   <span className="xpo_px-4 xpo_py-1 xpo_text-center">{cartForm.quantity}</span>

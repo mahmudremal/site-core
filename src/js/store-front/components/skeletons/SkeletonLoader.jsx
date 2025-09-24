@@ -43,16 +43,16 @@ export const ProductDetailsSkeleton = () => (
 
 
 export const ProductCardSkeleton = () => {
-    return (
-        <div className="xpo_bg-white xpo_rounded-lg xpo_shadow-lg xpo_p-4 xpo_animate-pulse">
-            <div className="xpo_bg-gray-300 xpo_h-48 xpo_rounded-lg xpo_mb-4"></div>
-            <div className="xpo_space-y-3">
-                <div className="xpo_bg-gray-300 xpo_h-4 xpo_rounded xpo_w-3/4"></div>
-                <div className="xpo_bg-gray-300 xpo_h-4 xpo_rounded xpo_w-1/2"></div>
-                <div className="xpo_bg-gray-300 xpo_h-6 xpo_rounded xpo_w-1/3"></div>
-            </div>
-        </div>
-    );
+  return (
+    <div className="xpo_bg-white xpo_rounded-lg xpo_shadow-lg xpo_p-4 xpo_animate-pulse">
+      <div className="xpo_bg-gray-300 xpo_h-48 xpo_rounded-lg xpo_mb-4"></div>
+      <div className="xpo_space-y-3">
+        <div className="xpo_bg-gray-300 xpo_h-4 xpo_rounded xpo_w-3/4"></div>
+        <div className="xpo_bg-gray-300 xpo_h-4 xpo_rounded xpo_w-1/2"></div>
+        <div className="xpo_bg-gray-300 xpo_h-6 xpo_rounded xpo_w-1/3"></div>
+      </div>
+    </div>
+  );
 };
 
 
@@ -87,5 +87,34 @@ export const RecommendedCrossCollectionsSkeleton = ({ count = 6 }) => {
       ))}
     </div>
   );
+}
+
+export const AddressListCardLoader = ({ count = 2 }) => {
+  return (
+    <div>
+      <div className="xpo_grid xpo_grid-cols-1 xpo_gap-2">
+        {[...Array(count).keys()].map(i => <SkeletonLoader key={i} className="xpo_w-full xpo_h-24 xpo_mb-4" />)}
+      </div>
+    </div>
+  )
+}
+
+export const ReviewBarSkeleton = ({ count = 3 }) => {
+  return (
+    <>
+      {[...Array(count).keys()].map(i => (
+        <div key={i}>
+          <div className="xpo_relative xpo_rounded-lg">
+              <SkeletonLoader className="xpo_w-full xpo_h-[124px]" />
+              <SkeletonLoader className="xpo_h-12 xpo_w-12 xpo_rounded-full xpo_absolute xpo_top-3 xpo_left-3" />
+              <SkeletonLoader className="xpo_h-3 xpo_w-28 xpo_rounded-lg xpo_absolute xpo_top-4 xpo_left-20" />
+              <SkeletonLoader className="xpo_h-3 xpo_w-20 xpo_rounded-lg xpo_absolute xpo_top-8 xpo_left-20" />
+              <SkeletonLoader className="xpo_h-3 xpo_w-20 xpo_rounded-lg xpo_absolute xpo_top-6 xpo_right-4" />
+              <SkeletonLoader className="xpo_h-8 xpo_w-[90%] xpo_rounded-lg xpo_absolute xpo_bottom-5 xpo_left-3" />
+            </div>
+        </div>
+      ))}
+    </>
+  )
 }
 

@@ -138,6 +138,12 @@ class Product {
         foreach ($product['metadata'] as $key => $value) {
             $product['metadata'][$key] = maybe_unserialize($value);
         }
+        $product['featured_image'] = 'https://core.agency.local/wp-content/uploads/sites/5/2025/09/photo-by-pixabay.jpeg';
+        $product['metadata']['gallery'] = [
+            ['url' => 'https://core.agency.local/wp-content/uploads/sites/5/2025/09/photo-by-junior-teixeira.jpeg'],
+            ['url' => 'https://core.agency.local/wp-content/uploads/sites/5/2025/09/photo-by-staci.jpeg'],
+            ['url' => 'https://core.agency.local/wp-content/uploads/sites/5/2025/09/photo-by-life-of-pix.jpg'],
+        ];
         $stored = apply_filters('sitecore/redis/set', 'product.' . $product_id, $product, $this->cache->product_tts);
         return $product;
     }
@@ -288,7 +294,8 @@ class Product {
         global $wpdb;
         $results = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$this->tables->attributes} WHERE 1"
+                "SELECT * FROM {$this->tables->attributes} WHERE product_id = %d",
+                (int) $product_id
             ),
             ARRAY_A
         );
@@ -316,9 +323,10 @@ class Product {
             $results = $wpdb->insert(
                 $this->tables->attributes,
                 [
+                    'product_id' => (int) $product_id,
                     ...$attribute_data
                 ],
-                ['%s', '%s']
+                ['%d', '%s', '%s']
             );
             $attribute_id = $wpdb->insert_id;
             return $attribute_id;
@@ -326,10 +334,11 @@ class Product {
             $updated = $wpdb->update(
                 $this->tables->attributes,
                 [
+                    'product_id' => (int) $product_id,
                     ...$attribute_data
                 ],
                 ['id' => (int) $attribute_id],
-                ['%s', '%s'],
+                ['%d', '%s', '%s'],
                 ['%d']
             );
             return $updated;

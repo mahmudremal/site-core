@@ -2,16 +2,16 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 // import Scene from "./Scene";
 
-export default function MoonlitSky() {
+export default function MoonlitSky({ moon = true }) {
   const skyRef = useRef(null);
 
   // Store moon initial positions so they don’t re-randomize on re-render
   const [moonPositions] = useState(() =>
-    Array.from({ length: 1 }).map(() => ({
+    moon ? Array.from({ length: 1 }).map(() => ({
       top: `${Math.random() * 30}%`,
       left: `${Math.random() * 80}%`,
       size: 40 + Math.random() * 20,
-    }))
+    })) : []
   );
 
   useEffect(() => {

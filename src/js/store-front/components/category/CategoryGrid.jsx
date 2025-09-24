@@ -14,7 +14,7 @@ const CategoryGrid = ({ categories }) => {
 
   return (
     <section className="xpo_mb-12">
-      <h2 className="xpo_text-2xl xpo_font-bold xpo_mb-6">Shop by Category</h2>
+      <h2 className="xpo_text-2xl xpo_font-bold xpo_mb-6 xpo_text-scprimary dark:xpo_text-scwhite">Shop by Category</h2>
       <div className="xpo_grid xpo_grid-cols-2 sm:xpo_grid-cols-4 xpo_gap-6">
         {displayCategories.map(({ id, name, icon }) => (
           <div

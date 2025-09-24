@@ -28,10 +28,8 @@ const ProductCarousel = ({
   const autoplayRef = useRef(null);
   const containerRef = useRef(null);
 
-  // Responsive slides per view
   const [responsiveSlidesPerView, setResponsiveSlidesPerView] = useState(slidesPerView);
 
-  // Handle responsive design
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
@@ -51,7 +49,6 @@ const ProductCarousel = ({
     return () => window.removeEventListener('resize', handleResize);
   }, [slidesPerView]);
 
-  // Build API filters based on props
   const buildFilters = () => {
     const apiFilters = {
       per_page: 12, // Get more products for carousel
@@ -60,13 +57,10 @@ const ProductCarousel = ({
       ...filters
     };
 
-    // Add category filter if provided
     if (category) {
-      // Assuming category can be either term_id or slug
       apiFilters.sc_product_category = category;
     }
 
-    // Add recommendation type logic
     if (recommendationType) {
       switch (recommendationType) {
         case 'featured':
@@ -125,7 +119,6 @@ const ProductCarousel = ({
     fetchProducts();
   }, [category, recommendationType, JSON.stringify(filters)]);
 
-  // Autoplay functionality
   const startAutoplay = () => {
     if (autoplay && products.length > responsiveSlidesPerView) {
       autoplayRef.current = setInterval(() => {
@@ -146,7 +139,6 @@ const ProductCarousel = ({
     return () => stopAutoplay();
   }, [autoplay, products.length, responsiveSlidesPerView, autoplayDelay]);
 
-  // Navigation functions
   const maxIndex = Math.max(0, products.length - responsiveSlidesPerView);
 
   const handlePrev = () => {
@@ -173,7 +165,6 @@ const ProductCarousel = ({
     setTimeout(() => setIsTransitioning(false), 300);
   };
 
-  // Mouse events for autoplay
   const handleMouseEnter = () => {
     if (autoplay) stopAutoplay();
   };
@@ -182,7 +173,6 @@ const ProductCarousel = ({
     if (autoplay) startAutoplay();
   };
 
-  // Loading state
   if (loading) {
     return (
       <section className={`xpo_mb-12 ${className}`}>
@@ -195,7 +185,6 @@ const ProductCarousel = ({
     );
   }
 
-  // Error state
   if (error) {
     return (
       <section className={`xpo_mb-12 ${className}`}>
@@ -215,7 +204,6 @@ const ProductCarousel = ({
     );
   }
 
-  // No products state
   if (!products.length) {
     return (
       <section className={`xpo_mb-12 ${className}`}>
@@ -227,7 +215,6 @@ const ProductCarousel = ({
     );
   }
 
-  // Calculate slide width
   const slideWidth = 100 / responsiveSlidesPerView;
   const translateX = -(currentIndex * slideWidth);
 

@@ -24,11 +24,11 @@ class Project {
 		// $this->setup_markethia();
 	}
 	protected function setup_hooks() {
-			// Hunts::get_instance();
 		Cdn::get_instance();
 		Sms::get_instance();
 			Apps::get_instance();
 			Task::get_instance();
+		Credits::get_instance();
 		// 	Error::get_instance();
 			Utils::get_instance();
 			// Radar::get_instance();
@@ -46,8 +46,8 @@ class Project {
 			Affiliate::get_instance();
 		// 		Payout::get_instance();
 		// 		Stores::get_instance();
-		// 	Visitor::get_instance();
-		// 		Toolbar::get_instance();
+			Visitor::get_instance();
+				Toolbar::get_instance();
 		// 		Invoice::get_instance();
 		// 		Finance::get_instance();
 		// 	Payment::get_instance();

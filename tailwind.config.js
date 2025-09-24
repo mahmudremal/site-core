@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: '[data-theme="dark"]',
+  darkMode: 'class', // '[data-theme="dark"]',
   prefix: 'xpo_', // /hunting
   content: ['./server/app.jsx', './inc/widgets/ecommerce/ProductMetabox.jsx', ...Array(10)].map((u, i) => `./src/js/${[...Array(i + 1)].map(o => '**/').join('')}*.{js,jsx,ts,tsx}`),
   theme: {

@@ -24,7 +24,7 @@ module.exports = {
     //   public: JS_DIR + '/public.js',
     //   editor: JS_DIR + '/editor.js',
       server: JS_DIR + '/server.js',
-    //   media: JS_DIR + '/media.js',
+      media: JS_DIR + '/media.js',
     //   admin: JS_DIR + '/admin.js',
     //   popup: JS_DIR + '/popup.js',
     // // emails: JS_DIR + '/emails.js',
