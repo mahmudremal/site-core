@@ -96,6 +96,7 @@ class Cdn {
     }
 
     public function rest_api_init() {
+		if (apply_filters('pm_project/system/isactive', 'cdn-paused')) {return;}
         register_rest_route('sitecore/v1', '/cdn/attachments/(?P<post_id>\d+)/send', [
 			'methods' => 'GET',
 			'callback' => [$this, 'api_send_attachment'],
@@ -242,6 +243,7 @@ class Cdn {
     }
 
     public function handle_deletion($post_ID) {
+        if (apply_filters('pm_project/system/isactive', 'cdn-paused')) {return;}
         $hosted_on = get_post_meta($post_ID, '_hostedon', true);
         $cdn_id = get_post_meta($post_ID, '_cdn_id', true);
 

@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
   );
 
   const logout = () => {
-    setUser(null);
+    setSession(prev => ({ ...prev, session_key: null, session_id: null, user: null }));
   };
 
   const login = (formData) => {

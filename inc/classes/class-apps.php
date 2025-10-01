@@ -59,6 +59,7 @@ class Apps {
     }
 
     public function rest_api_init() {
+        if (apply_filters('pm_project/system/isactive', 'apps-paused')) {return;}
         // Users thing.
         register_rest_route('sitecore/v1', '/apps/users', [
             'methods'  => 'GET',

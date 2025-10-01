@@ -1,25 +1,34 @@
 import { Helmet } from "react-helmet";
+import { useAuth } from "../../hooks/useAuth";
 import { useLocale } from "../../hooks/useLocale";
 import { sprintf } from "sprintf-js";
 import { site_url } from "@functions";
 
-const HomePageHelmet = () => {
+const OrdersPageHelmet = () => {
+  const { loggedin } = useAuth();
   const { __ } = useLocale();
+
   const siteName = "Moonlit Meadow";
-  const pageTitle = sprintf(__('%s | Quality Products, Great Deals & Fast Delivery in Bangladesh', 'site-core'), siteName);
-  const pageDescription = __('Welcome to Moonlit Meadow - your one-stop shop for quality products, unbeatable deals, and fast shipping across Bangladesh. Shop confidently with enterprise-grade commerce.', 'site-core');
+  const canonicalUrl = site_url(`/orders`);
+  const ogImage = site_url(`/images/orders-og-image.jpg`);
 
-  const canonicalUrl = site_url();
+  const pageTitle = loggedin
+    ? sprintf(__(`Your Orders | %s`, 'site-core'), siteName)
+    : sprintf(__(`Track Your Order | %s`, 'site-core'), siteName);
 
-  const ogImage = site_url(`/images/homepage-og-image.jpg`);
+  const pageDescription = loggedin
+    ? __('View your order history, track shipments, request refunds, and leave reviews for your purchases. Enjoy enterprise-grade shopping with Moonlit Meadow in Bangladesh.', 'site-core')
+    : __('Track your Moonlit Meadow orders easily. Enter your Order ID to see the latest status of your purchase and shipment.', 'site-core');
+
+  // Auth pages or order tracking form shouldn't be indexed if user is not logged in
+  const robotsContent = loggedin ? "index, follow" : "noindex, nofollow";
 
   return (
     <Helmet>
       {/* Basic SEO */}
       <title>{pageTitle}</title>
       <meta name="description" content={pageDescription} />
-      <meta name="keywords" content={__('Moonlit Meadow, online shopping Bangladesh, ecommerce Bangladesh, best deals, fast shipping', 'site-core')} />
-      <meta name="robots" content="index, follow" />
+      <meta name="robots" content={robotsContent} />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link rel="canonical" href={canonicalUrl} />
 
@@ -42,4 +51,4 @@ const HomePageHelmet = () => {
   );
 };
 
-export default HomePageHelmet;
+export default OrdersPageHelmet;

@@ -1,12 +1,18 @@
 import { createContext, useEffect, useState } from 'react';
+import { useSession } from '../hooks/useSession';
 
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('dark');
+  const { session, setSession } = useSession();
+  const [theme, setTheme] = useState(
+    () => session?.theme || 'dark'
+  );
 
   const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    setSession(prev => ({...prev, theme: newTheme}));
   };
 
   useEffect(() => {

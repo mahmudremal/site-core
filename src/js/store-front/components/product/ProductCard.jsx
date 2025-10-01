@@ -41,27 +41,13 @@ export const ProductCard2 = ({ product: prod, viewMode = 'card' }) => {
     const { money } = useCurrency();
     const [popup, setPopup] = useState(null);
     const { cart, add_to_cart } = useCart();
-    const { wishlist, setWishlist } = useWishlist();
+    const { is_in_wishlist, toggle_wishlist } = useWishlist();
     const [adding, setAdding] = useState(null);
     const [product, setProduct] = useState({...prod});
     
     const toggleWishlist = (e, product) => {
         e.preventDefault();e.stopPropagation();
-        // console.log('Toggle wishlist for product:', product);
-        sleep(0).then(() => {
-            api.post(`/wishlist/${product.id}`).then(res => res.data)
-            .then(res => {
-                if (res?.action == 'added') {
-                    setWishlist(prev => [product, ...prev]);
-                    // return notify.success('Product added to wishlist!');
-                }
-                if (res?.action == 'removed') {
-                    setWishlist(prev => prev.filter(p => p.product_id != product.id));
-                    // return notify.success('Product removed to wishlist!');
-                }
-            })
-            .catch(err => notify.error(err)).finally(() => {});
-        });
+        toggle_wishlist({ product });
     };
 
     const addToCart = (e, product) => {
@@ -75,8 +61,7 @@ export const ProductCard2 = ({ product: prod, viewMode = 'card' }) => {
         setPopup(<ProductQuickView prod={product} />);
     };
 
-    // const isInCart = cart.cart_items.some(p => p.product_id == product?.id);
-    const isInWishlist = wishlist.some(p => p.product_id == product?.id);
+    const isInWishlist = is_in_wishlist({product_id: product?.id});
     
     return (
         <>

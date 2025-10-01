@@ -16,10 +16,19 @@ const CollectionsPage = () => {
   const [loading, setLoading] = useState(null);
 
   return (
+    <>
+      <RecommendedCrossCollections collectionType={collectionType} />
+      {/* <RecommendedFeatures /> */}
+      <ProductCatalogue tools={true} shadow={true} />
+    </>
+  );
+};
+
+const PageBody = () => {
+  return (
     <div>
       <SiteHeader />
       <div className="xpo_bg-scwhite-50 dark:xpo_bg-scprimary-50 xpo_relative xpo_min-h-screen xpo_py-8">
-        {/* xpo_hidden dark:xpo_block */}
         <div className="xpo_absolute xpo_h-full xpo_inset-0 xpo_z-0 xpo_pointer-events-none xpo_select-none">
           <MoonlitSky />
         </div>
@@ -30,17 +39,13 @@ const CollectionsPage = () => {
             <p className="xpo_text-lg xpo_text-scwhite-600 dark:xpo_text-scwhite-600">{__('Discover curated collections and products tailored just for you', 'site-core')}</p>
           </div>
 
-          <RecommendedCrossCollections collectionType={collectionType} />
-
-          {/* <RecommendedFeatures /> */}
-
-          <ProductCatalogue tools={true} shadow={true} />
+          <CollectionsPage />
           
         </div>
       </div>
       <SiteFooter />
     </div>
-  );
-};
+  )
+}
 
-export default CollectionsPage;
+export default PageBody;

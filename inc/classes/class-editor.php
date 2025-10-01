@@ -23,6 +23,7 @@ class Editor {
     }
     
     public function rest_api_init() {
+		if (apply_filters('pm_project/system/isactive', 'editor-disabled')) {return;}
 		register_rest_route('sitecore/v1', '/ai/content/put', [
 			'methods' => 'POST',
 			'callback' => [$this, 'api_submit_ai_content'],
@@ -48,11 +49,13 @@ class Editor {
     }
 
 	public function put_ai_content() {
+		if (apply_filters('pm_project/system/isactive', 'editor-disabled')) {return;}
 		$response = $_POST;
 		wp_send_json_success($response);
 	}
 	
 	function enqueue_editor_scripts_and_styles($hook) {
+		if (apply_filters('pm_project/system/isactive', 'editor-disabled')) {return;}
 		if ('post.php' === $hook || 'post-new.php' === $hook) {
 			// wp_enqueue_style('task-ai-editor', WP_SITECORE_BUILD_CSS_URI . '/editor.css', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_CSS_DIR_PATH . '/editor.css'), 'all');
 			wp_enqueue_script('task-ai-editor', WP_SITECORE_BUILD_JS_URI . '/editor.js', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/editor.js'), true);

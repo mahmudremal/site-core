@@ -1,37 +1,35 @@
 {
-  "requestsFinished": 3,
+  "requestsFinished": 0,
   "requestsFailed": 4,
-  "requestsRetries": 7,
+  "requestsRetries": 4,
   "requestsFailedPerMinute": 0,
   "requestsFinishedPerMinute": 0,
-  "requestMinDurationMillis": 3420,
-  "requestMaxDurationMillis": 9498,
-  "requestTotalFailedDurationMillis": 243479,
-  "requestTotalFinishedDurationMillis": 16939,
-  "crawlerStartedAt": "2025-09-16T17:17:30.127Z",
-  "crawlerFinishedAt": "2025-09-16T17:29:44.245Z",
-  "statsPersistedAt": "2025-09-16T17:29:44.245Z",
-  "crawlerRuntimeMillis": 743363,
-  "crawlerLastStartTimestamp": 1758043040882,
+  "requestMinDurationMillis": null,
+  "requestMaxDurationMillis": 0,
+  "requestTotalFailedDurationMillis": 1888,
+  "requestTotalFinishedDurationMillis": 0,
+  "crawlerStartedAt": "2025-09-24T15:35:09.995Z",
+  "crawlerFinishedAt": "2025-09-24T15:35:16.195Z",
+  "statsPersistedAt": "2025-09-24T15:35:16.195Z",
+  "crawlerRuntimeMillis": 9105815,
+  "crawlerLastStartTimestamp": 1758719010380,
   "requestRetryHistogram": [
     null,
-    2,
     null,
-    5
+    null,
+    4
   ],
   "statsId": 0,
-  "requestAvgFailedDurationMillis": 60870,
-  "requestAvgFinishedDurationMillis": 5646,
-  "requestTotalDurationMillis": 260418,
-  "requestsTotal": 7,
-  "requestsWithStatusCode": {
-    "200": 3
-  },
+  "requestAvgFailedDurationMillis": 472,
+  "requestAvgFinishedDurationMillis": null,
+  "requestTotalDurationMillis": 1888,
+  "requestsTotal": 4,
+  "requestsWithStatusCode": {},
   "errors": {
-    "C:\\Users\\Lenovo\\Local Sites\\agency\\app\\public\\wp-content\\plugins\\site-core\\node_modules\\@crawlee\\core\\crawlers\\crawler_utils.js:13:11": {
+    "C:\\Users\\Lenovo\\Local Sites\\agency\\app\\public\\wp-content\\plugins\\site-core\\node_modules\\@crawlee\\playwright\\internals\\utils\\playwright-utils.js:166:17": {
       "missing error code": {
         "Error": {
-          "Navigation timed out after 60 seconds.": {
+          "page.goto: net::ERR_EMPTY_RESPONSE at _": {
             "count": 4
           }
         }
@@ -39,11 +37,11 @@
     }
   },
   "retryErrors": {
-    "C:\\Users\\Lenovo\\Local Sites\\agency\\app\\public\\wp-content\\plugins\\site-core\\node_modules\\@crawlee\\core\\crawlers\\crawler_utils.js:13:11": {
+    "C:\\Users\\Lenovo\\Local Sites\\agency\\app\\public\\wp-content\\plugins\\site-core\\node_modules\\@crawlee\\playwright\\internals\\utils\\playwright-utils.js:166:17": {
       "missing error code": {
         "Error": {
-          "Navigation timed out after 60 seconds.": {
-            "count": 17
+          "page.goto: net::ERR_EMPTY_RESPONSE at _": {
+            "count": 12
           }
         }
       }

@@ -1,17 +1,16 @@
 
-import QRCode from 'react-qr-code';
 import OSIcons from './OSIcons';
-import { useLocale } from '../../hooks/useLocale';
-import { useCurrency } from '../../hooks/useCurrency';
+import QRCode from 'react-qr-code';
 
-export default function AppsLinkQR() {
-    const { __ } = useLocale();
-    const { money } = useCurrency();
+
+export default function AppsLinkQR({ __, theme }) {
+
+
     return (
         <div aria-label="App download options" className="xpo_mt-2 xpo_p-2 xpo_rounded-lg xpo_mx-auto xpo_text-center xpo_relative">
             <h2 className="xpo_text-xl xpo_font-semibold xpo_mb-5">{__('Download Our App', 'site-core')}</h2>
 
-            <p className="xpo_text-gray-700 xpo_text-sm xpo_mb-6">{__('Choose your platform or scan the QR code below:', 'site-core')}</p>
+            <p className="xpo_text-gray-700 dark:xpo_text-scwhite xpo_text-sm xpo_mb-6">{__('Choose your platform or scan the QR code below:', 'site-core')}</p>
 
             <div className="xpo_flex xpo_justify-center xpo_gap-8 xpo_mb-8">
                 {/* iOS */}
@@ -42,9 +41,15 @@ export default function AppsLinkQR() {
                 </a>
             </div>
 
-            <div className="xpo_inline-block xpo_bg-white xpo_p-4 xpo_rounded-lg xpo_shadow-md">
-                <QRCode size={200} value={`${location.origin}/apps`} className="xpo_w-48 xpo_h-48" />
-                <p className="xpo_text-gray-700 xpo_text-xs xpo_mt-3">{__('Scan QR code to download', 'site-core')}</p>
+            <div className="xpo_inline-block xpo_bg-white dark:xpo_bg-scprimary dark:xpo_border dark:xpo_border-scwhite xpo_p-4 xpo_rounded-lg xpo_shadow-md">
+                <QRCode
+                    size={200}
+                    value={`${location.origin}/apps`}
+                    bgColor={theme == 'dark' ? '#0A1D37' : '#FFFFFF'}
+                    fgColor={theme == 'dark' ? '#FFFFFF' : '#000000'}
+                    className="xpo_w-48 xpo_h-48"
+                />
+                <p className="xpo_text-gray-700 dark:xpo_text-scwhite xpo_text-xs xpo_mt-3">{__('Scan QR code to download', 'site-core')}</p>
             </div>
         </div>
     )

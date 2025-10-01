@@ -134,16 +134,17 @@ class Product {
             'categories'  => wp_get_post_terms($product_id, 'sc_product_category', ['fields' => 'all']),
             'tags'        => wp_get_post_terms($product_id, 'sc_product_tag', ['fields' => 'all']),
             'variations'  => $this->get_product_variations($product_id),
+            'attributes'  => $this->get_product_attributes($product_id),
         ];
         foreach ($product['metadata'] as $key => $value) {
             $product['metadata'][$key] = maybe_unserialize($value);
         }
-        $product['featured_image'] = 'https://core.agency.local/wp-content/uploads/sites/5/2025/09/photo-by-pixabay.jpeg';
-        $product['metadata']['gallery'] = [
-            ['url' => 'https://core.agency.local/wp-content/uploads/sites/5/2025/09/photo-by-junior-teixeira.jpeg'],
-            ['url' => 'https://core.agency.local/wp-content/uploads/sites/5/2025/09/photo-by-staci.jpeg'],
-            ['url' => 'https://core.agency.local/wp-content/uploads/sites/5/2025/09/photo-by-life-of-pix.jpg'],
-        ];
+        // $product['featured_image'] = 'https://core.agency.local/wp-content/uploads/sites/5/2025/09/photo-by-pixabay.jpeg';
+        // $product['metadata']['gallery'] = [
+        //     ['url' => 'https://core.agency.local/wp-content/uploads/sites/5/2025/09/photo-by-junior-teixeira.jpeg'],
+        //     ['url' => 'https://core.agency.local/wp-content/uploads/sites/5/2025/09/photo-by-staci.jpeg'],
+        //     ['url' => 'https://core.agency.local/wp-content/uploads/sites/5/2025/09/photo-by-life-of-pix.jpg'],
+        // ];
         $stored = apply_filters('sitecore/redis/set', 'product.' . $product_id, $product, $this->cache->product_tts);
         return $product;
     }
@@ -246,11 +247,18 @@ class Product {
             foreach ($row as $key => $value) {
                 $row[$key] = maybe_unserialize($value);
             }
+            $row['attributes'] = $wpdb->get_results(
+                $wpdb->prepare(
+                    "SELECT var.*, att.name, att.attribute_id FROM {$this->tables->vars_atts_relations} var LEFT JOIN {$this->tables->attribute_items} att ON att.id = var.attribute_item_id WHERE var.variation_id=%d", (int) $row['id']
+                ),
+                ARRAY_A
+            );
             $results[$index] = $row;
         }
         return $results;
     }
-    public function update_product_variation($product_id, $variation_id, $variation_data) {
+
+    public function update_product_variation($product_id, $variation_id, $variation_data, $attributes) {
         global $wpdb;
         foreach ($variation_data as $key => $value) {
             $variation_data[$key] = maybe_serialize($value);
@@ -264,22 +272,56 @@ class Product {
                 ],
                 ['%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s']
             );
-            // wp_die($wpdb->last_error);
-            return $wpdb->insert_id;
+
+            $variation_id = $wpdb->insert_id;
+
+            if (!empty($variation_id)) {
+                foreach ($attributes as $row) {
+                    $inserted = $wpdb->insert(
+                        $this->tables->vars_atts_relations,
+                        [
+                            'variation_id' => $variation_id,
+                            'attribute_item_id' => $row['id']
+                        ]
+                    );
+                }
+
+                return $this->get_the_variation((int) $variation_id);
+            }
+            return null;
         } else {
+            if (isset($variation_data['attributes'])) {unset($variation_data['attributes']);}
             $updated = $wpdb->update(
                 $this->tables->variations,
                 [
                     'product_id' => $product_id,
                     ...$variation_data
                 ],
-                ['id' => (int) $variation_id],
-                ['%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s'],
-                ['%d']
+                ['id' => (int) $variation_id]
             );
+            // $this->get_the_variation($variation_id)
+            return $wpdb->last_error;
             return $updated;
         }
 	}
+
+    public function get_the_variation($variation_id) {
+        global $wpdb;
+        $variation = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT * FROM {$this->tables->variations} WHERE id=%d", (int) $variation_id
+            ),
+            ARRAY_A
+        );
+        $variation['attributes'] = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT var.*, att.name, att.attribute_id FROM {$this->tables->vars_atts_relations} var LEFT JOIN {$this->tables->attribute_items} att ON att.id = var.attribute_item_id WHERE var.variation_id=%d", (int) $variation_id
+            ),
+            ARRAY_A
+        );
+        return $variation;
+    }
+
     public function delete_product_variation($variation_id) {
         global $wpdb;
         $success = $wpdb->delete(
@@ -287,6 +329,13 @@ class Product {
             ['id' => (int) $variation_id],
             ['%d']
         );
+        if ($success) {
+            $deleted = $wpdb->delete(
+                $this->tables->vars_atts_relations,
+                ['variation_id' => (int) $variation_id],
+                ['%d']
+            );
+        }
         return $success;
     }
 
@@ -314,6 +363,7 @@ class Product {
         }
         return $results;
     }
+
     public function update_product_attribute($product_id, $attribute_id, $attribute_data) {
         global $wpdb;
         foreach ($attribute_data as $key => $value) {
@@ -344,6 +394,7 @@ class Product {
             return $updated;
         }
 	}
+
     public function delete_product_attribute($attribute_id) {
         global $wpdb;
         $success = $wpdb->delete(
@@ -383,6 +434,7 @@ class Product {
             return $updated;
         }
 	}
+
     public function delete_product_attribute_item($item_id) {
         global $wpdb;
         $success = $wpdb->delete(
@@ -656,12 +708,12 @@ class Product {
         $args = [
             'post_type'      => 'sc_product',
             'post_status'    => 'publish',
-            'post__not_in'   => [$product_id],  // Always exclude current product
+            'post__not_in'   => [$product_id],
             'posts_per_page' => $per_page,
             'paged'          => $page,
+            'fields'         => 'ids'
         ];
 
-        // Add tax_query only if there are terms to filter by
         if (!empty($tax_query)) {
             $args['tax_query'] = $tax_query;
         }
@@ -675,22 +727,7 @@ class Product {
         if ($recommended_products_query->have_posts()) {
             while ($recommended_products_query->have_posts()) {
                 $recommended_products_query->the_post();
-                $response_data[] = [
-                    'id' => get_the_ID(),
-                    'title' => get_the_title(),
-                    'content' => apply_filters('the_content', get_the_content()),
-                    'excerpt' => get_the_excerpt(),
-                    'date' => get_the_date(),
-                    'slug' => get_post_field('post_name', get_the_ID()),
-                    'link' => get_permalink(),
-                    'featured_image' => get_the_post_thumbnail_url(get_the_ID(), 'full'),
-                    'metadata' => $this->get_product_meta(get_the_ID()),
-                    'taxonomies' => [
-                        'sc_product_category' => wp_get_post_terms(get_the_ID(), 'sc_product_category', ['fields' => 'all']),
-                        'sc_product_tag' => wp_get_post_terms(get_the_ID(), 'sc_product_tag', ['fields' => 'all']),
-                    ],
-                    'variations'  => $this->get_product_variations(get_the_ID()),
-                ];
+                $response_data[] = $this->get_product(get_the_ID());
             }
             wp_reset_postdata();
         }

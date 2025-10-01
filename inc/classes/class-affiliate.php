@@ -87,6 +87,7 @@ class Affiliate {
 	}
 	
 	public function register_shortcodes() {
+        if (apply_filters('pm_project/system/isactive', 'affiliate-paused')) {return;}
 		add_shortcode('affiliate_link', [$this, 'handle_shortcode_redirect']);
 		add_rewrite_rule('^links/([^/]+)/?$', 'index.php?affiliate_redirect=$matches[1]', 'top');
 		add_filter('query_vars', fn($vars) => array_merge($vars, ['affiliate_redirect']));
@@ -293,6 +294,7 @@ class Affiliate {
 	}
 
 	public function add_admin_menu() {
+		if (apply_filters('pm_project/system/isactive', 'affiliate-paused')) {return;}
 		add_menu_page(__('Affiliate Links', 'site-core'), __('Affiliates', 'site-core'), 'manage_options', 'affiliate-links', [$this, 'admin_page'], 'dashicons-admin-links');
 	}
 

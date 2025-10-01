@@ -1,52 +1,62 @@
 import { Helmet } from "react-helmet";
+import { useLocale } from "../../hooks/useLocale";
+import { sprintf } from "sprintf-js";
+import { site_url } from "@functions";
 
 const ProductPageHelmet = ({ product }) => {
-  // Fallback values if product data is missing
-  const {
-    name = "Product Name",
-    category = "Category",
-    description = "A detailed description of the product, its features, and benefits.",
-    url = "https://www.yourstore.com/product/product-slug",
-    image = "https://www.yourstore.com/images/product-default.jpg",
-    price = null,
-    currency = "USD",
-    availability = "in stock", // e.g., "in stock", "out of stock"
-  } = product || {};
+  const { __ } = useLocale();
+  if (!product) return null;
 
-  // Compose price meta tag if price is available
-  const priceMeta = price
-    ? <meta property="product:price:amount" content={price.toString()} />
-    : null;
+  const siteName = "Moonlit Meadow";
 
-  const currencyMeta = price
-    ? <meta property="product:price:currency" content={currency} />
-    : null;
+  // Metadata from product or fallback
+  const meta = product.metadata || {};
+  const title = meta.seo_title || `${product.title} | ${siteName}`;
+  const description = meta.seo_description || meta.short_description || product.excerpt || sprintf(__('Buy %s at %s. Best deals and fast delivery in Bangladesh.', 'site-core'), product.title, siteName);
+
+  const keywords = meta.seo_keywords || "";
+  
+  const url = meta.canonical_url || product.link || site_url(`/products/${product.slug}`);
+
+  const image = meta.og_image || product.featured_image || (meta.gallery?.[0]?.url ?? "");
+
+  const ogTitle = meta.og_title || title;
+  const ogDescription = meta.og_description || description;
+
+  const price = meta.sale_price || meta.price || null;
+  const currency = "BDT";
+  const availability = "in stock";
 
   return (
     <Helmet>
-      <title>{`${name} | ${category} | Your Store Name`}</title>
+      {/* Basic SEO */}
+      <title>{title}</title>
       <meta name="description" content={description} />
+      {keywords && <meta name="keywords" content={keywords} />}
       <meta name="robots" content="index, follow" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link rel="canonical" href={url} />
 
       {/* Open Graph / Facebook */}
-      <meta property="og:title" content={name} />
-      <meta property="og:description" content={description} />
+      <meta property="og:site_name" content={siteName} />
+      <meta property="og:title" content={ogTitle} />
+      <meta property="og:description" content={ogDescription} />
       <meta property="og:type" content="product" />
       <meta property="og:url" content={url} />
-      <meta property="og:image" content={image} />
+      {image && <meta property="og:image" content={image} />}
+      <meta property="og:locale" content="en_BD" />
 
       {/* Product-specific Open Graph tags */}
-      {priceMeta}
-      {currencyMeta}
+      {price && <meta property="product:price:amount" content={price.toString()} />}
+      {price && <meta property="product:price:currency" content={currency} />}
       <meta property="product:availability" content={availability} />
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={name} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={image} />
+      <meta name="twitter:title" content={ogTitle} />
+      <meta name="twitter:description" content={ogDescription} />
+      {image && <meta name="twitter:image" content={image} />}
+      <meta name="twitter:site" content="@MoonlitMeadow" />
     </Helmet>
   );
 };

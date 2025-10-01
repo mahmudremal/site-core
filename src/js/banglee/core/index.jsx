@@ -16,6 +16,11 @@ export const Dropdown = ({ button, placement = 'bottom-end', className = 'xpo_z-
         if (btnRef.current && popperRef.current) {
             createPopper(btnRef.current, popperRef.current, {
                 placement: placement,
+                modifiers: [
+                    {
+                        name: 'offset', options: {offset: [0, 10]}
+                    }
+                ],
             });
         }
     }, [visible]);

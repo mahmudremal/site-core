@@ -35,7 +35,6 @@ const categories = [
   "Food & Grocery"
 ];
 
-// Enhanced Search Autocomplete Component
 function SearchAutocomplete({ searchTerm, visible, highlightedIndex, onSelect, autocompleteRef }) {
   const { __ } = useLocale();
   const { money } = useCurrency();
@@ -287,11 +286,12 @@ function AccountDropdown({ isSignedIn }) {
 
 function DeliveryZonePicker() {
   const { __ } = useLocale();
+  const { loggedin } = useAuth();
   const { money } = useCurrency();
   const { setPopup } = usePopup();
   
   return (
-    <div className="xpo_p-4 xpo_min-w-sm">
+    <div className="xpo_p-2 xpo_min-w-sm">
       <div className="xpo_text-gray-700 dark:xpo_text-scwhite-700 xpo_mb-4">
         <p className="xpo_text-sm xpo_leading-relaxed" dangerouslySetInnerHTML={{__html: sprintf(__('We\'re showing you items that ship to %sBangladesh%s. To see items that ship to a different country, change your delivery address.', 'site-core'), '<strong>', '</strong>')}}>
         </p>
@@ -310,26 +310,28 @@ function DeliveryZonePicker() {
                   {__('Delivery options and delivery speeds may vary for different locations', 'site-core')}
                 </p>
                 
-                <button className="xpo_w-full xpo_bg-scaccent-400 hover:xpo_bg-scaccent-500 xpo_text-gray-900 xpo_py-2 xpo_px-4 xpo_rounded-lg xpo_font-medium xpo_transition-colors xpo_mb-4">
-                  {__('Sign in to see your addresses', 'site-core')}
-                </button>
+                {!loggedin && (
+                  <Link to="/auth/signin" className="xpo_w-full xpo_bg-scaccent-400 hover:xpo_bg-scaccent-500 xpo_text-gray-900 xpo_py-2 xpo_px-4 xpo_rounded-lg xpo_font-medium xpo_transition-colors xpo_mb-4">
+                    {__('Sign in to see your addresses', 'site-core')}
+                  </Link>
+                )}
                 
-                <div className="xpo_text-center xpo_text-sm xpo_text-gray-500 dark:xpo_text-scwhite-500 xpo_mb-4">{__('or enter a US zip code', 'site-core')}</div>
+                <div className="xpo_text-center xpo_text-sm xpo_text-gray-500 dark:xpo_text-scwhite-500 xpo_mb-4">{__('or enter a zip code', 'site-core')}</div>
                 
                 <div className="xpo_flex xpo_gap-2 xpo_mb-4">
                   <input 
                     type="text" 
                     placeholder={__('Enter ZIP code', 'site-core')}
-                    className="xpo_flex-1 xpo_border xpo_border-gray-300 xpo_rounded xpo_px-3 xpo_py-2 xpo_text-sm"
+                    className="xpo_flex-1 xpo_border xpo_border-gray-300 dark:xpo_border-scwhite xpo_rounded xpo_px-3 xpo_py-2 xpo_text-sm xpo_text-gray-600 dark:xpo_text-scwhite xpo_bg-scwhite dark:xpo_bg-scprimary"
                   />
-                  <button className="xpo_bg-gray-200 hover:xpo_bg-gray-300 xpo_px-4 xpo_py-2 xpo_rounded xpo_text-sm xpo_transition-colors">
+                  <button className="xpo_border xpo_border-gray-300 dark:xpo_border-scwhite dark:xpo_bg-scprimary xpo_px-4 xpo_py-2 xpo_rounded xpo_text-sm xpo_transition-colors">
                     {__('Apply', 'site-core')}
                   </button>
                 </div>
                 
-                <div className="xpo_text-center xpo_text-sm xpo_text-gray-500 dark:xpo_text-scwhite xpo_mb-4">{__('or ship outside the US', 'site-core')}</div>
+                <div className="xpo_text-center xpo_text-sm xpo_text-gray-500 dark:xpo_text-scwhite xpo_mb-4">{__('or ship outside the Bangladesh', 'site-core')}</div>
                 
-                <select className="xpo_w-full xpo_border xpo_text-gray-300 dark:xpo_text-scwhite-300 xpo_bg-scwhite dark:xpo_bg-scprimary xpo_border-gray-300 dark:xpo_border-scwhite xpo_rounded xpo_px-3 xpo_py-2 xpo_text-sm xpo_mb-4">
+                <select className="xpo_w-full xpo_border xpo_text-gray-500 dark:xpo_text-scwhite-300 xpo_bg-scwhite dark:xpo_bg-scprimary xpo_border-gray-300 dark:xpo_border-scwhite xpo_rounded xpo_px-3 xpo_py-2 xpo_text-sm xpo_mb-4">
                   <option>Bangladesh</option>
                   <option>United States</option>
                   <option>United Kingdom</option>
@@ -354,10 +356,10 @@ function DeliveryZonePicker() {
 }
 
 export default function SiteHeader() {
-  const { __ } = useLocale();
   const { cart } = useCart();
   const { money } = useCurrency();
   const { loggedin } = useAuth();
+  const { setLocale, __ } = useLocale();
   const { theme, toggleTheme } = useTheme();
   const [searchTerm, setSearchTerm] = useState("");
   const [autocompleteVisible, setAutocompleteVisible] = useState(false);
@@ -432,7 +434,7 @@ export default function SiteHeader() {
         {/* Delivery Location */}
         <Dropdown
           button={(
-            <div className="xpo_flex xpo_items-center xpo_gap-1 xpo_text-sm xpo_cursor-pointer hover:xpo_text-scaccent-300 xpo_transition-colors">
+            <div className="xpo_flex xpo_items-center xpo_gap-1 xpo_text-sm xpo_cursor-pointer hover:xpo_text-scaccent-300 xpo_transition-colors xpo_hidden lg:xpo_flex">
               <MapPin size={18} />
               <div dangerouslySetInnerHTML={{__html: sprintf(__('Deliver to %s%s%s', 'site-core'), '<strong>', __('Bangladesh', 'site-core'), '</strong>')}}></div>
               <ChevronDown size={14} />
@@ -444,7 +446,7 @@ export default function SiteHeader() {
         </Dropdown>
 
         {/* Search Section */}
-        <div className="xpo_flex xpo_flex-1 xpo_items-center xpo_bg-scwhite xpo_rounded-lg xpo_overflow-hidden xpo_shadow-md">
+        <div className="xpo_flex xpo_flex-1 xpo_items-center xpo_bg-scwhite xpo_rounded-lg xpo_shadow-md">
           {/* Categories Dropdown */}
           <CategoriesDropdown 
             selectedCategory={selectedCategory}
@@ -493,7 +495,10 @@ export default function SiteHeader() {
         {/* Language Selector */}
         <LanguageDropdown 
           currentLanguage={currentLanguage}
-          onLanguageSelect={setCurrentLanguage}
+          onLanguageSelect={(lang) => {
+            setLocale(lang);
+            setCurrentLanguage(lang);
+          }}
         />
 
         {/* Account & Lists */}

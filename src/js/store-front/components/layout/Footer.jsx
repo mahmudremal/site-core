@@ -9,18 +9,20 @@
 
   
 import { __ } from '@js/utils';
-import { lazy, Suspense } from 'react';
 import { TabletSmartphone } from "lucide-react";
 import { usePopup } from '../../hooks/usePopup';
-const AppsLinkQR = lazy(() => import('../parts/AppsLinkQR'));
+import AppsLinkQR from '../parts/AppsLinkQR';
 import MoonlitMeadow from '../backgrounds/MoonlitMeadows';
 import { useLocale } from '../../hooks/useLocale';
 import { sprintf } from 'sprintf-js';
 import { Link } from 'react-router-dom';
+import { useTheme } from '../../hooks/useTheme';
 
 export default function SiteFooter() {
   const { __ } = useLocale();
+  const { theme } = useTheme();
   const { setPopup } = usePopup();
+  
   return (
     <footer className="xpo_relative xpo_bg-gradient-to-b xpo_from-scprimary-900 xpo_via-scprimary-700 xpo_to-scprimary-500 xpo_text-gray-300 xpo_pt-12 xpo_pb-8 xpo_select-none">
       <div className="xpo_absolute xpo_top-0 xpo_left-0 xpo_w-full xpo_h-full">
@@ -70,12 +72,7 @@ export default function SiteFooter() {
             <h4 className="xpo_text-lg xpo_font-semibold xpo_mb-4">{__('Download Our App', 'site-core')}</h4>
             <button
               type="button"
-              onClick={() => setPopup(
-              <Suspense fallback={
-                <div className="xpo_text-center xpo_p-4">{__('Loading...', 'site-core')}</div>}>
-                  <AppsLinkQR />
-                </Suspense>
-              )}
+              onClick={() => setPopup(<AppsLinkQR theme={theme} __={__} />)}
               className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_bg-blue-600 hover:xpo_bg-blue-700 xpo_text-white xpo_px-4 xpo_py-2 xpo_rounded-md xpo_transition"
             >
               <TabletSmartphone className="xpo_w-5 xpo_h-5" />
@@ -89,7 +86,7 @@ export default function SiteFooter() {
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href="https://facebook.com/xpocommerce"
+                  href="https://facebook.com/urmoonlitmeadow"
                   aria-label="Facebook"
                   className="xpo_text-gray-400 hover:xpo_text-blue-600"
                 >
@@ -103,7 +100,7 @@ export default function SiteFooter() {
                   </svg>
                 </a>
                 <a
-                  href="https://twitter.com/xpocommerce"
+                  href="https://twitter.com/urmoonlitmeadow"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Twitter"
@@ -119,7 +116,7 @@ export default function SiteFooter() {
                   </svg>
                 </a>
                 <a
-                  href="https://instagram.com/xpocommerce"
+                  href="https://instagram.com/urmoonlitmeadow"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"

@@ -8,7 +8,7 @@ import { sleep, notify } from '@functions';
 
 export default function WishlistPage() {
   const { setPopup } = usePopup();
-  const [viewMode, setViewMode] = useState('grid');
+  const [viewMode, setViewMode] = useState('list');
   const [sortBy, setSortBy] = useState('dateAdded');
   const [filterCategory, setFilterCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');

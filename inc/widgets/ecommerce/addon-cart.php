@@ -19,9 +19,14 @@ class Cart {
     }
 
     public function register_routes() {
-        register_rest_route('sitecore/v1', '/ecommerce/cart/(?P<product_id>\d+)', [
+        register_rest_route('sitecore/v1', '/ecommerce/cart/(?P<cart_item_id>\d+)', [
             'methods'  => 'POST',
-            'callback' => [$this, 'api_toggle_cart'],
+            'callback' => [$this, 'api_update_cart_item'],
+            'permission_callback' => '__return_true',
+        ]);
+        register_rest_route('sitecore/v1', '/ecommerce/cart/(?P<cart_item_id>\d+)', [
+            'methods'  => 'DELETE',
+            'callback' => [$this, 'api_delete_cart_item'],
             'permission_callback' => '__return_true',
         ]);
 
@@ -70,7 +75,7 @@ class Cart {
         return $cart;
     }
 
-    public function add_to_cart($product_id, $quantity = 1, $variation_id = null, $meta_data = []) {
+    public function add_to_cart($product_id, $quantity = 1, $variation_id = null, $product_data = []) {
         global $wpdb;
         
         // if (!get_post($product_id) || get_post_type($product_id) !== 'sc_product') {
@@ -98,7 +103,7 @@ class Cart {
             'variation_id' => $variation_id,
             'quantity' => $quantity,
             'price' => $price,
-            'meta_data' => maybe_serialize($meta_data),
+            'product_data' => maybe_serialize($product_data),
         ]);
     }
 
@@ -131,10 +136,23 @@ class Cart {
             ARRAY_A
         );
         foreach ($items as $index => $row) {
-            $items[$index]['meta_data'] = maybe_unserialize($row['meta_data']);
-            $items[$index]['product'] = Product::get_instance()->get_product($row['product_id']);
+            $items[$index]['product_data'] = maybe_unserialize($row['product_data']);
         }
         return $items;
+    }
+
+    public function get_cart_item($item_id, $fallback = false) {
+        if ($fallback) return $fallback;
+        global $wpdb;
+        $item = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT ci.*, p.post_title as product_name FROM {$this->tables->cart_item} ci LEFT JOIN {$wpdb->posts} p ON ci.product_id = p.ID WHERE ci.ci.id = %d ORDER BY ci.created_at ASC",
+                (int) $item_id
+            ),
+            ARRAY_A
+        );
+        if (!empty($item['product_data'])) $item['product_data'] = maybe_unserialize($item['product_data']);
+        return $item;
     }
 
     public function get_cart_total() {
@@ -213,23 +231,26 @@ class Cart {
         return new WP_REST_Response([
             'success' => true,
             'cart_items' => $this->get_cart_items(),
-            'cart_count' => $this->get_cart_count(),
-            'cart_total' => $this->get_cart_total(),
+            // 'cart_count' => $this->get_cart_count(),
+            // 'cart_total' => $this->get_cart_total(),
         ], 200);
     }
 
-    public function api_toggle_cart(WP_REST_Request $request) {
+    public function api_update_cart_item(WP_REST_Request $request) {
         global $wpdb;
 
-        // Get the product details from the request
+        // Get the cart item ID from the URL path
+        $cart_item_id = (int) $request->get_param('cart_item_id');
+
+        // Get common parameters from the request (for add or update)
         $product_id = (int) $request->get_param('product_id');
         $variation_id = (int) $request->get_param('variation_id');
+        $price = (float) $request->get_param('price') ?: 0;
         $quantity = (int) $request->get_param('quantity') > 0 ? (int) $request->get_param('quantity') : 1;
-        $meta_data = $request->get_param('meta_data') ? (array) $request->get_param('meta_data') : [];
+        $product_data = $request->get_param('product_data') ? (array) $request->get_param('product_data') : [];
 
-        // Check if the product is valid
-        // if (!get_post($product_id) || get_post_type($product_id) !== 'sc_product') {}
-        if (!is_numeric($product_id)) {
+        // Validate product_id for add operation
+        if ($cart_item_id === 0 && !is_numeric($product_id)) {
             return new WP_Error('invalid_product', 'Invalid product ID.', ['status' => 400]);
         }
 
@@ -239,66 +260,148 @@ class Cart {
             return new WP_Error('cart_not_found', 'Unable to retrieve cart.', ['status' => 500]);
         }
 
-        // Attempt to delete the item from the cart first.
-        // The wpdb->delete() function returns the number of rows affected (0 or 1).
-        $deleted = $wpdb->delete(
-            $this->tables->cart_items,
-            [
+        if ($cart_item_id === 0) {
+            // Add a new item to the cart
+            $price = !empty($price) ? $price : Product::get_instance()->get_product_price($product_id, $variation_id);
+
+            $params = [
                 'cart_id' => $cart->id,
                 'product_id' => $product_id,
-                'variation_id' => $variation_id > 0 ? $variation_id : null
-            ],
-            ['%d', '%d', '%d']
-        );
-
-        if (false === $deleted) {
-            // Handle database write failure
-            return new WP_Error(
-                'db_error',
-                'A database error occurred during the operation.',
-                ['status' => 500]
-            );
-        }
-
-        // If a row was deleted, the item was already in the cart.
-        if ($deleted > 0) {
-            return rest_ensure_response([
-                'success' => true,
-                'action' => 'removed',
-                'message' => 'Product successfully removed from cart.',
-            ]);
-        } else {
-            // If no row was deleted, the item was not in the cart, so we insert it.
-            $price = Product::get_instance()->get_product_price($product_id, $variation_id);
+                'quantity' => $quantity,
+                'price' => $price,
+                'product_data' => $product_data,
+            ];
 
             $inserted = $wpdb->insert(
                 $this->tables->cart_items,
                 [
-                    'cart_id' => $cart->id,
-                    'product_id' => $product_id,
-                    'variation_id' => $variation_id > 0 ? $variation_id : null,
-                    'quantity' => $quantity,
-                    'price' => $price,
-                    'meta_data' => maybe_serialize($meta_data),
-                ],
-                ['%d', '%d', '%d', '%d', '%f', '%s']
+                    ...$params,
+                    'product_data' => maybe_serialize($params['product_data']),
+                ]
             );
 
             if (false === $inserted) {
                 // Handle database insert failure
                 return new WP_Error(
                     'insert_failed',
-                    'Failed to add the product to the cart.',
+                    'Failed to add the product to the cart.' . $wpdb->last_error,
                     ['status' => 500]
                 );
             }
 
-            return rest_ensure_response([
-                'success' => true,
-                'action' => 'added',
-                'message' => 'Product successfully added to cart.',
-            ]);
+            // Optionally, retrieve the newly inserted cart_item_id if needed (e.g., for response)
+            $new_cart_item_id = $wpdb->insert_id;
+
+            return rest_ensure_response(
+                $this->get_cart_item($new_cart_item_id, [
+                    'id' => $new_cart_item_id,
+                    ...$params
+                ])
+            );
+        } else {
+            $existing_item = $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT id FROM {$this->tables->cart_items} WHERE id = %d AND cart_id = %d",
+                    $cart_item_id,
+                    $cart->id
+                )
+            );
+
+            if (!$existing_item) {
+                return new WP_Error(
+                    'cart_item_not_found',
+                    'Cart item not found or does not belong to your cart.',
+                    ['status' => 404]
+                );
+            }
+
+            // Prepare update data (here, we're updating quantity and product_data; adjust as needed)
+            // Note: We're not updating product_id or variation_id for security; only quantity and data
+            $update_data = [
+                'quantity' => $quantity,
+                'product_data' => maybe_serialize($product_data),
+            ];
+
+            // If quantity is 0, you might want to delete instead of updating to 0
+            if ($quantity <= 0) {
+                $deleted = $wpdb->delete(
+                    $this->tables->cart_items,
+                    ['id' => $cart_item_id, 'cart_id' => $cart->id],
+                    ['%d', '%d']
+                );
+
+                if (false === $deleted || $deleted === 0) {
+                    return new WP_Error(
+                        'delete_failed',
+                        'Failed to remove the cart item.',
+                        ['status' => 500]
+                    );
+                }
+
+                return rest_ensure_response([
+                    'success' => true,
+                    'action' => 'removed',
+                    'message' => 'Cart item successfully removed.',
+                ]);
+            }
+
+            // Perform the update
+            $updated = $wpdb->update(
+                $this->tables->cart_items,
+                $update_data,
+                [
+                    'id' => $cart_item_id,
+                    'cart_id' => $cart->id,
+                ],
+                ['%d', '%s'], // Formats for update_data
+                ['%d', '%d']  // Formats for WHERE clause
+            );
+
+            if (false === $updated) {
+                // Handle database update failure
+                return new WP_Error(
+                    'update_failed',
+                    'Failed to update the cart item.' . $wpdb->last_error,
+                    ['status' => 500]
+                );
+            }
+
+            if ($updated === 0) {
+                return new WP_Error(
+                    'no_changes',
+                    'No changes were made to the cart item.',
+                    ['status' => 400]
+                );
+            }
+
+            return rest_ensure_response(
+                $this->get_cart_item($cart_item_id, [
+                    ...$update_data,
+                    'id' => $cart_item_id,
+                ])
+            );
         }
     }
+
+    public function api_delete_cart_item(WP_REST_Request $request) {
+        global $wpdb;
+
+        // Get the cart item ID from the URL path
+        $cart_item_id = (int) $request->get_param('cart_item_id');
+
+        // Get the current user's cart
+        $cart = $this->get_cart();
+        if (!isset($cart->id)) {
+            return new WP_Error('cart_not_found', 'Unable to retrieve cart.', ['status' => 500]);
+        }
+        $deleted = $wpdb->delete(
+            $this->tables->cart_items,
+            ['id' => $cart_item_id],
+            ['%s']
+        );
+        return rest_ensure_response(['success' => $deleted]);
+    }
+
+
 
 }

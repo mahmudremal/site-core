@@ -19,6 +19,7 @@ class Utils {
         add_filter('rest_api_init', [$this, 'rest_api_init']);
         add_filter('wp_print_scripts', [$this, 'wp_print_scripts'], 10, 0);
         add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
+		add_action('init', [$this, 'stop_heartbeat'], 1);
     }
     
     public function rest_api_init() {
@@ -71,5 +72,9 @@ class Utils {
             }
         } else {}
     }
+
+	public function stop_heartbeat() {
+		wp_deregister_script('heartbeat');
+	}
     
 }

@@ -41,7 +41,6 @@ class Ecommerce {
         $this->setup_hooks();
 		add_action('init', [$this, 'init_session']);
 		add_action('plugins_loaded', [$this, 'load_addons']);
-        add_filter('sitecorejs/siteconfig', [ $this, 'siteConfig' ], 1, 1);
     }
 
     protected function setup_hooks() {
@@ -49,11 +48,14 @@ class Ecommerce {
         add_filter('body_class', [$this, 'body_class'], 10, 2);
         add_action('add_meta_boxes', [$this, 'add_meta_boxes']);
         add_action('rest_api_init', [$this, 'register_routes']);
+        add_filter('sitecorejs/siteconfig', [ $this, 'siteConfig' ], 1, 1);
+        add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
         register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
         register_deactivation_hook(WP_SITECORE__FILE__, [$this, 'register_deactivation_hook']);
     }
 
 	public function load_addons() {
+        if (apply_filters('pm_project/system/isactive', 'storefront-paused')) {return;}
         $addon_loader_file = WP_SITECORE_DIR_PATH . '/inc/widgets/ecommerce/index.php';
         if (file_exists($addon_loader_file)) {
             require_once $addon_loader_file;
@@ -84,7 +86,7 @@ class Ecommerce {
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
 
             'variations' => "id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                product_id VARCHAR(255) UNIQUE NOT NULL,
+                product_id VARCHAR(255) NOT NULL,
                 title TEXT NOT NULL,
                 sku VARCHAR(255) DEFAULT '',
                 description LONGTEXT DEFAULT '',
@@ -108,7 +110,7 @@ class Ecommerce {
 
             'vars_atts_relations' => "id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 variation_id BIGINT(20) UNSIGNED DEFAULT NULL,
-                attribute_id BIGINT(20) UNSIGNED DEFAULT NULL",
+                attribute_item_id BIGINT(20) UNSIGNED DEFAULT NULL",
             
             'carts' => "id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 session_id BIGINT(20) UNSIGNED NOT NULL,
@@ -122,10 +124,9 @@ class Ecommerce {
             'cart_items' => "id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 cart_id BIGINT(20) UNSIGNED NOT NULL,
                 product_id BIGINT(20) UNSIGNED NOT NULL,
-                variation_id BIGINT(20) UNSIGNED DEFAULT NULL,
                 quantity INT(11) NOT NULL DEFAULT 1,
                 price DECIMAL(10,2) NOT NULL,
-                meta_data LONGTEXT,
+                product_data LONGTEXT,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 INDEX cart_idx (cart_id),
@@ -154,13 +155,12 @@ class Ecommerce {
             'order_items' => "id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 order_id BIGINT(20) UNSIGNED NOT NULL,
                 product_id BIGINT(20) UNSIGNED NOT NULL,
-                variation_id BIGINT(20) UNSIGNED DEFAULT NULL,
                 product_name VARCHAR(255) NOT NULL,
                 product_sku VARCHAR(100),
                 quantity INT(11) NOT NULL DEFAULT 1,
                 price DECIMAL(10,2) NOT NULL,
                 total DECIMAL(10,2) NOT NULL,
-                meta_data LONGTEXT,
+                product_data LONGTEXT,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 INDEX order_idx (order_id),
                 INDEX product_idx (product_id)",
@@ -263,6 +263,7 @@ class Ecommerce {
     }
 
     public function register_routes() {
+        if (apply_filters('pm_project/system/isactive', 'storefront-paused')) {return;}
 		register_rest_route('sitecore/v1', '/ecommerce/products/(?P<product_id>\d+)', [
 			'methods'  => 'POST',
 			'callback' => [$this, 'api_update_product'],
@@ -374,6 +375,7 @@ class Ecommerce {
     }
 
     public function init_session() {
+        if (apply_filters('pm_project/system/isactive', 'storefront-paused')) {return;}
         // if (!is_admin()) return false;
         if (!isset($_COOKIE[$this->session_key])) {
             $token = bin2hex(random_bytes(32));
@@ -705,12 +707,13 @@ class Ecommerce {
 
     public function api_update_product_variation(WP_REST_Request $request) {
         $product_id = $request->get_param('product_id') ?: 0;
+        $attributes = $request->get_param('attributes') ?: [];
         $variation_id = $request->get_param('variation_id') ?: 0;
-        $variation_data = $request->get_param('variation_data') ?: 0;
+        $variation_data = $request->get_param('variation_data') ?: [];
         if ($product_id) {
-            $success = Ecommerce\Addons\Product::get_instance()->update_product_variation($product_id, $variation_id, $variation_data);
+            $success = Ecommerce\Addons\Product::get_instance()->update_product_variation($product_id, $variation_id, $variation_data, $attributes);
             if ($success) {
-                return rest_ensure_response(empty($variation_id) ? ['id' => $success] : ['success' => $success]);
+                return rest_ensure_response(!empty($success) ? $success : ['success' => false]);
             }
         }
         return rest_ensure_response([]);
@@ -793,10 +796,12 @@ class Ecommerce {
 
 
     public function body_class($classes, $css_class) {
+        if (apply_filters('pm_project/system/isactive', 'storefront-paused')) {return $classes;}
         return array_merge($classes, ['sc_store-front']);
     }
 
     public function siteConfig($args) {
+        if (apply_filters('pm_project/system/isactive', 'storefront-paused')) {return $args;}
         $session = $this->get_session();
         if (!$session) return $args;
         $newSession = [];
@@ -809,5 +814,22 @@ class Ecommerce {
 			'session.requires' => $newSession
 		], (array) $args);
 	}
+    
+    public function settings($args) {
+		$args['storefront']		= [
+			'title'							=> __('Store Front', 'site-core'),
+			'description'					=> __('Store Front configuration for ecommerce features. This will include ecommerce feature for Moonlit Meadow.', 'site-core'),
+			'fields'						=> [
+				[
+					'id' 					=> 'storefront-paused',
+					'label'					=> __('Pause', 'site-core'),
+					'description'			=> __('Mark to pause the store front ecommerce.', 'site-core'),
+					'type'					=> 'checkbox',
+					'default'				=> true
+				],
+			]
+		];
+        return $args;
+    }
     
 }

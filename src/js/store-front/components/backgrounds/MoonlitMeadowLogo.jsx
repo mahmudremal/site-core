@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
-import { gsap } from 'gsap';
 import { useTheme } from '../../hooks/useTheme';
+import { gsap } from 'gsap';
 
 const MoonlitMeadowLogo = () => {
   const { theme } = useTheme();
@@ -45,11 +45,13 @@ const MoonlitMeadowLogo = () => {
   ];
 
   return (
-    <div className="xpo_relative xpo_flex xpo_items-center xpo_h-9" style={{ width: '242px' }}>
+    <div className="xpo_relative xpo_flex xpo_items-center xpo_h-9">
       <svg 
         ref={containerRef}
-        viewBox="0 0 242 36" 
-        className="xpo_w-full xpo_h-full"
+        // 0 0 242 36
+        viewBox="0 0 202 36" 
+        // xpo_w-full
+        className="xpo_h-full"
       >
         <defs>
           {/* Enterprise-grade gradients */}
@@ -128,14 +130,14 @@ const MoonlitMeadowLogo = () => {
 
         {/* Vertical separator */}
         <line
-          ref={separatorRef}
           x1="42"
           y1="8"
           x2="42"
           y2="28"
-          stroke={theme === 'dark' ? '#37567f' : '#DCE2EB'}
-          strokeWidth="1"
           opacity="0.3"
+          strokeWidth="1"
+          ref={separatorRef}
+          stroke={theme === 'dark' ? '#37567f' : '#DCE2EB'}
           className="xpo_transition-colors xpo_duration-500"
         />
 
@@ -172,14 +174,14 @@ const MoonlitMeadowLogo = () => {
         </g>
 
         {/* Subtle accent dot */}
-        <circle
-          cx="238"
-          cy="18"
+        {/* <circle
           r="2"
-          fill="url(#accentGradient)"
+          cy="18"
+          cx="238"
           opacity="0.6"
+          fill="url(#accentGradient)"
           className="xpo_transition-opacity xpo_duration-500"
-        />
+        /> */}
       </svg>
     </div>
   );

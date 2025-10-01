@@ -27,6 +27,7 @@ class Llmstxt {
     }
 
     public function add_admin_menu() {
+        if (apply_filters('pm_project/system/isactive', 'llmstxt-disabled')) {return;}
         add_submenu_page(
             'tools.php',
             __('LLMSTxt Settings', 'site-core'),
@@ -124,6 +125,7 @@ class Llmstxt {
     }
 
     public function add_rewrite_rules() {
+        if (apply_filters('pm_project/system/isactive', 'llmstxt-disabled')) {return;}
         add_rewrite_rule('^([a-z]{2})/llms\.txt$', 'index.php?llms_txt=1', 'top');
         add_rewrite_rule('^llms\.txt', 'index.php?llms_txt=1', 'top');
         add_rewrite_tag('%llms_txt%', '([0-9]+)');

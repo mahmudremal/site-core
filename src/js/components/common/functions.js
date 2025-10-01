@@ -16,7 +16,9 @@ export const site_url = (url) => {
     if (url.startsWith('/')) {
         url = url.substring(1);
     }
-    return `${window?.siteCoreConfig?.site_url??location.origin}/${url}`;
+    return `${window?.siteCoreConfig?.site_url??(
+        typeof window !== "undefined" ? window.location.origin : "https://www.urmoonlitmeadow.com"
+    )}/${url}`;
     // return chrome.runtime.getURL(url);
 }
 export const home_route = (url) => {

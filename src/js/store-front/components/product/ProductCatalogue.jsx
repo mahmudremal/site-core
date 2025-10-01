@@ -17,7 +17,8 @@ export default function ProductCatalogue({
     shadow = false,
     loadMore = 'infinity',
     filters: filterArgs = {},
-    card_bg = 'xpo_bg-scwhite/70'
+    card_bg = 'xpo_bg-scwhite/70',
+    maxPaginations = -1
 }) {
     const { __ } = useLocale();
     const { money } = useCurrency();
@@ -47,13 +48,13 @@ export default function ProductCatalogue({
       sleep(2000).then(() => {
         api.get(endpoint, {params: {...filters}})
         .then(res => {
-            setPagination(prev => ({
-                    ...prev,
-                    totalItems: parseInt(res.headers.get('x-wp-total') || '0'),
-                    totalPages: parseInt(res.headers.get('x-wp-totalpages') || '0')
-                })
-            );
-            return res.data;
+          setPagination(prev => ({
+              ...prev,
+              totalItems: parseInt(res.headers.get('x-wp-total') || '0'),
+              totalPages: parseInt(res.headers.get('x-wp-totalpages') || '0')
+            })
+          );
+          return res.data;
         })
         .then(res => res?.length && !res?.error && setProducts(prev => [...prev, ...res]))
         .catch(err => notify.error(err))
@@ -75,7 +76,9 @@ export default function ProductCatalogue({
         const windowHeight = window.innerHeight || document.documentElement.clientHeight;
         if (rect.bottom <= windowHeight + 100) {
           if (!loading && filters.page < pagination.totalPages) {
-            setFilters(prev => ({ ...prev, page: prev.page + 1 }));
+            if (maxPaginations == -1 || maxPaginations > filters.page) {
+              setFilters(prev => ({ ...prev, page: prev.page + 1 }));
+            }
           }
         }
       };

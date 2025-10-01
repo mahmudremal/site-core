@@ -164,7 +164,7 @@ const LoginPage = () => {
             <MoonlitSky />
           </div>
           <div className="xpo_w-full xpo_max-w-md xpo_relative xpo_z-10">
-            {['signin', 'register'].includes(loginType) && (
+            {['bye', 'signin', 'register'].includes(loginType) && (
               <div className="xpo_bg-scwhite/70 xpo_rounded-3xl xpo_shadow-2xl xpo_p-8">
                 <div className="xpo_text-center xpo_mb-8">
                   <h2 className="xpo_text-3xl xpo_font-bold xpo_text-gray-900 xpo_mb-2">

@@ -39,7 +39,7 @@ const Home = () => {
     <div>
       <SiteHeader />
       <div className="xpo_relative xpo_min-h-screen">
-        <div className="xpo_absolute xpo_h-full xpo_inset-0 xpo_z-0 xpo_pointer-events-none xpo_select-none">
+        <div className="xpo_absolute xpo_h-full xpo_inset-0 xpo_z-0 xpo_pointer-events-none xpo_select-none xpo_hidden dark:xpo_block">
           <MoonlitSky />
         </div>
         <div className="xpo_container xpo_relative xpo_z-10 xpo_mx-auto xpo_px-4 xpo_py-6 xpo_max-w-7xl">

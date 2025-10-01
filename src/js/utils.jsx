@@ -1,9 +1,10 @@
 import { X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
-export const Popup = ({ onClose = null, showCross = true, backdrop = true, backdropClose = true, className = null, bodyClassName = null, backdropClassName = null, children }) => {
+export const Popup = ({ onClose = null, showCross = true, backdrop = true, backdropClose = true, className = null, crossClassName = null, bodyClassName = null, backdropClassName = null, children }) => {
   if (!className) {className = "xpo_fixed xpo_inset-0 xpo_z-50 xpo_flex xpo_items-center xpo_justify-center";}
   if (!bodyClassName) {bodyClassName = "xpo_relative xpo_z-10 xpo_bg-white xpo_rounded-xl xpo_shadow-lg xpo_p-6 xpo_max-w-full xpo_min-w-[90vw] md:xpo_min-w-[28rem]";}
+  if (!crossClassName) {crossClassName = "xpo_p-2 hover:xpo_bg-gray-100 xpo_rounded-lg";}
   if (!backdropClassName) {backdropClassName = "xpo_absolute xpo_inset-0 xpo_bg-black/40 xpo_bg-opacity-30";}
   // 
   return (
@@ -18,7 +19,7 @@ export const Popup = ({ onClose = null, showCross = true, backdrop = true, backd
             </button> */}
             <button
               onClick={() => onClose()}
-              className="xpo_p-2 hover:xpo_bg-gray-100 xpo_rounded-lg"
+              className={crossClassName}
             >
               <X className="xpo_w-5 xpo_h-5" />
             </button>

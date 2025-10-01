@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Package, MapPin, Phone, User, Calendar, Truck, CheckCircle, Clock, AlertCircle, ArrowLeft, X, RefreshCw, CreditCard, Star } from 'lucide-react';
+import { ChevronDown, Package, MapPin, Phone, User, Truck, CheckCircle, Clock, AlertCircle, ArrowLeft, X, RefreshCw, CreditCard, Star } from 'lucide-react';
 import { usePopup } from '../hooks/usePopup';
 import { sleep, notify } from '@functions';
 import { Link, useParams } from 'react-router-dom';
@@ -10,8 +10,10 @@ import { useCurrency } from '../hooks/useCurrency';
 import { sprintf } from 'sprintf-js';
 import MoonlitSky from '../components/backgrounds/MoonlitSky';
 import { useAuth } from '../hooks/useAuth';
+import { Dropdown } from '@banglee/core';
+import OrdersPageHelmet from '../components/helmets/OrdersPageHelmet';
 
-export default function ReturnsOrdersPage() {
+const ReturnsOrdersPage = () => {
   const { __ } = useLocale();
   const { money } = useCurrency();
   const { setPopup } = usePopup();
@@ -501,6 +503,219 @@ export default function ReturnsOrdersPage() {
     );
   };
 
+  const OrdersTable = () => {
+    return (
+      <div className="xpo_bg-scwhite/70 xpo_rounded-2xl xpo_shadow-lg xpo_overflow-hidden">
+        <div className="xpo_bg-gray-50/80 xpo_px-6 xpo_py-4 xpo_border-b xpo_border-gray-200">
+          <div className="xpo_grid xpo_grid-cols-12 xpo_gap-4 xpo_items-center xpo_text-sm xpo_font-semibold xpo_text-gray-700 xpo_uppercase xpo_tracking-wide">
+            <div className="xpo_col-span-3">{__('Order Details', 'site-core')}</div>
+            <div className="xpo_col-span-2">{__('Date', 'site-core')}</div>
+            <div className="xpo_col-span-2">{__('Status', 'site-core')}</div>
+            <div className="xpo_col-span-2">{__('Items', 'site-core')}</div>
+            <div className="xpo_col-span-2">{__('Total', 'site-core')}</div>
+            <div className="xpo_col-span-1">{__('Actions', 'site-core')}</div>
+          </div>
+        </div>
+
+        <div className="xpo_divide-y xpo_divide-gray-200">
+          {orders.map((order) => {
+            const statusInfo = getStatusInfo(order.status);
+            const StatusIcon = statusInfo.icon;
+            const daysSinceDelivery = getDaysSinceDelivery(order.deliveredDate);
+            const canReturn = order.status === 'completed' && daysSinceDelivery <= 7;
+            const canRefund = order.status !== 'completed';
+            const canTrack = order.status !== 'completed';
+
+            return (
+              <div key={order.id} className="xpo_px-6 xpo_py-5 hover:xpo_bg-gray-50/50 xpo_transition-colors">
+                <div className="xpo_grid xpo_grid-cols-12 xpo_gap-4 xpo_items-center">
+                  <div className="xpo_col-span-3">
+                    <div className="xpo_flex xpo_items-center xpo_gap-3">
+                      <div className="xpo_w-10 xpo_h-10 xpo_bg-scaccent-100 xpo_rounded-lg xpo_flex xpo_items-center xpo_justify-center xpo_flex-shrink-0">
+                        <Package className="xpo_w-5 xpo_h-5 xpo_text-scaccent-600" />
+                      </div>
+                      <div>
+                        <h3 className="xpo_font-semibold xpo_text-gray-900">{order.id}</h3>
+                        <p className="xpo_text-sm xpo_text-gray-500">{order.deliveryMethod}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="xpo_col-span-2">
+                    <div className="xpo_text-sm">
+                      <p className="xpo_text-gray-900">{new Date(order.date).toLocaleDateString()}</p>
+                      {order.deliveredDate && (
+                        <p className="xpo_text-gray-500 xpo_flex xpo_items-center xpo_gap-1 xpo_mt-1">
+                          <CheckCircle className="xpo_w-3 xpo_h-3" />
+                          {new Date(order.deliveredDate).toLocaleDateString()}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="xpo_col-span-2">
+                    <div className={`xpo_inline-flex xpo_items-center xpo_gap-2 xpo_px-3 xpo_py-1.5 xpo_rounded-full xpo_text-xs xpo_font-medium ${statusInfo.color}`}>
+                      <StatusIcon className="xpo_w-3.5 xpo_h-3.5" />
+                      {statusInfo.label}
+                    </div>
+                  </div>
+
+                  <div className="xpo_col-span-2">
+                    <div className="xpo_flex xpo_items-center xpo_gap-2">
+                      <div className="xpo_flex xpo_-space-x-2">
+                        {order.items.slice(0, 3).map((item, index) => (
+                          <img
+                            key={item.id}
+                            src={item.image}
+                            alt={item.name}
+                            className="xpo_w-8 xpo_h-8 xpo_rounded-md xpo_object-cover xpo_border-2 xpo_border-white xpo_shadow-sm"
+                            style={{ zIndex: order.items.length - index }}
+                          />
+                        ))}
+                      </div>
+                      <div className="xpo_text-sm xpo_text-gray-600">
+                        {order.items.length === 1 
+                          ? __('1 item', 'site-core')
+                          : sprintf(__('%s items', 'site-core'), order.items.length)
+                        }
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="xpo_col-span-2">
+                    <div className="xpo_text-right">
+                      <p className="xpo_font-bold xpo_text-gray-900 xpo_text-lg">{money(order.total)}</p>
+                      <p className="xpo_text-sm xpo_text-gray-500">
+                        {__('Tax:', 'site-core')} {money(order.tax)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="xpo_col-span-1">
+                    <Dropdown
+                      button={
+                        <button className="xpo_w-8 xpo_h-8 xpo_flex xpo_items-center xpo_justify-center xpo_text-gray-400 hover:xpo_text-gray-600 hover:xpo_bg-gray-100 xpo_rounded-lg xpo_transition-colors">
+                          <ChevronDown className="xpo_w-4 xpo_h-4" />
+                        </button>
+                      }
+                    >
+                      <div className="xpo_py-1 xpo_min-w-[160px]">
+                        <button
+                          onClick={() => setPopup(<TrackingModal order={order} />)}
+                          className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 hover:xpo_bg-gray-50 xpo_flex xpo_items-center xpo_gap-2"
+                        >
+                          <Package className="xpo_w-4 xpo_h-4" />
+                          {__('View Details', 'site-core')}
+                        </button>
+
+                        {canTrack && (
+                          <button
+                            onClick={() => setPopup(<TrackingModal order={order} />)}
+                            className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 hover:xpo_bg-gray-50 xpo_flex xpo_items-center xpo_gap-2"
+                          >
+                            <Truck className="xpo_w-4 xpo_h-4" />
+                            {__('Track Order', 'site-core')}
+                          </button>
+                        )}
+
+                        {(canRefund || canReturn) && (
+                          <div className="xpo_border-t xpo_border-gray-100 xpo_my-1"></div>
+                        )}
+
+                        {canRefund && (
+                          <button
+                            onClick={() => setPopup(<RefundModal order={order} />)}
+                            className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-red-600 hover:xpo_bg-red-50 xpo_flex xpo_items-center xpo_gap-2"
+                          >
+                            <CreditCard className="xpo_w-4 xpo_h-4" />
+                            {__('Request Refund', 'site-core')}
+                          </button>
+                        )}
+
+                        {canReturn && (
+                          <button
+                            onClick={() => setPopup(<RefundModal order={order} />)}
+                            className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-orange-600 hover:xpo_bg-orange-50 xpo_flex xpo_items-center xpo_gap-2"
+                          >
+                            <Package className="xpo_w-4 xpo_h-4" />
+                            {__('Request Return', 'site-core')}
+                          </button>
+                        )}
+
+                        {order.status === 'completed' && (
+                          <>
+                            <div className="xpo_border-t xpo_border-gray-100 xpo_my-1"></div>
+                            <Link to={`/reviews/${order.id}/`} className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 hover:xpo_bg-gray-50 xpo_flex xpo_items-center xpo_gap-2">
+                              <Star className="xpo_w-4 xpo_h-4" />
+                              {__('Rate Order', 'site-core')}
+                            </Link>
+                          </>
+                        )}
+                      </div>
+                    </Dropdown>
+                  </div>
+                </div>
+
+              </div>
+            );
+          })}
+        </div>
+
+        {orders.length === 0 && (
+          <div className="xpo_px-6 xpo_py-12 xpo_text-center">
+            <div className="xpo_w-16 xpo_h-16 xpo_bg-gray-100 xpo_rounded-full xpo_flex xpo_items-center xpo_justify-center xpo_mx-auto xpo_mb-4">
+              <Package className="xpo_w-8 xpo_h-8 xpo_text-gray-400" />
+            </div>
+            <h3 className="xpo_text-lg xpo_font-semibold xpo_text-gray-900 xpo_mb-2">{__('No Orders Found', 'site-core')}</h3>
+            <p className="xpo_text-gray-600 xpo_mb-6">{__("You haven't placed any orders yet.", 'site-core')}</p>
+            <Link 
+              to="/collections/special"
+              className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_bg-scaccent-600 xpo_text-scwhite xpo_px-6 xpo_py-3 xpo_rounded-lg xpo_font-medium hover:xpo_bg-scaccent-700 xpo_transition-colors"
+            >
+              <Package className="xpo_w-4 xpo_h-4" />
+              {__('Start Shopping', 'site-core')}
+            </Link>
+          </div>
+        )}
+      </div>
+    );
+  };
+  
+
+  if (!loggedin) {
+    return (
+      <div className="xpo_py-12">
+        <OrderTrackingForm />
+      </div>
+    )
+  }
+  
+  return (
+    <div className="xpo_space-y-6">
+      <OrdersTable />
+
+      {orders.length === 0 && (
+        <div className="xpo_bg-scwhite/70 xpo_rounded-2xl xpo_shadow-lg xpo_p-12 xpo_text-center">
+          <div className="xpo_w-16 xpo_h-16 xpo_bg-gray-100 xpo_rounded-full xpo_flex xpo_items-center xpo_justify-center xpo_mx-auto xpo_mb-4">
+            <Package className="xpo_w-8 xpo_h-8 xpo_text-gray-400" />
+          </div>
+          <h3 className="xpo_text-lg xpo_font-semibold xpo_text-gray-900 xpo_mb-2">{__('No Orders Found', 'site-core')}</h3>
+          <p className="xpo_text-gray-600 xpo_mb-6">{__("You haven't placed any orders yet.", 'site-core')}</p>
+          <Link 
+            to="/collections/special"
+            className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_bg-scaccent-600 xpo_text-scwhite xpo_px-6 xpo_py-3 xpo_rounded-lg xpo_font-medium hover:xpo_bg-scaccent-700 xpo_transition-colors"
+          >
+            <Package className="xpo_w-4 xpo_h-4" />
+            {__('Start Shopping', 'site-core')}
+          </Link>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default function PageBody() {
+  const { __ } = useLocale();
   return (
     <div>
       <SiteHeader />
@@ -508,118 +723,19 @@ export default function ReturnsOrdersPage() {
         <div className="xpo_absolute xpo_top-0 xpo_left-0 xpo_w-full xpo_h-full xpo_m-auto xpo_hidden dark:xpo_block">
           <MoonlitSky />
         </div>
-        <div className="xpo_container xpo_relative xpo_m-auto xpo_z-10 xpo_pb-12">
+        <div className="xpo_container xpo_relative xpo_m-auto xpo_z-10 xpo_pb-12 xpo_min-h-screen">
           <div className="xpo_flex xpo_items-center xpo_justify-between xpo_pt-6 xpo_mb-8">
-            <h1 className="xpo_text-3xl xpo_font-bold xpo_text-gray-900 dark:xpo_text-scwhite">Returns & Orders</h1>
+            <h1 className="xpo_text-3xl xpo_font-bold xpo_text-gray-900 dark:xpo_text-scwhite">{__('Returns & Orders', 'site-core')}</h1>
           </div>
 
-          {!loggedin ? (
-            <div className="xpo_py-12">
-              <OrderTrackingForm />
-            </div>
-          ) : (
-            <div className="xpo_space-y-6">
-              {orders.map((order) => {
-                const statusInfo = getStatusInfo(order.status);
-                const StatusIcon = statusInfo.icon;
-                const daysSinceDelivery = getDaysSinceDelivery(order.deliveredDate);
-                const canReturn = order.status === 'completed' && daysSinceDelivery <= 7;
-                const canRefund = order.status !== 'completed';
-                const canTrack = order.status !== 'completed';
+          <OrdersPageHelmet />
 
-                return (
-                  <div key={order.id} className="xpo_bg-scwhite/70 xpo_rounded-2xl xpo_shadow-lg xpo_p-6">
-                    <div className="xpo_flex xpo_items-start xpo_justify-between xpo_mb-4">
-                      <div>
-                        <h3 className="xpo_text-lg xpo_font-semibold xpo_text-gray-900">{sprintf(__('Order #%s', 'site-core'), order.id)}</h3>
-                        <p className="xpo_text-sm xpo_text-gray-600">{sprintf(__('Placed on %s', 'site-core'), new Date(order.date).toLocaleDateString())}</p>
-                        {order.deliveredDate && (
-                          <p className="xpo_text-sm xpo_text-gray-600">{sprintf(__('Delivered on %s', 'site-core'), new Date(order.deliveredDate).toLocaleDateString())}</p>
-                        )}
-                      </div>
-                      <div className="xpo_flex xpo_items-center xpo_gap-3">
-                        <div className={`xpo_flex xpo_items-center xpo_gap-2 xpo_px-3 xpo_py-2 xpo_rounded-full ${statusInfo.color}`}>
-                          <StatusIcon className="xpo_w-4 xpo_h-4" />
-                          <span className="xpo_text-sm xpo_font-medium">{statusInfo.label}</span>
-                        </div>
-                        <span className="xpo_text-lg xpo_font-bold xpo_text-gray-900">{money(order.total)}</span>
-                      </div>
-                    </div>
-
-                    <div className="xpo_space-y-3 xpo_mb-6">
-                      {order.items.map((item) => (
-                        <div key={item.id} className="xpo_flex xpo_gap-4 xpo_bg-scwhite/50 xpo_rounded-lg xpo_p-3">
-                          <img
-                            alt={item.name} src={item.image}
-                            className="xpo_w-16 xpo_h-16 xpo_object-cover xpo_rounded-lg"
-                          />
-                          <div className="xpo_flex-1">
-                            <h4 className="xpo_font-medium xpo_text-gray-900">{item.name}</h4>
-                            <div className="xpo_flex xpo_justify-between xpo_items-center xpo_mt-1">
-                              <span className="xpo_text-sm xpo_text-gray-600">{sprintf(__('Qty: %s', 'site-core'), item.quantity)}</span>
-                              <span className="xpo_font-semibold xpo_text-gray-900">{money(item.price, item.currency)}</span>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="xpo_flex xpo_gap-3 xpo_justify-end">
-                      {canTrack && (
-                        <button
-                          onClick={() => setPopup(<TrackingModal order={order} />)}
-                          className="xpo_px-4 xpo_py-2 xpo_bg-scaccent-600 xpo_text-scwhite xpo_rounded-lg xpo_font-medium hover:xpo_bg-scaccent-700 xpo_transition-colors xpo_flex xpo_items-center xpo_gap-2"
-                        >
-                          <Truck className="xpo_w-4 xpo_h-4" />
-                          {__('Track', 'site-core')}
-                        </button>
-                      )}
-                      
-                      {canRefund && (
-                        <button
-                          onClick={() => setPopup(<RefundModal order={order} />)}
-                          className="xpo_px-4 xpo_py-2 xpo_bg-red-600 xpo_text-scwhite xpo_rounded-lg xpo_font-medium hover:xpo_bg-red-700 xpo_transition-colors xpo_flex xpo_items-center xpo_gap-2"
-                        >
-                          <CreditCard className="xpo_w-4 xpo_h-4" />
-                          {__('Refund', 'site-core')}
-                        </button>
-                      )}
-                      
-                      {canReturn && (
-                        <button
-                          onClick={() => setPopup(<RefundModal order={order} />)}
-                          className="xpo_px-4 xpo_py-2 xpo_bg-orange-600 xpo_text-scwhite xpo_rounded-lg xpo_font-medium hover:xpo_bg-orange-700 xpo_transition-colors xpo_flex xpo_items-center xpo_gap-2"
-                        >
-                          <Package className="xpo_w-4 xpo_h-4" />
-                          {__('Return', 'site-core')}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-
-              {orders.length === 0 && (
-                <div className="xpo_bg-scwhite/70 xpo_rounded-2xl xpo_shadow-lg xpo_p-12 xpo_text-center">
-                  <div className="xpo_w-16 xpo_h-16 xpo_bg-gray-100 xpo_rounded-full xpo_flex xpo_items-center xpo_justify-center xpo_mx-auto xpo_mb-4">
-                    <Package className="xpo_w-8 xpo_h-8 xpo_text-gray-400" />
-                  </div>
-                  <h3 className="xpo_text-lg xpo_font-semibold xpo_text-gray-900 xpo_mb-2">{__('No Orders Found', 'site-core')}</h3>
-                  <p className="xpo_text-gray-600 xpo_mb-6">{__("You haven't placed any orders yet.", 'site-core')}</p>
-                  <Link 
-                    to="/collections/special"
-                    className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_bg-scaccent-600 xpo_text-scwhite xpo_px-6 xpo_py-3 xpo_rounded-lg xpo_font-medium hover:xpo_bg-scaccent-700 xpo_transition-colors"
-                  >
-                    <Package className="xpo_w-4 xpo_h-4" />
-                    {__('Start Shopping', 'site-core')}
-                  </Link>
-                </div>
-              )}
-            </div>
-          )}
+          <ReturnsOrdersPage />
+          
         </div>
       </div>
       <SiteFooter />
     </div>
-  );
-};
+
+  )
+}

@@ -62,7 +62,7 @@ const Button = ({ children, onClick, variant = "primary", disabled = false }) =>
   );
 };
 
-const VariationsTab = ({ variations = [], onMetaChange, attributes = [], product_id }) => {
+const VariationsTab = ({ meta, variations = [], onMetaChange, attributes = [], product_id }) => {
   const [openVariation, setOpenVariation] = useState(null);
   const [popup, setPopup] = useState(null);
 
@@ -78,25 +78,25 @@ const VariationsTab = ({ variations = [], onMetaChange, attributes = [], product
   }, [variations, product_id]);
 
   const addVariation = useCallback(
-    (attr) => {
+    (attribute_items) => {
       const newVariation = {
-        sku: "",
-        price: "",
+        sku: '',
         product_id,
         gallery: [],
-        sale_price: "",
-        description: "",
         specifications: [],
-        title: `Variation #${variations.length + 1}`,
+        price: meta?.price || '',
+        sale_price: meta?.sale_price || '',
+        description: meta?.description || '',
+        title: [meta?.seo_title??`Variation #${product_id}`, ...attribute_items.map(i => i.name)].join(' - '),
       };
       axios
-        .post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations/0`), {
-          variation_data: newVariation,
-          attributes: attr,
-        })
-        .then((res) => res.data)
-        .then((data) => data?.id && onMetaChange([...variations, { id: data.id, ...newVariation }]))
-        .catch((err) => notify.error(err));
+      .post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations/0`), {
+        variation_data: newVariation,
+        attributes: attribute_items,
+      })
+      .then((res) => res.data)
+      .then((data) => data?.id && onMetaChange([...variations, data]))
+      .catch((err) => notify.error(err));
     },
     [variations, onMetaChange, product_id]
   );
@@ -130,12 +130,11 @@ const VariationsTab = ({ variations = [], onMetaChange, attributes = [], product
     useEffect(() => {
       if (!firstCall) return setFirstCall(true);
       const delay = setTimeout(() => {
-        const { id: variation_id, ...variation_data } = variation;
-        axios
-          .post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations/${variation_id}`), {
-            variation_data,
-          })
-          .catch((err) => notify.error(err));
+        const { id: variation_id, attributes, ...variation_data } = variation;
+        axios.post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations/${variation_id}`), {
+          variation_data,
+        })
+        .catch((err) => notify.error(err));
       }, 1500);
       return () => clearTimeout(delay);
     }, [variation, firstCall, product_id]);
@@ -298,67 +297,110 @@ const VariationsTab = ({ variations = [], onMetaChange, attributes = [], product
     );
   };
 
-  const SelectAttributes = () => {
-    const [selected, setSelected] = useState([]);
+// 
+const SelectAttributes = () => {
+  const [selected, setSelected] = useState({});
 
-    const toggleSelect = (label) => {
-      setSelected((prev) => {
-        if (prev.find((s) => s.label === label)) {
-          return prev.filter((s) => s.label !== label);
-        }
-        const found = attributes.find((att) => att.label === label);
-        if (found) return [...prev, found];
-        return prev;
-      });
-    };
-
-    return (
-      <div className="xpo_flex xpo_flex-col xpo_gap-3 xpo_p-4 xpo_w-80">
-        <h2 className="xpo_text-lg xpo_font-semibold">{__("Select Attributes", "site-core")}</h2>
-        <div className="xpo_mb-2">
-          {selected.length > 0 && (
-            <div className="xpo_flex xpo_flex-wrap xpo_gap-2">
-              {selected.map((s, sI) => (
-                <span
-                  key={sI}
-                  className="xpo_bg-blue-100 xpo_text-blue-700 xpo_px-2 xpo_py-1 xpo_rounded"
-                >
-                  {s.label}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-        <div className="xpo_border xpo_border-gray-300 xpo_rounded xpo_max-h-48 xpo_overflow-y-auto">
-          {attributes.map((att, attI) => {
-            const isSelected = selected.find((s) => s.label === att.label);
-            return (
-              <div
-                key={attI}
-                onClick={() => toggleSelect(att.label)}
-                className={`xpo_p-2 xpo_cursor-pointer hover:xpo_bg-gray-100 ${
-                  isSelected ? "xpo_bg-blue-200" : ""
-                }`}
-              >
-                {att.label}
-              </div>
-            );
-          })}
-        </div>
-        <Button
-          type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            addVariation(selected);
-            setPopup(null);
-          }}
-          disabled={selected.length === 0}
-        >
-          {__("Create Variation", "site-core")}
-        </Button>
-      </div>
-    );
+  const toggleSelect = (attId, item) => {
+    setSelected((prev) => {
+      if (prev[attId]?.id === item.id) {
+        const newSelected = { ...prev };
+        delete newSelected[attId];
+        return newSelected;
+      }
+      return { ...prev, [attId]: item };
+    });
   };
+
+  const selectedItems = Object.values(selected);
+  const allAttributesSelected = Object.keys(selected).length === attributes.length;
+
+  const getFilteredItems = (att) => {
+    if (selected[att.id]) {
+      return att.items.filter(Boolean);
+    }
+    if (Object.keys(selected).length === 0) {
+      return att.items.filter(Boolean);
+    }
+    const currentIds = Object.fromEntries(
+      Object.entries(selected).map(([aid, item]) => [aid, item.id])
+    );
+    return att.items.filter((item) => {
+      const tempIds = { ...currentIds, [att.id]: item.id };
+      const isDuplicate = variations.some((variation) => {
+        const varMap = Object.fromEntries(
+          variation.attributes.map((a) => [a.attribute_id, a.attribute_item_id])
+        );
+        return Object.entries(tempIds).every(([key, val]) => varMap[key] === val);
+      });
+      return !isDuplicate;
+    });
+  };
+
+  return (
+    <div className="xpo_flex xpo_flex-col xpo_gap-3 xpo_p-4 xpo_w-80">
+      <h2 className="xpo_text-lg xpo_font-semibold">{__("Select Attributes", "site-core")}</h2>
+      <div className="xpo_mb-2">
+        {selectedItems.length > 0 && (
+          <div className="xpo_flex xpo_flex-wrap xpo_gap-2">
+            {selectedItems.map((s, sI) => (
+              <span key={sI} className="xpo_bg-blue-100 xpo_text-blue-700 xpo_px-2 xpo_py-1 xpo_rounded">
+                {s.name}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+      <div className="xpo_border xpo_border-gray-300 xpo_rounded xpo_max-h-48 xpo_overflow-y-auto">
+        {attributes.map((att) => (
+          <div key={att.id} className="xpo_p-3 xpo_border-b xpo_border-gray-200 last:xpo_border-b-0">
+            <h4 className="xpo_font-medium xpo_mb-2 xpo_text-sm xpo_text-gray-700">{att.label}</h4>
+            <div className="xpo_space-y-1">
+              {getFilteredItems(att).map((item) => {
+                const isSelected = selected[att.id]?.id === item.id;
+                return (
+                  <label
+                    key={item.id}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleSelect(att.id, item);
+                    }}
+                    className={`xpo_flex xpo_items-center xpo_p-2 xpo_cursor-pointer hover:xpo_bg-gray-50 xpo_rounded ${
+                      isSelected ? 'xpo_bg-blue-100 xpo_text-blue-700' : 'xpo_text-gray-900'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      checked={isSelected}
+                      className="xpo_mr-2 xpo_h-4 xpo_w-4 xpo_text-blue-600 xpo_border-gray-300 focus:xpo_ring-blue-500"
+                    />
+                    <span className="xpo_text-sm">{item.name} #{item.id}</span>
+                  </label>
+                );
+              })}
+              {getFilteredItems(att).length === 0 && !selected[att.id] && (
+                <p className="xpo_text-sm xpo_text-gray-500 xpo_italic">No available options for this attribute based on current selections.</p>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+      <Button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          addVariation(selectedItems);
+          setPopup(null);
+        }}
+        disabled={!allAttributesSelected}
+      >
+        {__("Create Variation", "site-core")}
+      </Button>
+    </div>
+  );
+};
+
+
 
   const ConfirmDelete = ({ id, onConfirm, onCancel }) => (
     <div className="xpo_p-6">
@@ -476,6 +518,9 @@ const VariationsTab = ({ variations = [], onMetaChange, attributes = [], product
             <div className="xpo_flex xpo_items-center xpo_p-3">
               <GripVertical className="xpo_cursor-move xpo_text-gray-400" size={20} />
               <span className="xpo_font-semibold xpo_ml-2">{v.title || `Variation #${index + 1}`}</span>
+              <div className="xpo_flex xpo_gap-2 xpo_items-center xpo_ml-4">
+                {v.attributes.map((attr, attrIndex) => <span key={attrIndex} className="xpo_bg-gray-300 xpo_px-2 xpo_rounded">{attr.name}</span>)}
+              </div>
               <div className="xpo_ml-auto xpo_flex xpo_items-center xpo_gap-2">
                 <button
                   onClick={() => setOpenVariation(openVariation === v.id ? null : v.id)}
