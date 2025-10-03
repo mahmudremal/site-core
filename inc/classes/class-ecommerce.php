@@ -136,6 +136,7 @@ class Ecommerce {
                 order_number VARCHAR(50) UNIQUE NOT NULL,
                 user_id BIGINT(20) UNSIGNED DEFAULT NULL,
                 session_id BIGINT(20) UNSIGNED DEFAULT NULL,
+                cart_id BIGINT(20) UNSIGNED DEFAULT NULL,
                 status ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded') DEFAULT 'pending',
                 payment_status ENUM('pending', 'paid', 'failed', 'refunded') DEFAULT 'pending',
                 payment_method VARCHAR(50),

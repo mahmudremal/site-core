@@ -1,16 +1,20 @@
 import { Route, Routes } from "react-router-dom";
 import ErrorPage from "./pages/Error";
 import Home from "./pages/Home";
-import Product from "./pages/Product";
 import CartPage from "./pages/Cart";
-import CheckoutPage from "./pages/Checkout";
+import Product from "./pages/Product";
 import LoginPage from "./pages/Login";
-import CollectionsPage from "./pages/Collections";
+import CheckoutPage from "./pages/Checkout";
 import ReviewServay from "./pages/ReviewServay";
-import VendorPage from "./pages/Vendor";
+import CollectionsPage from "./pages/Collections";
+import OrderConfirmation from "./pages/OrderConfirmation";
 import ReturnsOrdersPage from "./pages/Orders";
 import WishlistPage from "./pages/Wishlist";
 import AccountPage from "./pages/Account";
+import VendorPage from "./pages/Vendor";
+import OrderTracking from "./pages/OrderTracking";
+import Location from "./pages/Location";
+import DeliveryManTracker from "./pages/DeliveryManTracker";
 
 function App() {
   return (
@@ -25,10 +29,14 @@ function App() {
         <Route path="clients-portal/my/:section" element={<AccountPage />} />
         <Route path="/auth/:type/:user_id/:verifyMethod/:token" element={<LoginPage />} />
         <Route path="orders/:purpose" element={<ReturnsOrdersPage />} />
+        <Route path="order-confirmation/:order_id" element={<OrderConfirmation />} />
         <Route path="collections/:type" element={<CollectionsPage />} />
         <Route path="collections-tags/:type" element={<CollectionsPage />} />
         <Route path="vendors/:vendor_slug" element={<VendorPage />} />
         <Route path="reviews/:order_id" element={<ReviewServay />} />
+        <Route path="orders/:order_id/tracking" element={<OrderTracking />} />
+        <Route path="location" element={<Location />} />
+        <Route path="delivery-boy-tracker" element={<DeliveryManTracker />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </div>

@@ -22,12 +22,13 @@ export const CartProvider = ({ children }) => {
     return new Promise((resolve, reject) => {
       quantity = quantity || product?.metadata?.min_qty || 1;
       const cart_line_item_id = cart.cart_items.filter(ci => ci.product_id == product.id).find(li => li.product_data.variations.find(v => product.product_data.variations.find(vi => v.id == vi.id)));
-      console.log(cart_line_item_id);
-
-      return;
+      // return console.log(cart_line_item_id);
       sleep(100).then(() => {
-        api.post(`cart/${product.id}`, {
-          quantity,
+        api.post(`cart/${cart_line_item_id || 0}`, {
+          price: product.price,
+          product_id: product.id,
+          quantity: quantity || 1,
+          product_data: product
         }).then(res => res.data)
         .then(res => {
           if (res?.action == 'added') {

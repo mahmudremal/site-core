@@ -10,7 +10,7 @@ const homePageConfig = [
   { type: 'productCarousel', props: { category: 'Sample Category', recommendationType: 'personalized' } },
   { type: 'contentBlock', props: { contentId: 'how-to-shop' } },
   { type: 'categoryGrid', props: { categories: ['electronics', 'fashion', 'home', 'toys'] } },
-  { type: 'justForYou', props: { card_bg: 'xpo_p-4 xpo_bg-scwhite/70 xpo_rounded-xl', categories: ['electronics', 'fashion', 'home', 'toys'] } },
+  { type: 'justForYou', props: { card_bg: 'xpo_p-4 xpo_bg-scwhite/70 xpo_rounded-xl', categories: ['electronics', 'fashion', 'home', 'toys'], maxPaginations: 2 } },
 ];
 
 const componentMap = {
@@ -39,7 +39,7 @@ const Home = () => {
     <div>
       <SiteHeader />
       <div className="xpo_relative xpo_min-h-screen">
-        <div className="xpo_absolute xpo_h-full xpo_inset-0 xpo_z-0 xpo_pointer-events-none xpo_select-none xpo_hidden dark:xpo_block">
+        <div className="xpo_fixed xpo_max-h-screen xpo_z-[-1] xpo_inset-0 xpo_pointer-events-none xpo_select-none xpo_hidden dark:xpo_block">
           <MoonlitSky />
         </div>
         <div className="xpo_container xpo_relative xpo_z-10 xpo_mx-auto xpo_px-4 xpo_py-6 xpo_max-w-7xl">

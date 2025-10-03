@@ -1,4 +1,4 @@
-import { CreditCard, Truck, MapPin, User, Mail, Phone, Plus, Check, ArrowLeft, Package, Clock, Zap, Home, Building, Gift, Apple, Smartphone, Wallet, Edit, Loader2 } from 'lucide-react';
+import { CreditCard, Truck, MapPin, User, Mail, Phone, Plus, Check, ArrowLeft, Package, Clock, Zap, Home, Building, Gift, Apple, Smartphone, Wallet, Edit, Loader2, Shield, Box } from 'lucide-react';
 import { AddressListCardLoader } from '../components/skeletons/SkeletonLoader';
 import CheckoutPageHelmet from '../components/helmets/CheckoutPageHelmet';
 import MoonlitSky from '../components/backgrounds/MoonlitSky';
@@ -12,8 +12,9 @@ import { useEffect, useState } from 'react';
 import { sleep, notify } from '@functions';
 import { useCart } from '../hooks/useCart';
 import { useAuth } from '../hooks/useAuth';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import PaymentComponent from '../components/cart/PaymentComponent';
 
 const deliveryMethods = [
   {
@@ -41,41 +42,59 @@ const deliveryMethods = [
 
 const paymentMethods = [
   {
+    id: 'cod',
+    active: true,
+    name: 'Cash on Delivery (COD)',
+    description: 'Pay upon delivery',
+    icon: Box
+  },
+  {
     id: 'card',
+    active: true,
     name: 'Credit/Debit Card',
     description: 'Visa, Mastercard, American Express',
     icon: CreditCard
   },
   {
     id: 'paypal',
+    active: false,
     name: 'PayPal',
     description: 'Pay with your PayPal account',
     icon: Wallet
   },
   {
     id: 'apple',
+    active: false,
     name: 'Apple Pay',
     description: 'Touch ID or Face ID',
     icon: Apple
   },
   {
     id: 'google',
+    active: false,
     name: 'Google Pay',
     description: 'Pay with Google',
     icon: Smartphone
+  },
+  {
+    id: 'sslcommerz',
+    active: true,
+    name: 'SSLCommerz',
+    description: 'Pay with SSLCommerz gateway',
+    icon: Shield
   }
 ];
 
-export default function CheckoutPage() {
+export default function PageBody() {
   return (
     <div>
       <SiteHeader />
       <div className="xpo_bg-scwhite-50 xpo_relative xpo_min-h-screen xpo_py-8">
-        <div className="xpo_absolute xpo_h-full xpo_inset-0 xpo_z-0 xpo_pointer-events-none xpo_select-none xpo_hidden dark:xpo_block">
+        <div className="xpo_fixed xpo_max-h-screen xpo_z-[-1] xpo_inset-0 xpo_pointer-events-none xpo_select-none xpo_hidden dark:xpo_block">
           <MoonlitSky />
         </div>
         <div className="xpo_container xpo_relative xpo_z-10 xpo_mx-auto">
-          <CheckoutPageBody />
+          <CheckoutPage />
         </div>
       </div>
       <SiteFooter />
@@ -83,12 +102,13 @@ export default function CheckoutPage() {
   );
 };
 
-export const CheckoutPageBody = () => {
+export const CheckoutPage = () => {
   const { __ } = useLocale();
   const { cart } = useCart();
   const { theme } = useTheme();
-  const { money } = useCurrency();
+  const navigate = useNavigate();
   const { setPopup } = usePopup();
+  const { money, currency } = useCurrency();
   const { loggedin, setLoggedin, user } = useAuth();
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('card');
   const [selectedDeliveryAddress, setSelectedDeliveryAddress] = useState(null);
@@ -96,6 +116,7 @@ export const CheckoutPageBody = () => {
   const [processing, setProcessing] = useState(null);
   const [addressLoading, setAddressLoading] = useState(null);
   const [savedAddresses, setSavedAddresses] = useState([]);
+  const [orderDraftID, setOrderDraftID] = useState(0);
 
   const [formData, setFormData] = useState({
     email: '',
@@ -107,7 +128,7 @@ export const CheckoutPageBody = () => {
     city: '',
     state: '',
     zipCode: '',
-    country: 'United States',
+    country: 'BD',
     newsletter: true
   });
 
@@ -241,9 +262,82 @@ export const CheckoutPageBody = () => {
     )
   };
 
-  const process_checkout = () => {
+  // const process_checkout = (e) => {
+  //   e.preventDefault();e.stopPropagation();
+  //   setProcessing(true);
+  //   let address = {...formData};
+  //   if (loggedin && savedAddresses.some(a => a.id == selectedDeliveryAddress)) address = savedAddresses.find(a => a.id == selectedDeliveryAddress)
+  //   api.post(`/checkout`, {
+  //     billing: address,
+  //     shipping: address,
+  //     currency: currency,
+  //     payment_method: selectedPaymentMethod
+  //   })
+  //   .then(res => res.data)
+  //   .then(data => {
+  //     if (data?.redirection) console.log(data?.redirection)
+  //   })
+  //   // .then(() => )
+  //   .catch(err => notify.error(err))
+  //   .finally(() => setProcessing(false));
+  // }
+// 
+  const process_checkout = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     setProcessing(true);
-  }
+
+    const address = loggedin && selectedDeliveryAddress 
+      ? savedAddresses.find(a => a.id == selectedDeliveryAddress)
+      : formData;
+
+    try {
+      const orderRes = await api.post(`orders/create-draft/${orderDraftID}`, {
+        status: 'draft',
+        billing: address,
+        shipping: address,
+        currency: currency,
+        method: selectedPaymentMethod
+      });
+
+      if (orderRes?.order_id) setOrderDraftID(orderRes?.order_id??0);
+      if (orderRes?.redirect_url) {return navigate(orderRes.redirect_url);}
+
+      setPopup(
+        <PaymentComponent
+          method={selectedPaymentMethod}
+          orderId={orderRes.data.id}
+          amount={total}
+          currency={currency}
+          customerData={{
+            name: `${formData.firstName} ${formData.lastName}`,
+            email: formData.email,
+            phone: formData.phone,
+            address: formData.address
+          }}
+          onSuccess={(paymentInfo) => {
+            api.post(`/orders/${orderRes.data.id}/complete`, { paymentInfo })
+            .then(() => {
+              notify.success(__('Order placed successfully!', 'site-core'));
+              window.location.href = '/order-confirmation';
+            })
+            .catch(err => notify.error(err))
+            .finally(() => setPopup(null));
+          }}
+          onFailed={(error) => {
+            notify.error(error.message || __('Payment failed', 'site-core'));
+            setPopup(null);
+          }}
+        />
+      );
+    } catch (err) {
+      notify.error(err.response?.data?.message || __('Failed to create order', 'site-core'));
+    } finally {
+      setProcessing(false);
+    }
+  };
+// 
+
 
   return (
     <>
@@ -253,9 +347,9 @@ export const CheckoutPageBody = () => {
           <ArrowLeft color={theme == 'dark' ? 'white' : 'black'} className="xpo_w-5 xpo_h-5" />
           <span className="xpo_font-medium xpo_text-gray-600 dark:xpo_text-scwhite">{__('Back to Cart', 'site-core')}</span>
         </Link>
-        <button onClick={() => setLoggedin(prev => !prev)} className="xpo_text-sm xpo_text-scwhite-600 hover:xpo_text-scwhite-800">
+        {/* <button onClick={() => setLoggedin(prev => !prev)} className="xpo_text-sm xpo_text-scwhite-600 hover:xpo_text-scwhite-800">
           {loggedin ? 'Logout (Demo)' : 'Login (Demo)'}
-        </button>
+        </button> */}
       </div>
       <div className="xpo_grid xpo_grid-cols-1 lg:xpo_grid-cols-3 xpo_gap-8">
         <div className="lg:xpo_col-span-2 xpo_space-y-6">
@@ -471,7 +565,7 @@ export const CheckoutPageBody = () => {
             </div>
 
             <div className="xpo_space-y-3">
-              {paymentMethods.map((method) => {
+              {paymentMethods.filter(m => m.active).map((method) => {
                 const Icon = method.icon;
                 return (
                   <div
@@ -547,11 +641,12 @@ export const CheckoutPageBody = () => {
             </div>
             
             <button
+              disabled={processing}
               onClick={process_checkout}
-              className="xpo_w-full xpo_bg-scprimary xpo_text-scwhite xpo_py-4 xpo_px-4 xpo_rounded-xl xpo_font-medium hover:xpo_bg-scprimary-800 xpo_transition-colors xpo_flex xpo_items-center xpo_justify-center xpo_gap-2"
+              className="xpo_w-full xpo_bg-scprimary xpo_text-scwhite xpo_py-4 xpo_px-4 xpo_rounded-xl xpo_font-medium hover:xpo_bg-scprimary-800 xpo_transition-colors xpo_flex xpo_items-center xpo_justify-center xpo_gap-2 disabled:xpo_opacity-50"
             >
               {processing ? <Loader2 className="xpo_w-5 xpo_h-5 xpo_animate-spin" /> : <Check className="xpo_w-5 xpo_h-5" />}
-              {processing ? __('Processing...', 'site-core') : __('Complete Order', 'site-core')}
+              {processing ? __('Processing...', 'site-core') : __('Confirm Order', 'site-core')}
             </button>
 
             <div className="xpo_mt-4 xpo_text-center">

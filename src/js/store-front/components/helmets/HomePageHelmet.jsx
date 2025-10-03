@@ -9,7 +9,7 @@ const HomePageHelmet = () => {
   const pageTitle = sprintf(__('%s | Quality Products, Great Deals & Fast Delivery in Bangladesh', 'site-core'), siteName);
   const pageDescription = __('Welcome to Moonlit Meadow - your one-stop shop for quality products, unbeatable deals, and fast shipping across Bangladesh. Shop confidently with enterprise-grade commerce.', 'site-core');
 
-  const canonicalUrl = site_url();
+  const canonicalUrl = site_url('/');
 
   const ogImage = site_url(`/images/homepage-og-image.jpg`);
 

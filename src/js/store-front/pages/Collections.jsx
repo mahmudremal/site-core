@@ -19,7 +19,7 @@ const CollectionsPage = () => {
     <>
       <RecommendedCrossCollections collectionType={collectionType} />
       {/* <RecommendedFeatures /> */}
-      <ProductCatalogue tools={true} shadow={true} />
+      <ProductCatalogue tools={true} shadow={true} maxPaginations={12} />
     </>
   );
 };

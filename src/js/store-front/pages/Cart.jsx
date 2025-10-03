@@ -294,7 +294,8 @@ const PageBody = () => {
       <SiteHeader />
       <Butterflies count={5} />
       <div className="xpo_min-h-screen xpo_relative xpo_py-8">
-        <div className="xpo_absolute xpo_h-full xpo_inset-0 xpo_z-0 xpo_pointer-events-none xpo_select-none xpo_hidden dark:xpo_block">
+        {/* xpo_absolute xpo_h-full xpo_inset-0 xpo_z-0 xpo_pointer-events-none xpo_select-none xpo_hidden dark:xpo_block */}
+        <div className="xpo_fixed xpo_max-h-screen xpo_z-[-1] xpo_inset-0 xpo_pointer-events-none xpo_select-none xpo_hidden dark:xpo_block">
           <MoonlitSky />
         </div>
         <div className="xpo_container xpo_relative xpo_z-10 xpo_mx-auto">
@@ -309,7 +310,7 @@ const PageBody = () => {
                 {__('You might also like', 'site-core')}
               </h2>
 
-              <ProductCatalogue tools={false} endpoint={`products?dir=cart/crosssales`} filters={{per_page: 4}} loadMore={false} card_bg="" />
+              <ProductCatalogue tools={false} endpoint={`products?dir=cart/crosssales`} filters={{per_page: 4}} loadMore={false} card_bg="" maxPaginations={4} />
               
             </div>
           </div>

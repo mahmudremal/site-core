@@ -107,7 +107,7 @@ function CategoriesDropdown({ selectedCategory, onCategorySelect }) {
         <ChevronDown size={16} />
       </button>
     )}>
-      <div className="xpo_bg-scwhite xpo_shadow-lg xpo_rounded-lg xpo_border xpo_border-gray-200 xpo_min-w-[200px] xpo_max-h-80 xpo_overflow-auto">
+      <div className="xpo_bg-scwhite xpo_min-w-[200px] xpo_max-h-80 xpo_overflow-auto">
         <div className="xpo_p-3 xpo_border-b xpo_bg-gray-50">
           <h4 className="xpo_text-sm xpo_font-semibold xpo_text-gray-700">
             {__('Browse Categories', 'site-core')}

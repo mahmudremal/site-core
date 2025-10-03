@@ -69,15 +69,17 @@ export default function SiteFooter() {
 
           {/* App Install & Social */}
           <div>
-            <h4 className="xpo_text-lg xpo_font-semibold xpo_mb-4">{__('Download Our App', 'site-core')}</h4>
-            <button
-              type="button"
-              onClick={() => setPopup(<AppsLinkQR theme={theme} __={__} />)}
-              className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_bg-blue-600 hover:xpo_bg-blue-700 xpo_text-white xpo_px-4 xpo_py-2 xpo_rounded-md xpo_transition"
-            >
-              <TabletSmartphone className="xpo_w-5 xpo_h-5" />
-              <span>{__('Get the App', 'site-core')}</span>
-            </button>
+            <div>
+              <h4 className="xpo_text-lg xpo_font-semibold xpo_mb-4">{__('Download Our App', 'site-core')}</h4>
+              <button
+                type="button"
+                onClick={() => setPopup(<AppsLinkQR theme={theme} __={__} />)}
+                className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_bg-blue-600 hover:xpo_bg-blue-700 xpo_text-white xpo_px-4 xpo_py-2 xpo_rounded-md xpo_transition"
+              >
+                <TabletSmartphone className="xpo_w-5 xpo_h-5" />
+                <span>{__('Get the App', 'site-core')}</span>
+              </button>
+            </div>
 
             {/* Social Links */}
             <div className="xpo_mt-8">

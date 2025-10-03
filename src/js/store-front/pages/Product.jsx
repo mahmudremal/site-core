@@ -113,7 +113,7 @@ const ProductPage = () => {
       quantity: cartForm.quantity,
     };
 
-    api.post(`/cart/${cart_item_id || 0}`, {
+    api.post(`cart/${cart_item_id || 0}`, {
       ...cartData,
       product_data
     }).then(res => res.data)

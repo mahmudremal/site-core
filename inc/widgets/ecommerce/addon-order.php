@@ -3,6 +3,8 @@ namespace SITE_CORE\inc\Ecommerce\Addons;
 
 use SITE_CORE\inc\Traits\Singleton;
 use SITE_CORE\inc\Ecommerce;
+use WP_REST_Response;
+use WP_REST_Request;
 use WP_Error;
 
 class Order {
@@ -13,8 +15,86 @@ class Order {
     protected function __construct() {
         $this->tables = Ecommerce::get_instance()->get_tables();
 
-        add_action('wp_ajax_process_checkout', [$this, 'ajax_process_checkout']);
-        add_action('wp_ajax_nopriv_process_checkout', [$this, 'ajax_process_checkout']);
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+    }
+
+    public function register_rest_routes() {
+        register_rest_route('sitecore/v1', '/ecommerce/checkout', [
+            'methods'  => 'POST',
+            'callback' => [$this, 'api_process_checkout'],
+            'permission_callback' => '__return_true',
+            'args' => [
+                'payment_method' => [
+                    'required' => true,
+                    'type' => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'billing' => [
+                    'required' => true,
+                    'type' => 'array',
+                    'sanitize_callback' => function ($value) {
+                        return array_map('sanitize_text_field', $value);
+                    },
+                ],
+                'shipping' => [
+                    'required' => false,
+                    'type' => 'array',
+                    'sanitize_callback' => function ($value) {
+                        return array_map('sanitize_text_field', $value);
+                    },
+                ],
+                'currency' => [
+                    'required' => false,
+                    'type' => 'string',
+                    'default' => 'USD',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+            ],
+        ]);
+        register_rest_route('sitecore/v1', '/ecommerce/orders/create-draft/(?P<order_id>[^/]+)', [
+            'methods'  => 'POST',
+            'callback' => [$this, 'api_order_create_draft'],
+            'permission_callback' => '__return_true',
+            'args' => [
+                'method' => [
+                    'required' => true,
+                    'type' => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'billing' => [
+                    'required' => true,
+                    'type' => 'array',
+                    'sanitize_callback' => function ($value) {
+                        return array_map('sanitize_text_field', $value);
+                    },
+                ],
+                'shipping' => [
+                    'required' => false,
+                    'type' => 'array',
+                    'sanitize_callback' => function ($value) {
+                        return array_map('sanitize_text_field', $value);
+                    },
+                ],
+                'currency' => [
+                    'required' => false,
+                    'type' => 'string',
+                    'default' => 'USD',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+            ],
+        ]);
+        register_rest_route('sitecore/v1', '/ecommerce/orders/(?P<order_id>[^/]+)', [
+            'methods'  => 'GET',
+            'callback' => [$this, 'api_get_order'],
+            'permission_callback' => '__return_true',
+            'args' => [
+                'order_id' => [
+                    'required' => true,
+                    'type' => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+            ],
+        ]);
     }
 
     public function create_order($order_data) {
@@ -22,11 +102,13 @@ class Order {
         
         $cart_addon = Cart::get_instance();
         $cart = $cart_addon->get_cart(false);
+        
         if (!$cart) {
             return new WP_Error('empty_cart', 'Cart is empty');
         }
 
         $cart_items = $cart_addon->get_cart_items();
+
         if (empty($cart_items)) {
             return new WP_Error('empty_cart', 'Cart is empty');
         }
@@ -40,6 +122,7 @@ class Order {
         $wpdb->insert($this->tables->orders, [
             'order_number' => $order_number,
             'user_id' => get_current_user_id() ?: null,
+            'cart_id' => $cart->id,
             'session_id' => Ecommerce::get_instance()->get_session_id(),
             'status' => 'pending',
             'payment_status' => 'pending',
@@ -69,17 +152,88 @@ class Order {
             ]);
         }
 
-        $wpdb->update($this->tables->carts, ['status' => 'converted'], ['id' => $cart->id]);
+        // $wpdb->update($this->tables->carts, ['status' => 'converted'], ['id' => $cart->id]);
         
         return $order_id;
     }
 
+    public function api_order_create_draft(WP_REST_Request $request) {
+        $order_id = $request->get_param('order_id');
+        $billing = $request->get_param('billing') ?: [];
+        $method = $request->get_param('method') ?: 'cod';
+        $shipping = $request->get_param('shipping') ?: [];
+        $currency = $request->get_param('currency') ?: 'bdt';
+
+        $order_data = [
+            'payment_method' => $method,
+            'shipping' => $shipping,
+            'currency' => $currency,
+            'billing' => $billing
+        ];
+        if (!empty($order_id)) $order_data['id'] = $order_id;
+
+        if (empty($order_data['payment_method']) || empty($order_data['billing'])) {
+            return new WP_REST_Response(['error' => 'Missing required checkout data'], 400);
+        }
+
+        $order_id = $this->create_order($order_data);
+        
+        if (is_wp_error($order_id)) {
+            return new WP_REST_Response(['error' => $order_id->get_error_message()], 400);
+        }
+
+        $order = $this->get_order($order_id);
+        
+        $response = new WP_REST_Response([
+            'order_id' => $order_id,
+            'order_number' => $order->order_number,
+            'redirect_url' => "/order-confirmation/{$order->order_number}"
+        ], 200);
+
+        $response->set_status(200);
+
+        return $response;
+    }
+
+    public function api_get_order(WP_REST_Request $request) {
+        $order_id = $request->get_param('order_id');
+
+        if (empty($order_id)) {
+            return new WP_REST_Response(['error' => 'Missing required order information'], 400);
+        }
+
+        $order = $this->get_order($order_id);
+
+        if (empty($order)) {
+            return new WP_REST_Response(['error' => 'Order information not found'], 400);
+        }
+
+        $response = new WP_REST_Response($order, 200);
+        $response->set_status(200);
+        return $response;
+    }
+
+
     public function get_order($order_id) {
         global $wpdb;
-        return $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$this->tables->orders} WHERE id = %d",
-            $order_id
-        ));
+        $order = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT * FROM {$this->tables->orders} WHERE id = %d OR order_number = %s",
+                (int) $order_id, (string) $order_id
+            )
+        );
+
+        if (empty($order)) return $order;
+
+        $order->items = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT * FROM {$this->tables->order_items} WHERE order_id = %d",
+                (int) $order->id
+            )
+        );
+
+        return $order;
+        
     }
 
     public function get_order_by_number($order_number) {
@@ -177,33 +331,6 @@ class Order {
             "SELECT * FROM {$this->tables->orders} WHERE user_id = %d ORDER BY created_at DESC",
             $user_id
         ));
-    }
-
-    public function ajax_process_checkout() {
-        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'sitecore_ecom_nonce')) {
-            wp_send_json_error('Invalid nonce');
-        }
-
-        $order_data = [
-            'payment_method' => isset($_POST['payment_method']) ? sanitize_text_field($_POST['payment_method']) : '',
-            'billing' => isset($_POST['billing']) ? array_map('sanitize_text_field', $_POST['billing']) : [],
-            'shipping' => isset($_POST['shipping']) ? array_map('sanitize_text_field', $_POST['shipping']) : [],
-            'currency' => (isset($_POST['currency']) && !empty($_POST['currency'])) ? sanitize_text_field($_POST['currency']) : 'USD',
-        ];
-
-        $order_id = $this->create_order($order_data);
-        
-        if (is_wp_error($order_id)) {
-            wp_send_json_error($order_id->get_error_message());
-        }
-
-        $order = $this->get_order($order_id);
-        
-        wp_send_json_success([
-            'order_id' => $order_id,
-            'order_number' => $order->order_number,
-            'redirect_url' => home_url("/order-confirmation/{$order->order_number}"),
-        ]);
     }
 
     
