@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Filter, Grid, List, ChevronDown, X } from 'lucide-react';
 import { useParams } from 'react-router-dom';
-import { ProductCard2 } from './ProductCard';
+import { ProductCard3 } from './ProductCard';
 import { sleep, notify } from '@functions';
 import { sprintf } from 'sprintf-js';
 import api from '../../services/api';
@@ -18,7 +18,8 @@ export default function ProductCatalogue({
     loadMore = 'infinity',
     filters: filterArgs = {},
     card_bg = 'xpo_bg-scwhite/70',
-    maxPaginations = -1
+    maxPaginations = -1,
+    onLoaded = null
 }) {
     const { __ } = useLocale();
     const { money } = useCurrency();
@@ -42,6 +43,8 @@ export default function ProductCatalogue({
       page: 1,
       ...filterArgs
     });
+
+    useEffect(() => onLoaded && onLoaded(), []);
 
     const fetchProducts = () => {
       setLoading(true);
@@ -208,7 +211,7 @@ export default function ProductCatalogue({
       )}
 
       <div className={`xpo_grid ${filters.viewMode === 'grid' ? 'xpo_grid-cols-1 sm:xpo_grid-cols-2 lg:xpo_grid-cols-3 xl:xpo_grid-cols-4' : 'xpo_grid-cols-1'} xpo_gap-6`}>
-        {products.map((product, pIndex) => <ProductCard2 key={pIndex} product={product} viewMode={filters.viewMode} />)}
+        {products.map((product, pIndex) => <ProductCard3 key={pIndex} product={product} viewMode={filters.viewMode} />)}
         {loading && [...Array(filters.per_page).keys()].map(i => <ProductCardSkeleton key={i} />)}
       </div>
 

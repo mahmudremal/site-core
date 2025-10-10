@@ -140,6 +140,7 @@ class Ecommerce {
                 status ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded') DEFAULT 'pending',
                 payment_status ENUM('pending', 'paid', 'failed', 'refunded') DEFAULT 'pending',
                 payment_method VARCHAR(50),
+                shipping_method VARCHAR(50) DEFAULT 'regular',
                 subtotal DECIMAL(10,2) NOT NULL DEFAULT 0.00,
                 tax_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
                 shipping_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
@@ -147,6 +148,7 @@ class Ecommerce {
                 currency VARCHAR(3) DEFAULT 'USD',
                 billing_data LONGTEXT,
                 shipping_data LONGTEXT,
+                delivered_date DATETIME NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 INDEX order_number_idx (order_number),
@@ -795,7 +797,7 @@ class Ecommerce {
         return rest_ensure_response([]);
     }
 
-
+    
     public function body_class($classes, $css_class) {
         if (apply_filters('pm_project/system/isactive', 'storefront-paused')) {return $classes;}
         return array_merge($classes, ['sc_store-front']);

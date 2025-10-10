@@ -56,7 +56,12 @@ class Order {
             'callback' => [$this, 'api_order_create_draft'],
             'permission_callback' => '__return_true',
             'args' => [
-                'method' => [
+                'payment_method' => [
+                    'required' => true,
+                    'type' => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'shipping_method' => [
                     'required' => true,
                     'type' => 'string',
                     'sanitize_callback' => 'sanitize_text_field',
@@ -95,6 +100,12 @@ class Order {
                 ],
             ],
         ]);
+        register_rest_route('sitecore/v1', '/ecommerce/orders', [
+            'methods'  => 'GET',
+            'callback' => [$this, 'api_get_orders'],
+            'permission_callback' => '__return_true',
+            'args' => [],
+        ]);
     }
 
     public function create_order($order_data) {
@@ -127,6 +138,7 @@ class Order {
             'status' => 'pending',
             'payment_status' => 'pending',
             'payment_method' => $order_data['payment_method'] ?? '',
+            'shipping_method' => $order_data['shipping_method'] ?? '',
             'subtotal' => $subtotal,
             'tax_amount' => $tax_amount,
             'shipping_amount' => $shipping_amount,
@@ -160,19 +172,21 @@ class Order {
     public function api_order_create_draft(WP_REST_Request $request) {
         $order_id = $request->get_param('order_id');
         $billing = $request->get_param('billing') ?: [];
-        $method = $request->get_param('method') ?: 'cod';
         $shipping = $request->get_param('shipping') ?: [];
         $currency = $request->get_param('currency') ?: 'bdt';
+        $payment_method = $request->get_param('payment_method') ?: 'cod';
+        $shipping_method = $request->get_param('shipping_method') ?: 'regular';
 
         $order_data = [
-            'payment_method' => $method,
+            'shipping_method' => $shipping_method,
+            'payment_method' => $payment_method,
             'shipping' => $shipping,
             'currency' => $currency,
             'billing' => $billing
         ];
         if (!empty($order_id)) $order_data['id'] = $order_id;
 
-        if (empty($order_data['payment_method']) || empty($order_data['billing'])) {
+        if (empty($order_data['shipping_method']) || empty($order_data['payment_method']) || empty($order_data['billing'])) {
             return new WP_REST_Response(['error' => 'Missing required checkout data'], 400);
         }
 
@@ -207,33 +221,77 @@ class Order {
         if (empty($order)) {
             return new WP_REST_Response(['error' => 'Order information not found'], 400);
         }
-
         $response = new WP_REST_Response($order, 200);
         $response->set_status(200);
         return $response;
     }
 
+    public function api_get_orders(WP_REST_Request $request) {
+        $orders = $this->get_orders();
 
-    public function get_order($order_id) {
+        // if (empty($orders)) {
+        //     return new WP_REST_Response(['error' => 'No past order history found'], 400);
+        // }
+        $response = new WP_REST_Response($orders, 200);
+        $response->set_status(200);
+        return $response;
+    }
+
+    public function get_order($order_id = 0) {
         global $wpdb;
+        if (empty($order_id)) return;
         $order = $wpdb->get_row(
             $wpdb->prepare(
                 "SELECT * FROM {$this->tables->orders} WHERE id = %d OR order_number = %s",
                 (int) $order_id, (string) $order_id
             )
         );
-
         if (empty($order)) return $order;
-
+        $order->billing_data = maybe_unserialize($order->billing_data);
+        $order->shipping_data = maybe_unserialize($order->shipping_data);
         $order->items = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$this->tables->order_items} WHERE order_id = %d",
-                (int) $order->id
+                // "SELECT * FROM {$this->tables->order_items} WHERE order_id = %d",
+                "SELECT * FROM {$this->tables->cart_items} WHERE cart_id = %d",
+                (int) $order->cart_id
             )
         );
-
+        foreach ($order->items as $index => $item) {
+            $order->items[$index] = maybe_unserialize($item->product_data);
+        }
+        $order->trackingInfo = null;
         return $order;
+    }
+
+    public function get_orders() {
+        global $wpdb;
+        $session = Ecommerce::get_instance()->get_session();
+        $orders = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT * FROM {$this->tables->orders} WHERE user_id = %d OR session_id = %s ORDER BY id DESC LIMIT 0, 50;",
+                (int) $session->user_id, (string) $session->id
+            )
+        );
+        if (empty($orders)) return $orders;
+        foreach ($orders as $index => $order) {
+            $order->billing_data = maybe_unserialize($order->billing_data);
+            $order->shipping_data = maybe_unserialize($order->shipping_data);
+            $order->items = [];
+            $order->trackingInfo = null;
+            // $order->items = $wpdb->get_results(
+            //     $wpdb->prepare(
+            //         // "SELECT * FROM {$this->tables->order_items} WHERE order_id = %d",
+            //         "SELECT * FROM {$this->tables->cart_items} WHERE cart_id = %d",
+            //         (int) $order->cart_id
+            //     )
+            // );
+            // foreach ($order->items as $index => $item) {
+            //     $order->items[$index] = maybe_unserialize($item->product_data);
+            // }
+            $orders[$index] = $order;
+        }
         
+        return $orders;
     }
 
     public function get_order_by_number($order_number) {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronDown, Package, MapPin, Phone, User, Truck, CheckCircle, Clock, AlertCircle, ArrowLeft, X, RefreshCw, CreditCard, Star } from 'lucide-react';
 import { usePopup } from '../hooks/usePopup';
 import { sleep, notify } from '@functions';
@@ -8,113 +8,115 @@ import SiteFooter from '../components/layout/Footer';
 import { useLocale } from '../hooks/useLocale';
 import { useCurrency } from '../hooks/useCurrency';
 import { sprintf } from 'sprintf-js';
-import MoonlitSky from '../components/backgrounds/MoonlitSky';
 import { useAuth } from '../hooks/useAuth';
 import { Dropdown } from '@banglee/core';
 import OrdersPageHelmet from '../components/helmets/OrdersPageHelmet';
+import api from '../services/api';
 
 const ReturnsOrdersPage = () => {
   const { __ } = useLocale();
   const { money } = useCurrency();
   const { setPopup } = usePopup();
+  const { loggedin } = useAuth();
   const { purpose = 'history' } = useParams();
-  const { loggedin, setLoggedin, user } = useAuth();
   const [trackingOrderId, setTrackingOrderId] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [orders, setOrders] = useState([]);
 
-  const orders = [
-    {
-      id: 'XPO-2024-001',
-      date: '2024-09-15',
-      status: 'completed',
-      deliveredDate: '2024-09-18',
-      total: 549.98,
-      tax: 44.00,
-      shipping: 0,
-      items: [
-        {
-          id: 1,
-          name: "Premium Wireless Headphones",
-          price: 199.99,
-          quantity: 1,
-          image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&h=100&fit=crop"
-        },
-        {
-          id: 2,
-          name: "Ergonomic Office Chair",
-          price: 349.99,
-          quantity: 1,
-          image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=100&h=100&fit=crop"
-        }
-      ],
-      deliveryMethod: 'Standard Delivery',
-      deliveryAddress: {
-        name: 'John Doe',
-        address: '123 Main Street, Apt 4B',
-        city: 'New York, NY 10001',
-        phone: '+1 (555) 123-4567'
-      }
-    },
-    {
-      id: 'XPO-2024-002',
-      date: '2024-09-12',
-      status: 'fulfilled',
-      total: 299.99,
-      tax: 24.00,
-      shipping: 9.99,
-      items: [
-        {
-          id: 3,
-          name: "Smart Fitness Watch",
-          price: 299.99,
-          quantity: 1,
-          image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100&h=100&fit=crop"
-        }
-      ],
-      deliveryMethod: 'Express Delivery',
-      deliveryAddress: {
-        name: 'John Doe',
-        address: '123 Main Street, Apt 4B',
-        city: 'New York, NY 10001',
-        phone: '+1 (555) 123-4567'
-      },
-      trackingInfo: {
-        currentLocation: {
-          lat: 40.7128,
-          lon: -74.0060,
-          address: 'Distribution Center, Brooklyn, NY'
-        },
-        deliveryBoy: {
-          name: 'Mike Johnson',
-          phone: '+1 (555) 987-1234'
-        },
-        mapLink: 'https://maps.google.com/?q=40.7128,-74.0060'
-      }
-    },
-    {
-      id: 'XPO-2024-003',
-      date: '2024-09-10',
-      status: 'processing',
-      total: 199.99,
-      tax: 16.00,
-      shipping: 0,
-      items: [
-        {
-          id: 4,
-          name: "Wireless Charging Pad",
-          price: 49.99,
-          quantity: 1,
-          image: "https://images.unsplash.com/photo-1609792858004-21c9aab89cec?w=100&h=100&fit=crop"
-        }
-      ],
-      deliveryMethod: 'Standard Delivery',
-      deliveryAddress: {
-        name: 'John Doe',
-        address: '123 Main Street, Apt 4B',
-        city: 'New York, NY 10001',
-        phone: '+1 (555) 123-4567'
-      }
-    }
-  ];
+  // const orders = [
+  //   {
+  //     id: 'XPO-2024-001',
+  //     date: '2024-09-15',
+  //     status: 'completed',
+  //     deliveredDate: '2024-09-18',
+  //     total: 549.98,
+  //     tax: 44.00,
+  //     shipping: 0,
+  //     items: [
+  //       {
+  //         id: 1,
+  //         name: "Premium Wireless Headphones",
+  //         price: 199.99,
+  //         quantity: 1,
+  //         image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&h=100&fit=crop"
+  //       },
+  //       {
+  //         id: 2,
+  //         name: "Ergonomic Office Chair",
+  //         price: 349.99,
+  //         quantity: 1,
+  //         image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=100&h=100&fit=crop"
+  //       }
+  //     ],
+  //     deliveryMethod: 'Standard Delivery',
+  //     deliveryAddress: {
+  //       name: 'John Doe',
+  //       address: '123 Main Street, Apt 4B',
+  //       city: 'New York, NY 10001',
+  //       phone: '+1 (555) 123-4567'
+  //     }
+  //   },
+  //   {
+  //     id: 'XPO-2024-002',
+  //     date: '2024-09-12',
+  //     status: 'fulfilled',
+  //     total: 299.99,
+  //     tax: 24.00,
+  //     shipping: 9.99,
+  //     items: [
+  //       {
+  //         id: 3,
+  //         name: "Smart Fitness Watch",
+  //         price: 299.99,
+  //         quantity: 1,
+  //         image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100&h=100&fit=crop"
+  //       }
+  //     ],
+  //     deliveryMethod: 'Express Delivery',
+  //     deliveryAddress: {
+  //       name: 'John Doe',
+  //       address: '123 Main Street, Apt 4B',
+  //       city: 'New York, NY 10001',
+  //       phone: '+1 (555) 123-4567'
+  //     },
+  //     trackingInfo: {
+  //       currentLocation: {
+  //         lat: 40.7128,
+  //         lon: -74.0060,
+  //         address: 'Distribution Center, Brooklyn, NY'
+  //       },
+  //       deliveryBoy: {
+  //         name: 'Mike Johnson',
+  //         phone: '+1 (555) 987-1234'
+  //       },
+  //       mapLink: 'https://maps.google.com/?q=40.7128,-74.0060'
+  //     }
+  //   },
+  //   {
+  //     id: 'XPO-2024-003',
+  //     date: '2024-09-10',
+  //     status: 'processing',
+  //     total: 199.99,
+  //     tax: 16.00,
+  //     shipping: 0,
+  //     items: [
+  //       {
+  //         id: 4,
+  //         name: "Wireless Charging Pad",
+  //         price: 49.99,
+  //         quantity: 1,
+  //         image: "https://images.unsplash.com/photo-1609792858004-21c9aab89cec?w=100&h=100&fit=crop"
+  //       }
+  //     ],
+  //     deliveryMethod: 'Standard Delivery',
+  //     deliveryAddress: {
+  //       name: 'John Doe',
+  //       address: '123 Main Street, Apt 4B',
+  //       city: 'New York, NY 10001',
+  //       phone: '+1 (555) 123-4567'
+  //     }
+  //   }
+  // ];
 
   const getStatusInfo = (status) => {
     switch (status) {
@@ -178,8 +180,8 @@ const ReturnsOrdersPage = () => {
         <div className="xpo_bg-scwhite/50 xpo_rounded-xl xpo_p-4 xpo_mb-6">
           <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-4">
             <div>
-              <h4 className="xpo_font-semibold xpo_text-gray-900">{sprintf(__('Order #%s', 'site-core'), order.id)}</h4>
-              <p className="xpo_text-sm xpo_text-gray-600">Placed on {new Date(order.date).toLocaleDateString()}</p>
+              <h4 className="xpo_font-semibold xpo_text-gray-900">{sprintf(__('Order #%s', 'site-core'), order.order_number)}</h4>
+              <p className="xpo_text-sm xpo_text-gray-600">Placed on {new Date(order.created_at).toLocaleDateString()}</p>
             </div>
             <div className={`xpo_flex xpo_items-center xpo_gap-2 xpo_px-3 xpo_py-2 xpo_rounded-full ${statusInfo.color}`}>
               <StatusIcon className="xpo_w-4 xpo_h-4" />
@@ -190,11 +192,11 @@ const ReturnsOrdersPage = () => {
           <div className="xpo_grid xpo_grid-cols-3 xpo_gap-4 xpo_text-sm">
             <div>
               <span className="xpo_text-gray-600">{__('Total:', 'site-core')}</span>
-              <span className="xpo_font-semibold xpo_ml-1">{money(order.total)}</span>
+              <span className="xpo_font-semibold xpo_ml-1">{money(order.total_amount)}</span>
             </div>
             <div>
               <span className="xpo_text-gray-600">{__('Tax:', 'site-core')}</span>
-              <span className="xpo_font-semibold xpo_ml-1">{money(order.tax)}</span>
+              <span className="xpo_font-semibold xpo_ml-1">{money(order.tax_amount)}</span>
             </div>
             <div>
               <span className="xpo_text-gray-600">{__('Shipping:', 'site-core')}</span>
@@ -209,10 +211,10 @@ const ReturnsOrdersPage = () => {
             <div className="xpo_flex xpo_items-start xpo_gap-3">
               <MapPin className="xpo_w-5 xpo_h-5 xpo_text-gray-400 xpo_mt-0.5" />
               <div>
-                <p className="xpo_font-medium xpo_text-gray-900">{order.deliveryAddress.name}</p>
-                <p className="xpo_text-sm xpo_text-gray-600">{order.deliveryAddress.address}</p>
-                <p className="xpo_text-sm xpo_text-gray-600">{order.deliveryAddress.city}</p>
-                <p className="xpo_text-sm xpo_text-gray-600">{order.deliveryAddress.phone}</p>
+                <p className="xpo_font-medium xpo_text-gray-900">{order.shipping_data.name}</p>
+                <p className="xpo_text-sm xpo_text-gray-600">{order.shipping_data.address}</p>
+                <p className="xpo_text-sm xpo_text-gray-600">{order.shipping_data.city}</p>
+                <p className="xpo_text-sm xpo_text-gray-600">{order.shipping_data.phone}</p>
               </div>
             </div>
           </div>
@@ -298,7 +300,7 @@ const ReturnsOrdersPage = () => {
             <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-4">
               <div>
                 <h4 className="xpo_font-semibold xpo_text-gray-900">{sprintf(__('Order #%s', 'site-core'), order.id)}</h4>
-                <p className="xpo_text-sm xpo_text-gray-600">{sprintf(__('Placed on %s', 'site-core'), new Date(order.date).toLocaleDateString())}</p>
+                <p className="xpo_text-sm xpo_text-gray-600">{sprintf(__('Placed on %s', 'site-core'), new Date(order.created_at).toLocaleDateString())}</p>
                 {order.deliveredDate && (
                   <p className="xpo_text-sm xpo_text-gray-600">{sprintf(__('Delivered on %s', 'site-core'), new Date(order.deliveredDate).toLocaleDateString())}</p>
                 )}
@@ -308,7 +310,7 @@ const ReturnsOrdersPage = () => {
             <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4 xpo_text-sm xpo_mb-4">
               <div>
                 <span className="xpo_text-gray-600">{__('Total:', 'site-core')}</span>
-                <span className="xpo_font-semibold xpo_ml-1">{money(order.total)}</span>
+                <span className="xpo_font-semibold xpo_ml-1">{money(order.total_amount)}</span>
               </div>
               <div>
                 <span className="xpo_text-gray-600">{__('Delivery:', 'site-core')}</span>
@@ -535,19 +537,19 @@ const ReturnsOrdersPage = () => {
                         <Package className="xpo_w-5 xpo_h-5 xpo_text-scaccent-600" />
                       </div>
                       <div>
-                        <h3 className="xpo_font-semibold xpo_text-gray-900">{order.id}</h3>
-                        <p className="xpo_text-sm xpo_text-gray-500">{order.deliveryMethod}</p>
+                        <h3 className="xpo_font-semibold xpo_text-gray-900">{order?.order_number || ''}</h3>
+                        <p className="xpo_text-sm xpo_text-gray-500">{order?.shipping_method || ''}</p>
                       </div>
                     </div>
                   </div>
 
                   <div className="xpo_col-span-2">
                     <div className="xpo_text-sm">
-                      <p className="xpo_text-gray-900">{new Date(order.date).toLocaleDateString()}</p>
-                      {order.deliveredDate && (
+                      <p className="xpo_text-gray-900">{new Date(order.created_at).toLocaleDateString()}</p>
+                      {order.delivered_date && (
                         <p className="xpo_text-gray-500 xpo_flex xpo_items-center xpo_gap-1 xpo_mt-1">
                           <CheckCircle className="xpo_w-3 xpo_h-3" />
-                          {new Date(order.deliveredDate).toLocaleDateString()}
+                          {new Date(order.delivered_date).toLocaleDateString()}
                         </p>
                       )}
                     </div>
@@ -576,7 +578,7 @@ const ReturnsOrdersPage = () => {
                       <div className="xpo_text-sm xpo_text-gray-600">
                         {order.items.length === 1 
                           ? __('1 item', 'site-core')
-                          : sprintf(__('%s items', 'site-core'), order.items.length)
+                          : sprintf(__('%s items', 'site-core'), order.items.length || '-')
                         }
                       </div>
                     </div>
@@ -584,9 +586,9 @@ const ReturnsOrdersPage = () => {
 
                   <div className="xpo_col-span-2">
                     <div className="xpo_text-right">
-                      <p className="xpo_font-bold xpo_text-gray-900 xpo_text-lg">{money(order.total)}</p>
+                      <p className="xpo_font-bold xpo_text-gray-900 xpo_text-lg">{money(order.total_amount)}</p>
                       <p className="xpo_text-sm xpo_text-gray-500">
-                        {__('Tax:', 'site-core')} {money(order.tax)}
+                        {__('Tax:', 'site-core')} {money(order.tax_amount)}
                       </p>
                     </div>
                   </div>
@@ -680,6 +682,25 @@ const ReturnsOrdersPage = () => {
       </div>
     );
   };
+
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      api.get('orders').then(res => res.data)
+      .then(data => setOrders(data))
+      .catch(err => notify.error(err))
+      .finally(() => setLoading(false));
+    }, 500);
+  
+    return () => clearTimeout(delay);
+  }, []);
+  
+
+  if (loading) {
+    return (
+      <div>Loading...</div>
+    )
+  }
   
 
   if (!loggedin) {
@@ -694,7 +715,7 @@ const ReturnsOrdersPage = () => {
     <div className="xpo_space-y-6">
       <OrdersTable />
 
-      {orders.length === 0 && (
+      {/* {orders.length === 0 && (
         <div className="xpo_bg-scwhite/70 xpo_rounded-2xl xpo_shadow-lg xpo_p-12 xpo_text-center">
           <div className="xpo_w-16 xpo_h-16 xpo_bg-gray-100 xpo_rounded-full xpo_flex xpo_items-center xpo_justify-center xpo_mx-auto xpo_mb-4">
             <Package className="xpo_w-8 xpo_h-8 xpo_text-gray-400" />
@@ -709,7 +730,7 @@ const ReturnsOrdersPage = () => {
             {__('Start Shopping', 'site-core')}
           </Link>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
@@ -719,20 +740,15 @@ export default function PageBody() {
   return (
     <div>
       <SiteHeader />
-      <div className="xpo_relative">
-        <div className="xpo_absolute xpo_top-0 xpo_left-0 xpo_w-full xpo_h-full xpo_m-auto xpo_hidden dark:xpo_block">
-          <MoonlitSky />
+      <div className="xpo_container xpo_relative xpo_m-auto xpo_z-10 xpo_pb-12 xpo_min-h-screen">
+        <div className="xpo_flex xpo_items-center xpo_justify-between xpo_pt-6 xpo_mb-8">
+          <h1 className="xpo_text-3xl xpo_font-bold xpo_text-gray-900 dark:xpo_text-scwhite">{__('Returns & Orders', 'site-core')}</h1>
         </div>
-        <div className="xpo_container xpo_relative xpo_m-auto xpo_z-10 xpo_pb-12 xpo_min-h-screen">
-          <div className="xpo_flex xpo_items-center xpo_justify-between xpo_pt-6 xpo_mb-8">
-            <h1 className="xpo_text-3xl xpo_font-bold xpo_text-gray-900 dark:xpo_text-scwhite">{__('Returns & Orders', 'site-core')}</h1>
-          </div>
 
-          <OrdersPageHelmet />
+        <OrdersPageHelmet />
 
-          <ReturnsOrdersPage />
-          
-        </div>
+        <ReturnsOrdersPage />
+        
       </div>
       <SiteFooter />
     </div>

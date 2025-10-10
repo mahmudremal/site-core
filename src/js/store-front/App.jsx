@@ -8,13 +8,14 @@ import CheckoutPage from "./pages/Checkout";
 import ReviewServay from "./pages/ReviewServay";
 import CollectionsPage from "./pages/Collections";
 import OrderConfirmation from "./pages/OrderConfirmation";
+import DeliveryManTracker from "./pages/DeliveryManTracker";
+import OrderTracking from "./pages/OrderTracking";
+import AppInstallPage from "./pages/AppsInstall";
 import ReturnsOrdersPage from "./pages/Orders";
 import WishlistPage from "./pages/Wishlist";
 import AccountPage from "./pages/Account";
 import VendorPage from "./pages/Vendor";
-import OrderTracking from "./pages/OrderTracking";
 import Location from "./pages/Location";
-import DeliveryManTracker from "./pages/DeliveryManTracker";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="carry" element={<CartPage />} />
+        <Route path="apps" element={<AppInstallPage />} />
         <Route path="products/:id" element={<Product />} />
         <Route path="auth/:type" element={<LoginPage />} />
         <Route path="checkout" element={<CheckoutPage />} />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Loader2, CreditCard, Wallet, Apple, Smartphone, CheckCircle, AlertCircle } from 'lucide-react';
+import { X, Loader2, CreditCard, Wallet, Apple, Smartphone, CheckCircle, AlertCircle, DollarSignIcon } from 'lucide-react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
@@ -413,7 +413,7 @@ const PaymentComponent = ({ method, orderId, amount, currency, customerData, onS
   const stripePromise = useRef(null);
 
   useEffect(() => {
-    // stripePromise.current = loadStripe('pk_test_your_stripe_publishable_key_here');
+    stripePromise.current = loadStripe('pk_test_your_stripe_publishable_key_here');
   }, []);
   
   const getMethodIcon = () => {
@@ -433,6 +433,7 @@ const PaymentComponent = ({ method, orderId, amount, currency, customerData, onS
       case 'apple': return 'Apple Pay';
       case 'google': return 'Google Pay';
       case 'sslcommerz': return 'SSLCommerz';
+      case 'cod': return 'Cash On Delivery (COD)';
       default: return 'Payment';
     }
   };
@@ -442,22 +443,29 @@ const PaymentComponent = ({ method, orderId, amount, currency, customerData, onS
       case 'card':
         return (
           <Elements stripe={stripePromise.current}>
-            <CardPaymentForm orderId={orderId} onSuccess={onSuccess} onFailed={onFailed} />
+            <CardPaymentForm orderId={orderId} amount={amount} currency={currency} onSuccess={onSuccess} onFailed={onFailed} />;
           </Elements>
         );
       case 'paypal':
-        return <PayPalPayment orderId={orderId} onSuccess={onSuccess} onFailed={onFailed} />;
+        return <PayPalPayment orderId={orderId} amount={amount} currency={currency} onSuccess={onSuccess} onFailed={onFailed} />;
       case 'apple':
         return <ApplePayPayment orderId={orderId} amount={amount} currency={currency} onSuccess={onSuccess} onFailed={onFailed} />;
       case 'google':
         return <GooglePayPayment orderId={orderId} amount={amount} currency={currency} onSuccess={onSuccess} onFailed={onFailed} />;
       case 'sslcommerz':
-        return <SSLCommerzPayment orderId={orderId} amount={amount} customerData={customerData} onSuccess={onSuccess} onFailed={onFailed} />;
+        return <SSLCommerzPayment customerData={customerData} orderId={orderId} amount={amount} currency={currency} onSuccess={onSuccess} onFailed={onFailed} />;
+      case 'cod':
+        return (
+          <div className="xpo_p-6 xpo_bg-scaccent-50 dark:xpo_bg-scaccent-900/20 xpo_rounded-xl xpo_text-center">
+            <DollarSignIcon className="xpo_w-12 xpo_h-12 xpo_mx-auto xpo_mb-3 xpo_text-scaccent-600" />
+            <p className="xpo_text-scaccent-600">Pay upon delivery</p>
+          </div>
+        );
       default:
         return (
           <div className="xpo_p-6 xpo_bg-red-50 dark:xpo_bg-red-900/20 xpo_rounded-xl xpo_text-center">
             <AlertCircle className="xpo_w-12 xpo_h-12 xpo_mx-auto xpo_mb-3 xpo_text-red-600" />
-            <p className="xpo_text-red-600">Unsupported payment method</p>
+            <p className="xpo_text-red-600">Unsupported payment method {method}</p>
           </div>
         );
     }
@@ -473,8 +481,8 @@ const PaymentComponent = ({ method, orderId, amount, currency, customerData, onS
             <Icon className="xpo_w-6 xpo_h-6 xpo_text-scprimary" />
           </div>
           <div>
-            <h3 className="xpo_text-xl xpo_font-bold xpo_text-gray-900 dark:xpo_text-scwhite">{getMethodName()}</h3>
-            <p className="xpo_text-sm xpo_text-gray-600 dark:xpo_text-gray-400">Complete your payment securely</p>
+            <h3 className="xpo_text-xl xpo_font-bold xpo_text-gray-900 dark:xpo_text-scprimary">{getMethodName()}</h3>
+            <p className="xpo_text-sm xpo_text-gray-600 dark:xpo_text-scprimary-600">Complete your payment securely</p>
           </div>
         </div>
         {/* <button 
@@ -490,8 +498,8 @@ const PaymentComponent = ({ method, orderId, amount, currency, customerData, onS
       </div>
 
       <div className="xpo_flex xpo_items-center xpo_gap-2 xpo_p-4 xpo_bg-blue-50 dark:xpo_bg-blue-900/20 xpo_border xpo_border-blue-200 dark:xpo_border-blue-800 xpo_rounded-xl">
-        <CheckCircle className="xpo_w-5 xpo_h-5 xpo_text-blue-600 dark:xpo_text-blue-400 xpo_flex-shrink-0" />
-        <p className="xpo_text-sm xpo_text-blue-900 dark:xpo_text-blue-300">Your payment information is encrypted and secure</p>
+        <CheckCircle className="xpo_w-5 xpo_h-5 xpo_text-blue-600 dark:xpo_text-blue-900 xpo_flex-shrink-0" />
+        <p className="xpo_text-sm xpo_text-blue-900 dark:xpo_text-blue-900">Your payment information is encrypted and secure</p>
       </div>
     </div>
   );

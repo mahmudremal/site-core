@@ -1,4 +1,3 @@
-import axios from 'axios';
 import Cookies from 'js-cookie';
 import { createContext, useEffect, useState } from 'react';
 // import request from '@common/request';

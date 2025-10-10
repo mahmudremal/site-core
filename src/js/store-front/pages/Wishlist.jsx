@@ -502,7 +502,7 @@ export default function WishlistPage() {
   return (
     <div>
       <SiteHeader />
-      <div className="xpo_bg-gray-50 xpo_min-h-screen xpo_py-8">
+      <div className="xpo_min-h-screen xpo_py-8">
         <div className="xpo_container xpo_mx-auto">
           <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-8">
             <div>

@@ -313,152 +313,145 @@ const AccountPage = () => {
   return (
     <div>
       <SiteHeader />
-      
-      <div className="xpo_relative xpo_min-h-screen xpo_bg-gray-900">
-        {/* Background with your MoonlitSky component */}
-        <div className="xpo_absolute xpo_inset-0 xpo_z-0 xpo_pointer-events-none xpo_select-none">
-          <MoonlitSky />
-        </div>
 
-        <div className="xpo_relative xpo_z-10 xpo_min-h-screen">
-          <div className="xpo_container xpo_mx-auto xpo_px-4 xpo_py-8">
-            
-            {/* Enhanced Header */}
-            <div className="xpo_bg-gray-800/40 xpo_backdrop-blur-xl xpo_border xpo_border-gray-700/50 xpo_rounded-2xl xpo_p-8 xpo_mb-8 xpo_shadow-2xl">
-              <div className="xpo_flex xpo_flex-col md:xpo_flex-row xpo_items-start md:xpo_items-center xpo_justify-between">
-                <div className="xpo_flex xpo_items-center xpo_space-x-6 xpo_mb-6 md:xpo_mb-0">
-                  <div className="xpo_relative">
-                    <div className="xpo_w-20 xpo_h-20 xpo_rounded-full xpo_bg-gradient-to-br xpo_from-blue-400 xpo_to-purple-600 xpo_p-1">
-                      <img
-                        src={user?.avatar}
-                        alt={`${user?.first_name} ${user?.last_name}`}
-                        className="xpo_w-full xpo_h-full xpo_rounded-full xpo_object-cover"
-                      />
+      <div className="xpo_relative xpo_z-10 xpo_min-h-screen">
+        <div className="xpo_container xpo_mx-auto xpo_px-4 xpo_py-8">
+          
+          {/* Enhanced Header */}
+          <div className="xpo_bg-gray-800/40 xpo_backdrop-blur-xl xpo_border xpo_border-gray-700/50 xpo_rounded-2xl xpo_p-8 xpo_mb-8 xpo_shadow-2xl">
+            <div className="xpo_flex xpo_flex-col md:xpo_flex-row xpo_items-start md:xpo_items-center xpo_justify-between">
+              <div className="xpo_flex xpo_items-center xpo_space-x-6 xpo_mb-6 md:xpo_mb-0">
+                <div className="xpo_relative">
+                  <div className="xpo_w-20 xpo_h-20 xpo_rounded-full xpo_bg-gradient-to-br xpo_from-blue-400 xpo_to-purple-600 xpo_p-1">
+                    <img
+                      src={user?.avatar}
+                      alt={`${user?.first_name} ${user?.last_name}`}
+                      className="xpo_w-full xpo_h-full xpo_rounded-full xpo_object-cover"
+                    />
+                  </div>
+                  {user?.verified && (
+                    <div className="xpo_absolute xpo_-bottom-1 xpo_-right-1 xpo_bg-emerald-500 xpo_rounded-full xpo_p-1.5 xpo_border-2 xpo_border-gray-900">
+                      <Shield className="xpo_w-3 xpo_h-3 xpo_text-white" />
                     </div>
-                    {user?.verified && (
-                      <div className="xpo_absolute xpo_-bottom-1 xpo_-right-1 xpo_bg-emerald-500 xpo_rounded-full xpo_p-1.5 xpo_border-2 xpo_border-gray-900">
-                        <Shield className="xpo_w-3 xpo_h-3 xpo_text-white" />
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <h1 className="xpo_text-3xl xpo_font-bold xpo_text-white xpo_mb-1">
-                      {sprintf(__('Welcome back, %s!', 'site-core'), user?.first_name)}
-                    </h1>
-                    <p className="xpo_text-gray-300 xpo_mb-1">{user?.email}</p>
-                    <p className="xpo_text-sm xpo_text-gray-400 xpo_flex xpo_items-center xpo_gap-2">
-                      <Calendar className="xpo_w-4 xpo_h-4" />
-                      {sprintf(__('Member since %s', 'site-core'), new Date(user?.member_since).getFullYear())}
-                    </p>
-                  </div>
+                  )}
                 </div>
-                
-                <div className="xpo_flex xpo_space-x-3">
-                  <Link 
-                    to="/clients-portal/my/profile" 
-                    className="xpo_bg-gradient-to-r xpo_from-blue-500 xpo_to-purple-600 xpo_text-white xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:from-blue-600 hover:to-purple-700 xpo_transition-all xpo_shadow-lg xpo_flex xpo_items-center xpo_gap-2"
-                  >
-                    <Edit3 className="xpo_w-4 xpo_h-4" />
-                    {__('Edit Profile', 'site-core')}
-                  </Link>
-                  <button 
-                    onClick={handleSignOut}
-                    className="xpo_bg-gray-700/50 xpo_backdrop-blur-sm xpo_border xpo_border-gray-600/50 xpo_text-gray-300 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:bg-gray-600/50 hover:text-white xpo_transition-all xpo_flex xpo_items-center xpo_gap-2"
-                  >
-                    <LogOut className="xpo_w-4 xpo_h-4" />
-                    {__('Sign Out', 'site-core')}
-                  </button>
+                <div>
+                  <h1 className="xpo_text-3xl xpo_font-bold xpo_text-white xpo_mb-1">
+                    {sprintf(__('Welcome back, %s!', 'site-core'), user?.first_name)}
+                  </h1>
+                  <p className="xpo_text-gray-300 xpo_mb-1">{user?.email}</p>
+                  <p className="xpo_text-sm xpo_text-gray-400 xpo_flex xpo_items-center xpo_gap-2">
+                    <Calendar className="xpo_w-4 xpo_h-4" />
+                    {sprintf(__('Member since %s', 'site-core'), new Date(user?.member_since).getFullYear())}
+                  </p>
                 </div>
+              </div>
+              
+              <div className="xpo_flex xpo_space-x-3">
+                <Link 
+                  to="/clients-portal/my/profile" 
+                  className="xpo_bg-gradient-to-r xpo_from-blue-500 xpo_to-purple-600 xpo_text-white xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:from-blue-600 hover:to-purple-700 xpo_transition-all xpo_shadow-lg xpo_flex xpo_items-center xpo_gap-2"
+                >
+                  <Edit3 className="xpo_w-4 xpo_h-4" />
+                  {__('Edit Profile', 'site-core')}
+                </Link>
+                <button 
+                  onClick={handleSignOut}
+                  className="xpo_bg-gray-700/50 xpo_backdrop-blur-sm xpo_border xpo_border-gray-600/50 xpo_text-gray-300 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:bg-gray-600/50 hover:text-white xpo_transition-all xpo_flex xpo_items-center xpo_gap-2"
+                >
+                  <LogOut className="xpo_w-4 xpo_h-4" />
+                  {__('Sign Out', 'site-core')}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="xpo_grid xpo_grid-cols-1 lg:xpo_grid-cols-4 xpo_gap-8">
+            
+            {/* Enhanced Sidebar */}
+            <div className="lg:xpo_col-span-1">
+              <div className="xpo_bg-gray-800/40 xpo_backdrop-blur-xl xpo_border xpo_border-gray-700/50 xpo_rounded-2xl xpo_p-6 xpo_shadow-2xl xpo_sticky xpo_top-8">
+                <nav className="xpo_space-y-2">
+                  {menuItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = section === item.key;
+                    
+                    return (
+                      <button
+                        key={item.key}
+                        onClick={() => handleMenuClick(item.key)}
+                        className={`xpo_w-full xpo_flex xpo_items-center xpo_justify-between xpo_px-4 xpo_py-4 xpo_rounded-xl xpo_text-left xpo_transition-all xpo_group ${
+                          isActive
+                            ? 'xpo_bg-gradient-to-r xpo_from-blue-500/20 xpo_to-purple-600/20 xpo_border xpo_border-blue-500/30 xpo_text-white xpo_shadow-lg'
+                            : 'xpo_text-gray-300 hover:xpo_bg-gray-700/30 hover:xpo_text-white hover:xpo_border hover:xpo_border-gray-600/50'
+                        }`}
+                      >
+                        <div className="xpo_flex xpo_items-center xpo_space-x-3">
+                          <div className={`xpo_p-2 xpo_rounded-lg ${isActive ? 'xpo_bg-blue-500/20' : 'xpo_bg-gray-700/50 group-hover:xpo_bg-gray-600/50'}`}>
+                            <Icon className={`xpo_w-5 xpo_h-5 ${isActive ? 'xpo_text-blue-400' : 'xpo_text-gray-400 group-hover:xpo_text-gray-300'}`} />
+                          </div>
+                          <div>
+                            <div className="xpo_font-medium">{item.label}</div>
+                            <div className="xpo_text-xs xpo_text-gray-500 xpo_hidden lg:xpo_block">
+                              {item.description}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="xpo_flex xpo_items-center xpo_space-x-2">
+                          {item.badge && (
+                            <span className={`xpo_text-xs xpo_px-2 xpo_py-1 xpo_rounded-full xpo_font-medium xpo_border ${
+                              isActive 
+                                ? 'xpo_bg-blue-500/20 xpo_text-blue-300 xpo_border-blue-500/30' 
+                                : 'xpo_bg-gray-700/50 xpo_text-gray-400 xpo_border-gray-600/50'
+                            }`}>
+                              {item.badge}
+                            </span>
+                          )}
+                          <ChevronRight className={`xpo_w-4 xpo_h-4 xpo_transition-transform ${
+                            isActive ? 'xpo_text-blue-400 xpo_rotate-90' : 'xpo_text-gray-500 group-hover:xpo_text-gray-400'
+                          }`} />
+                        </div>
+                      </button>
+                    );
+                  })}
+                </nav>
               </div>
             </div>
 
-            <div className="xpo_grid xpo_grid-cols-1 lg:xpo_grid-cols-4 xpo_gap-8">
-              
-              {/* Enhanced Sidebar */}
-              <div className="lg:xpo_col-span-1">
-                <div className="xpo_bg-gray-800/40 xpo_backdrop-blur-xl xpo_border xpo_border-gray-700/50 xpo_rounded-2xl xpo_p-6 xpo_shadow-2xl xpo_sticky xpo_top-8">
-                  <nav className="xpo_space-y-2">
-                    {menuItems.map((item) => {
-                      const Icon = item.icon;
-                      const isActive = section === item.key;
-                      
-                      return (
-                        <button
-                          key={item.key}
-                          onClick={() => handleMenuClick(item.key)}
-                          className={`xpo_w-full xpo_flex xpo_items-center xpo_justify-between xpo_px-4 xpo_py-4 xpo_rounded-xl xpo_text-left xpo_transition-all xpo_group ${
-                            isActive
-                              ? 'xpo_bg-gradient-to-r xpo_from-blue-500/20 xpo_to-purple-600/20 xpo_border xpo_border-blue-500/30 xpo_text-white xpo_shadow-lg'
-                              : 'xpo_text-gray-300 hover:xpo_bg-gray-700/30 hover:xpo_text-white hover:xpo_border hover:xpo_border-gray-600/50'
-                          }`}
-                        >
-                          <div className="xpo_flex xpo_items-center xpo_space-x-3">
-                            <div className={`xpo_p-2 xpo_rounded-lg ${isActive ? 'xpo_bg-blue-500/20' : 'xpo_bg-gray-700/50 group-hover:xpo_bg-gray-600/50'}`}>
-                              <Icon className={`xpo_w-5 xpo_h-5 ${isActive ? 'xpo_text-blue-400' : 'xpo_text-gray-400 group-hover:xpo_text-gray-300'}`} />
-                            </div>
-                            <div>
-                              <div className="xpo_font-medium">{item.label}</div>
-                              <div className="xpo_text-xs xpo_text-gray-500 xpo_hidden lg:xpo_block">
-                                {item.description}
-                              </div>
-                            </div>
-                          </div>
-                          
-                          <div className="xpo_flex xpo_items-center xpo_space-x-2">
-                            {item.badge && (
-                              <span className={`xpo_text-xs xpo_px-2 xpo_py-1 xpo_rounded-full xpo_font-medium xpo_border ${
-                                isActive 
-                                  ? 'xpo_bg-blue-500/20 xpo_text-blue-300 xpo_border-blue-500/30' 
-                                  : 'xpo_bg-gray-700/50 xpo_text-gray-400 xpo_border-gray-600/50'
-                              }`}>
-                                {item.badge}
-                              </span>
-                            )}
-                            <ChevronRight className={`xpo_w-4 xpo_h-4 xpo_transition-transform ${
-                              isActive ? 'xpo_text-blue-400 xpo_rotate-90' : 'xpo_text-gray-500 group-hover:xpo_text-gray-400'
-                            }`} />
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </nav>
-                </div>
-              </div>
-
-              {/* Enhanced Main Content */}
-              <div className="lg:xpo_col-span-3">
-                <div className="xpo_bg-gray-800/40 xpo_backdrop-blur-xl xpo_border xpo_border-gray-700/50 xpo_rounded-2xl xpo_p-8 xpo_shadow-2xl xpo_min-h-96">
-                  {section === 'overview' && (
-                    <AccountOverview 
-                      userStats={userStats}
-                      recentOrders={recentOrders}
-                    />
-                  )}
-                  
-                  {section !== 'overview' && (
-                    <div className="xpo_text-center xpo_py-16">
-                      <div className="xpo_bg-gray-700/30 xpo_backdrop-blur-sm xpo_rounded-2xl xpo_p-8 xpo_border xpo_border-gray-600/30 xpo_max-w-md xpo_mx-auto">
-                        <div className="xpo_w-16 xpo_h-16 xpo_bg-gray-600/50 xpo_rounded-xl xpo_flex xpo_items-center xpo_justify-center xpo_mx-auto xpo_mb-4">
-                          {menuItems.find(item => item.key === section)?.icon && 
-                            (() => {
-                              const Icon = menuItems.find(item => item.key === section).icon;
-                              return <Icon className="xpo_w-8 xpo_h-8 xpo_text-gray-400" />;
-                            })()
-                          }
-                        </div>
-                        <h3 className="xpo_text-xl xpo_font-semibold xpo_text-white xpo_mb-2">
-                          {menuItems.find(item => item.key === section)?.label}
-                        </h3>
-                        <p className="xpo_text-gray-400 xpo_mb-4">
-                          {menuItems.find(item => item.key === section)?.description}
-                        </p>
-                        <p className="xpo_text-sm xpo_text-gray-500">
-                          {__('This section is under development. Individual components will be created for each tab.', 'site-core')}
-                        </p>
+            {/* Enhanced Main Content */}
+            <div className="lg:xpo_col-span-3">
+              <div className="xpo_bg-gray-800/40 xpo_backdrop-blur-xl xpo_border xpo_border-gray-700/50 xpo_rounded-2xl xpo_p-8 xpo_shadow-2xl xpo_min-h-96">
+                {section === 'overview' && (
+                  <AccountOverview 
+                    userStats={userStats}
+                    recentOrders={recentOrders}
+                  />
+                )}
+                
+                {section !== 'overview' && (
+                  <div className="xpo_text-center xpo_py-16">
+                    <div className="xpo_bg-gray-700/30 xpo_backdrop-blur-sm xpo_rounded-2xl xpo_p-8 xpo_border xpo_border-gray-600/30 xpo_max-w-md xpo_mx-auto">
+                      <div className="xpo_w-16 xpo_h-16 xpo_bg-gray-600/50 xpo_rounded-xl xpo_flex xpo_items-center xpo_justify-center xpo_mx-auto xpo_mb-4">
+                        {menuItems.find(item => item.key === section)?.icon && 
+                          (() => {
+                            const Icon = menuItems.find(item => item.key === section).icon;
+                            return <Icon className="xpo_w-8 xpo_h-8 xpo_text-gray-400" />;
+                          })()
+                        }
                       </div>
+                      <h3 className="xpo_text-xl xpo_font-semibold xpo_text-white xpo_mb-2">
+                        {menuItems.find(item => item.key === section)?.label}
+                      </h3>
+                      <p className="xpo_text-gray-400 xpo_mb-4">
+                        {menuItems.find(item => item.key === section)?.description}
+                      </p>
+                      <p className="xpo_text-sm xpo_text-gray-500">
+                        {__('This section is under development. Individual components will be created for each tab.', 'site-core')}
+                      </p>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

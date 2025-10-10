@@ -396,7 +396,7 @@ const SingleRoomPage = () => {
     <>
       <NavMenu />
       <div className="xpo_min-h-screen xpo_bg-gray-50">
-        <div className="xpo_max-w-7xl xpo_mx-auto xpo_px-4 xpo_py-8">
+        <div className="xpo_container xpo_mx-auto xpo_px-4 xpo_py-8">
           {/* Room Header */}
           {loading.room ? (
             <div className="xpo_mb-8 xpo_bg-white xpo_rounded-xl xpo_shadow-sm xpo_p-6">

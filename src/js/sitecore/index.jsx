@@ -91,6 +91,7 @@ class SiteCore {
         });
         document.querySelectorAll('#radar-interface').forEach(async field => {
             const container = field.parentElement;
+            console.log(field)
             container.previousElementSibling.remove();
             if (container) {
                 container.innerHTML = '';

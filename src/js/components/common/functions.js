@@ -142,6 +142,7 @@ class ToastNotification {
         if (typeof msg === 'object') {
             msg = msg?.response?.data?.message??msg?.response?.message??msg?.message??msg;
         }
+        console.error(msg)
         return toast.error(msg, opt)
     }
 }

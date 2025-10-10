@@ -239,7 +239,7 @@ export default function PortfolioGrid({ onPortfolioClick }) {
   }
 
   return (
-    <div className="xpo_max-w-7xl xpo_mx-auto xpo_px-4 xpo_py-8">
+    <div className="xpo_container xpo_mx-auto xpo_px-4 xpo_py-8">
       {/* Header with View Toggle */}
       <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-8">
         <div>

@@ -1,6 +1,6 @@
-
 import OSIcons from './OSIcons';
 import QRCode from 'react-qr-code';
+import { site_url } from '@functions';
 
 
 export default function AppsLinkQR({ __, theme }) {
@@ -44,7 +44,7 @@ export default function AppsLinkQR({ __, theme }) {
             <div className="xpo_inline-block xpo_bg-white dark:xpo_bg-scprimary dark:xpo_border dark:xpo_border-scwhite xpo_p-4 xpo_rounded-lg xpo_shadow-md">
                 <QRCode
                     size={200}
-                    value={`${location.origin}/apps`}
+                    value={site_url('apps')}
                     bgColor={theme == 'dark' ? '#0A1D37' : '#FFFFFF'}
                     fgColor={theme == 'dark' ? '#FFFFFF' : '#000000'}
                     className="xpo_w-48 xpo_h-48"

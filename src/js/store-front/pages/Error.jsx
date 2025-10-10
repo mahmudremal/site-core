@@ -128,43 +128,43 @@ export default function ErrorPage() {
   return (
     <div>
       <SiteHeader />
-      <div className="xpo_bg-gray-50 xpo_min-h-screen">
+      <div className="xpo_min-h-screen">
         <ErrorPageHelmet error={currentError} />
-        <div className="xpo_max-w-7xl xpo_mx-auto xpo_px-4 sm:xpo_px-6 lg:xpo_px-8 xpo_py-12">
+        <div className="xpo_container xpo_mx-auto xpo_px-4 sm:xpo_px-6 lg:xpo_px-8 xpo_py-12">
           
-          <div className="xpo_mb-8 xpo_flex xpo_gap-4">
+          {/* <div className="xpo_mb-8 xpo_flex xpo_gap-4">
             {Object.values(errorTypes).map(({ id: key, label }, i) => (
-              <button key={i} onClick={() => setErrorType(key)} className={`xpo_px-3 xpo_py-1 xpo_text-sm xpo_rounded-full ${errorType === key ? 'xpo_bg-scprimary xpo_text-white' : 'xpo_bg-white xpo_text-gray-600 xpo_border'}`}>{label}</button>
+              <button key={i} onClick={() => setErrorType(key)} className={`xpo_px-3 xpo_py-1 xpo_text-sm xpo_rounded-full ${errorType === key ? 'xpo_bg-scprimary xpo_text-scwhite' : 'xpo_bg-scwhite xpo_text-gray-600 xpo_border'}`}>{label}</button>
             ))}
-          </div>
+          </div> */}
 
           <div className="xpo_text-center xpo_py-16">
-            <div className="xpo_text-8xl xpo_mb-6">{currentError.icon}</div>
+            <div className="xpo_text-8xl xpo_mb-6 dark:xpo_text-scwhite-600">{currentError.icon}</div>
             
-            <h1 className="xpo_text-4xl xpo_font-bold xpo_text-gray-900 xpo_mb-4">
+            <h1 className="xpo_text-4xl xpo_font-bold xpo_text-gray-900 dark:xpo_text-scwhite-600 xpo_mb-4">
               {currentError.title}
             </h1>
             
-            <p className="xpo_text-xl xpo_text-gray-600 xpo_mb-2 xpo_max-w-2xl xpo_mx-auto">
+            <p className="xpo_text-xl xpo_text-gray-600 dark:xpo_text-scwhite-600 xpo_mb-2 xpo_max-w-2xl xpo_mx-auto">
               {currentError.message}
             </p>
             
-            <p className="xpo_text-gray-500 xpo_mb-8 xpo_max-w-xl xpo_mx-auto">
+            <p className="xpo_text-gray-500 dark:xpo_text-scwhite-600 xpo_mb-8 xpo_max-w-xl xpo_mx-auto">
               {currentError.description}
             </p>
 
             <div className="xpo_flex xpo_flex-col sm:xpo_flex-row xpo_gap-4 xpo_justify-center xpo_items-center xpo_mb-12">
-              <Link to="/" className="xpo_flex xpo_items-center xpo_gap-2 xpo_bg-scprimary xpo_text-white xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-800 xpo_transition-colors">
+              <Link to="/" className="xpo_flex xpo_items-center xpo_gap-2 xpo_bg-scprimary xpo_text-scwhite xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-800 xpo_transition-colors">
                 <Home className="xpo_w-5 xpo_h-5" />
                 {__('Go to Homepage', 'site-core')}
               </Link>
               
-              <button onClick={() => window?.history && window.history.back()} className="xpo_flex xpo_items-center xpo_gap-2 xpo_border xpo_border-gray-300 xpo_text-gray-700 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors">
+              <button onClick={() => window?.history && window.history.back()} className="xpo_flex xpo_items-center xpo_gap-2 xpo_border xpo_border-gray-300 xpo_text-gray-700 dark:xpo_text-scwhite-600 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 dark:hover:xpo_bg-scaccent-50 dark:hover:xpo_text-scprimary-600 xpo_transition-colors">
                 <ArrowLeft className="xpo_w-5 xpo_h-5" />
                 {__('Go Back', 'site-core')}
               </button>
               
-              <button onClick={() => window?.location && window.location.reload()} className="xpo_flex xpo_items-center xpo_gap-2 xpo_border xpo_border-gray-300 xpo_text-gray-700 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors">
+              <button onClick={() => window?.location && window.location.reload()} className="xpo_flex xpo_items-center xpo_gap-2 xpo_border xpo_border-gray-300 xpo_text-gray-700 dark:xpo_text-scwhite-600 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 dark:hover:xpo_bg-scaccent-50 dark:hover:xpo_text-scprimary-600 xpo_transition-colors">
                 <RefreshCw className="xpo_w-5 xpo_h-5" />
                 {__('Try Again', 'site-core')}
               </button>
@@ -176,16 +176,16 @@ export default function ErrorPage() {
                 <input
                   type="text"
                   placeholder={__('Search for products...', 'site-core')}
-                  className="xpo_w-full xpo_pl-12 xpo_pr-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-xl xpo_focus:ring-2 xpo_focus:ring-scprimary xpo_focus:border-transparent xpo_bg-white"
+                  className="xpo_w-full xpo_pl-12 xpo_pr-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-xl xpo_focus:ring-2 xpo_focus:ring-scprimary xpo_focus:border-transparent xpo_bg-scwhite"
                 />
-                <button className="xpo_absolute xpo_right-2 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_bg-scprimary xpo_text-white xpo_px-4 xpo_py-2 xpo_rounded-lg hover:xpo_bg-gray-800 xpo_transition-colors">
+                <button className="xpo_absolute xpo_right-2 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_bg-scprimary xpo_text-scwhite xpo_px-4 xpo_py-2 xpo_rounded-lg hover:xpo_bg-gray-800 xpo_transition-colors">
                   {__('Search', 'site-core')}
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="xpo_bg-white xpo_rounded-2xl xpo_shadow-lg xpo_p-8">
+          <div className="xpo_bg-scwhite-600/50 xpo_rounded-2xl xpo_shadow-lg xpo_p-8">
             <div className="xpo_text-center xpo_mb-8">
               <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-900 xpo_mb-2">
                 {__("Don't leave empty-handed!", 'site-core')}
@@ -202,13 +202,13 @@ export default function ErrorPage() {
             </div>
 
             <div className="xpo_text-center xpo_mt-8">
-              <Link to="/collections/special" className="xpo_bg-scprimary xpo_text-white xpo_px-8 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-800 xpo_transition-colors">
+              <Link to="/collections/special" className="xpo_bg-scprimary xpo_text-scwhite xpo_px-8 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-800 xpo_transition-colors">
                 {__('View All Products', 'site-core')}
               </Link>
             </div>
           </div>
 
-          <div className="xpo_mt-12 xpo_bg-gradient-to-r xpo_from-scaccent-50 xpo_to-purple-50 xpo_rounded-2xl xpo_p-8 xpo_text-center">
+          <div className="xpo_mt-12 xpo_bg-gradient-to-r xpo_from-scaccent-50/70 xpo_to-purple-50/70 xpo_rounded-2xl xpo_p-8 xpo_text-center">
             <h3 className="xpo_text-xl xpo_font-bold xpo_text-gray-900 xpo_mb-2">
               {__('Need Help?', 'site-core')}
             </h3>
@@ -216,13 +216,13 @@ export default function ErrorPage() {
               {__('Our customer support team is here to assist you 24/7', 'site-core')}
             </p>
             <div className="xpo_flex xpo_flex-col sm:xpo_flex-row xpo_gap-4 xpo_justify-center">
-              <button className="xpo_bg-white xpo_text-gray-900 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors xpo_shadow-sm">
+              <button className="xpo_bg-scwhite xpo_text-gray-900 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors xpo_shadow-sm">
                 {__('Contact Support', 'site-core')}
               </button>
-              <button className="xpo_bg-white xpo_text-gray-900 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors xpo_shadow-sm">
+              <button className="xpo_bg-scwhite xpo_text-gray-900 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors xpo_shadow-sm">
                 {__('Live Chat', 'site-core')}
               </button>
-              <button className="xpo_bg-white xpo_text-gray-900 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors xpo_shadow-sm">
+              <button className="xpo_bg-scwhite xpo_text-gray-900 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors xpo_shadow-sm">
                 {__('FAQs', 'site-core')}
               </button>
             </div>

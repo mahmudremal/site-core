@@ -1,7 +1,6 @@
 import { CreditCard, Truck, MapPin, User, Mail, Phone, Plus, Check, ArrowLeft, Package, Clock, Zap, Home, Building, Gift, Apple, Smartphone, Wallet, Edit, Loader2, Shield, Box } from 'lucide-react';
 import { AddressListCardLoader } from '../components/skeletons/SkeletonLoader';
 import CheckoutPageHelmet from '../components/helmets/CheckoutPageHelmet';
-import MoonlitSky from '../components/backgrounds/MoonlitSky';
 import SiteHeader from '../components/layout/Header';
 import SiteFooter from '../components/layout/Footer';
 import { useCurrency } from '../hooks/useCurrency';
@@ -22,21 +21,24 @@ const deliveryMethods = [
     name: 'Standard Delivery',
     description: '5-7 business days',
     price: 0,
-    icon: Package
+    icon: Package,
+    selected: false
   },
   {
     id: 'express',
     name: 'Express Delivery',
     description: '2-3 business days',
     price: 9.99,
-    icon: Clock
+    icon: Clock,
+    selected: true
   },
   {
     id: 'overnight',
     name: 'Overnight Delivery',
     description: 'Next business day',
     price: 24.99,
-    icon: Zap
+    icon: Zap,
+    selected: false
   }
 ];
 
@@ -89,13 +91,8 @@ export default function PageBody() {
   return (
     <div>
       <SiteHeader />
-      <div className="xpo_bg-scwhite-50 xpo_relative xpo_min-h-screen xpo_py-8">
-        <div className="xpo_fixed xpo_max-h-screen xpo_z-[-1] xpo_inset-0 xpo_pointer-events-none xpo_select-none xpo_hidden dark:xpo_block">
-          <MoonlitSky />
-        </div>
-        <div className="xpo_container xpo_relative xpo_z-10 xpo_mx-auto">
-          <CheckoutPage />
-        </div>
+      <div className="xpo_container xpo_relative xpo_z-10 xpo_mx-auto xpo_pt-8 xpo_pb-16">
+        <CheckoutPage />
       </div>
       <SiteFooter />
     </div>
@@ -140,9 +137,10 @@ export const CheckoutPage = () => {
       const { id: user_id = 0 } = user;
       api.get(`${user_id}/addresses`)
       .then(res => res.data)
-      .then(data => 
+      .then(data => {
         data?.length && setSavedAddresses(data)
-      )
+        data?.length == 1 && setSelectedDeliveryAddress(data.find(a => a)?.id)
+      })
       .catch(err => notify.error(err))
       .finally(() => setAddressLoading(false));
     }, 1500);
@@ -292,48 +290,55 @@ export const CheckoutPage = () => {
       : formData;
 
     try {
-      const orderRes = await api.post(`orders/create-draft/${orderDraftID}`, {
+      api.post(`orders/create-draft/${orderDraftID}`, {
         status: 'draft',
         billing: address,
         shipping: address,
         currency: currency,
-        method: selectedPaymentMethod
-      });
+        payment_method: selectedPaymentMethod,
+        shipping_method: selectedDeliveryMethod
+      })
+      .then(res => res.data)
+      .then(orderRes => {
+        if (orderRes?.order_id) setOrderDraftID(orderRes?.order_id??0);
+        if (orderRes?.redirect_url) {return navigate(orderRes.redirect_url);}
+        sleep(3000).then(() => {
+          setPopup(
+            <PaymentComponent
+              method={selectedPaymentMethod}
+              orderId={orderRes.data.id}
+              currency={currency}
+              amount={total}
+              customerData={{
+                name: `${formData.firstName} ${formData.lastName}`,
+                email: formData.email,
+                phone: formData.phone,
+                address: formData.address
+              }}
+              onSuccess={(paymentInfo) => {
+                api.post(`/orders/${orderRes.data.id}/complete`, { paymentInfo })
+                .then(() => {
+                  notify.success(__('Order placed successfully!', 'site-core'));
+                  window.location.href = '/order-confirmation';
+                })
+                .catch(err => notify.error(err))
+                .finally(() => setPopup(null));
+              }}
+              onFailed={(error) => {
+                notify.error(error.message || __('Payment failed', 'site-core'));
+                setPopup(null);
+              }}
+            />
+          );
+        })
+      })
+      .catch(err => notify.error(err.response?.data?.message || __('Failed to create order', 'site-core')))
+      .finally(() => setProcessing(false));
 
-      if (orderRes?.order_id) setOrderDraftID(orderRes?.order_id??0);
-      if (orderRes?.redirect_url) {return navigate(orderRes.redirect_url);}
-
-      setPopup(
-        <PaymentComponent
-          method={selectedPaymentMethod}
-          orderId={orderRes.data.id}
-          amount={total}
-          currency={currency}
-          customerData={{
-            name: `${formData.firstName} ${formData.lastName}`,
-            email: formData.email,
-            phone: formData.phone,
-            address: formData.address
-          }}
-          onSuccess={(paymentInfo) => {
-            api.post(`/orders/${orderRes.data.id}/complete`, { paymentInfo })
-            .then(() => {
-              notify.success(__('Order placed successfully!', 'site-core'));
-              window.location.href = '/order-confirmation';
-            })
-            .catch(err => notify.error(err))
-            .finally(() => setPopup(null));
-          }}
-          onFailed={(error) => {
-            notify.error(error.message || __('Payment failed', 'site-core'));
-            setPopup(null);
-          }}
-        />
-      );
     } catch (err) {
-      notify.error(err.response?.data?.message || __('Failed to create order', 'site-core'));
+      ;
     } finally {
-      setProcessing(false);
+      ;
     }
   };
 // 

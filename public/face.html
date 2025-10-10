@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Face Detection App</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@4.5.0/dist/tf-core.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter@4.5.0/dist/tf-converter.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@4.5.0/dist/tf-backend-webgl.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-detection/dist/face-detection.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+  <div class="flex flex-col items-center">
+    <h1 class="text-2xl font-bold mb-4">Face Detection App</h1>
+    <div class="relative">
+      <video id="video" autoplay playsinline muted class="rounded shadow-lg border border-gray-300 max-w-md"></video>
+      <canvas id="canvas" class="absolute top-0 left-0 pointer-events-none"></canvas>
+    </div>
+    <p class="mt-4 text-sm text-gray-600">Make sure to allow camera access and position your face in front of the camera.</p>
+  </div>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    async function setupCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { 
+            width: 640, 
+            height: 480,
+            facingMode: 'user' // Use front-facing camera if available
+          } 
+        });
+        video.srcObject = stream;
+        return new Promise((resolve, reject) => {
+          video.onloadedmetadata = () => {
+            video.play();
+            resolve(video);
+          };
+          video.onerror = reject;
+        });
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+        alert('Could not access camera. Please check permissions and try again.');
+        throw error;
+      }
+    }
+
+    async function main() {
+      try {
+        await setupCamera();
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.style.width = video.videoWidth + 'px';
+        canvas.style.height = video.videoHeight + 'px';
+
+        // Create detector with MediaPipe runtime (more reliable for detection)
+        const detector = await faceDetection.createDetector(
+          faceDetection.SupportedModels.MediaPipeFaceDetector,
+          { 
+            runtime: 'mediapipe', 
+            maxFaces: 1,
+            modelUrl: null // Uses default model
+          }
+        );
+
+        console.log('Detector loaded successfully');
+
+        async function detect() {
+          if (video.readyState !== 4) {
+            requestAnimationFrame(detect);
+            return;
+          }
+
+          const faces = await detector.estimateFaces(video, { flipHorizontal: false });
+
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          console.log('Detected faces:', faces); // Log for debugging
+
+          if (faces.length > 0) {
+            faces.forEach(face => {
+              const { xMin, yMin, width, height } = face.box;
+              // Only draw if box has valid dimensions
+              if (width > 0 && height > 0) {
+                ctx.strokeStyle = 'red';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(xMin, yMin, width, height);
+                
+                // Optional: Draw keypoints if available
+                if (face.keypoints) {
+                  ctx.fillStyle = 'blue';
+                  face.keypoints.forEach(keypoint => {
+                    ctx.beginPath();
+                    ctx.arc(keypoint.x, keypoint.y, 3, 0, 2 * Math.PI);
+                    ctx.fill();
+                  });
+                }
+                
+                console.log('Face box:', { xMin, yMin, width, height });
+              } else {
+                console.log('Invalid face box detected:', face.box);
+              }
+            });
+          } else {
+            console.log('No faces detected');
+          }
+
+          requestAnimationFrame(detect);
+        }
+
+        detect();
+      } catch (error) {
+        console.error('Error in main:', error);
+        alert('Failed to initialize face detection. Check console for details.');
+      }
+    }
+
+    // Start the app
+    main();
+  </script>
+</body>
+</html>

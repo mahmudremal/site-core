@@ -203,7 +203,7 @@ const VendorPage = () => {
 
         {/* Vendor Info Overlay */}
         <div className="xpo_absolute xpo_bottom-0 xpo_left-0 xpo_right-0 xpo_bg-gradient-to-t xpo_from-black xpo_via-black/70 xpo_to-transparent xpo_p-6">
-          <div className="xpo_max-w-7xl xpo_mx-auto">
+          <div className="xpo_container xpo_mx-auto">
             <div className="xpo_flex xpo_flex-col md:xpo_flex-row xpo_items-start md:xpo_items-end xpo_space-y-4 md:xpo_space-y-0 md:xpo_space-x-6">
               {/* Logo */}
               <div className="xpo_flex-shrink-0">
@@ -263,7 +263,7 @@ const VendorPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="xpo_max-w-7xl xpo_mx-auto xpo_px-4 xpo_py-8">
+      <div className="xpo_container xpo_mx-auto xpo_px-4 xpo_py-8">
         <div className="xpo_grid xpo_grid-cols-1 lg:xpo_grid-cols-4 xpo_gap-8">
           {/* Sidebar */}
           <div className="lg:xpo_col-span-1">

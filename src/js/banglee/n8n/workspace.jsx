@@ -86,7 +86,7 @@ export default function WorkflowManager() {
     <>
       <NavMenu />
       <div className="xpo_min-h-screen xpo_bg-gray-50 xpo_p-6">
-        <div className="xpo_max-w-7xl xpo_mx-auto">
+        <div className="xpo_container xpo_mx-auto">
           {/* Header */}
           <div className="xpo_mb-8">
             <div className="xpo_flex xpo_items-center xpo_justify-between">

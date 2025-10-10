@@ -5,19 +5,7 @@ import api from '../../services/api';
 import { notify } from '@functions';
 import { useLocale } from '../../hooks/useLocale';
 import { useCurrency } from '../../hooks/useCurrency';
-
-const ProductCarousel = ({ 
-  category, 
-  recommendationType, 
-  filters = {}, 
-  title,
-  className = "",
-  slidesPerView = 4,
-  autoplay = false,
-  showNavigation = true,
-  spaceBetween = 16,
-  autoplayDelay = 3000
-}) => {
+const ProductCarousel = ({ category, recommendationType, filters = {}, title, className = "", slidesPerView = 4, autoplay = false, showNavigation = true, spaceBetween = 16, autoplayDelay = 3000, onLoaded = null }) => {
   const { __ } = useLocale();
   const { money } = useCurrency();
   const [products, setProducts] = useState([]);
@@ -27,9 +15,8 @@ const ProductCarousel = ({
   const [isTransitioning, setIsTransitioning] = useState(false);
   const autoplayRef = useRef(null);
   const containerRef = useRef(null);
-
   const [responsiveSlidesPerView, setResponsiveSlidesPerView] = useState(slidesPerView);
-
+  
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
@@ -43,12 +30,13 @@ const ProductCarousel = ({
         setResponsiveSlidesPerView(slidesPerView);
       }
     };
-
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [slidesPerView]);
 
+  useEffect(() => onLoaded && onLoaded(), [onLoaded]);
+  
   const buildFilters = () => {
     const apiFilters = {
       per_page: 12, // Get more products for carousel
@@ -56,11 +44,9 @@ const ProductCarousel = ({
       order: 'DESC',
       ...filters
     };
-
     if (category) {
       apiFilters.sc_product_category = category;
     }
-
     if (recommendationType) {
       switch (recommendationType) {
         case 'featured':
@@ -86,10 +72,8 @@ const ProductCarousel = ({
           break;
       }
     }
-
     return apiFilters;
   };
-
   const fetchProducts = async () => {
     try {
       setLoading(true);
@@ -100,7 +84,7 @@ const ProductCarousel = ({
       
       if (response.data && Array.isArray(response.data)) {
         setProducts(response.data);
-        setCurrentIndex(0); // Reset to first slide
+        setCurrentIndex(0);
       } else {
         setProducts([]);
         notify.warning('No products found');
@@ -114,11 +98,9 @@ const ProductCarousel = ({
       setLoading(false);
     }
   };
-
   useEffect(() => {
     fetchProducts();
   }, [category, recommendationType, JSON.stringify(filters)]);
-
   const startAutoplay = () => {
     if (autoplay && products.length > responsiveSlidesPerView) {
       autoplayRef.current = setInterval(() => {
@@ -126,21 +108,17 @@ const ProductCarousel = ({
       }, autoplayDelay);
     }
   };
-
   const stopAutoplay = () => {
     if (autoplayRef.current) {
       clearInterval(autoplayRef.current);
       autoplayRef.current = null;
     }
   };
-
   useEffect(() => {
     startAutoplay();
     return () => stopAutoplay();
   }, [autoplay, products.length, responsiveSlidesPerView, autoplayDelay]);
-
   const maxIndex = Math.max(0, products.length - responsiveSlidesPerView);
-
   const handlePrev = () => {
     if (isTransitioning) return;
     
@@ -152,7 +130,6 @@ const ProductCarousel = ({
     
     setTimeout(() => setIsTransitioning(false), 300);
   };
-
   const handleNext = () => {
     if (isTransitioning) return;
     
@@ -164,15 +141,12 @@ const ProductCarousel = ({
     
     setTimeout(() => setIsTransitioning(false), 300);
   };
-
   const handleMouseEnter = () => {
     if (autoplay) stopAutoplay();
   };
-
   const handleMouseLeave = () => {
     if (autoplay) startAutoplay();
   };
-
   if (loading) {
     return (
       <section className={`xpo_mb-12 ${className}`}>
@@ -184,7 +158,6 @@ const ProductCarousel = ({
       </section>
     );
   }
-
   if (error) {
     return (
       <section className={`xpo_mb-12 ${className}`}>
@@ -203,7 +176,6 @@ const ProductCarousel = ({
       </section>
     );
   }
-
   if (!products.length) {
     return (
       <section className={`xpo_mb-12 ${className}`}>
@@ -214,10 +186,8 @@ const ProductCarousel = ({
       </section>
     );
   }
-
   const slideWidth = 100 / responsiveSlidesPerView;
   const translateX = -(currentIndex * slideWidth);
-
   return (
     <section className={`xpo_mb-12 ${className}`}>
       {title && <h2 className="xpo_text-2xl xpo_font-bold xpo_mb-6">{title}</h2>}
@@ -253,8 +223,6 @@ const ProductCarousel = ({
             ))}
           </div>
         </div>
-
-        {/* Navigation buttons */}
         {showNavigation && products.length > responsiveSlidesPerView && (
           <>
             <button
@@ -279,8 +247,6 @@ const ProductCarousel = ({
             </button>
           </>
         )}
-
-        {/* Dots indicator */}
         {products.length > responsiveSlidesPerView && (
           <div className="xpo_flex xpo_justify-center xpo_mt-4 xpo_space-x-2">
             {Array.from({ length: maxIndex + 1 }).map((_, index) => (
@@ -301,30 +267,21 @@ const ProductCarousel = ({
     </section>
   );
 };
-
 export default ProductCarousel;
-
 const ProductCarouselExamples = () => {
   return (
     <div>
-      {/* Basic usage with category */}
       <ProductCarousel category="sample-category" title="Featured Products" />
-
-      {/* With recommendation type */}
       <ProductCarousel recommendationType="bestseller" title="Best Sellers" autoplay={true} />
-
-      {/* With custom filters */}
       <ProductCarousel 
         filters={{ 
-          meta_key: 'featured', 
+          meta_key: 'featured',
           meta_value: 'yes',
           per_page: 8 
         }}
         title="Featured Products"
         slidesPerView={3}
       />
-
-      {/* Sale products with custom styling */}
       <ProductCarousel recommendationType="sale" title="On Sale Now" className="bg-red-50 p-4 rounded-lg" autoplay={true} autoplayDelay={5000} />
     </div>
   )

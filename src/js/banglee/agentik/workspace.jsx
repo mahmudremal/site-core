@@ -153,7 +153,7 @@ const SingleWorkspacePage = () => {
   return (
     <div className="xpo_min-h-screen xpo_bg-gray-50">
       <NavMenu />
-      <div className="xpo_max-w-7xl xpo_mx-auto xpo_p-6">
+      <div className="xpo_container xpo_mx-auto xpo_p-6">
         {/* Workspace Header */}
         {workspace && (
           <div className="xpo_mb-8 xpo_bg-white xpo_rounded-xl xpo_shadow-sm xpo_border xpo_border-gray-200">

@@ -15,7 +15,6 @@ import SiteHeader from '../components/layout/Header';
 import SiteFooter from '../components/layout/Footer';
 import { sprintf } from 'sprintf-js';
 import { __ } from '@js/utils';
-import MoonlitSky from '../components/backgrounds/MoonlitSky';
 
 const ProductPage = () => {
   const { id: post_id = null } = useParams();
@@ -519,17 +518,9 @@ export default function PageBody() {
   return (
     <div>
       <SiteHeader />
-
-      <div className="xpo_relative xpo_min-h-screen">
-        <div className="xpo_absolute xpo_h-full xpo_inset-0 xpo_z-0 xpo_pointer-events-none xpo_select-none">
-          <MoonlitSky />
-        </div>
-
-        <div className="xpo_container xpo_relative xpo_mx-auto xpo_px-4 xpo_py-8 xpo_z-10">
-          <ProductPage />
-          <RelatedProducts />
-        </div>
-
+      <div className="xpo_container xpo_relative xpo_mx-auto xpo_px-4 xpo_py-8 xpo_z-10">
+        <ProductPage />
+        <RelatedProducts />
       </div>
       <SiteFooter />
     </div>

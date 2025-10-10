@@ -50,6 +50,7 @@ module.exports = {
   mode: isDev ? 'development' : 'production',
   devtool: isDev ? 'source-map' : false,
   resolve: {
+
     extensions: ['.js', '.jsx', '.json'],
     alias: {
       // '@functions': path.resolve(__dirname, 'src/js/backend/app/components/common/functions'),
@@ -76,6 +77,7 @@ module.exports = {
       '@js': path.resolve(__dirname, 'src/js'),
     },
     fallback: {
+      fs: false
     }
   },
   devServer: {

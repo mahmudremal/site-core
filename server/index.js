@@ -1,34 +1,51 @@
 const { Server: WSServer } = require('socket.io');
 const AddonManager = require('./addonManager');
-const { createServer } = require('http');
+const { ExpressPeerServer } = require('peer');
+const { createServer } = require('https');
 const express = require('express');
 const mysql = require('mysql2');
 const dotenv = require('dotenv');
 const boxen = require('boxen');
+const cors = require('cors');
 const path = require('path');
 const pino = require('pino');
 const net = require('net');
+const fs = require('fs');
 dotenv.config();
 
 class Server {
     constructor() {
+        this.dbConfig = {
+            charset: 'utf8mb4',
+            database: 'local',
+            host: 'localhost',
+            password: 'root',
+            user: 'root',
+            port: 10006
+        };
         this.app = express();
-        this.server = createServer(this.app);
+        this.app.use(cors({ origin: '*' }));
+        this.ssl = {
+            key: fs.readFileSync(path.join(__dirname, '..', 'storage', 'certificates',  'key.pem')),
+            cert: fs.readFileSync(path.join(__dirname, '..', 'storage', 'certificates',  'cert.pem')),
+        };
+        this.server = createServer(this.ssl, this.app);
         this.ws = new WSServer(this.server, {
+            path: '/socket.io',
             cors: {origin: "*", methods: ["GET", "POST"]}
         });
         this.server.__root = __dirname;
+        this.logger = pino({level: 'silent'});
         this.app.set('server', this.server);
+        this.app.set('logger', this.logger);
+        this.app.set('ssl', this.ssl);
         this.app.set('ws', this.ws);
         this.port = 3000;
-        this.logger = pino({
-            level: 'silent'
-        });
         this.init();
     }
 
     async init() {
-        await this.waitForServer('localhost', 10005);
+        await this.waitForServer(this.dbConfig.host, this.dbConfig.port);
         this.initDatabase()
         .then(conn => {
             conn.prefix = 'banglee_';
@@ -45,7 +62,7 @@ class Server {
         .finally(() => {
             this.logger.info('Successfully started the application');
             console.log(boxen(
-                `Banglee Server is running on\nhttp://localhost:${this.port}`,
+                `Banglee Server is running on\nhttps://localhost:${this.port}`,
                 {
                     margin: 2,
                     padding: 1,
@@ -62,14 +79,7 @@ class Server {
 
     initDatabase() {
         return new Promise(async (resolve, reject) => {
-            const conn = mysql.createConnection({
-                host: 'localhost',
-                user: 'root',
-                password: 'root',
-                database: 'local',
-                charset: 'utf8mb4',
-                port: 10005
-            });
+            const conn = mysql.createConnection(this.dbConfig);
 
             conn.connect((err) => {
                 if (err) {
@@ -165,7 +175,7 @@ class Server {
 
     start() {
         this.server.listen(this.port, () => {
-            this.logger.info(`Server is running on http://localhost:${this.port}`);
+            this.logger.info(`Server is running on https://localhost:${this.port}`);
         });
     }
 

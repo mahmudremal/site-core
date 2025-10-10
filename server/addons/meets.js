@@ -1,6 +1,5 @@
-const express = require('express');
-const { ExpressPeerServer } = require('peer');
-const path = require('path');
+const { ExpressPeerServer } = require("peer");
+
 
 class MeetsAddon {
     constructor(app, dbConnection) {
@@ -48,11 +47,19 @@ class MeetsAddon {
     }
 
     register(router) {
-        // PeerJS setup
+        return;
+        const ssl = this.app.get('ssl');
         const server = this.app.get('server');
-        this.peerServer = ExpressPeerServer(server, {
-            debug: true,
-            path: '/',
+        this.peerServer = ExpressPeerServer(server, {ssl});
+        this.app.use('/meets', this.peerServer);
+        this.peerServer.on('connection', async (client) => {
+            console.log(`Peer connected: ${client.id}`);
+        });
+        this.peerServer.on('disconnect', async (client) => {
+            console.log(`Peer disconnected: ${client.id}`);
+        });
+        this.peerServer.on('error', (err, client) => {
+            console.error(`Peer server error from client ${client?.id}:`, err);
         });
 
         // Example middleware

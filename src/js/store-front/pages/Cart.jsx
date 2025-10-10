@@ -9,7 +9,6 @@ import { useLocale } from "../hooks/useLocale";
 import { sprintf } from 'sprintf-js';
 import { useCart } from '../hooks/useCart';
 import { useCurrency } from '../hooks/useCurrency';
-import MoonlitSky from '../components/backgrounds/MoonlitSky';
 import Butterflies from '../components/backgrounds/Butterflies';
 import api from '../services/api';
 import { useWishlist } from '../hooks/useWishlist';
@@ -293,17 +292,10 @@ const PageBody = () => {
     <div>
       <SiteHeader />
       <Butterflies count={5} />
-      <div className="xpo_min-h-screen xpo_relative xpo_py-8">
-        {/* xpo_absolute xpo_h-full xpo_inset-0 xpo_z-0 xpo_pointer-events-none xpo_select-none xpo_hidden dark:xpo_block */}
-        <div className="xpo_fixed xpo_max-h-screen xpo_z-[-1] xpo_inset-0 xpo_pointer-events-none xpo_select-none xpo_hidden dark:xpo_block">
-          <MoonlitSky />
-        </div>
+      <div className="xpo_py-8">
         <div className="xpo_container xpo_relative xpo_z-10 xpo_mx-auto">
-
           <CartPage />
           
-          
-          {/* Cross-Sell Section */}
           <div className="xpo_mt-12">
             <div className="xpo_bg-scwhite/70 xpo_rounded-2xl xpo_shadow-lg xpo_p-6">
               <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-900 xpo_mb-6">

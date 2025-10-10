@@ -105,7 +105,7 @@ export default function CrawlerClient() {
     return (
         <div className="xpo_min-h-screen xpo_bg-gray-50">
             <NavMenu />
-            <div className="xpo_container xpo_mx-auto xpo_px-4 xpo_py-8 xpo_max-w-7xl">
+            <div className="xpo_container xpo_mx-auto xpo_px-4 xpo_py-8 xpo_container">
                 {/* Header Card */}
                 <div className="xpo_bg-white xpo_rounded-2xl xpo_shadow-lg xpo_border xpo_border-gray-200 xpo_p-8 xpo_mb-8">
                     <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-8">

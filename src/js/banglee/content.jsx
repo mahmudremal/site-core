@@ -5,6 +5,9 @@ import { __, home_route } from '@js/utils';
 
 import Application from './App';
 
+import ReceiverComponent from './hobbies/ReceiverComponent';
+import BroadcasterComponent from './hobbies/BroadcasterComponent';
+
 const SearchHome = lazy(() => import('./search/home'));
 const SearchResults = lazy(() => import('./search/result'));
 const Search404 = lazy(() => import('./search/error404'));
@@ -13,8 +16,8 @@ const MeetsHome = lazy(() => import('./meets/home'));
 const MeetsRoom = lazy(() => import('./meets/room'));
 const Meets404 = lazy(() => import('./search/error404'));
 
+const HealthsRoom = lazy(() => import('./healths'));
 const HealthsHome = lazy(() => import('./healths/home'));
-const HealthsRoom = lazy(() => import('./healths/room'));
 const Healths404 = lazy(() => import('./search/error404'));
 
 const N8NHome = lazy(() => import('./n8n/home'));
@@ -56,7 +59,7 @@ export default function Banglee() {
                     <Route path={home_route('/meets/*')} element={<Meets404 />} />
 
                     <Route path={home_route('/healths')} element={<HealthsHome />} />
-                    {/* <Route path={home_route('/healths/:room_id')} element={<HealthsRoom />} /> */}
+                    <Route path={home_route('/healths/:room_id')} element={<HealthsRoom />} />
                     <Route path={home_route('/healths/*')} element={<Healths404 />} />
 
                     <Route path={home_route('/tasks')} element={<N8NHome />} />
@@ -80,6 +83,10 @@ export default function Banglee() {
 
                     <Route path={home_route('/whatsapp/*')} element={<Whatsapp />} />
                     <Route path={home_route('/crawler/*')} element={<CrawlerClient />} />
+
+
+                    <Route path={home_route('/chickens/receiver')} element={<ReceiverComponent />} />
+                    <Route path={home_route('/chickens/broadcaster')} element={<BroadcasterComponent />} />
                     
                     <Route path={home_route('/*')} element={<Error404 />} />
 

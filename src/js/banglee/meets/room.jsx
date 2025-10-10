@@ -22,9 +22,9 @@ export default function MeetsRoom() {
       setLocalStream(stream);
 
       const peerInstance = new Peer(undefined, {
-        host: window.location.hostname,
+        // host: window.location.hostname,
         port: 3000,
-        path: '/peerjs',
+        path: '/',
       });
 
       setPeer(peerInstance);

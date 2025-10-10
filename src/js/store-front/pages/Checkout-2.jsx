@@ -88,7 +88,7 @@ export default function CheckoutPage() {
   return (
     <div className="xpo_bg-gray-50 xpo_min-h-screen xpo_py-8">
       <CheckoutPageHelmet />
-      <div className="xpo_max-w-7xl xpo_mx-auto xpo_px-4 xpo_sm:px-6 xpo_lg:px-8">
+      <div className="xpo_container xpo_mx-auto xpo_px-4 xpo_sm:px-6 xpo_lg:px-8">
         <div className="xpo_flex xpo_items-center xpo_mb-8">
           <button className="xpo_flex xpo_items-center xpo_gap-2 xpo_text-gray-600 xpo_hover:text-gray-900 xpo_transition-colors">
             <ArrowLeft className="xpo_w-5 xpo_h-5" />

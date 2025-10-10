@@ -245,7 +245,7 @@ const Affiliates = () => {
     }, [filters]);
 
     return (
-        <div className="xpo_max-w-7xl xpo_mx-auto xpo_p-6 xpo_bg-white xpo_min-h-screen">
+        <div className="xpo_container xpo_mx-auto xpo_p-6 xpo_bg-white xpo_min-h-screen">
             <div className="xpo_mb-8">
                 <h1 className="xpo_text-3xl xpo_font-bold xpo_text-gray-900 xpo_mb-2">
                     {__('Affiliate Links', 'site-core')}

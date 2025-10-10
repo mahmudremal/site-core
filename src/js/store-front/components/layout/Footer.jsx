@@ -74,7 +74,7 @@ export default function SiteFooter() {
               <button
                 type="button"
                 onClick={() => setPopup(<AppsLinkQR theme={theme} __={__} />)}
-                className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_bg-blue-600 hover:xpo_bg-blue-700 xpo_text-white xpo_px-4 xpo_py-2 xpo_rounded-md xpo_transition"
+                className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_bg-scaccent-600 hover:xpo_bg-scaccent-700 xpo_text-white xpo_px-4 xpo_py-2 xpo_rounded-md xpo_transition"
               >
                 <TabletSmartphone className="xpo_w-5 xpo_h-5" />
                 <span>{__('Get the App', 'site-core')}</span>
@@ -90,7 +90,7 @@ export default function SiteFooter() {
                   rel="noopener noreferrer"
                   href="https://facebook.com/urmoonlitmeadow"
                   aria-label="Facebook"
-                  className="xpo_text-gray-400 hover:xpo_text-blue-600"
+                  className="xpo_text-gray-400 hover:xpo_text-scaccent-600"
                 >
                   <svg
                     className="xpo_w-6 xpo_h-6"
@@ -106,7 +106,7 @@ export default function SiteFooter() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Twitter"
-                  className="xpo_text-gray-400 hover:xpo_text-blue-400"
+                  className="xpo_text-gray-400 hover:xpo_text-scaccent-400"
                 >
                   <svg
                     className="xpo_w-6 xpo_h-6"

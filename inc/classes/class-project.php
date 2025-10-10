@@ -31,7 +31,7 @@ class Project {
 		Credits::get_instance();
 		// 	Error::get_instance();
 			Utils::get_instance();
-			// Radar::get_instance();
+			Radar::get_instance();
 		Editor::get_instance();
 				Suite::get_instance();
 				// Users::get_instance();

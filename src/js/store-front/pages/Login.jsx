@@ -6,7 +6,7 @@ import { useCurrency } from '../hooks/useCurrency';
 import { sprintf } from 'sprintf-js';
 import MoonlitSky from '../components/backgrounds/MoonlitSky';
 import { useAuth } from '../hooks/useAuth';
-import { ReviewBarSkeleton, SkeletonLoader } from '../components/skeletons/SkeletonLoader';
+import { ReviewBarSkeleton } from '../components/skeletons/SkeletonLoader';
 import { notify } from '@functions';
 import AuthVerify from '../components/parts/AuthVerify';
 

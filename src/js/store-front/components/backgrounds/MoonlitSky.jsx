@@ -79,3 +79,11 @@ export default function MoonlitSky({ moon = true }) {
     </div>
   );
 }
+
+export const MoonlitSkyBg = ({ moon = true }) => {
+  return (
+    <div className="xpo_fixed xpo_max-h-screen xpo_z-[-1] xpo_inset-0 xpo_pointer-events-none xpo_select-none xpo_hidden dark:xpo_block">
+      <MoonlitSky moon={moon} />
+    </div>
+  )
+}

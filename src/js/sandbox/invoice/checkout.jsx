@@ -584,8 +584,10 @@ const SharePopup = ({ url, title, body = '%s', __ }) => {
         ],
       });
     } else {
-      popperInstanceRef.current?.destroy();
-      popperInstanceRef.current = null;
+      if (popperInstanceRef.current?.destroy) {
+        popperInstanceRef.current.destroy();
+        popperInstanceRef.current = null;
+      }
     }
   }, [open]);
 
