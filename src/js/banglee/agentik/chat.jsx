@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Send } from 'lucide-react';
 import { home_route, NavMenu } from '@banglee/core';
 
-const API_BASE_URL = 'http://localhost:3000/agentik';
+const API_BASE_URL = 'https://localhost:3000/agentik';
 
 const AgentChatPage = () => {
   const [agents, setAgents] = useState([]);

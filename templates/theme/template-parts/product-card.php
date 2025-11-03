@@ -18,7 +18,7 @@ $stock = get_post_meta(get_the_ID(), 'stock', true);
         <?php if (has_post_thumbnail()) : ?>
             <?php the_post_thumbnail('medium', ['class' => 'xpo_w-full xpo_h-48 xpo_object-cover']); ?>
         <?php else : ?>
-            <img src="https://via.placeholder.com/300x300" alt="Placeholder Image" class="xpo_w-full xpo_h-48 xpo_object-cover">
+            <img src="https://placehold.co/300x300" alt="Placeholder Image" class="xpo_w-full xpo_h-48 xpo_object-cover">
         <?php endif; ?>
     </a>
 

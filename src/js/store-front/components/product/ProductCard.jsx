@@ -97,7 +97,7 @@ export const ProductCard2 = ({ product: prod, viewMode = 'card' }) => {
                         <div className="xpo_flex xpo_text-yellow-400">
                             {[...Array(5)].map((_, i) => <Star key={i} className={`xpo_w-4 xpo_h-4 ${i < Math.floor(product.rating) ? 'xpo_fill-current' : 'xpo_text-gray-200'}`} />)}
                         </div>
-                        <span className="xpo_text-sm xpo_text-gray-500">{sprintf(__('(%d)', 'site-core'), product.reviews || 0)}</span>
+                        <span className="xpo_text-sm xpo_text-gray-500">{sprintf(__('(%s)', 'site-core'), product?.reviews || 0)}</span>
                     </div>
 
                     <h3 className="xpo_font-semibold xpo_text-gray-900 xpo_mb-2 group-hover:xpo_text-blue-600 xpo_transition-colors">{product.title}</h3>
@@ -225,11 +225,11 @@ export const ProductCard3 = ({ product: prod, viewMode = 'card' }) => {
                 <div className="xpo_flex xpo_items-center xpo_mb-3">
                     <div className="xpo_flex xpo_text-yellow-400 xpo_mr-2">
                         {[...Array(5)].map((_, i) => (
-                            <Star key={i} className={`xpo_w-4 xpo_h-4 ${i < Math.floor(product.rating) ? 'xpo_fill-current' : 'xpo_text-gray-200'}`} />
+                            <Star key={i} className={`xpo_w-4 xpo_h-4 ${i < Math.floor(product.rating) ? 'xpo_fill-current' : 'xpo_stroke-gray-400'}`} />
                         ))}
                     </div>
                     <span className="xpo_text-sm xpo_text-gray-600">
-                        {product.rating?.toFixed(1)} ({product.reviews || 0})
+                        {sprintf(__('%s (%s)', 'site-core'), product?.rating?.toFixed?.(1), product?.reviews || 0)}
                     </span>
                 </div>
                 
@@ -246,7 +246,7 @@ export const ProductCard3 = ({ product: prod, viewMode = 'card' }) => {
                     </div>
                     {product.originalPrice && (
                         <span className="xpo_text-sm xpo_text-green-600 xpo_font-medium">
-                            Save {money(product.originalPrice - (product.metadata?.sale_price || product.metadata?.price), product.metadata?.currency)}
+                            {sprintf(__('Save %s', 'site-core'), money(product.originalPrice - (product.metadata?.sale_price || product.metadata?.price), product.metadata?.currency))}
                         </span>
                     )}
                 </div>

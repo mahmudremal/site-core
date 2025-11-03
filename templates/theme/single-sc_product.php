@@ -25,7 +25,7 @@ if ( have_posts() ) :
                         <!-- Placeholder for image slides -->
                         <div class="xpo_space-y-2">
                             <?php for ($i = 0; $i < 4; $i++) : ?>
-                                <img src="https://via.placeholder.com/100" alt="Product Thumbnail" class="xpo_w-full xpo_cursor-pointer xpo_border-2 xpo_border-transparent hover:xpo_border-blue-500">
+                                <img src="https://placehold.co/100" alt="Product Thumbnail" class="xpo_w-full xpo_cursor-pointer xpo_border-2 xpo_border-transparent hover:xpo_border-blue-500">
                             <?php endfor; ?>
                         </div>
                     </div>
@@ -36,7 +36,7 @@ if ( have_posts() ) :
                         if ( has_post_thumbnail() ) {
                             the_post_thumbnail('large', ['class' => 'xpo_w-full xpo_rounded-lg']);
                         } else {
-                            echo '<img src="https://via.placeholder.com/600x600" alt="No product image" class="xpo_w-full xpo_rounded-lg">';
+                            echo '<img src="https://placehold.co/600x600" alt="No product image" class="xpo_w-full xpo_rounded-lg">';
                         }
                         ?>
                     </div>

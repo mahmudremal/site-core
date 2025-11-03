@@ -9,11 +9,13 @@ use WP_Error;
 class Task {
     use Singleton;
 
-    protected $table;
+    protected $tables;
 
     protected function __construct() {
         global $wpdb;
-        $this->table = $wpdb->prefix . 'sitecore_tasks';
+        $this->tables = (object) [
+            'tasks' => $wpdb->prefix . 'sitecore_tasks'
+        ];
         $this->setup_hooks();
         $this->allow_remote_request();
         $this->setup_job_seeking_hooks();
@@ -24,11 +26,12 @@ class Task {
         add_action('rest_api_init', [$this, 'rest_api_init']);
         add_filter('set-screen-option', [$this, 'set_screen'], 10, 3);
 		add_action('sitecore/create_task', [$this, 'create_task'], 10, 3);
-        add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
+        add_filter('sitecore/settings/fields', [$this, 'settings'], 10, 1);
+        add_filter('sitecore/database/tables', [$this, 'database_tables'], 10, 1);
         add_action('admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ], 10, 1);
         add_filter('sitecore/security/api/abilities', [$this, 'api_abilities'], 10, 3);
-        register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
-        register_deactivation_hook(WP_SITECORE__FILE__, [$this, 'register_deactivation_hook']);
+        // register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
+        // register_deactivation_hook(WP_SITECORE__FILE__, [$this, 'register_deactivation_hook']);
     }
 
     public function api_abilities($abilities, $_route, $user_id) {
@@ -39,6 +42,7 @@ class Task {
     }
 
     public function rest_api_init() {
+        if (apply_filters('pm_project/system/isactive', 'task-paused')) {return;}
         register_rest_route('sitecore/v1', '/tasks', [
             'methods' => 'GET', 'callback' => [$this, 'tasks_list'],
             'permission_callback' => '__return_true'
@@ -105,26 +109,45 @@ class Task {
 
     public function register_activation_hook() {
         global $wpdb;
-        $charset_collate = $wpdb->get_charset_collate();
-        $sql = "CREATE TABLE IF NOT EXISTS {$this->table} (
-            id INT NOT NULL AUTO_INCREMENT,
-            task_type VARCHAR(255) NOT NULL,
-            status VARCHAR(50) DEFAULT 'pending',
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            task_object LONGTEXT NOT NULL,
-            task_submission LONGTEXT NOT NULL,
-            task_desc TEXT,
-            PRIMARY KEY (id)
-        ) $charset_collate;";
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-        dbDelta($sql);
+        $charset_collate = $wpdb->get_charset_collate();
+        $tables = $this->get_table_schema();
+        foreach ((array) $this->tables as $_tableKey => $_tableName) {
+            dbDelta("CREATE TABLE IF NOT EXISTS {$_tableName} ({$tables[$_tableKey]}) $charset_collate;");
+        }
     }
 
     public function register_deactivation_hook() {
         global $wpdb;
-        $wpdb->query("DROP TABLE IF EXISTS {$this->table}");
+		foreach ((array) $this->tables as $table) {
+			$wpdb->query("DROP TABLE IF EXISTS {$table}");
+		}
     }
+
+    protected function get_table_schema() {
+        return [
+            'tasks' => "
+                id INT NOT NULL AUTO_INCREMENT,
+                task_type VARCHAR(255) NOT NULL,
+                status VARCHAR(50) DEFAULT 'pending',
+                created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                task_object LONGTEXT NOT NULL,
+                task_submission LONGTEXT NOT NULL,
+                task_desc TEXT,
+                PRIMARY KEY (id)
+            ",
+        ];
+    }
+
+    public function database_tables($tables) {
+		$tables[] = [
+			'id' => 'task',
+            'title' => 'Tasks Managements',
+			'tables' => array_map(fn($tabKey) => ['key' => $tabKey, 'name' => $this->tables->$tabKey, 'schema' => $this->get_table_schema()[$tabKey]], array_keys((array) $this->tables))
+		];
+		return $tables;
+	}
 
     public function settings($args) {
 		$args['task']		= [
@@ -180,7 +203,8 @@ class Task {
 
 	public function admin_enqueue_scripts($curr_page) {
         if ($curr_page != 'settings_page_site-core') {return;}
-        wp_enqueue_script('site-core-setting', WP_SITECORE_BUILD_JS_URI . '/setting.js', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/setting.js'), true);
+        if (apply_filters('pm_project/system/isactive', 'task-paused')) {return;}
+        // wp_enqueue_script('site-core-setting', WP_SITECORE_BUILD_JS_URI . '/setting.js', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/setting.js'), true);
     }
 
     public function tasks_list(WP_REST_Request $request) {
@@ -213,10 +237,10 @@ class Task {
             $order_by = "ORDER BY {$order_by_field} {$order}";
         }
 
-        $total_items = $wpdb->get_var("SELECT COUNT(id) FROM {$this->table} {$where}");
+        $total_items = $wpdb->get_var("SELECT COUNT(id) FROM {$this->tables->tasks} {$where}");
         $total_pages = ceil($total_items / $per_page);
 
-        $response_data = $wpdb->get_results("SELECT * FROM {$this->table} {$where} {$order_by} LIMIT {$per_page} OFFSET {$offset}", ARRAY_A);
+        $response_data = $wpdb->get_results("SELECT * FROM {$this->tables->tasks} {$where} {$order_by} LIMIT {$per_page} OFFSET {$offset}", ARRAY_A);
 
         foreach ($response_data as $index => $row) {
             $row['task_object'] = maybe_unserialize($row['task_object']);
@@ -248,7 +272,7 @@ class Task {
         
         $response = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT task_type, COUNT(*) AS total FROM {$this->table} WHERE {$where} GROUP BY task_type;"
+                "SELECT task_type, COUNT(*) AS total FROM {$this->tables->tasks} WHERE {$where} GROUP BY task_type;"
             )
         );
         return rest_ensure_response($response);
@@ -263,7 +287,7 @@ class Task {
         $excluded_ids = $request->get_param('excluded_ids') ? implode(',', array_map('intval', $request->get_param('excluded_ids'))) : null;
 
         // Build the query dynamically
-        $query = "SELECT * FROM {$this->table} WHERE 1=1";
+        $query = "SELECT * FROM {$this->tables->tasks} WHERE 1=1";
         $query_conditions = [];
 
         if (!empty($search)) {
@@ -323,7 +347,7 @@ class Task {
         $update_value = sanitize_text_field($params['update_value']);
     
         $updated = $wpdb->update(
-            $this->table,
+            $this->tables->tasks,
             [ $task_key => $update_value ],
             [ 'id' => (int) $task_id ],
             [ '%s' ],
@@ -341,7 +365,7 @@ class Task {
         global $wpdb;
         $task_id = $request->get_param( 'task_id' );
         $deleted = $wpdb->delete(
-            $this->table,
+            $this->tables->tasks,
             ['id' => (int) $task_id],
             ['%d']
         );
@@ -356,7 +380,7 @@ class Task {
         $_performed = $this->perform_task($task_id, $data);
         if ($_performed && !is_wp_error($_performed)) {
             $updated = $wpdb->update(
-                $this->table,
+                $this->tables->tasks,
                 [
                     'status' => 'completed',
                     'task_submission' => $data
@@ -481,7 +505,7 @@ class Task {
         $task_object_serialized = maybe_serialize($task_object);
 
         $wpdb->insert(
-            $this->table,
+            $this->tables->tasks,
             [
                 'task_type' => $task_type,
                 'task_object' => $task_object_serialized,
@@ -501,7 +525,7 @@ class Task {
     }
     
     protected function setup_job_seeking_hooks() {
-        return;
+        if (apply_filters('pm_project/system/isactive', 'task-paused')) {return;}
         add_action('post_inserted',function($a,$b,$c,$d){if(!$c){do_action('sitecore/create_task','post_seo',['post_id'=>$a,'type'=>$b->post_type],sprintf('Review the SEO for the new %s titled "%s". Analyze the title, meta description, URL slug, headings (H1-H6), image alt text, and internal/external linking. Ensure they are optimized for relevant keywords, readability, and align with SEO best practices to improve search engine visibility and organic traffic potential for this content type.',$b->post_type,$b->post_title));}},10,4);
         add_action('wp_insert_post', function($a,$b,$c){if(!$c){do_action('sitecore/create_task','seo_improvements',['post_id'=>$a],sprintf('Analyze the newly created post titled "%s" for SEO. Content, etc., will be fetched via API. Review title, metadata (date, cats, tags). Suggest title improvements, relevant keywords, categories, tags.',esc_html($b->post_title)));}},10,3);
         add_action('add_attachment',function($a){$b=get_post_mime_type($a);$c=basename(get_attached_file($a));$d=wp_get_attachment_metadata($a);do_action('sitecore/create_task','media_seo',['post_id'=>$a,'mime'=>$b,'metadata'=>$d,'file'=>$c],sprintf('Review the SEO details for the newly uploaded media file "%s" (MIME type: %s). Ensure a descriptive title, relevant caption, appropriate alt text, and a comprehensive description are set. Optimize these elements with relevant keywords to enhance search engine indexing and accessibility. Consider the visual content and its context within the site.',$c,$b));},10,1);
@@ -521,14 +545,8 @@ class Task {
     }
 
     public function add_menu_page() {
-        add_menu_page(
-            __('Jobs', 'site-core'),
-            __('Jobs', 'site-core'),
-            'manage_options',
-            'automated-jobs',
-            [$this, 'job_listing_admin_menu_page'],
-            'dashicons-pets'
-        );
+        if (apply_filters('pm_project/system/isactive', 'task-paused')) {return;}
+        add_menu_page(__('Jobs', 'site-core'), __('Jobs', 'site-core'), 'manage_options', 'automated-jobs', [$this, 'job_listing_admin_menu_page'], 'dashicons-pets');
     }
 
     public static function set_screen($status, $option, $value) {
@@ -537,8 +555,8 @@ class Task {
 
     public function job_listing_admin_menu_page() {
         global $wpdb;
-        $statuses = $wpdb->get_col("SELECT DISTINCT status FROM {$this->table}");
-        $task_types = $wpdb->get_col("SELECT DISTINCT task_type FROM {$this->table}");
+        $statuses = $wpdb->get_col("SELECT DISTINCT status FROM {$this->tables->tasks}");
+        $task_types = $wpdb->get_col("SELECT DISTINCT task_type FROM {$this->tables->tasks}");
         $config = json_encode([
             'statuses' => $statuses,
             'task_types' => $task_types,
@@ -614,7 +632,7 @@ class Task {
     public function perform_task($task_id, $submitted_data) {
         global $wpdb;
 
-        $table = $this->table;
+        $table = $this->tables->tasks;
 
         // Fetch the task
         $task = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE id = %d", $task_id));
@@ -1186,15 +1204,15 @@ class Task {
         return $wpdb->get_row(
             $wpdb->prepare(
                 "SELECT COUNT(*) as total,
-                (SELECT COUNT(*) FROM {$this->table} WHERE status='pending') as pending,
-                (SELECT COUNT(*) FROM {$this->table} WHERE status='completed') as completed,
-                (SELECT COUNT(*) FROM {$this->table} WHERE task_type='post_seo') as post_seo,
-                (SELECT COUNT(*) FROM {$this->table} WHERE task_type='media_seo') as media_seo,
-                (SELECT COUNT(*) FROM {$this->table} WHERE task_type='elem_form') as elem_form,
-                (SELECT COUNT(*) FROM {$this->table} WHERE task_type='seo_improvements') as seo_improvements,
-                (SELECT COUNT(*) FROM {$this->table} WHERE task_type='comment_moderation') as comment_moderation,
-                (SELECT COUNT(*) FROM {$this->table} WHERE task_type='new_user_onboarding') as new_user_onboarding
-                FROM {$this->table} WHERE 1
+                (SELECT COUNT(*) FROM {$this->tables->tasks} WHERE status='pending') as pending,
+                (SELECT COUNT(*) FROM {$this->tables->tasks} WHERE status='completed') as completed,
+                (SELECT COUNT(*) FROM {$this->tables->tasks} WHERE task_type='post_seo') as post_seo,
+                (SELECT COUNT(*) FROM {$this->tables->tasks} WHERE task_type='media_seo') as media_seo,
+                (SELECT COUNT(*) FROM {$this->tables->tasks} WHERE task_type='elem_form') as elem_form,
+                (SELECT COUNT(*) FROM {$this->tables->tasks} WHERE task_type='seo_improvements') as seo_improvements,
+                (SELECT COUNT(*) FROM {$this->tables->tasks} WHERE task_type='comment_moderation') as comment_moderation,
+                (SELECT COUNT(*) FROM {$this->tables->tasks} WHERE task_type='new_user_onboarding') as new_user_onboarding
+                FROM {$this->tables->tasks} WHERE 1
                 ;"
             )
         );

@@ -165,7 +165,7 @@
 // // };
 
 // // // Check platform status
-// // fetch('http://localhost:3000/api/status')
+// // fetch('https://localhost:3000/api/status')
 // // .then(res => res.json())
 // // .then(status => console.log('Platform status:', status));
 
@@ -186,7 +186,7 @@
 
 // // // Example REST API calls
 // // async function shareThoughtRest(platform, content, mediaUrls) {
-// //   const res = await fetch('http://localhost:3000/api/share_thought', {
+// //   const res = await fetch('https://localhost:3000/api/share_thought', {
 // //     method: 'POST',
 // //     headers: { 'Content-Type': 'application/json' },
 // //     body: JSON.stringify({ platform, content, mediaUrls })

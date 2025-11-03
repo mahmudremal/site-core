@@ -25,7 +25,7 @@ export default function CrawlerClient() {
     const socketRef = useRef(null);
     
     useEffect(() => {
-        socketRef.current = io('http://localhost:3000/bot');
+        socketRef.current = io('https://localhost:3000/bot');
 
         socketRef.current.on('connect', () => {
             setIsConnected(true);

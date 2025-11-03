@@ -187,7 +187,7 @@ class WhatsAppService extends Automation {
     await this.upsertContact({ ...message, id: senderJid, name: message.pushName || null, pushname: message.pushName || null });
     await this.upsertChat({ ...message, id: chatId, subject: null, is_group: (chatId && chatId.endsWith('@g.us')), last_activity: timestamp });
 
-    links?.length && axios.post('http://localhost:3000/crawler/update-links', {links: links.join(',')}).catch(err => console.log(err?.message));
+    links?.length && axios.post('https://localhost:3000/crawler/update-links', {links: links.join(',')}).catch(err => console.log(err?.message));
 
     // Save message
     await this.saveMessage({

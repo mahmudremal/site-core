@@ -5,9 +5,9 @@ const Affiliates = lazy(() => import('@js/affiliates'));
 const StoreFront = lazy(() => import('@js/store-front'));
 const ShopManager = lazy(() => import('@js/shop-manager'));
 const EmailBuilderApp = lazy(() => import('@js/emails/index'));
-const ServicePackage = lazy(() => import('@js/services/package'));
-const ServiceMetaBox = lazy(() => import('@js/services/metabox'));
-const ServiceContracts = lazy(() => import('@js/services/contracts'));
+const ServicePackage = lazy(() => import('@js/contracts/package'));
+const ServiceMetaBox = lazy(() => import('@js/contracts/metabox'));
+const ServiceContracts = lazy(() => import('@js/contracts'));
 const ProductMetaBox = lazy(() => import('@js/shop-manager/ProductMetabox'));
 
 const Radar = lazy(() => import('@js/settings/radar'));
@@ -15,6 +15,8 @@ const PostTypes = lazy(() => import('@js/settings/post-types'));
 const RoleBased = lazy(() => import('@js/settings/role-based'));
 const AppsApiKeys = lazy(() => import('@js/settings/api-keys'));
 const TaskConfig = lazy(() => import('@js/settings/task-config'));
+const DatabaseTables = lazy(() => import('@js/settings/database-tables'));
+const LoginRegistration = lazy(() => import('@js/login'));
 
 import { __, tailwind_install } from '@js/utils';
 import { createRoot } from 'react-dom/client';
@@ -41,9 +43,9 @@ class SiteCore {
         this.emailbuilder_setup();
         this.linksmanager_setup();
         // 
-        window.addEventListener('load', () => {
+        // window.addEventListener('load', () => {
             this.packagebtn_setup();
-        });
+        // });
     }
 
     settings_screen() {
@@ -70,7 +72,7 @@ class SiteCore {
                 const config = JSON.parse(field.dataset.config);
                 const root = createRoot(container);root.render(
                     <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
-                        <AppsApiKeys config={config} />
+                        {/* <AppsApiKeys config={config} /> */}
                     </Suspense>
                 );
             }
@@ -84,7 +86,7 @@ class SiteCore {
                 const config = JSON.parse(field.dataset.config);
                 const root = createRoot(container);root.render(
                     <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
-                        <TaskConfig config={config} />
+                        {/* <TaskConfig config={config} /> */}
                     </Suspense>
                 );
             }
@@ -120,6 +122,26 @@ class SiteCore {
                 );
             }
         });
+        document.querySelectorAll('#database-tables_managements').forEach(async field => {
+            const container = field.parentElement;
+            container?.previousElementSibling?.remove?.();
+            if (container) {
+                container.innerHTML = '';
+                container.setAttribute('colspan', 2);
+                const root = createRoot(container);root.render(
+                    <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
+                        <DatabaseTables />
+                    </Suspense>
+                );
+            }
+        });
+        document.querySelectorAll('#custom-login-root').forEach(async container => {
+            const root = createRoot(container);root.render(
+                <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
+                    <LoginRegistration />
+                </Suspense>
+            );
+        });
     }
 
     taskmanager_setup() {
@@ -135,7 +157,7 @@ class SiteCore {
             });
         });
         document.querySelectorAll('#automated_task_table').forEach(container => {
-            const config = JSON.parse(container.dataset.config);
+            const config = JSON.parse(container?.dataset?.config);
             const root = createRoot(container);root.render(<TaskManager config={config} />);
         });
     }
@@ -179,6 +201,7 @@ class SiteCore {
     }
 
     packagebtn_setup() {
+        // [select-package hide_button=0 button_text="Get Started" tax_id="null"]
         const buttons = document.querySelectorAll('.select-package-button');
         if (buttons?.length) {
             const container = document.createElement('div');
@@ -221,7 +244,8 @@ class SiteCore {
     }
 
     sc_store_front() {
-        document.querySelectorAll('.sc_store-front').forEach(container => {
+        [document.querySelector('.sc_store-front > div')].forEach(container => {
+            if (!container) return;
             const root = createRoot(container);root.render(
                 <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
                     <StoreFront />

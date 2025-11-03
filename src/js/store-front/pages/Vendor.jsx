@@ -409,9 +409,9 @@ const VendorPage = () => {
                       <Search className="xpo_absolute xpo_left-3 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_w-4 xpo_h-4 xpo_text-gray-400" />
                       <input
                         type="text"
-                        placeholder="Search products..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder={__('Search anything...', 'site-core')}
                         className="xpo_pl-10 xpo_pr-4 xpo_py-2 xpo_border xpo_border-gray-300 xpo_rounded-lg focus:xpo_ring-2 focus:xpo_ring-indigo-500 focus:xpo_border-transparent"
                       />
                     </div>
@@ -423,11 +423,11 @@ const VendorPage = () => {
                         onChange={(e) => setSortBy(e.target.value)}
                         className="xpo_appearance-none xpo_bg-white xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_px-4 xpo_py-2 xpo_pr-8 focus:xpo_ring-2 focus:xpo_ring-indigo-500 focus:xpo_border-transparent"
                       >
-                        <option value="featured">Featured</option>
-                        <option value="price-low">Price: Low to High</option>
-                        <option value="price-high">Price: High to Low</option>
-                        <option value="rating">Highest Rated</option>
-                        <option value="newest">Newest</option>
+                        <option value="featured">{__('Featured', 'site-core')}</option>
+                        <option value="price-low">{__('Price: Low to High', 'site-core')}</option>
+                        <option value="price-high">{__('Price: High to Low', 'site-core')}</option>
+                        <option value="rating">{__('Highest Rated', 'site-core')}</option>
+                        <option value="newest">{__('Newest', 'site-core')}</option>
                       </select>
                       <ChevronDown className="xpo_absolute xpo_right-2 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_w-4 xpo_h-4 xpo_text-gray-400 xpo_pointer-events-none" />
                     </div>
@@ -546,7 +546,7 @@ const VendorPage = () => {
                                 </button>
                                 <button className="xpo_bg-indigo-600 xpo_text-white xpo_px-4 xpo_py-2 xpo_rounded-lg hover:xpo_bg-indigo-700 xpo_transition-colors">
                                   <ShoppingCart className="xpo_w-4 xpo_h-4 xpo_inline xpo_mr-2" />
-                                  Add to Cart
+                                  {__('Add to Cart', 'site-core')}
                                 </button>
                               </div>
                             )}
@@ -559,7 +559,7 @@ const VendorPage = () => {
                                 ? 'xpo_bg-green-100 xpo_text-green-700'
                                 : 'xpo_bg-red-100 xpo_text-red-700'
                             }`}>
-                              {product.in_stock ? 'In Stock' : 'Out of Stock'}
+                              {product.in_stock ? __('In Stock', 'site-core') : __('Out of Stock', 'site-core')}
                             </span>
                           </div>
                         </div>
@@ -573,7 +573,7 @@ const VendorPage = () => {
                   <div className="xpo_flex xpo_justify-center xpo_mt-8">
                     <div className="xpo_flex xpo_space-x-2">
                       <button className="xpo_px-4 xpo_py-2 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_text-gray-600 hover:xpo_bg-gray-50 xpo_disabled:opacity-50 xpo_disabled:cursor-not-allowed" disabled>
-                        Previous
+                        {__('Previous', 'site-core')}
                       </button>
                       <button className="xpo_px-4 xpo_py-2 xpo_bg-indigo-600 xpo_text-white xpo_rounded-lg">
                         1
@@ -585,7 +585,7 @@ const VendorPage = () => {
                         3
                       </button>
                       <button className="xpo_px-4 xpo_py-2 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_text-gray-600 hover:xpo_bg-gray-50">
-                        Next
+                        {__('Next', 'site-core')}
                       </button>
                     </div>
                   </div>
@@ -598,10 +598,10 @@ const VendorPage = () => {
                     <h3 className="xpo_text-lg xpo_font-semibold xpo_text-gray-800 xpo_mb-2">No Products Found</h3>
                     <p className="xpo_text-gray-600">
                       {searchQuery
-                        ? `No products match "${searchQuery}"`
+                        ? sprintf(__('No products match "%s"', 'site-core'), searchQuery)
                         : filterCategory !== 'all'
-                        ? `No products in "${filterCategory}" category`
-                        : 'This vendor has no products yet'
+                        ? sprintf(__('No products in "%s" category', 'site-core'), filterCategory)
+                        : __('This vendor has no products yet', 'site-core')
                       }
                     </p>
                     {(searchQuery || filterCategory !== 'all') && (
@@ -612,7 +612,7 @@ const VendorPage = () => {
                         }}
                         className="xpo_mt-4 xpo_text-indigo-600 hover:xpo_underline"
                       >
-                        Clear filters
+                        {__('Clear filters', 'site-core')}
                       </button>
                     )}
                   </div>
@@ -625,14 +625,14 @@ const VendorPage = () => {
         {/* Reviews Section */}
         <div className="xpo_mt-8 xpo_bg-white xpo_rounded-lg xpo_shadow-lg xpo_p-6">
           <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-6">
-            <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-800">Customer Reviews</h2>
+            <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-800">{__('Customer Reviews', 'site-core')}</h2>
             <div className="xpo_flex xpo_items-center xpo_space-x-4">
               <div className="xpo_flex xpo_items-center xpo_space-x-2">
                 <div className="xpo_flex xpo_items-center">
                   {renderStars(vendor.rating, 'w-5 h-5')}
                 </div>
                 <span className="xpo_text-lg xpo_font-semibold">{vendor.rating}</span>
-                <span className="xpo_text-gray-600">({vendor.reviews_count.toLocaleString()} reviews)</span>
+                <span className="xpo_text-gray-600">{sprintf(__('(%s reviews)', 'site-core'), vendor.reviews_count.toLocaleString())}</span>
               </div>
             </div>
           </div>
@@ -685,14 +685,14 @@ const VendorPage = () => {
 
           <div className="xpo_text-center xpo_mt-6">
             <button className="xpo_text-indigo-600 xpo_font-semibold hover:xpo_underline">
-              View All Reviews
+              {__('View All Reviews', 'site-core')}
             </button>
           </div>
         </div>
 
         {/* FAQ Section */}
         <div className="xpo_mt-8 xpo_bg-white xpo_rounded-lg xpo_shadow-lg xpo_p-6">
-          <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-800 xpo_mb-6">Frequently Asked Questions</h2>
+          <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-800 xpo_mb-6">{__('Frequently Asked Questions', 'site-core')}</h2>
           
           <div className="xpo_space-y-4">
             {[
@@ -728,18 +728,18 @@ const VendorPage = () => {
 
         {/* Contact CTA */}
         <div className="xpo_mt-8 xpo_bg-gradient-to-r xpo_from-indigo-600 xpo_to-purple-600 xpo_rounded-lg xpo_p-8 xpo_text-center xpo_text-white">
-          <h2 className="xpo_text-2xl xpo_font-bold xpo_mb-4">Have Questions?</h2>
+          <h2 className="xpo_text-2xl xpo_font-bold xpo_mb-4">{__('Have Questions?', 'site-core')}</h2>
           <p className="xpo_text-indigo-100 xpo_mb-6">
-            Our customer support team is here to help you with any questions about our products or services.
+            {__('Our customer support team is here to help you with any questions about our products or services.', 'site-core')}
           </p>
           <div className="xpo_flex xpo_justify-center xpo_space-x-4">
             <button className="xpo_bg-white xpo_text-indigo-600 xpo_px-6 xpo_py-3 xpo_rounded-lg xpo_font-semibold hover:xpo_bg-gray-100 xpo_transition-colors">
               <MessageCircle className="xpo_w-5 xpo_h-5 xpo_inline xpo_mr-2" />
-              Send Message
+              {__('Send Message', 'site-core')}
             </button>
             <button className="xpo_bg-indigo-500 xpo_text-white xpo_px-6 xpo_py-3 xpo_rounded-lg xpo_font-semibold hover:xpo_bg-indigo-400 xpo_transition-colors">
               <Phone className="xpo_w-5 xpo_h-5 xpo_inline xpo_mr-2" />
-              Call Now
+              {__('Call Now', 'site-core')}
             </button>
           </div>
         </div>

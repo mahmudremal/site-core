@@ -12,18 +12,16 @@ class Visitor {
     protected $_visit_id;
     protected $session_key;
     protected $inline_memory;
-    protected $visitor_table;
-    protected $activity_table;
-    protected $events_table;
+    protected $tables;
 
     protected function __construct() {
         global $wpdb;
         $this->_visit_id        = null;
-        $this->visitor_table    = [];
-        $this->session_key      = 'pmsute_trks';
-        $this->visitor_table    = $wpdb->prefix . 'sitecore_visitor';
-        $this->activity_table   = $wpdb->prefix . 'sitecore_visit_activity';
-        $this->events_table     = $wpdb->prefix . 'sitecore_visit_events';
+        $this->tables    = (object) [
+            'visitor' => $wpdb->prefix . 'sitecore_visitor',
+            'activity' => $wpdb->prefix . 'sitecore_visit_activity',
+            'events' => $wpdb->prefix . 'sitecore_visit_events',
+        ];
         $this->setup_hooks();
         $this->setup_events();
     }
@@ -31,8 +29,9 @@ class Visitor {
     protected function setup_hooks() {
         add_action('rest_api_init', [$this, 'register_routes']);
         add_action('wp_enqueue_scripts', [$this, 'register_scripts']);
-        register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
-        register_deactivation_hook(WP_SITECORE__FILE__, [$this, 'register_deactivation_hook']);
+        add_filter('sitecore/database/tables', [$this, 'database_tables'], 10, 1);
+        // register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
+        // register_deactivation_hook(WP_SITECORE__FILE__, [$this, 'register_deactivation_hook']);
     }
 
     protected function setup_events() {
@@ -341,50 +340,61 @@ class Visitor {
 
     public function register_activation_hook() {
         global $wpdb;
-        $charset_collate = $wpdb->get_charset_collate();
-
-        $sql_visitor = "CREATE TABLE IF NOT EXISTS {$this->visitor_table} (
-            id BIGINT NOT NULL AUTO_INCREMENT,
-            tracker VARCHAR(255) NOT NULL UNIQUE,
-            user_id BIGINT NULL DEFAULT NULL,
-            dataset LONGTEXT DEFAULT NULL,
-            PRIMARY KEY (id)
-        ) $charset_collate;";
-
-        $sql_activity = "CREATE TABLE IF NOT EXISTS {$this->activity_table} (
-            id BIGINT NOT NULL AUTO_INCREMENT,
-            visitor_id BIGINT NOT NULL,
-            impression INT NOT NULL DEFAULT 1,
-            issuedat DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            activity TEXT NOT NULL,
-            object_type ENUM('post', 'archive', '404', 'product', 'category', 'checkout', 'other') NOT NULL,
-            object_id TEXT NOT NULL,
-            PRIMARY KEY (id),
-            KEY visitor_id_idx (visitor_id)
-        ) $charset_collate;";
-
-        $sql_events = "CREATE TABLE IF NOT EXISTS {$this->events_table} (
-            id BIGINT NOT NULL AUTO_INCREMENT,
-            activity_id BIGINT NOT NULL,
-            attime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            event_type ENUM('stay', 'click', 'scroll') NOT NULL,
-            target TEXT DEFAULT NULL,
-            PRIMARY KEY (id),
-            KEY activity_id_idx (activity_id)
-        ) $charset_collate;";
-
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-        dbDelta($sql_visitor);
-        dbDelta($sql_activity);
-        dbDelta($sql_events);
+        $charset_collate = $wpdb->get_charset_collate();
+        $tables = $this->get_table_schema();
+        foreach ((array) $this->tables as $_tableKey => $_tableName) {
+            dbDelta("CREATE TABLE IF NOT EXISTS {$_tableName} ({$tables[$_tableKey]}) $charset_collate;");
+        }
     }
 
     public function register_deactivation_hook() {
         global $wpdb;
-        $wpdb->query("DROP TABLE IF EXISTS {$this->visitor_table}");
-        $wpdb->query("DROP TABLE IF EXISTS {$this->activity_table}");
-        $wpdb->query("DROP TABLE IF EXISTS {$this->events_table}");
+		foreach ((array) $this->tables as $table) {
+			$wpdb->query("DROP TABLE IF EXISTS {$table}");
+		}
     }
+    
+    protected function get_table_schema() {
+        return [
+            'visitor' => "
+                id BIGINT NOT NULL AUTO_INCREMENT,
+                tracker VARCHAR(255) NOT NULL UNIQUE,
+                user_id BIGINT NULL DEFAULT NULL,
+                dataset LONGTEXT DEFAULT NULL,
+                PRIMARY KEY (id)
+            ",
+            'activity' => "
+                id BIGINT NOT NULL AUTO_INCREMENT,
+                visitor_id BIGINT NOT NULL,
+                impression INT NOT NULL DEFAULT 1,
+                issuedat DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                activity TEXT NOT NULL,
+                object_type ENUM('post', 'archive', '404', 'product', 'category', 'checkout', 'other') NOT NULL,
+                object_id TEXT NOT NULL,
+                PRIMARY KEY (id),
+                KEY visitor_id_idx (visitor_id)
+            ",
+            'events' => "
+                id BIGINT NOT NULL AUTO_INCREMENT,
+                activity_id BIGINT NOT NULL,
+                attime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                event_type ENUM('stay', 'click', 'scroll') NOT NULL,
+                target TEXT DEFAULT NULL,
+                PRIMARY KEY (id),
+                KEY activity_id_idx (activity_id)
+            ",
+        ];
+    }
+
+    public function database_tables($tables) {
+		$tables[] = [
+			'id' => 'visitor',
+            'title' => 'Visitors Managements',
+			'tables' => array_map(fn($tabKey) => ['key' => $tabKey, 'name' => $this->tables->$tabKey, 'schema' => $this->get_table_schema()[$tabKey]], array_keys((array) $this->tables))
+		];
+		return $tables;
+	}
 
     public function register_scripts() {
         if (!$this->is_allowed()) {return;}
@@ -458,14 +468,14 @@ class Visitor {
         // Fetch activities
         global $wpdb;
         $activities = $wpdb->get_results(
-            $wpdb->prepare("SELECT * FROM {$this->activity_table} WHERE visitor_id = %d", $visitor_id),
+            $wpdb->prepare("SELECT * FROM {$this->tables->activity} WHERE visitor_id = %d", $visitor_id),
             ARRAY_A
         );
 
         // Fetch events associated with each activity
         foreach ($activities as &$activity) {
             $activity['events'] = $wpdb->get_results(
-                $wpdb->prepare("SELECT * FROM {$this->events_table} WHERE activity_id = %d", $activity['id']),
+                $wpdb->prepare("SELECT * FROM {$this->tables->events} WHERE activity_id = %d", $activity['id']),
                 ARRAY_A
             );
         }
@@ -481,13 +491,13 @@ class Visitor {
 
         // Delete activities and events
         global $wpdb;
-        $wpdb->delete($this->events_table, ['activity_id' => $visitor_id]); // Assuming visitor_id can be used to fetch events (may need actual logic based on activities)
-        $activities = $wpdb->get_results($wpdb->prepare("SELECT id FROM {$this->activity_table} WHERE visitor_id = %d", $visitor_id));
+        $wpdb->delete($this->tables->events, ['activity_id' => $visitor_id]); // Assuming visitor_id can be used to fetch events (may need actual logic based on activities)
+        $activities = $wpdb->get_results($wpdb->prepare("SELECT id FROM {$this->tables->activity} WHERE visitor_id = %d", $visitor_id));
 
         foreach ($activities as $activity) {
-            $wpdb->delete($this->events_table, ['activity_id' => $activity->id]); // Delete related events
+            $wpdb->delete($this->tables->events, ['activity_id' => $activity->id]); // Delete related events
         }
-        $wpdb->delete($this->activity_table, ['visitor_id' => $visitor_id]); // Delete related activities
+        $wpdb->delete($this->tables->activity, ['visitor_id' => $visitor_id]); // Delete related activities
 
         // Delete the visitor
         $result = $this->delete_visitor($visitor_id);
@@ -591,7 +601,7 @@ class Visitor {
         }
 
         $visitor = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$this->visitor_table} WHERE id = %d", $visitor_id),
+            $wpdb->prepare("SELECT * FROM {$this->tables->visitor} WHERE id = %d", $visitor_id),
             ARRAY_A
         );
 
@@ -619,7 +629,7 @@ class Visitor {
             'dataset' => $dataset,
         ];
 
-        $result = $wpdb->insert($this->visitor_table, $insert_data);
+        $result = $wpdb->insert($this->tables->visitor, $insert_data);
         if ($result === false) {
             return new WP_Error('db_insert_error', 'Failed to insert visitor.', $wpdb->last_error);
         }
@@ -650,7 +660,7 @@ class Visitor {
             return new WP_Error('no_data', 'No data to update.');
         }
 
-        $result = $wpdb->update($this->visitor_table, $update_data, ['id' => $visitor_id]);
+        $result = $wpdb->update($this->tables->visitor, $update_data, ['id' => $visitor_id]);
         return $result !== false;
     }
 
@@ -662,7 +672,7 @@ class Visitor {
             return new WP_Error('invalid_id', 'Invalid visitor ID.');
         }
 
-        $result = $wpdb->delete($this->visitor_table, ['id' => $visitor_id]);
+        $result = $wpdb->delete($this->tables->visitor, ['id' => $visitor_id]);
         if ($result === false) {
             return new WP_Error('db_delete_error', 'Failed to delete visitor.', $wpdb->last_error);
         }
@@ -681,7 +691,7 @@ class Visitor {
         }
 
         $activity = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$this->activity_table} WHERE id = %d", $activity_id),
+            $wpdb->prepare("SELECT * FROM {$this->tables->activity} WHERE id = %d", $activity_id),
             ARRAY_A
         );
 
@@ -707,7 +717,7 @@ class Visitor {
             'activity'   => $activity,
         ];
 
-        $result = $wpdb->insert($this->activity_table, $insert_data);
+        $result = $wpdb->insert($this->tables->activity, $insert_data);
         if ($result === false) {
             return new WP_Error('db_insert_error', 'Failed to insert activity.', $wpdb->last_error);
         }
@@ -730,7 +740,7 @@ class Visitor {
             'activity'   => sanitize_text_field($activity),
         ];
 
-        $result = $wpdb->update($this->activity_table, $update_data, ['id' => $activity_id]);
+        $result = $wpdb->update($this->tables->activity, $update_data, ['id' => $activity_id]);
         return $result !== false;
     }
 
@@ -742,7 +752,7 @@ class Visitor {
             return new WP_Error('invalid_id', 'Invalid activity ID.');
         }
 
-        $result = $wpdb->delete($this->activity_table, ['id' => $activity_id]);
+        $result = $wpdb->delete($this->tables->activity, ['id' => $activity_id]);
         if ($result === false) {
             return new WP_Error('db_delete_error', 'Failed to delete activity.', $wpdb->last_error);
         }
@@ -761,7 +771,7 @@ class Visitor {
         }
 
         $event = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$this->events_table} WHERE id = %d", $event_id),
+            $wpdb->prepare("SELECT * FROM {$this->tables->events} WHERE id = %d", $event_id),
             ARRAY_A
         );
 
@@ -789,7 +799,7 @@ class Visitor {
             'target'      => $target,
         ];
 
-        $result = $wpdb->insert($this->events_table, $insert_data);
+        $result = $wpdb->insert($this->tables->events, $insert_data);
         if ($result === false) {
             return new WP_Error('db_insert_error', 'Failed to insert event.', $wpdb->last_error);
         }
@@ -813,7 +823,7 @@ class Visitor {
             'target'      => !empty($target) ? sanitize_textarea_field($target) : null,
         ];
 
-        $result = $wpdb->update($this->events_table, $update_data, ['id' => $event_id]);
+        $result = $wpdb->update($this->tables->events, $update_data, ['id' => $event_id]);
         return $result !== false;
     }
 
@@ -825,7 +835,7 @@ class Visitor {
             return new WP_Error('invalid_id', 'Invalid event ID.');
         }
 
-        $result = $wpdb->delete($this->events_table, ['id' => $event_id]);
+        $result = $wpdb->delete($this->tables->events, ['id' => $event_id]);
         if ($result === false) {
             return new WP_Error('db_delete_error', 'Failed to delete event.', $wpdb->last_error);
         }
@@ -847,7 +857,7 @@ class Visitor {
 
         // Insert data into the database
         $result = $wpdb->insert(
-            $this->activity_table,
+            $this->tables->activity,
             [
                 'visitor_id'   => $visitor['id'],
                 'activity'     => sanitize_text_field($activity_type),
@@ -883,7 +893,7 @@ class Visitor {
 
         // Fetch visitor from the database using the tracker
         $visitor = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$this->visitor_table} WHERE tracker = %s", $tracker),
+            $wpdb->prepare("SELECT * FROM {$this->tables->visitor} WHERE tracker = %s", $tracker),
             ARRAY_A
         );
 
@@ -911,7 +921,7 @@ class Visitor {
 
         // Get the last 5 visited products
         $visited_products = $wpdb->get_results($wpdb->prepare(
-            "SELECT object_id FROM {$this->activity_table} 
+            "SELECT object_id FROM {$this->tables->activity} 
             WHERE visitor_id = %d AND object_type = 'product'
             ORDER BY issuedat DESC LIMIT 5",
             $visitor_id

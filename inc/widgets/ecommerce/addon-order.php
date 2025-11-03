@@ -19,6 +19,7 @@ class Order {
     }
 
     public function register_rest_routes() {
+        if (!apply_filters('pm_project/system/isactive', 'storefront-apiactive')) {return;}
         register_rest_route('sitecore/v1', '/ecommerce/checkout', [
             'methods'  => 'POST',
             'callback' => [$this, 'api_process_checkout'],

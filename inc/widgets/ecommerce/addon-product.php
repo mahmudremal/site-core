@@ -31,6 +31,7 @@ class Product {
     }
 
     public function register_post_types() {
+        if (!apply_filters('pm_project/system/isactive', 'storefront-active')) {return;}
         register_post_type('sc_product', [
             'labels' => [
                 'name' => 'Products',
@@ -57,6 +58,7 @@ class Product {
     }
 
     public function register_taxonomies() {
+        if (!apply_filters('pm_project/system/isactive', 'storefront-active')) {return;}
         register_taxonomy('sc_product_category', 'sc_product', [
             'labels' => [
                 'name' => 'Product Categories',
@@ -81,6 +83,7 @@ class Product {
     }
 
     public function register_routes() {
+        if (!apply_filters('pm_project/system/isactive', 'storefront-apiactive')) {return;}
         register_rest_route('sitecore/v1', '/ecommerce/products', [
 			'methods'  => 'GET',
 			'callback' => [$this, 'api_get_products'],
@@ -135,6 +138,8 @@ class Product {
             'tags'        => wp_get_post_terms($product_id, 'sc_product_tag', ['fields' => 'all']),
             'variations'  => $this->get_product_variations($product_id),
             'attributes'  => $this->get_product_attributes($product_id),
+            'rating'      => 3.4,
+            'reviews'     => 5
         ];
         foreach ($product['metadata'] as $key => $value) {
             $product['metadata'][$key] = maybe_unserialize($value);
@@ -446,6 +451,7 @@ class Product {
     }
 
     public function template_include( $template ) {
+        if (!apply_filters('pm_project/system/isactive', 'storefront-active')) {return $template;}
         if ( is_singular('sc_product') ) {
             $custom_template = WP_SITECORE_DIR_PATH . '\\templates\\theme\\single-sc_product.php';
             return $custom_template;
@@ -771,6 +777,7 @@ class Product {
     }
 
     public function handle_create_sc_product() {
+        if (!apply_filters('pm_project/system/isactive', 'storefront-apiactive')) {return;}
         // Get JSON payload from POST
         $payload = $_GET['payload']; // json_decode(stripslashes($_GET['payload']), true);
         if (!$payload) {

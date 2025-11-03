@@ -216,15 +216,15 @@ export default function ErrorPage() {
               {__('Our customer support team is here to assist you 24/7', 'site-core')}
             </p>
             <div className="xpo_flex xpo_flex-col sm:xpo_flex-row xpo_gap-4 xpo_justify-center">
-              <button className="xpo_bg-scwhite xpo_text-gray-900 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors xpo_shadow-sm">
+              <Link to="/knowledge-base/queries" className="xpo_bg-scwhite xpo_text-gray-900 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors xpo_shadow-sm">
                 {__('Contact Support', 'site-core')}
-              </button>
-              <button className="xpo_bg-scwhite xpo_text-gray-900 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors xpo_shadow-sm">
+              </Link>
+              <button onClick={() => window?.Tawk_API?.toggle?.()} className="xpo_bg-scwhite xpo_text-gray-900 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors xpo_shadow-sm">
                 {__('Live Chat', 'site-core')}
               </button>
-              <button className="xpo_bg-scwhite xpo_text-gray-900 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors xpo_shadow-sm">
+              <Link to="/help" className="xpo_bg-scwhite xpo_text-gray-900 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors xpo_shadow-sm">
                 {__('FAQs', 'site-core')}
-              </button>
+              </Link>
             </div>
           </div>
         </div>

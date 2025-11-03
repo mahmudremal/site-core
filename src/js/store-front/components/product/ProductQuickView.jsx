@@ -127,7 +127,7 @@ export default function ProductQuickView({ prod = {} }) {
               <h2 className="xpo_text-2xl xpo_font-bold xpo_mb-2">{product.title}</h2>
               <div className="xpo_flex xpo_items-center xpo_space-x-2 xpo_mb-2">
                 <div className="xpo_flex">{renderStars(Math.round(product.average_rating || 0))}</div>
-                <span className="xpo_text-sm">{sprintf(__('(%d Reviews)', 'site-core'), product.reviews_count || 0)}</span>
+                <span className="xpo_text-sm">{sprintf(__('(%s Reviews)', 'site-core'), product.reviews_count || 0)}</span>
               </div>
               <div className="xpo_text-xl xpo_font-semibold xpo_text-scprimary-600 xpo_mb-4">
                 {money(product.metadata.sale_price, product.metadata.currency)}
@@ -180,7 +180,7 @@ export default function ProductQuickView({ prod = {} }) {
               })}
 
               <div className="xpo_mb-4">
-                <label className="xpo_block xpo_text-sm xpo_font-medium xpo_mb-1">Quantity</label>
+                <label className="xpo_block xpo_text-sm xpo_font-medium xpo_mb-1">{__('Quantity', 'site-core')}</label>
                 <div className="xpo_flex xpo_items-center xpo_border xpo_border-gray-300 xpo_rounded-md xpo_w-max">
                   <button type="button" onClick={decrementQty} aria-label="Decrease quantity" className="xpo_px-3 xpo_py-1 xpo_text-xl hover:xpo_bg-gray-100">-</button>
                   <span className="xpo_px-4 xpo_py-1 xpo_text-center">{cartForm.quantity}</span>

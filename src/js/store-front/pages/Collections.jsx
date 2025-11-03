@@ -9,10 +9,10 @@ import { useCurrency } from '../hooks/useCurrency';
 import { useLocale } from '../hooks/useLocale';
 
 const CollectionsPage = () => {
-  const { __ } = useLocale();
-  const { money } = useCurrency();
+  // const { __ } = useLocale();
+  // const { money } = useCurrency();
   const { type: collectionType } = useParams();
-  const [loading, setLoading] = useState(null);
+  // const [loading, setLoading] = useState(null);
 
   return (
     <>
@@ -23,6 +23,7 @@ const CollectionsPage = () => {
 };
 
 const PageBody = () => {
+  const { __ } = useLocale();
   return (
     <div>
       <SiteHeader />

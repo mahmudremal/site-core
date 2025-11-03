@@ -76,8 +76,9 @@ class Assets {
 	public function siteConfig($args) {
 		return wp_parse_args([
 			'ajaxUrl'    		=> admin_url('admin-ajax.php'),
+			// 'entryPoint'		=> home_url('wp-json/sitecore/v1'),
 			'ajax_nonce' 		=> wp_create_nonce('ajax/verify/nonce'),
-			'logout_url'		=> wp_logout_url(),
+			// 'logout_url'		=> wp_logout_url(),
 			'loggedin'			=> is_user_logged_in(),
 			'buildPath'  		=> WP_SITECORE_BUILD_URI,
 			'appURI'			=> WP_SITECORE_DIR_URI,

@@ -127,6 +127,7 @@ export const ellipsis = (text, start = 0, end = 30) => {
 
 export const tailwind_install = () => {
   return new Promise((resolve, reject) => {
+    // return resolve(true);
     const script = document.createElement("script");
     script.src = 'https://cdn.tailwindcss.com';
     script.onload = () => {
@@ -173,20 +174,32 @@ export const tailwind_install = () => {
                 800: '#2B69A2',
                 900: '#1A4D82',
               },
-              markethia: {
-                DEFAULT: "#02424F",
-                50:  "#E6F1F3",
-                100: "#CCE3E6",
-                200: "#99C6CC",
-                300: "#66A9B3",
-                400: "#338C99",
-                500: "#007080",
-                600: "#005966",
-                700: "#00434D",
-                800: "#022D33",
-                900: "#01171A",
+              // agreements: { // markethia
+              //   DEFAULT: "#02424F",
+              //   50:  "#E6F1F3",
+              //   100: "#CCE3E6",
+              //   200: "#99C6CC",
+              //   300: "#66A9B3",
+              //   400: "#338C99",
+              //   500: "#007080",
+              //   600: "#005966",
+              //   700: "#00434D",
+              //   800: "#022D33",
+              //   900: "#01171A",
+              // },
+              agreements: {
+                50:  "#FFFBEA",
+                100: "#FFF3C4",
+                200: "#FCE588",
+                300: "#FADB5F",
+                400: "#F7C948",
+                500: "#FFD957", // base
+                600: "#F0B429",
+                700: "#DE911D",
+                800: "#CB6E17",
+                900: "#B44D12",
+                DEFAULT: "#FFD957",
               },
-              
               scprimary: {
                 DEFAULT: "#0A1D37",
                 50:  "#e1e5ec",

@@ -19,6 +19,7 @@ class Visitor {
     }
     
     public function register_routes() {
+        if (!apply_filters('pm_project/system/isactive', 'storefront-apiactive')) {return;}
         register_rest_route('sitecore/v1', '/ecommerce/user/auth/(?P<user_identity>[^/]+)/register', [
             'methods'  => 'POST',
             'callback' => [$this, 'api_register_user'],

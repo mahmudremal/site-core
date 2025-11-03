@@ -24,24 +24,23 @@ class Cdn {
 	}
 
 	protected function setup_hooks() {
-        // add_action('wp_head', [$this, 'wp_head']);
+        add_action('wp_head', [$this, 'wp_head']);
         // add_action('send_headers', [$this, 'send_headers']);
         add_action('rest_api_init', [$this, 'rest_api_init']);
         add_action('add_attachment', [$this, 'handle_upload']);
         add_action('delete_attachment', [$this, 'handle_deletion']);
-        add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
+        add_filter('sitecore/settings/fields', [$this, 'settings'], 10, 1);
         add_filter('media_row_actions', [$this, 'media_row_actions'], 10, 3);
+        add_filter('style_loader_src', [$this, 'style_loader_src'], PHP_INT_MAX, 2);
         add_filter('wp_get_attachment_url', [$this, 'wp_get_attachment_url'], 10, 2);
         add_action('admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ], 10, 1);
         add_filter('wp_get_attachment_image_src', [$this, 'wp_get_attachment_image_src'], 10, 4);
         add_filter('wp_update_attachment_metadata', [$this, 'wp_update_attachment_metadata'], 10, 2);
         add_filter('intermediate_image_sizes_advanced', [$this, 'intermediate_image_sizes_advanced'], 10, 3);
-
         add_filter('handle_bulk_actions-upload', [$this, 'handle_bulk_send_to_cdn_action'], 10, 3);
         add_filter('bulk_actions-upload', [$this, 'add_bulk_send_to_cdn_action']);
         add_action('admin_notices', [$this, 'cdn_bulk_action_admin_notice']);
-
-        add_action('wp_get_attachment_image_attributes', [$this, 'wp_get_attachment_image_attributes'], 10, 3);
+        add_action('wp_get_attachment_image_attributes', [$this, 'wp_get_attachment_image_attributes'], 10, 3);        
     }
 
     public function get_cdn_host() {
@@ -64,11 +63,12 @@ class Cdn {
     }
 
     public function wp_head() {
-        if (headers_sent()) {return;}
+        // if (headers_sent()) {return;}
         if (apply_filters('pm_project/system/isactive', 'cdn-paused')) {return;}
         if ($this->get_cdn_host() === 'media') {return;}
         // 
-        echo '<meta http-equiv="Content-Security-Policy" content="img-src \'self\' https://ik.imagekit.io https://res.cloudinary.com;">' . "\n";
+        // echo '<meta http-equiv="Content-Security-Policy" content="img-src \'self\' https://ik.imagekit.io https://res.cloudinary.com;">' . "\n";
+        echo '<link rel="preconnect" href="https://ik.imagekit.io">';
     }
     public function send_headers() {
         if (headers_sent()) {return;}
@@ -156,6 +156,20 @@ class Cdn {
 					'type'					=> 'checkbox',
 					'default'				=> false
 				],
+				[
+					'id' 					=> 'cdn-stylesheets',
+					'label'					=> __('CDN Stylesheets', 'site-core'),
+					'description'			=> __('Enable to use CDN library for stylesheet as well.', 'site-core'),
+					'type'					=> 'checkbox',
+					'default'				=> false
+				],
+				[
+					'id' 					=> 'cdn-endpoint',
+					'label'					=> __('CDN Endpoint', 'site-core'),
+					'description'			=> __('Enable to use CDN library for stylesheet as well.', 'site-core'),
+					'type'					=> 'text',
+					'default'				=> ''
+				],
 			]
 		];
         return $args;
@@ -238,6 +252,7 @@ class Cdn {
 
     public function wp_get_attachment_url($url, $post_ID) {
         if (apply_filters('pm_project/system/isactive', 'cdn-paused')) {return $url;}
+        if ($this->get_cdn_host() === 'media') {return $url;}
         $cdn_url = get_post_meta($post_ID, '_cdn_link', true);
         return $cdn_url ? $cdn_url : $url;
     }
@@ -531,6 +546,25 @@ class Cdn {
         return $attr;
     }
 
+
+    public function style_loader_src($src, $handle) {
+        $wp_content_url = home_url('');
+        if (!apply_filters('pm_project/system/isactive', 'cdn-stylesheets')) return $src;
+        $cdn_endpoint = apply_filters('pm_project/system/getoption', 'cdn-endpoint', false);
+        if (empty($cdn_endpoint)) return $src;
+        if ( strpos( $src, $wp_content_url ) === 0 ) {
+            $src = str_replace($wp_content_url, $cdn_endpoint, $src);
+        }
+        $wp_content_url = str_replace('https:', 'http:', $wp_content_url);
+        if ( strpos( $src, $wp_content_url ) === 0 ) {
+            $src = str_replace($wp_content_url, $cdn_endpoint, $src);
+        }
+        $wp_content_url = str_replace('http:', '', $wp_content_url);
+        if ( strpos( $src, $wp_content_url ) === 0 ) {
+            $src = str_replace($wp_content_url, $cdn_endpoint, $src);
+        }
+        return $src;
+    }
 
     
 }

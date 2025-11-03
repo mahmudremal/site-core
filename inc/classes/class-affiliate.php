@@ -24,10 +24,11 @@ class Affiliate {
 		add_action('admin_menu', [$this, 'add_admin_menu']);
 		add_action('rest_api_init', [$this, 'register_routes']);
 		add_filter('sitecore/llmstxt/content', [$this, 'llmstxt'], 10, 2);
-        add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
+        add_filter('sitecore/settings/fields', [$this, 'settings'], 10, 1);
+        add_filter('sitecore/database/tables', [$this, 'database_tables'], 10, 1);
         add_action('admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ], 10, 1);
-		register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
-		register_deactivation_hook(WP_SITECORE__FILE__, [$this, 'register_deactivation_hook']);
+		// register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
+		// register_deactivation_hook(WP_SITECORE__FILE__, [$this, 'register_deactivation_hook']);
 	}
 	protected function setup_pageditors() {
 		add_action('elementor/dynamic_tags/register', [$this, 'register_dynamic_tags'], 10, 1);
@@ -37,45 +38,62 @@ class Affiliate {
 
 	public function register_activation_hook() {
 		global $wpdb;
-		$charset_collate = $wpdb->get_charset_collate();
+
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-
-		dbDelta("CREATE TABLE {$this->tables->links} (
-			id INT AUTO_INCREMENT PRIMARY KEY,
-			title TEXT NOT NULL,
-			shortcode VARCHAR(100) NOT NULL UNIQUE,
-			link TEXT NOT NULL,
-			comments TEXT DEFAULT '',
-			_info TEXT DEFAULT '',
-			visits INT DEFAULT 0,
-			_status ENUM('active', 'inactive') DEFAULT 'active',
-			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-		) $charset_collate;");
-
-		dbDelta("CREATE TABLE {$this->tables->visits} (
-			id BIGINT AUTO_INCREMENT PRIMARY KEY,
-			link_id INT NOT NULL,
-			ip_address VARCHAR(100),
-			device_type VARCHAR(50), 
-			browser_name VARCHAR(100),
-			browser_version VARCHAR(50),
-			os_name VARCHAR(100),
-			os_version VARCHAR(50),
-			country VARCHAR(100),
-			city VARCHAR(100),
-			latlon VARCHAR(50),
-			_time DATETIME DEFAULT CURRENT_TIMESTAMP,
-			INDEX (link_id),
-			INDEX (ip_address)
-		) $charset_collate;");
+        $charset_collate = $wpdb->get_charset_collate();
+		$tables = $this->get_table_schema();
+        foreach ((array) $this->tables as $_tableKey => $_tableName) {
+            dbDelta("CREATE TABLE IF NOT EXISTS {$_tableName} ({$tables[$_tableKey]}) $charset_collate;");
+        }
 	}
 
 	public function register_deactivation_hook() {
 		global $wpdb;
-		foreach ((array)$this->tables as $table) {
+		foreach ((array) $this->tables as $table) {
 			$wpdb->query("DROP TABLE IF EXISTS {$table}");
 		}
+	}
+
+	protected function get_table_schema() {
+        return [
+            'links' => "
+                id INT AUTO_INCREMENT PRIMARY KEY,
+				title TEXT NOT NULL,
+				shortcode VARCHAR(100) NOT NULL UNIQUE,
+				link TEXT NOT NULL,
+				comments TEXT DEFAULT '',
+				_info TEXT DEFAULT '',
+				visits INT DEFAULT 0,
+				_status ENUM('active', 'inactive') DEFAULT 'active',
+				created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+				updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            ",
+            'visits' => "
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+				link_id INT NOT NULL,
+				ip_address VARCHAR(100),
+				device_type VARCHAR(50), 
+				browser_name VARCHAR(100),
+				browser_version VARCHAR(50),
+				os_name VARCHAR(100),
+				os_version VARCHAR(50),
+				country VARCHAR(100),
+				city VARCHAR(100),
+				latlon VARCHAR(50),
+				_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+				INDEX (link_id),
+				INDEX (ip_address)
+            ",
+        ];
+    }
+
+	public function database_tables($tables) {
+		$tables[] = [
+			'id' => 'affiliate',
+			'title' => 'Affiliate Link Managements',
+			'tables' => array_map(fn($tabKey) => ['key' => $tabKey, 'name' => $this->tables->$tabKey, 'schema' => $this->get_table_schema()[$tabKey]], array_keys((array) $this->tables))
+		];
+		return $tables;
 	}
 
 	public function register_dynamic_tags($dynamic_tags) {
@@ -106,17 +124,17 @@ class Affiliate {
 		$link = $wpdb->get_row($wpdb->prepare("SELECT id, link FROM {$this->tables->links} WHERE shortcode = %s", $code));
 		if ($link) {
 			// $_SERVER['REMOTE_ADDR'] = '51.158.253.177';
-			$browser_details = (object) get_browser($_SERVER['HTTP_USER_AGENT']);
+			$browser_details = (object) $this->custom_parse_user_agent($_SERVER['HTTP_USER_AGENT']);
 			$geo_data = $this->get_geo_data($_SERVER['REMOTE_ADDR']);
 			
 			$wpdb->insert($this->tables->visits, [
 				'link_id' => $link->id,
 				'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '',
 				'device_type' => $browser_details->device_type ?? '-',
-				'browser_name' => $browser_details->browser ?? '-',
-				'browser_version' => $browser_details->version ?? '-',
-				'os_name' => $browser_details->platform ?? '-',
-				'os_version' => $browser_details->platform_version ?? '-',
+				'browser_name' => $browser_details->browser_name ?? '-',
+				'browser_version' => $browser_details->browser_version ?? '-',
+				'os_name' => $browser_details->os_name ?? '-',
+				'os_version' => $browser_details->os_version ?? '-',
 				'country' => $geo_data['country_code'] ?? '-',
 				'city' => $geo_data['city'] ?? '-',
 				'latlon' => implode(',', [$geo_data['lat'], $geo_data['lon']])
@@ -125,6 +143,79 @@ class Affiliate {
 			wp_redirect($link->link);
 			exit;
 		}
+	}
+	
+	public function custom_parse_user_agent($user_agent) {
+		$browser_data = (object) [
+			'device_type'     => 'Desktop', // Default
+			'browser_name'    => 'Unknown',
+			'browser_version' => '0.0',
+			'os_name'         => 'Unknown',
+			'os_version'      => '0.0',
+		];
+
+		if (empty($user_agent)) {
+			return $browser_data;
+		}
+
+		// --- 1. Detect OS and Version ---
+		if (preg_match('/Windows NT ([\d\.]+)/i', $user_agent, $matches)) {
+			$browser_data->os_name = 'Windows';
+			$browser_data->os_version = $matches[1];
+		} elseif (preg_match('/Macintosh;.*?OS X ([\d_]+)/i', $user_agent, $matches)) {
+			$browser_data->os_name = 'macOS';
+			$browser_data->os_version = str_replace('_', '.', $matches[1]);
+		} elseif (preg_match('/Android ([\d\.]+)/i', $user_agent, $matches)) {
+			$browser_data->os_name = 'Android';
+			$browser_data->os_version = $matches[1];
+			$browser_data->device_type = 'Mobile';
+		} elseif (preg_match('/iPhone|iPad|iPod/i', $user_agent)) {
+			$browser_data->os_name = 'iOS';
+			if (preg_match('/OS ([\d_]+)/i', $user_agent, $matches)) {
+				$browser_data->os_version = str_replace('_', '.', $matches[1]);
+			}
+			$browser_data->device_type = (stripos($user_agent, 'iPad') !== false) ? 'Tablet' : 'Mobile';
+		} elseif (preg_match('/Linux/i', $user_agent)) {
+			$browser_data->os_name = 'Linux';
+		}
+
+		// --- 2. Detect Device Type (Refinement) ---
+		if (stripos($user_agent, 'Mobile') !== false || stripos($user_agent, 'Android') !== false) {
+			$browser_data->device_type = 'Mobile';
+		} elseif (stripos($user_agent, 'Tablet') !== false || stripos($user_agent, 'iPad') !== false) {
+			$browser_data->device_type = 'Tablet';
+		}
+
+		// --- 3. Detect Browser and Version (Order matters, as some UAs contain multiple names) ---
+		if (preg_match('/OPR|Opera/i', $user_agent)) { // Opera must be before Chrome
+			$browser_data->browser_name = 'Opera';
+			$pattern = '/(OPR|Opera)\/([\d\.]+)/i';
+			if (preg_match($pattern, $user_agent, $matches)) {
+				$browser_data->browser_version = $matches[2];
+			}
+		} elseif (preg_match('/Edge\/([\d\.]+)/i', $user_agent, $matches)) { // Edge (Chromium)
+			$browser_data->browser_name = 'Edge';
+			$browser_data->browser_version = $matches[1];
+		} elseif (preg_match('/Chrome\/([\d\.]+)/i', $user_agent, $matches)) { // Chrome must be before Safari
+			$browser_data->browser_name = 'Chrome';
+			$browser_data->browser_version = $matches[1];
+		} elseif (preg_match('/Safari\/([\d\.]+)/i', $user_agent, $matches)) {
+			// Find Safari version more accurately. The real version is usually the 'Version/X.Y.Z' part.
+			if (preg_match('/Version\/([\d\.]+)/i', $user_agent, $v_matches)) {
+				$browser_data->browser_version = $v_matches[1];
+			} else {
+				$browser_data->browser_version = $matches[1];
+			}
+			$browser_data->browser_name = 'Safari';
+		} elseif (preg_match('/Firefox\/([\d\.]+)/i', $user_agent, $matches)) {
+			$browser_data->browser_name = 'Firefox';
+			$browser_data->browser_version = $matches[1];
+		} elseif (preg_match('/MSIE ([\d\.]+)|Trident\/\d+\.\d+;.*rv:([\d\.]+)/i', $user_agent, $matches)) {
+			$browser_data->browser_name = 'Internet Explorer';
+			$browser_data->browser_version = $matches[1] ?? $matches[2] ?? '11.0';
+		}
+
+		return $browser_data;
 	}
 
 	private function get_geo_data($ip_address) {
@@ -317,7 +408,7 @@ class Affiliate {
 				[
 					'id' 					=> 'affiliate-paused',
 					'label'					=> __('Pause', 'site-core'),
-					'description'			=> __('Mark to pause the cdn unconditionally. Would be a reason for site image break.', 'site-core'),
+					'description'			=> __('Mark to pause the the Affiliate functionalities. Would be a reason for site image break.', 'site-core'),
 					'type'					=> 'checkbox',
 					'default'				=> false
 				],

@@ -47,7 +47,10 @@ const CartPage = () => {
     const [firstCall, setFirstCall] = useState(null);
 
     useEffect(() => {
-      if (!firstCall) return setFirstCall(true);
+      if (!firstCall) {
+        setFirstCall(true);
+        return;
+      }
       const delay = setTimeout(() => {
         api.post(`cart/${item.id}`, {
           quantity,
@@ -153,6 +156,13 @@ const CartPage = () => {
       </>
     )
   }
+
+  useEffect(() => {
+    window?.dataLayer?.push?.({
+      'event': 'view_cart'
+    });
+    window?.clarity?.('event', 'view_cart');
+  }, []);
 
   return (
     <div className="xpo_grid xpo_grid-cols-1 lg:xpo_grid-cols-3 xpo_gap-8">

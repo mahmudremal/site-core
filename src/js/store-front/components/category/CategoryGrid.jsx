@@ -1,98 +1,110 @@
 import { useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useLocale } from '../../hooks/useLocale';
+// import api from '../../services/api';
 
 const CategoryGrid = ({ categories = [], onLoaded = null }) => {
+  const { __ } = useLocale();
   const defaultCategories = [
-    {
-      id: 1,
-      name: 'Electronics',
-      slug: 'electronics',
-      description: 'Latest gadgets and tech essentials',
-      imageUrl: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&h=300&fit=crop',
-      productCount: 1247,
-      featured: true
-    },
-    {
-      id: 2,
-      name: 'Fashion & Apparel',
-      slug: 'fashion',
-      description: 'Trending styles for every occasion',
-      imageUrl: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=300&fit=crop',
-      productCount: 2891,
-      featured: true
-    },
-    {
-      id: 3,
-      name: 'Home & Living',
-      slug: 'home-living',
-      description: 'Transform your living space',
-      imageUrl: 'https://images.unsplash.com/photo-1556912173-3bb406ef7e77?w=400&h=300&fit=crop',
-      productCount: 1563,
-      featured: false
-    },
-    {
-      id: 4,
-      name: 'Beauty & Personal Care',
-      slug: 'beauty',
-      description: 'Premium skincare and cosmetics',
-      imageUrl: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=300&fit=crop',
-      productCount: 876,
-      featured: false
-    },
-    {
-      id: 5,
-      name: 'Sports & Outdoors',
-      slug: 'sports',
-      description: 'Gear up for your active lifestyle',
-      imageUrl: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400&h=300&fit=crop',
-      productCount: 634,
-      featured: false
-    },
-    {
-      id: 6,
-      name: 'Books & Stationery',
-      slug: 'books',
-      description: 'Knowledge and creativity essentials',
-      imageUrl: 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&h=300&fit=crop',
-      productCount: 1092,
-      featured: false
-    },
-    {
-      id: 7,
-      name: 'Toys & Games',
-      slug: 'toys',
-      description: 'Joy and fun for all ages',
-      imageUrl: 'https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=400&h=300&fit=crop',
-      productCount: 445,
-      featured: false
-    },
-    {
-      id: 8,
-      name: 'Groceries & Food',
-      slug: 'groceries',
-      description: 'Fresh and quality everyday essentials',
-      imageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=300&fit=crop',
-      productCount: 2156,
-      featured: true
-    }
+    // {
+    //   id: 1,
+    //   name: 'Electronics',
+    //   slug: 'electronics',
+    //   description: 'Latest gadgets and tech essentials',
+    //   imageUrl: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&h=300&fit=crop',
+    //   productCount: 1247,
+    //   featured: true
+    // },
+    // {
+    //   id: 2,
+    //   name: 'Fashion & Apparel',
+    //   slug: 'fashion',
+    //   description: 'Trending styles for every occasion',
+    //   imageUrl: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=300&fit=crop',
+    //   productCount: 2891,
+    //   featured: true
+    // },
+    // {
+    //   id: 3,
+    //   name: 'Home & Living',
+    //   slug: 'home-living',
+    //   description: 'Transform your living space',
+    //   imageUrl: 'https://images.unsplash.com/photo-1556912173-3bb406ef7e77?w=400&h=300&fit=crop',
+    //   productCount: 1563,
+    //   featured: false
+    // },
+    // {
+    //   id: 4,
+    //   name: 'Beauty & Personal Care',
+    //   slug: 'beauty',
+    //   description: 'Premium skincare and cosmetics',
+    //   imageUrl: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=300&fit=crop',
+    //   productCount: 876,
+    //   featured: false
+    // },
+    // {
+    //   id: 5,
+    //   name: 'Sports & Outdoors',
+    //   slug: 'sports',
+    //   description: 'Gear up for your active lifestyle',
+    //   imageUrl: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400&h=300&fit=crop',
+    //   productCount: 634,
+    //   featured: false
+    // },
+    // {
+    //   id: 6,
+    //   name: 'Books & Stationery',
+    //   slug: 'books',
+    //   description: 'Knowledge and creativity essentials',
+    //   imageUrl: 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&h=300&fit=crop',
+    //   productCount: 1092,
+    //   featured: false
+    // },
+    // {
+    //   id: 7,
+    //   name: 'Toys & Games',
+    //   slug: 'toys',
+    //   description: 'Joy and fun for all ages',
+    //   imageUrl: 'https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=400&h=300&fit=crop',
+    //   productCount: 445,
+    //   featured: false
+    // },
+    // {
+    //   id: 8,
+    //   name: 'Groceries & Food',
+    //   slug: 'groceries',
+    //   description: 'Fresh and quality everyday essentials',
+    //   imageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=300&fit=crop',
+    //   productCount: 2156,
+    //   featured: true
+    // }
   ];
 
   useEffect(() => onLoaded && onLoaded(), [onLoaded]);
 
+  // useEffect(() => {
+  //   const delay = setTimeout(() => {
+  //     api.get('get categories collections')
+  //   }, 1000);
+  
+  //   return () => clearTimeout(delay);
+  // }, []);
+
   const displayCategories = categories?.length ? categories : defaultCategories;
 
+  if (!displayCategories?.length) return <></>;
 
   return (
-    <section className="xpo_pt-8 xpo_pb-16 xpo_px-4 xpo_bg-scwhite-300 dark:xpo_bg-scprimary-900">
-      <div className="xpo_mx-auto">
+    <section className="xpo_pt-8 xpo_pb-16 xpo_px-4 xpo_bg-scwhite-300/70 dark:xpo_bg-scprimary-900/70">
+      <div className="xpo_container xpo_mx-auto">
         
         <div className="xpo_mb-10">
           <h2 className="xpo_text-3xl xpo_font-bold xpo_text-scprimary-600 dark:xpo_text-scwhite-100 xpo_mb-3">
-            Shop by Category
+            {__('Shop by Category', 'site-core')}
           </h2>
           <p className="xpo_text-scprimary-400 dark:xpo_text-scwhite-600">
-            Explore our wide range of products across different categories
+            {__('Explore our wide range of products across different categories', 'site-core')}
           </p>
         </div>
 
@@ -116,7 +128,7 @@ const CategoryGrid = ({ categories = [], onLoaded = null }) => {
                 
                 {category.featured && (
                   <div className="xpo_absolute xpo_top-3 xpo_right-3 xpo_px-3 xpo_py-1 xpo_bg-scaccent-500 xpo_text-scwhite-100 xpo_text-xs xpo_font-semibold xpo_rounded-full">
-                    Featured
+                    {__('Featured', 'site-core')}
                   </div>
                 )}
               </div>
@@ -131,7 +143,7 @@ const CategoryGrid = ({ categories = [], onLoaded = null }) => {
                 
                 <div className="xpo_flex xpo_items-center xpo_justify-between">
                   <span className="xpo_text-sm xpo_font-medium xpo_text-scaccent-500 dark:xpo_text-scaccent-400">
-                    {(category.productCount || '0').toLocaleString()} items
+                    {sprintf(__('%s items', 'site-core'), (category.productCount || '0').toLocaleString())}
                   </span>
                   <div className="xpo_w-8 xpo_h-8 xpo_bg-scaccent-100 dark:xpo_bg-scaccent-900/30 xpo_rounded-full xpo_flex xpo_items-center xpo_justify-center group-hover:xpo_bg-scaccent-500 dark:group-hover:xpo_bg-scaccent-600 xpo_transition-colors">
                     <ArrowRight className="xpo_w-4 xpo_h-4 xpo_text-scaccent-600 dark:xpo_text-scaccent-400 group-hover:xpo_text-scwhite-100 xpo_transition-colors" />
@@ -147,7 +159,7 @@ const CategoryGrid = ({ categories = [], onLoaded = null }) => {
             to="/categories"
             className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_px-6 xpo_py-3 xpo_bg-scwhite-100 dark:xpo_bg-scprimary-800 xpo_border xpo_border-scaccent-400 dark:xpo_border-scaccent-600 xpo_rounded-lg xpo_text-scaccent-600 dark:xpo_text-scaccent-400 xpo_font-semibold hover:xpo_bg-scaccent-500 dark:hover:xpo_bg-scaccent-600 hover:xpo_text-scwhite-100 xpo_transition-all xpo_duration-300"
           >
-            View All Categories
+            {__('View All Categories', 'site-core')}
             <ArrowRight className="xpo_w-5 xpo_h-5" />
           </Link>
         </div> */}

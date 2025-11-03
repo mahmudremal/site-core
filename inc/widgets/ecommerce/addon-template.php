@@ -85,6 +85,7 @@ class Template {
     }
 
     public function wp_enqueue_scripts() {
+        if (!apply_filters('pm_project/system/isactive', 'storefront-active')) {return;}
         // wp_enqueue_script('tailwind-cdn', 'https://cdn.tailwindcss.com/', array(), null, true);
         // $tailwind_config = ['prefix' => 'xpo_'];
         // $inline_script = 'window.tailwind = window.tailwind || {}; window.tailwind.config = ' . wp_json_encode( $tailwind_config ) . ';';
@@ -92,6 +93,7 @@ class Template {
     }
     
     function theme_header_menu_hook() {
+        if (!apply_filters('pm_project/system/isactive', 'storefront-active')) {return;}
         include WP_SITECORE_DIR_PATH . '\\templates\\theme\\template-parts\\nav-menus.php';
     }
 

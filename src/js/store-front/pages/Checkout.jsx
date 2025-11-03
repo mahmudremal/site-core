@@ -15,77 +15,24 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import PaymentComponent from '../components/cart/PaymentComponent';
 
-const deliveryMethods = [
-  {
-    id: 'standard',
-    name: 'Standard Delivery',
-    description: '5-7 business days',
-    price: 0,
-    icon: Package,
-    selected: false
-  },
-  {
-    id: 'express',
-    name: 'Express Delivery',
-    description: '2-3 business days',
-    price: 9.99,
-    icon: Clock,
-    selected: true
-  },
-  {
-    id: 'overnight',
-    name: 'Overnight Delivery',
-    description: 'Next business day',
-    price: 24.99,
-    icon: Zap,
-    selected: false
-  }
-];
 
-const paymentMethods = [
-  {
-    id: 'cod',
-    active: true,
-    name: 'Cash on Delivery (COD)',
-    description: 'Pay upon delivery',
-    icon: Box
-  },
-  {
-    id: 'card',
-    active: true,
-    name: 'Credit/Debit Card',
-    description: 'Visa, Mastercard, American Express',
-    icon: CreditCard
-  },
-  {
-    id: 'paypal',
-    active: false,
-    name: 'PayPal',
-    description: 'Pay with your PayPal account',
-    icon: Wallet
-  },
-  {
-    id: 'apple',
-    active: false,
-    name: 'Apple Pay',
-    description: 'Touch ID or Face ID',
-    icon: Apple
-  },
-  {
-    id: 'google',
-    active: false,
-    name: 'Google Pay',
-    description: 'Pay with Google',
-    icon: Smartphone
-  },
-  {
-    id: 'sslcommerz',
-    active: true,
-    name: 'SSLCommerz',
-    description: 'Pay with SSLCommerz gateway',
-    icon: Shield
+/*
+### 4. **Add Payment Info**
+
+**Trigger:** When user selects or enters payment info.
+
+```js
+window.dataLayer.push({
+  'event': 'add_payment_info',
+  'ecommerce': {
+    'payment_type': 'Credit Card'
   }
-];
+});
+
+clarity('event', 'add_payment_info');
+```
+*/
+
 
 export default function PageBody() {
   return (
@@ -128,6 +75,78 @@ export const CheckoutPage = () => {
     country: 'BD',
     newsletter: true
   });
+
+  const deliveryMethods = [
+    {
+      id: 'standard',
+      name: __('Standard Delivery', 'site-core'),
+      description: __('5-7 business days', 'site-core'),
+      price: 0,
+      icon: Package,
+      selected: false
+    },
+    {
+      id: 'express',
+      name: __('Express Delivery', 'site-core'),
+      description: __('2-3 business days', 'site-core'),
+      price: 9.99,
+      icon: Clock,
+      selected: true
+    },
+    {
+      id: 'overnight',
+      name: __('Overnight Delivery', 'site-core'),
+      description: __('Next business day', 'site-core'),
+      price: 24.99,
+      icon: Zap,
+      selected: false
+    }
+  ];
+
+  const paymentMethods = [
+    {
+      id: 'cod',
+      active: true,
+      name: __('Cash on Delivery (COD)', 'site-core'),
+      description: __('Pay upon delivery', 'site-core'),
+      icon: Box
+    },
+    {
+      id: 'card',
+      active: true,
+      name: __('Credit/Debit Card', 'site-core'),
+      description: __('Visa, Mastercard, American Express', 'site-core'),
+      icon: CreditCard
+    },
+    {
+      id: 'paypal',
+      active: false,
+      name: __('PayPal', 'site-core'),
+      description: __('Pay with your PayPal account', 'site-core'),
+      icon: Wallet
+    },
+    {
+      id: 'apple',
+      active: false,
+      name: __('Apple Pay', 'site-core'),
+      description: __('Touch ID or Face ID', 'site-core'),
+      icon: Apple
+    },
+    {
+      id: 'google',
+      active: false,
+      name: __('Google Pay', 'site-core'),
+      description: __('Pay with Google', 'site-core'),
+      icon: Smartphone
+    },
+    {
+      id: 'sslcommerz',
+      active: true,
+      name: __('SSLCommerz', 'site-core'),
+      description: __('Pay with SSLCommerz gateway', 'site-core'),
+      icon: Shield
+    }
+  ];
 
   useEffect(() => {
     if (!loggedin) return;
@@ -301,8 +320,25 @@ export const CheckoutPage = () => {
       .then(res => res.data)
       .then(orderRes => {
         if (orderRes?.order_id) setOrderDraftID(orderRes?.order_id??0);
-        if (orderRes?.redirect_url) {return navigate(orderRes.redirect_url);}
-        sleep(3000).then(() => {
+        window?.dataLayer?.push?.({
+          event: 'purchase',
+          ecommerce: {
+            transaction_id: orderRes?.order_id,
+            value: total,
+            currency: currency,
+            items: cart.cart_items.map(item => ({
+              item_name: item.product_name,
+              item_id: item.product_data.metadata.sku,
+              price: item.price,
+              quantity: item.quantity
+            }))
+          }
+        });
+        window?.clarity?.('event', 'purchase');
+        if (orderRes?.redirect_url) {
+          sleep(1500).then(() => navigate(orderRes.redirect_url));
+        }
+        false && sleep(3000).then(() => {
           setPopup(
             <PaymentComponent
               method={selectedPaymentMethod}
@@ -330,7 +366,8 @@ export const CheckoutPage = () => {
               }}
             />
           );
-        })
+        });
+        return orderRes;
       })
       .catch(err => notify.error(err.response?.data?.message || __('Failed to create order', 'site-core')))
       .finally(() => setProcessing(false));
@@ -341,7 +378,18 @@ export const CheckoutPage = () => {
       ;
     }
   };
-// 
+
+  useEffect(() => {
+    if (total < 0) return;
+    window?.dataLayer?.push?.({
+      event: 'begin_checkout',
+      ecommerce: {
+        currency: currency?.toUpperCase?.(),
+        value: total,
+      }
+    });
+    window?.clarity?.('event', 'begin_checkout');
+  }, []);
 
 
   return (

@@ -74,7 +74,7 @@ export default function HealthsHome() {
     const [logged, setLogged] = useState(null);
     const [toast, setToast] = useState(null);
 
-    const socketRef = useRef(io('http://localhost:3000/health')); 
+    const socketRef = useRef(io('https://localhost:3000/health')); 
     const healthChartRef = useRef(null);
     const userTableBodyRef = useRef([]);
 

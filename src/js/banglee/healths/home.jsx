@@ -20,7 +20,7 @@ export default function HealthHome() {
                 A wearable AI-powered health monitoring system designed to detect and act on cardiac events, sugar levels, sleep patterns, and more — with doctor support and instant emergency response.
             </p>
             <div className="xpo_flex xpo_gap-4">
-                <Link to={`/healths/`} className="xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_bg-primary-600 xpo_text-white xpo_font-semibold hover:xpo_bg-primary-700 xpo_transition">
+                <Link to={`/healths/home`} className="xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_bg-primary-600 xpo_text-white xpo_font-semibold hover:xpo_bg-primary-700 xpo_transition">
                 Get Started
                 </Link>
                 <button className="xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_border xpo_border-gray-300 hover:xpo_border-primary-600 xpo_transition">

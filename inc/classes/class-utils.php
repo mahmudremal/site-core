@@ -16,14 +16,13 @@ class Utils {
 
     protected function setup_hooks() {
         add_filter('init', [$this, 'disable_gutenberg']);
-        add_filter('rest_api_init', [$this, 'rest_api_init']);
+        // add_filter('rest_api_init', [$this, 'rest_api_init']);
         add_filter('wp_print_scripts', [$this, 'wp_print_scripts'], 10, 0);
-        add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
+        add_filter('sitecore/settings/fields', [$this, 'settings'], 10, 1);
 		add_action('init', [$this, 'stop_heartbeat'], 1);
     }
     
-    public function rest_api_init() {
-    }
+    public function rest_api_init() {}
 
     public function settings($args) {
 		$args['utils']		= [
@@ -62,6 +61,7 @@ class Utils {
         add_filter('use_block_editor_for_post_type', '__return_false', 10);
     }
     public function wp_print_scripts() {
+		if ($this->is_elementor_editor()) return;
         if (apply_filters('pm_project/system/isactive', 'utils-off-heartbit-back')) {
             if (is_admin()) {
                 wp_deregister_script('heartbeat');
@@ -74,7 +74,21 @@ class Utils {
     }
 
 	public function stop_heartbeat() {
-		wp_deregister_script('heartbeat');
+		if ($this->is_elementor_editor()) return;
+		if (apply_filters('pm_project/system/isactive', 'utils-off-heartbit-back') && is_admin()) {
+			wp_deregister_script('heartbeat');
+		}
+		if (apply_filters('pm_project/system/isactive', 'utils-off-heartbit-front') && !is_admin()) {
+			wp_deregister_script('heartbeat');
+		}
 	}
-    
+
+	public function is_elementor_editor() {
+		if ( class_exists( '\Elementor\Plugin' ) ) {
+			return \Elementor\Plugin::$instance->editor->is_edit_mode();
+		}
+		return false;
+	}
+
+
 }

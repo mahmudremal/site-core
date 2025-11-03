@@ -1,10 +1,13 @@
 import { createContext, useEffect, useState } from 'react';
 import { sleep, notify } from '@functions';
 import api from '../services/api';
+import { useCurrency } from '../hooks/useCurrency';
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
+  const { currency } = useCurrency();
+  
   const [cart, setCart] = useState({
     success: true,
     cart_items: [],
@@ -31,8 +34,25 @@ export const CartProvider = ({ children }) => {
           product_data: product
         }).then(res => res.data)
         .then(res => {
-          if (res?.action == 'added') {
-            setCart(prev => ({...prev, cart_items: [res?.item??product, ...prev.cart_items]}));
+          if (res?.action == 'added' || true) {
+            setCart(prev => ({...prev, cart_items: [res, ...prev.cart_items]}));
+            // setCart(prev => ({...prev, cart_items: [res?.item??product, ...prev.cart_items]}));
+            // 
+            // analytics part
+            window?.dataLayer?.push?.({
+              event: 'add_to_cart',
+              ecommerce: {
+                currency: currency?.toUpperCase?.(),
+                value: parseFloat(product?.metadata?.sale_price || product?.metadata?.price) * quantity || 1,
+                items: [{
+                  quantity: quantity || 1,
+                  item_name: product.title,
+                  item_id: product?.metadata?.sku || product?.id
+                }]
+              }
+            });
+            window?.clarity?.('event', 'add_to_cart');
+            // 
             // return notify.success('Product added to cart!');
           }
           if (res?.action == 'removed') {
@@ -53,6 +73,19 @@ export const CartProvider = ({ children }) => {
         // if (data?.success)
         console.log(data)
         setCart(prev => ({...prev, cart_items: prev.cart_items.filter(i => i.id != item.id)}));
+        return data;
+      })
+      .then(data => {
+        window?.dataLayer?.push?.({
+          event: 'remove_from_cart',
+          ecommerce: {
+            items: [{
+              item_name: item.product_name,
+              item_id: item.product_data.metadata.sku
+            }]
+          }
+        });
+        window?.clarity?.('event', 'remove_from_cart');
       })
       .finally(() => resolve(true));
     });

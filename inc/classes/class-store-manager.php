@@ -25,10 +25,11 @@ class Store_Manager {
     protected function setup_hooks() {
         add_action('admin_menu', [$this, 'add_menu_page']);
         add_action('rest_api_init', [$this, 'register_routes']);
-        add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
+        add_filter('sitecore/settings/fields', [$this, 'settings'], 10, 1);
+        add_filter('sitecore/database/tables', [$this, 'database_tables'], 10, 1);
         add_action('admin_enqueue_scripts', [$this, 'admin_enqueue_scripts'], 10, 1);
-		register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
-		register_deactivation_hook(WP_SITECORE__FILE__, [$this, 'register_deactivation_hook']);
+		// register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
+		// register_deactivation_hook(WP_SITECORE__FILE__, [$this, 'register_deactivation_hook']);
         add_action('woocommerce_order_status_processing', [$this, 'handle_order_processing'], 10, 1);
     }
 
@@ -36,7 +37,21 @@ class Store_Manager {
         global $wpdb;
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         $charset_collate = $wpdb->get_charset_collate();
-        $tables = [
+        $tables = $this->get_table_schema();
+        foreach ((array) $this->tables as $_tableKey => $_tableName) {
+            dbDelta("CREATE TABLE IF NOT EXISTS {$_tableName} ({$tables[$_tableKey]}) $charset_collate;");
+        }
+    }
+
+    public function register_deactivation_hook() {
+        global $wpdb;
+        foreach ((array) $this->tables as $_tableKey => $_tableName) {
+            $wpdb->query("DROP TABLE IF EXISTS {$_tableName}");
+        }
+    }
+
+    protected function get_table_schema() {
+        return [
             'vendors' => "
                 id BIGINT NOT NULL AUTO_INCREMENT,
                 business_name VARCHAR(255) NOT NULL,
@@ -81,19 +96,19 @@ class Store_Manager {
                 PRIMARY KEY (id)
             ",
         ];
-        foreach ((array) $this->tables as $_tableKey => $_tableName) {
-            dbDelta("CREATE TABLE IF NOT EXISTS {$_tableName} ({$tables[$_tableKey]}) $charset_collate;");
-        }
     }
 
-    public function register_deactivation_hook() {
-        global $wpdb;
-        foreach ((array) $this->tables as $_tableKey => $_tableName) {
-            $wpdb->query("DROP TABLE IF EXISTS {$_tableName}");
-        }
-    }
+    public function database_tables($tables) {
+		$tables[] = [
+			'id' => 'storemanager',
+            'title' => 'Store Manager Managements',
+			'tables' => array_map(fn($tabKey) => ['key' => $tabKey, 'name' => $this->tables->$tabKey, 'schema' => $this->get_table_schema()[$tabKey]], array_keys((array) $this->tables))
+		];
+		return $tables;
+	}
     
     public function register_routes() {
+        if (apply_filters('pm_project/system/isactive', 'storemanager-disabled')) return;
         // Activities REST API Routes
         register_rest_route('sitecore/v1', '/storemanager/vendors', [
             'methods'             => 'GET',
@@ -458,12 +473,10 @@ class Store_Manager {
                 ],
             ],
         ]);
-
-
-
     }
     
     public function add_menu_page() {
+        if (apply_filters('pm_project/system/isactive', 'storemanager-disabled')) return;
         add_menu_page(
             __('Shop Manager', 'site-core'),
             __('Shop Manager', 'site-core'),
@@ -482,6 +495,7 @@ class Store_Manager {
 
     public function admin_enqueue_scripts($curr_page) {
         if ($curr_page !== 'toplevel_page_store-manager') {return;}
+        if (apply_filters('pm_project/system/isactive', 'storemanager-disabled')) return;
         wp_enqueue_script('site-core');
         wp_enqueue_style('site-core');
     }
@@ -1200,6 +1214,7 @@ class Store_Manager {
     
     
     public function handle_order_processing($order_id) {
+        if (apply_filters('pm_project/system/isactive', 'storemanager-disabled')) return;
         // Get the order object
         $order = wc_get_order($order_id);
         if (!$order) {

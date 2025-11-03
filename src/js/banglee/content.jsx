@@ -5,9 +5,6 @@ import { __, home_route } from '@js/utils';
 
 import Application from './App';
 
-import ReceiverComponent from './hobbies/ReceiverComponent';
-import BroadcasterComponent from './hobbies/BroadcasterComponent';
-
 const SearchHome = lazy(() => import('./search/home'));
 const SearchResults = lazy(() => import('./search/result'));
 const Search404 = lazy(() => import('./search/error404'));
@@ -41,6 +38,11 @@ const AgentikError = lazy(() => import('./search/error404'));
 
 const Whatsapp = lazy(() => import('./whatsapp'));
 const CrawlerClient = lazy(() => import('./crawler/crawlerBot'));
+
+
+const ChickensComponent = lazy(() => import('./hobbies/ChickensComponent'));
+const ReceiverComponent = lazy(() => import('./hobbies/ReceiverComponent'));
+const BroadcasterComponent = lazy(() => import('./hobbies/BroadcasterComponent'));
 
 const Error404 = lazy(() => import('./search/error404'));
 
@@ -85,6 +87,7 @@ export default function Banglee() {
                     <Route path={home_route('/crawler/*')} element={<CrawlerClient />} />
 
 
+                    <Route path={home_route('/chickens')} element={<ChickensComponent />} />
                     <Route path={home_route('/chickens/receiver')} element={<ReceiverComponent />} />
                     <Route path={home_route('/chickens/broadcaster')} element={<BroadcasterComponent />} />
                     

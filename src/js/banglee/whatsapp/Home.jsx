@@ -24,7 +24,7 @@ const WhatsappHome = () => {
   const isConnected = connectionState === 'open';
 
   useEffect(() => {
-    const ws = io('http://localhost:3000/wa', {
+    const ws = io('https://localhost:3000/wa', {
       // transports: ['websocket', 'polling']
     });
     setSocket(ws);

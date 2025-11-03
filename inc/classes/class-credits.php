@@ -27,7 +27,7 @@ class Credits {
                 "name": "Remal Mahmud",
                 "url": "https://www.mahmudremal.com/"
                 },
-                "url": "<?php echo esc_url(home_url('/')); ?>"
+                "url": "<?php echo home_url('/'); ?>"
             }
         </script>
         <?php

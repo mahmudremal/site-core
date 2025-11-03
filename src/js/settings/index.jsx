@@ -3,8 +3,9 @@ import { createRoot } from 'react-dom/client';
 const Radar = lazy(() => import('./radar'));
 const PostTypes = lazy(() => import('./post-types'));
 const RoleBased = lazy(() => import('./role-based'));
-const AppsApiKeys = lazy(() => import('./api-keys'));
-const TaskConfig = lazy(() => import('./task-config'));
+// const AppsApiKeys = lazy(() => import('./api-keys'));
+const DatabaseTables = lazy(() => import('./database-tables'));
+// const TaskConfig = lazy(() => import('./task-config'));
 import { __ } from '@js/utils';
 
 export default function settings_screen() {
@@ -23,7 +24,7 @@ export default function settings_screen() {
             );
         }
     });
-    document.querySelectorAll('#apps-api-keys').forEach(async field => {
+    document.querySelectorAll('#apps-api-keys assdsadsa').forEach(async field => {
         const container = field.parentElement;
         container.previousElementSibling.remove();
         if (container) {
@@ -33,22 +34,21 @@ export default function settings_screen() {
             const config = JSON.parse(field.dataset.config);
             const root = createRoot(container);root.render(
                 <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
-                    <AppsApiKeys config={config} />
+                    {/* <AppsApiKeys config={config} /> */}
                 </Suspense>
             );
         }
     });
-    document.querySelectorAll('#task-config-interface').forEach(async field => {
+    document.querySelectorAll('#task-config-interface assdsadsa').forEach(async field => {
         const container = field.parentElement;
         container.previousElementSibling.remove();
         if (container) {
-            // await this.tailwind_install();
             container.innerHTML = '';
             container.setAttribute('colspan', 2);
             const config = JSON.parse(field.dataset.config);
             const root = createRoot(container);root.render(
                 <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
-                    <TaskConfig config={config} />
+                    {/* <TaskConfig config={config} /> */}
                 </Suspense>
             );
         }
@@ -85,5 +85,19 @@ export default function settings_screen() {
             );
         }
     });
+    document.querySelectorAll('#database-tables_managements').forEach(async field => {
+        const container = field.parentElement;
+        container?.previousElementSibling?.remove?.();
+        if (container) {
+            container.innerHTML = '';
+            container.setAttribute('colspan', 2);
+            const root = createRoot(container);root.render(
+                <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
+                    <DatabaseTables />
+                </Suspense>
+            );
+        }
+    });
 }
 
+settings_screen()

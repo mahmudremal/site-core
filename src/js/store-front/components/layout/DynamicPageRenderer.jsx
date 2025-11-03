@@ -1,4 +1,6 @@
 import { lazy, Suspense, useState, useEffect, useCallback } from 'react';
+import { useLocale } from "../../hooks/useLocale";
+import { sprintf } from 'sprintf-js';
 
 const componentMap = {
   heroBanner: lazy(() => import('../common/HeroBanner')),
@@ -9,6 +11,7 @@ const componentMap = {
 };
 
 export default function DynamicPageRenderer({ template: initialTemplate = [], screen = null }) {
+  const { __ } = useLocale();
   const [loadedCount, setLoadedCount] = useState(0);
 
   useEffect(() => {
@@ -23,6 +26,7 @@ export default function DynamicPageRenderer({ template: initialTemplate = [], sc
 
   const getOnLoadedCallback = useCallback((index) => {
     return () => {
+      // console.log('Loaded one');
       if (index === loadedCount - 1 && loadedCount < initialTemplate.length) {
         setLoadedCount((prev) => prev + 1);
       }
@@ -43,7 +47,7 @@ export default function DynamicPageRenderer({ template: initialTemplate = [], sc
               <Suspense
                 fallback={
                   <div className="xpo_flex xpo_items-center xpo_justify-center xpo_py-12">
-                    <div className="xpo_animate-pulse">Loading {type}...</div>
+                    <div className="xpo_animate-pulse">{sprintf(__('Loading %s...', 'site-core'), type)}</div>
                   </div>
                 }
               >
@@ -56,7 +60,7 @@ export default function DynamicPageRenderer({ template: initialTemplate = [], sc
           );
         })
       ) : (
-        <div className="xpo_text-center xpo_py-12">No content available</div>
+        <div className="xpo_text-center xpo_py-12">{__('No content available', 'site-core')}</div>
       )}
     </div>
   );

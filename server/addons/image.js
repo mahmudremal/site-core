@@ -1630,65 +1630,65 @@ Here are the available URL endpoints to generate images:
 
 ## Main Image Generation
 ```
-GET http://localhost:3000/image/generate?text=Hello&width=400&height=200&bgColor=3b82f6&textColor=ffffff&format=svg
+GET https://localhost:3000/image/generate?text=Hello&width=400&height=200&bgColor=3b82f6&textColor=ffffff&format=svg
 ```
 
 ## Specific Image Types
 
 ### Avatar Generation
 ```
-GET http://localhost:3000/image/avatar?name=John Doe&size=200&format=png
-GET http://localhost:3000/image/avatar?name=Jane Smith&bgColor=e91e63&size=150&format=svg
+GET https://localhost:3000/image/avatar?name=John Doe&size=200&format=png
+GET https://localhost:3000/image/avatar?name=Jane Smith&bgColor=e91e63&size=150&format=svg
 ```
 
 ### Gradient Images
 ```
-GET http://localhost:3000/image/gradient?width=800&height=400&gradientColors=ff6b6b,4ecdc4&format=png
-GET http://localhost:3000/image/gradient?gradientType=radial&gradientColors=purple,pink,orange&width=300&height=300
+GET https://localhost:3000/image/gradient?width=800&height=400&gradientColors=ff6b6b,4ecdc4&format=png
+GET https://localhost:3000/image/gradient?gradientType=radial&gradientColors=purple,pink,orange&width=300&height=300
 ```
 
 ### Pattern Generation
 ```
-GET http://localhost:3000/image/pattern?type=dots&width=400&height=300&primaryColor=0284C7&secondaryColor=ffffff&size=10&spacing=20
-GET http://localhost:3000/image/pattern?type=stripes&width=500&height=200&primaryColor=ef4444&format=png
-GET http://localhost:3000/image/pattern?type=hexagon&width=600&height=400&primaryColor=10b981&size=15&spacing=30
+GET https://localhost:3000/image/pattern?type=dots&width=400&height=300&primaryColor=0284C7&secondaryColor=ffffff&size=10&spacing=20
+GET https://localhost:3000/image/pattern?type=stripes&width=500&height=200&primaryColor=ef4444&format=png
+GET https://localhost:3000/image/pattern?type=hexagon&width=600&height=400&primaryColor=10b981&size=15&spacing=30
 ```
 
 ### Chart Generation
 ```
-GET http://localhost:3000/image/chart?type=bar&data=10,20,30,40&labels=A,B,C,D&width=400&height=300&title=Sales Data
-GET http://localhost:3000/image/chart?type=pie&data=25,35,20,20&labels=Q1,Q2,Q3,Q4&colors=3b82f6,ef4444,10b981,f59e0b
-GET http://localhost:3000/image/chart?type=line&data=5,15,10,25,20&width=500&height=250
+GET https://localhost:3000/image/chart?type=bar&data=10,20,30,40&labels=A,B,C,D&width=400&height=300&title=Sales Data
+GET https://localhost:3000/image/chart?type=pie&data=25,35,20,20&labels=Q1,Q2,Q3,Q4&colors=3b82f6,ef4444,10b981,f59e0b
+GET https://localhost:3000/image/chart?type=line&data=5,15,10,25,20&width=500&height=250
 ```
 
 ### Badge Generation
 ```
-GET http://localhost:3000/image/badge?label=Status&message=Active&color=4c1&format=svg
-GET http://localhost:3000/image/badge?label=Version&message=v2.0.0&labelColor=555&color=blue
+GET https://localhost:3000/image/badge?label=Status&message=Active&color=4c1&format=svg
+GET https://localhost:3000/image/badge?label=Version&message=v2.0.0&labelColor=555&color=blue
 ```
 
 ### Logo Generation
 ```
-GET http://localhost:3000/image/logo?text=LOGO&style=modern&width=300&height=100&primaryColor=2563eb
-GET http://localhost:3000/image/logo?text=Brand&style=classic&width=250&height=80&format=png
+GET https://localhost:3000/image/logo?text=LOGO&style=modern&width=300&height=100&primaryColor=2563eb
+GET https://localhost:3000/image/logo?text=Brand&style=classic&width=250&height=80&format=png
 ```
 
 ### Banner Generation
 ```
-GET http://localhost:3000/image/banner?title=Welcome&subtitle=To our service&width=800&height=200&bgColor=1f2937
-GET http://localhost:3000/image/banner?title=Sale&subtitle=50% Off&width=600&height=150&style=gradient
+GET https://localhost:3000/image/banner?title=Welcome&subtitle=To our service&width=800&height=200&bgColor=1f2937
+GET https://localhost:3000/image/banner?title=Sale&subtitle=50% Off&width=600&height=150&style=gradient
 ```
 
 ### Social Media Images
 ```
-GET http://localhost:3000/image/social?platform=twitter&title=Check this out!&bgColor=1DA1F2
-GET http://localhost:3000/image/social?platform=instagram&title=New Post&subtitle=Amazing content
+GET https://localhost:3000/image/social?platform=twitter&title=Check this out!&bgColor=1DA1F2
+GET https://localhost:3000/image/social?platform=instagram&title=New Post&subtitle=Amazing content
 ```
 
 ### QR Code Generation
 ```
-GET http://localhost:3000/image/qr?data=https://example.com&size=200&format=svg
-GET http://localhost:3000/image/qr?data=Hello World&size=150&bgColor=ffffff&fgColor=000000
+GET https://localhost:3000/image/qr?data=https://example.com&size=200&format=svg
+GET https://localhost:3000/image/qr?data=Hello World&size=150&bgColor=ffffff&fgColor=000000
 ```
 
 ## Advanced Parameters
@@ -1710,7 +1710,7 @@ GET http://localhost:3000/image/qr?data=Hello World&size=150&bgColor=ffffff&fgCo
 
 ### Example with Multiple Effects
 ```
-GET http://localhost:3000/image/generate?text=Styled Text&width=400&height=200&bgColor=1e40af&textColor=ffffff&fontSize=32&fontWeight=bold&shadow=true&shadowColor=000000&shadowBlur=8&borderRadius=15&gradient=true&gradientColors=3b82f6,1e40af&format=png
+GET https://localhost:3000/image/generate?text=Styled Text&width=400&height=200&bgColor=1e40af&textColor=ffffff&fontSize=32&fontWeight=bold&shadow=true&shadowColor=000000&shadowBlur=8&borderRadius=15&gradient=true&gradientColors=3b82f6,1e40af&format=png
 ```
 
 All endpoints support `format` parameter with values: `svg`, `png`, `jpeg`, `webp`

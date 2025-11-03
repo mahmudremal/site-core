@@ -12,36 +12,39 @@ import { OfflineProvider } from './contexts/OfflineContext';
 import { SessionProvider } from './contexts/SessionContext';
 import { WishlistProvider } from './contexts/WishlistContext';
 import { CurrencyProvider } from './contexts/CurrencyContext';
+import { AnalyticsProvider } from './contexts/AnalyticsContext';
 import { RecommendationProvider } from './contexts/RecommendationContext';
 
 export default function StoreFront() {
   return (
     <StrictMode>
       <SessionProvider>
-        <RequestProvider>
-          <BrowserRouter>
-            <PopupProvider>
-              <CurrencyProvider>
-                <LocaleProvider>
-                  <ThemeProvider>
-                    <AuthProvider>
-                      <CartProvider>
-                        <WishlistProvider>
-                          <OfflineProvider>
-                            <RecommendationProvider>
-                              <Toaster />
-                              <App />
-                            </RecommendationProvider>
-                          </OfflineProvider>
-                        </WishlistProvider>
-                      </CartProvider>
-                    </AuthProvider>
-                  </ThemeProvider>
-                </LocaleProvider>
-              </CurrencyProvider>
-            </PopupProvider>
-          </BrowserRouter>
-        </RequestProvider>
+        <AnalyticsProvider>
+          <RequestProvider>
+            <BrowserRouter>
+              <PopupProvider>
+                <CurrencyProvider>
+                  <LocaleProvider>
+                    <ThemeProvider>
+                      <AuthProvider>
+                        <CartProvider>
+                          <WishlistProvider>
+                            <OfflineProvider>
+                              <RecommendationProvider>
+                                <Toaster />
+                                <App />
+                              </RecommendationProvider>
+                            </OfflineProvider>
+                          </WishlistProvider>
+                        </CartProvider>
+                      </AuthProvider>
+                    </ThemeProvider>
+                  </LocaleProvider>
+                </CurrencyProvider>
+              </PopupProvider>
+            </BrowserRouter>
+          </RequestProvider>
+        </AnalyticsProvider>
       </SessionProvider>
     </StrictMode>
   )

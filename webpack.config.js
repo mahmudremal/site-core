@@ -15,9 +15,8 @@ const SRC_DIR = path.resolve(__dirname, 'src');
 
 module.exports = {
   entry: {
-      // shopmanager: JS_DIR + '/shopmanager.js',
       // links: JS_DIR + '/affiliate.js',
-    //   setting: JS_DIR + '/setting.js',
+      // setting: JS_DIR + '/setting.js',
     //   pricing: JS_DIR + '/pricing.js',
     //   visitor: JS_DIR + '/visitor.js',
     //   invoice: JS_DIR + '/invoice.js',
@@ -27,14 +26,13 @@ module.exports = {
       media: JS_DIR + '/media.js',
     //   admin: JS_DIR + '/admin.js',
     //   popup: JS_DIR + '/popup.js',
-    // // emails: JS_DIR + '/emails.js',
     // // hunts: JS_DIR + '/hunts.js',
-    //   // task: JS_DIR + '/task.js',
     //   pwa: JS_DIR + '/pwa.js',
       // cdn: JS_DIR + '/cdn.js',
     core: JS_DIR + '/core.js',
     // wa: path.resolve(__dirname, 'server/app.jsx'),
     schemaeditor: JS_DIR + '/shop-manager/extension/schemaeditor.jsx',
+
 
       // app: JS_DIR + '/app.js',
     // sw: JS_DIR + '/sw.js',

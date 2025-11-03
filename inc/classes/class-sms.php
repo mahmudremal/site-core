@@ -29,7 +29,7 @@ class Sms {
     }
     
     protected function setup_hooks() {
-        add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
+        add_filter('sitecore/settings/fields', [$this, 'settings'], 10, 1);
         register_activation_hook( WP_SITECORE__FILE__, [$this, 'register_activation_hook'] );
         register_deactivation_hook( WP_SITECORE__FILE__, [$this, 'register_deactivation_hook'] );
     }
@@ -42,6 +42,7 @@ class Sms {
         add_filter('sitecore/sms/token_stats', [$this, 'get_token_stats'], 10, 1);
         add_filter('sitecore/sms/total_stats', [$this, 'get_total_stats'], 10, 1);
         add_filter('sitecore/sms/monthly_stats', [$this, 'get_monthly_stats'], 10, 2);
+        add_filter('sitecore/database/tables', [$this, 'database_tables'], 10, 1);
         add_filter('sitecore/sms/token_monthly_stats', [$this, 'get_token_monthly_stats'], 10, 2);
         add_filter('sitecore/sms/all_stats', [$this, 'get_all_stats'], 10, 2);
         add_filter('sitecore/sms/send_bulk', [$this, 'send_bulk_sms'], 10, 3);
@@ -54,18 +55,7 @@ class Sms {
         $charset_collate = $wpdb->get_charset_collate();
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         
-        $tableSchemas = [
-            'messages' => "id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                recipient VARCHAR(20) NOT NULL,
-                message TEXT NOT NULL,
-                sms_type VARCHAR(50) DEFAULT 'general',
-                status VARCHAR(20) DEFAULT 'pending',
-                response_data TEXT,
-                token_used VARCHAR(100),
-                api_response TEXT,
-                sent_at DATETIME NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP",
-        ];
+        $tableSchemas = $this->get_table_schema();
         
         foreach ($tableSchemas as $tableKey => $schema) {
             $tableName = $this->tables->$tableKey;
@@ -79,6 +69,32 @@ class Sms {
             $wpdb->query("DROP TABLE IF EXISTS {$table}");
         }
     }
+
+    protected function get_table_schema() {
+        return [
+            'messages' => "
+                id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                recipient VARCHAR(20) NOT NULL,
+                message TEXT NOT NULL,
+                sms_type VARCHAR(50) DEFAULT 'general',
+                status VARCHAR(20) DEFAULT 'pending',
+                response_data TEXT,
+                token_used VARCHAR(100),
+                api_response TEXT,
+                sent_at DATETIME NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            ",
+        ];
+    }
+
+    public function database_tables($tables) {
+		$tables[] = [
+			'id' => 'sms',
+            'title' => 'SMS Managements',
+			'tables' => array_map(fn($tabKey) => ['key' => $tabKey, 'name' => $this->tables->$tabKey, 'schema' => $this->get_table_schema()[$tabKey]], array_keys((array) $this->tables))
+		];
+		return $tables;
+	}
 
     public function settings($args) {
 		$args['sms']		= [

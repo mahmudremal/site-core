@@ -9,20 +9,23 @@ use WP_Error;
 class Radar {
     use Singleton;
 
-    protected $table;
+    protected $tables;
 
     protected function __construct() {
         global $wpdb;
-        $this->table = $wpdb->prefix . 'sitecore_radars';
+        $this->tables = (object) [
+            'radars' => $wpdb->prefix . 'sitecore_radars'
+        ];
         $this->setup_hooks();
     }
 
     protected function setup_hooks() {
         add_action('rest_api_init', [$this, 'rest_api_init']);
-        add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
+        add_filter('sitecore/settings/fields', [$this, 'settings'], 10, 1);
+        add_filter('sitecore/database/tables', [$this, 'database_tables'], 10, 1);
         add_filter('sitecore/security/api/abilities', [$this, 'api_abilities'], 10, 3);
-        register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
-        register_deactivation_hook(WP_SITECORE__FILE__, [$this, 'register_deactivation_hook']);
+        // register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
+        // register_deactivation_hook(WP_SITECORE__FILE__, [$this, 'register_deactivation_hook']);
     }
 
     public function api_abilities($abilities, $_route, $user_id) {
@@ -41,26 +44,44 @@ class Radar {
 
     public function register_activation_hook() {
         global $wpdb;
-        $charset_collate = $wpdb->get_charset_collate();
-        $sql = "CREATE TABLE IF NOT EXISTS {$this->table} (
-            id INT NOT NULL AUTO_INCREMENT,
-            radar_type VARCHAR(255) NOT NULL,
-            status VARCHAR(50) DEFAULT 'pending',
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            radar_object LONGTEXT NOT NULL,
-            radar_submission LONGTEXT NOT NULL,
-            radar_desc TEXT,
-            PRIMARY KEY (id)
-        ) $charset_collate;";
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-        dbDelta($sql);
+        $charset_collate = $wpdb->get_charset_collate();
+        $tables = $this->get_table_schema();
+        foreach ((array) $this->tables as $_tableKey => $_tableName) {
+            dbDelta("CREATE TABLE IF NOT EXISTS {$_tableName} ({$tables[$_tableKey]}) $charset_collate;");
+        }
     }
 
     public function register_deactivation_hook() {
         global $wpdb;
-        $wpdb->query("DROP TABLE IF EXISTS {$this->table}");
+		foreach ((array) $this->tables as $table) {
+			$wpdb->query("DROP TABLE IF EXISTS {$table}");
+		}
     }
+
+    protected function get_table_schema() {
+        return [
+            'radars' => "
+                id INT NOT NULL AUTO_INCREMENT,
+                radar_type VARCHAR(255) NOT NULL,
+                status VARCHAR(50) DEFAULT 'pending',
+                created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                radar_object LONGTEXT NOT NULL,
+                radar_submission LONGTEXT NOT NULL,
+                radar_desc TEXT,
+                PRIMARY KEY (id)
+            ",
+        ];
+    }
+
+    public function database_tables($tables) {
+		$tables[] = [
+			'id' => 'radars', 'title' => 'Radars Managements',
+			'tables' => array_map(fn($tabKey) => ['key' => $tabKey, 'name' => $this->tables->$tabKey, 'schema' => $this->get_table_schema()[$tabKey]], array_keys((array) $this->tables))
+		];
+		return $tables;
+	}
 
     
     public function settings($args) {
@@ -120,10 +141,10 @@ class Radar {
             $order_by = "ORDER BY {$order_by_field} {$order}";
         }
 
-        $total_items = $wpdb->get_var("SELECT COUNT(id) FROM {$this->table} {$where}");
+        $total_items = $wpdb->get_var("SELECT COUNT(id) FROM {$this->tables->radars} {$where}");
         $total_pages = ceil($total_items / $per_page);
 
-        $response_data = $wpdb->get_results("SELECT * FROM {$this->table} {$where} {$order_by} LIMIT {$per_page} OFFSET {$offset}", ARRAY_A);
+        $response_data = $wpdb->get_results("SELECT * FROM {$this->tables->radars} {$where} {$order_by} LIMIT {$per_page} OFFSET {$offset}", ARRAY_A);
 
         $response = rest_ensure_response($response_data);
         $response->header('X-WP-Total', (int) $total_items);

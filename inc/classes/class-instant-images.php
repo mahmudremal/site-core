@@ -23,7 +23,7 @@ class Instant_Images {
 
 	protected function setup_hooks() {
 		add_action('rest_api_init', [$this, 'register_routes']);
-		add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
+		add_filter('sitecore/settings/fields', [$this, 'settings'], 10, 1);
 		// add_filter('media_upload_tabs', [$this, 'media_upload_tabs'], 10, 1);
 		// add_filter('media_view_settings', [$this, 'media_view_settings'], 10, 1);
 		add_filter('admin_enqueue_scripts', [$this, 'admin_enqueue_scripts'], 10, 1);

@@ -9,7 +9,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom';
 import api from '../services/api';
 import { notify } from '@functions';
 import { sprintf } from 'sprintf-js';
-import PaymentComponent from '../components/cart/PaymentComponent';
+// import PaymentComponent from '../components/cart/PaymentComponent';
 
 export default function PageBody() {
   return (
@@ -81,9 +81,9 @@ export const OrderConfirmation = () => {
           <CheckCircle className="xpo_w-12 xpo_h-12 xpo_text-green-600" />
         </div>
         <h1 className="xpo_text-3xl xpo_font-bold xpo_text-gray-900 dark:xpo_text-scwhite-600 xpo_mb-2">{__('Order Confirmed!', 'site-core')}</h1>
-        <p className="xpo_text-lg xpo_text-gray-600 dark:xpo_text-scwhite-600">{__('Thank you for your purchase. Your order has been confirmed.')}</p>
+        <p className="xpo_text-lg xpo_text-gray-600 dark:xpo_text-scwhite-600">{__('Thank you for your purchase. Your order has been confirmed.', 'site-core')}</p>
         <p className="xpo_text-sm xpo_text-gray-500 dark:xpo_text-scwhite-600 xpo_mt-2">
-          {__('Order ID:')} <span className="xpo_font-semibold xpo_text-gray-900 dark:xpo_text-scwhite-600">#{order.id}</span>
+          {__('Order ID:', 'site-core')} <span className="xpo_font-semibold xpo_text-gray-900 dark:xpo_text-scwhite-600">#{order.id}</span>
         </p>
       </div>
 
@@ -98,7 +98,7 @@ export const OrderConfirmation = () => {
               <div key={itemIndex} className="xpo_flex xpo_justify-between xpo_items-center xpo_border-b xpo_border-gray-200 xpo_pb-4 last:xpo_border-b-0 last:xpo_pb-0">
                 <div>
                   <p className="xpo_text-md xpo_text-gray-900 dark:xpo_text-scprimary-600">{item?.title??item.product_name}</p>
-                  <p className="xpo_text-sm xpo_text-gray-600">{sprintf(__('Qty: %d'), item.quantity || 1)}</p>
+                  <p className="xpo_text-sm xpo_text-gray-600">{sprintf(__('Qty: %d', 'site-core'), item.quantity || 1)}</p>
                 </div>
                 <p className="xpo_font-medium">{money(item.price * item.quantity || 1)}</p>
               </div>
@@ -161,8 +161,8 @@ export const OrderConfirmation = () => {
       </div>
 
       <div className="xpo_mt-12 xpo_text-center xpo_text-sm xpo_text-gray-500 dark:xpo_text-scwhite-500">
-        <p>{__('You will receive an order confirmation email with all details shortly.')}</p>
-        <p className="xpo_mt-2">{__('Need help? Contact our support team anytime.')}</p>
+        <p>{__('You will receive an order confirmation email with all details shortly.', 'site-core')}</p>
+        <p className="xpo_mt-2">{__('Need help? Contact our support team anytime.', 'site-core')}</p>
       </div>
     </div>
   );
@@ -172,9 +172,8 @@ const PaymentBlock = ({ order = {} }) => {
   return (
     <div>
       {/* Payment Block */}
-      <PaymentComponent
-        method={'card'}
-        // method={order.payment_method}
+      {/* <PaymentComponent
+        method={order.payment_method}
         orderId={order.id}
         amount={order.total_amount}
         currency={order.currency}
@@ -197,7 +196,7 @@ const PaymentBlock = ({ order = {} }) => {
         //   notify.error(error.message || __('Payment failed', 'site-core'));
         //   setPopup(null);
         // }}
-      />
+      /> */}
     </div>
   )
 }

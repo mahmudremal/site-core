@@ -1,3 +1,24 @@
 {
-  "ignore": ["node_modules", "dist", "src", "auth_info_baileys", "storage", "whatsapp-ai-bot-baileys", "auth_info", "background.js"]
+  "ignore": [
+    "node_modules",
+    "languages",
+    "dist",
+    "src",
+    "auth_info_baileys",
+    "storage",
+    "whatsapp-ai-bot-baileys",
+    "auth_info",
+    "background.js",
+    "uploads",
+    "templates",
+    "screenshots",
+    "inc",
+    "auth_info",
+    "client",
+    "bot",
+    "assets",
+    ".wwebjs_cache",
+    ".wwebjs_auth",
+    ".vscode"
+  ]
 }

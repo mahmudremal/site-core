@@ -19,6 +19,7 @@ class Wishlist {
     }
 
     public function register_routes() {
+        if (!apply_filters('pm_project/system/isactive', 'storefront-apiactive')) {return;}
         register_rest_route('sitecore/v1', '/ecommerce/wishlist', [
 			'methods'  => 'GET',
 			'callback' => [$this, 'api_get_wishlist'],

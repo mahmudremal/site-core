@@ -28,6 +28,7 @@ class Query {
     }
 
     public function register_rest_routes() {
+        if (!apply_filters('pm_project/system/isactive', 'storefront-apiactive')) {return;}
         register_rest_route('reco/v1', '/event', [
             'methods'  => 'POST',
             'callback' => [$this, 'ingest_event'],
@@ -74,6 +75,7 @@ class Query {
     }
 
     public function enqueue_scripts() {
+        if (!apply_filters('pm_project/system/isactive', 'storefront-active')) {return;}
         // wp_localize_script('reco-js', 'RECO_CFG', ['uid' => $this->get_reco_uid(), 'endpoint' => rest_url('reco/v1/event')]);
         wp_enqueue_style('site-core');
         wp_enqueue_script('site-core');
@@ -139,6 +141,8 @@ class Query {
     }
 
     public function filter_product_query($query) {
+        if (!apply_filters('pm_project/system/isactive', 'storefront-active')) {return;}
+        if (!apply_filters('pm_project/system/isactive', 'storefront-apiactive')) {return;}
         if (is_admin() || !$query->is_main_query() || !is_post_type_archive('sc_product')) {
             return;
         }

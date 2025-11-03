@@ -51,6 +51,14 @@ class Option {
 		]);
 	}
 	public function admin_init() {
+		if (
+			(!isset($_GET['page']) || $_GET['page'] !== $this->plugin_slug)
+			&&
+			(!isset($_POST['option_page']) || $_POST['option_page'] !== $this->plugin_slug)
+		) {
+			return;
+		}
+
 		$this->settings = $this->settings_fields();
 		$this->options = $this->get_options();
 		$this->register_settings();
@@ -80,7 +88,7 @@ class Option {
 	 */
 	private function settings_fields() {
 		$settings = [];
-		$settings = apply_filters('pm_project/settings/fields', $settings);
+		$settings = apply_filters('sitecore/settings/fields', $settings);
 		return $settings;
 	}
 	/**
@@ -202,10 +210,10 @@ class Option {
 			case 'checkbox_multi':
 			case 'radio':
 			case 'select_multi':
-				$html .= apply_filters('pm_project/settings/fields/label', '<br/><span class="description">' . $field['description'] . '</span>', $field);
+				$html .= apply_filters('sitecore/settings/fields/label', '<br/><span class="description">' . $field['description'] . '</span>', $field);
 			break;
 			default:
-				$html .= apply_filters('pm_project/settings/fields/label', '<label for="' . esc_attr($field['id']) . '"><span class="description">' . $field['description'] . '</span></label>' . "\n", $field);
+				$html .= apply_filters('sitecore/settings/fields/label', '<label for="' . esc_attr($field['id']) . '"><span class="description">' . $field['description'] . '</span></label>' . "\n", $field);
 			break;
 		}
 		echo $html;
@@ -233,8 +241,8 @@ class Option {
 	 * @return void
 	 */
 	public function settings_page() {
-		// Build page HTML output
-		// If you don't need tabbed navigation just strip out everything between the <!-- Tab navigation --> tags.
+		wp_enqueue_style('site-core');
+		wp_enqueue_script('site-core');
 		?>
 	  <div class="wrap" id="<?php echo $this->general->slug; ?>">
 	  	<h2><?php echo wp_kses_post($this->general->page_header); ?></h2>
@@ -250,11 +258,11 @@ class Option {
 			<?php $this->do_script_for_tabbed_nav(); ?>
 			<!-- Tab navigation ends -->
 			<form action="options.php" method="POST">
-						<?php settings_fields($this->general->slug); ?>
-						<div class="settings-container">
-						<?php do_settings_sections($this->general->slug); ?>
-					</div>
-						<?php submit_button(); ?>
+				<?php settings_fields($this->general->slug); ?>
+				<div class="settings-container">
+					<?php do_settings_sections($this->general->slug); ?>
+				</div>
+				<?php submit_button(); ?>
 			</form>
 		</div>
 		<?php

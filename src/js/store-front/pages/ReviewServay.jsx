@@ -287,7 +287,7 @@ const ReviewSurvey = () => {
               <div className="xpo_p-6 xpo_border-b xpo_bg-gray-50">
                 <div className="xpo_flex xpo_items-start xpo_space-x-4">
                   <img
-                    src={product.metadata?.gallery?.[0]?.url || product.thumbnail || 'https://via.placeholder.com/80'}
+                    src={product.metadata?.gallery?.[0]?.url || product.thumbnail || 'https://placehold.co/80'}
                     alt={product.title}
                     className="xpo_w-20 xpo_h-20 xpo_object-cover xpo_rounded-lg"
                   />

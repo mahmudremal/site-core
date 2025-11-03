@@ -19,6 +19,7 @@ class Reviews {
     }
 
     public function register_routes() {
+        if (!apply_filters('pm_project/system/isactive', 'storefront-apiactive')) {return;}
         register_rest_route('sitecore/v1', '/ecommerce/products/(?P<product_slug>[^/]+)/reviews', [
 			'methods'  => 'GET',
 			'callback' => [$this, 'api_get_product_reviews'],

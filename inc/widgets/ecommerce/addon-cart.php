@@ -19,6 +19,7 @@ class Cart {
     }
 
     public function register_routes() {
+        if (!apply_filters('pm_project/system/isactive', 'storefront-apiactive')) {return;}
         register_rest_route('sitecore/v1', '/ecommerce/cart/(?P<cart_item_id>\d+)', [
             'methods'  => 'POST',
             'callback' => [$this, 'api_update_cart_item'],
@@ -262,13 +263,14 @@ class Cart {
 
         if ($cart_item_id === 0) {
             // Add a new item to the cart
-            $price = !empty($price) ? $price : Product::get_instance()->get_product_price($product_id, $variation_id);
+            // $price = !empty($price) ? $price : Product::get_instance()->get_product_price($product_id, $variation_id);
+            $price = !empty($product_data['metadata']['sale_price']) ? $product_data['metadata']['sale_price'] : Product::get_instance()->get_product_price($product_id, $variation_id);
 
             $params = [
                 'cart_id' => $cart->id,
                 'product_id' => $product_id,
                 'quantity' => $quantity,
-                'price' => $price,
+                'price' => (float) $price,
                 'product_data' => $product_data,
             ];
 

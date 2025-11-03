@@ -23,7 +23,7 @@ class Llmstxt {
         add_action('admin_menu', [$this, 'add_admin_menu']);
         add_action('admin_init', [$this, 'register_settings']);
         add_action('template_redirect', [$this, 'serve_llms_txt']);
-		add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
+		add_filter('sitecore/settings/fields', [$this, 'settings'], 10, 1);
     }
 
     public function add_admin_menu() {

@@ -25,7 +25,7 @@ const ChatApp = () => {
   const [pendingToolCalls, setPendingToolCalls] = useState([]);
   const [showSettings, setShowSettings] = useState(false);
   const [settings, setSettings] = useState({
-    mcpUrl: 'http://localhost:3000/mcp',
+    mcpUrl: 'https://localhost:3000/mcp',
     endpoint: 'http://localhost:11434',
     model: 'romi',
     temperature: 0.7,

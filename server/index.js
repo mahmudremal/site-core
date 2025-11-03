@@ -175,6 +175,7 @@ class Server {
 
     start() {
         this.server.listen(this.port, () => {
+            process.title = "Banglee Server";
             this.logger.info(`Server is running on https://localhost:${this.port}`);
         });
     }

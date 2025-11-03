@@ -1,8 +1,8 @@
-fetch('http://localhost:3000/v1/models')
+fetch('https://localhost:3000/v1/models')
 .then(res => res.json())
 .then(console.log);
 
-fetch('http://localhost:3000/v1/chat/completions', {
+fetch('https://localhost:3000/v1/chat/completions', {
   method: 'POST',
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
@@ -16,7 +16,7 @@ fetch('http://localhost:3000/v1/chat/completions', {
 .then(res => res.json())
 .then(console.log);
 
-fetch('http://localhost:3000/v1/completions', {
+fetch('https://localhost:3000/v1/completions', {
   method: 'POST',
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
@@ -28,7 +28,7 @@ fetch('http://localhost:3000/v1/completions', {
 .then(res => res.json())
 .then(console.log);
 
-fetch('http://localhost:3000/v1/embeddings', {
+fetch('https://localhost:3000/v1/embeddings', {
   method: 'POST',
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
@@ -39,7 +39,7 @@ fetch('http://localhost:3000/v1/embeddings', {
 .then(res => res.json())
 .then(console.log);
 
-fetch('http://localhost:3000/v1/images/generations', {
+fetch('https://localhost:3000/v1/images/generations', {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
@@ -55,7 +55,7 @@ fetch('http://localhost:3000/v1/images/generations', {
 
 
 (async () => {
-  const response = await fetch('http://localhost:3000/v1/chat/completions', {
+  const response = await fetch('https://localhost:3000/v1/chat/completions', {
     method: 'POST',
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

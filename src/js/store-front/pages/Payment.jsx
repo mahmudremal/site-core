@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import api from '../services/api';
 import { notify } from '@functions';
-import PaymentComponent from '../components/cart/PaymentComponent';
+// import PaymentComponent from '../components/cart/PaymentComponent';
 
 export default function PageBody() {
   return (
@@ -196,7 +196,7 @@ export const SharedPayment = () => {
           </div>
 
           <div className="xpo_bg-scwhite/70 xpo_rounded-2xl xpo_border xpo_border-gray-200 xpo_p-4 xpo_mb-4">
-            <PaymentComponent
+            {/* <PaymentComponent
               method={order.payment_method || 'card'}
               orderId={order.id}
               amount={total}
@@ -204,7 +204,7 @@ export const SharedPayment = () => {
               customerData={customerData}
               onSuccess={handlePaymentSuccess}
               onFailed={handlePaymentFailed}
-            />
+            /> */}
           </div>
 
           {processing && (

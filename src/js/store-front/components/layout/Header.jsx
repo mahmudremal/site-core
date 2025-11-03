@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { MapPin, ChevronDown, Search, ShoppingCart, Menu, User, ListOrdered, Undo, Package, Heart, Clock, BookOpen, Music, Video, Settings, LogIn, UserPlus, Star, TrendingUp, Sun, Moon } from "lucide-react";
+import { MapPin, ChevronDown, Search, ShoppingCart, User, Undo, Package, Heart, Clock, LogIn, Star, TrendingUp, Sun, Moon } from "lucide-react";
 import { Dropdown } from '@banglee/core';
 import { Link } from "react-router-dom";
 import { useCart } from "../../hooks/useCart";
@@ -10,6 +10,7 @@ import { useCurrency } from "../../hooks/useCurrency";
 import { sprintf } from "sprintf-js";
 import MoonlitMeadowLogo from "../backgrounds/MoonlitMeadowLogo";
 import { useAuth } from "../../hooks/useAuth";
+import LocationSelector from "../parts/header/LocationSelector";
 
 const sampleSuggestions = [
   { text: "Wireless Headphones", category: "Electronics", trending: true },
@@ -49,7 +50,7 @@ function SearchAutocomplete({ searchTerm, visible, highlightedIndex, onSelect, a
       ref={autocompleteRef}
       className="xpo_absolute xpo_z-30 xpo_w-full xpo_mt-2 xpo_bg-scwhite xpo_shadow-2xl xpo_rounded-lg xpo_border xpo_border-gray-200 xpo_max-h-96 xpo_overflow-hidden"
       role="listbox"
-      aria-label="Search suggestions"
+      aria-label={__('Search suggestions', 'site-core')}
     >
       <div className="xpo_p-3 xpo_border-b xpo_bg-gray-50">
         <h4 className="xpo_text-sm xpo_font-semibold xpo_text-gray-700 xpo_mb-2">
@@ -144,7 +145,7 @@ function LanguageDropdown({ onLanguageSelect }) {
           className="xpo_flex xpo_items-center xpo_gap-2 xpo_text-sm hover:xpo_text-scaccent-300 xpo_transition-colors"
         >
           <span className="xpo_text-lg">{currentLang.flag}</span>
-          <span className="xpo_font-medium">{currentLang.code.toUpperCase()}</span>
+          <span className="xpo_font-medium">{currentLang.name}</span>
           <ChevronDown size={14} />
         </button>
       )}
@@ -289,6 +290,7 @@ function DeliveryZonePicker() {
   const { loggedin } = useAuth();
   const { money } = useCurrency();
   const { setPopup } = usePopup();
+  const [country, setCountry] = useState('BD');
   
   return (
     <div className="xpo_p-2 xpo_min-w-sm">
@@ -318,28 +320,23 @@ function DeliveryZonePicker() {
                 
                 <div className="xpo_text-center xpo_text-sm xpo_text-gray-500 dark:xpo_text-scwhite-500 xpo_mb-4">{__('or enter a zip code', 'site-core')}</div>
                 
-                <div className="xpo_flex xpo_gap-2 xpo_mb-4">
-                  <input 
-                    type="text" 
-                    placeholder={__('Enter ZIP code', 'site-core')}
-                    className="xpo_flex-1 xpo_border xpo_border-gray-300 dark:xpo_border-scwhite xpo_rounded xpo_px-3 xpo_py-2 xpo_text-sm xpo_text-gray-600 dark:xpo_text-scwhite xpo_bg-scwhite dark:xpo_bg-scprimary"
-                  />
-                  <button className="xpo_border xpo_border-gray-300 dark:xpo_border-scwhite dark:xpo_bg-scprimary xpo_px-4 xpo_py-2 xpo_rounded xpo_text-sm xpo_transition-colors">
-                    {__('Apply', 'site-core')}
-                  </button>
-                </div>
+                <LocationSelector __={__} onChangeCountry={(countryCode) => setCountry(countryCode)} />
                 
                 <div className="xpo_text-center xpo_text-sm xpo_text-gray-500 dark:xpo_text-scwhite xpo_mb-4">{__('or ship outside the Bangladesh', 'site-core')}</div>
                 
-                <select className="xpo_w-full xpo_border xpo_text-gray-500 dark:xpo_text-scwhite-300 xpo_bg-scwhite dark:xpo_bg-scprimary xpo_border-gray-300 dark:xpo_border-scwhite xpo_rounded xpo_px-3 xpo_py-2 xpo_text-sm xpo_mb-4">
-                  <option>Bangladesh</option>
-                  <option>United States</option>
-                  <option>United Kingdom</option>
-                  <option>Canada</option>
-                  <option>Australia</option>
-                  <option>India</option>
-                  <option>Germany</option>
-                  <option>France</option>
+                <select
+                  value={country}
+                  onChange={e => setCountry(e.target.value)}
+                  className="xpo_w-full xpo_border xpo_text-gray-500 dark:xpo_text-scwhite-300 xpo_bg-scwhite dark:xpo_bg-scprimary xpo_border-gray-300 dark:xpo_border-scwhite xpo_rounded xpo_px-3 xpo_py-2 xpo_text-sm xpo_mb-4"
+                >
+                  <option value="BD">Bangladesh</option>
+                  <option value="US">United States</option>
+                  <option value="UK">United Kingdom</option>
+                  <option value="CD">Canada</option>
+                  <option value="AU">Australia</option>
+                  <option value="IN">India</option>
+                  <option value="GR">Germany</option>
+                  <option value="FR">France</option>
                 </select>
                 
                 <button onClick={(e) => {e.preventDefault();setPopup(null);}} className="xpo_w-full xpo_bg-scaccent-600 hover:xpo_bg-scaccent-700 xpo_text-scwhite xpo_py-2 xpo_px-4 xpo_rounded-lg xpo_font-medium xpo_transition-colors">{__('Done', 'site-core')}</button>
@@ -359,7 +356,7 @@ export default function SiteHeader() {
   const { cart } = useCart();
   const { money } = useCurrency();
   const { loggedin } = useAuth();
-  const { setLocale, __ } = useLocale();
+  const { switchLanguage, __ } = useLocale();
   const { theme, toggleTheme } = useTheme();
   const [searchTerm, setSearchTerm] = useState("");
   const [autocompleteVisible, setAutocompleteVisible] = useState(false);
@@ -457,7 +454,7 @@ export default function SiteHeader() {
           <div className="xpo_relative xpo_flex-1">
             <input
               type="text"
-              aria-label="Search products"
+              aria-label={__('Search products', 'site-core')}
               ref={inputRef}
               value={searchTerm}
               onChange={(e) => {
@@ -465,9 +462,9 @@ export default function SiteHeader() {
                 setAutocompleteVisible(true);
                 setHighlightedIndex(-1);
               }}
-              onFocus={() => setAutocompleteVisible(true)}
               onKeyDown={handleKeyDown}
-              placeholder={`Search ${selectedCategory === "All Categories" ? "products" : selectedCategory}`}
+              onFocus={() => setAutocompleteVisible(true)}
+              placeholder={sprintf(__('Search %s', 'site-core'), selectedCategory === "All Categories" ? "products" : selectedCategory)}
               className="xpo_w-full xpo_h-12 xpo_pl-4 xpo_pr-4 xpo_border-none xpo_outline-none xpo_text-gray-800 placeholder:xpo_text-gray-400"
             />
 
@@ -482,23 +479,20 @@ export default function SiteHeader() {
           </div>
 
           {/* Search Button */}
-          <button aria-label="Search" className="xpo_h-12 xpo_w-12 xpo_bg-scaccent-400 hover:xpo_bg-scaccent-500 xpo_text-scwhite xpo_flex xpo_items-center xpo_justify-center xpo_transition-colors">
+          <button aria-label={__('Search', 'site-core')} className="xpo_h-12 xpo_w-12 xpo_bg-scaccent-400 hover:xpo_bg-scaccent-500 xpo_text-scwhite xpo_flex xpo_items-center xpo_justify-center xpo_transition-colors">
             <Search size={20} />
           </button>
         </div>
 
         {/* Theme Selector */}
-        <button onClick={() => toggleTheme()} title="Toggle Light/Dark Mode" className="xpo_cursor-pointer hover:xpo_text-scaccent-300 xpo_transition-colors">
+        <button onClick={() => toggleTheme()} title={__('Toggle Light/Dark Mode', 'site-core')} className="xpo_cursor-pointer hover:xpo_text-scaccent-300 xpo_transition-colors">
           {theme == 'dark' ? <Sun size={20} /> : <Moon size={20} />}
         </button>
 
         {/* Language Selector */}
         <LanguageDropdown 
           currentLanguage={currentLanguage}
-          onLanguageSelect={(lang) => {
-            setLocale(lang);
-            setCurrentLanguage(lang);
-          }}
+          onLanguageSelect={(lang) => switchLanguage(lang).then(() => setCurrentLanguage(lang))}
         />
 
         {/* Account & Lists */}
@@ -507,23 +501,23 @@ export default function SiteHeader() {
         {/* Returns & Orders */}
         <Link
           to="/orders/history"
-          aria-label="Returns and Orders"
+          aria-label={__('Returns and Orders', 'site-core')}
           className="xpo_flex xpo_items-center xpo_gap-2 xpo_text-sm hover:xpo_text-scaccent-300 xpo_transition-colors"
         >
           <Undo size={18} />
           <div className="xpo_text-left xpo_text-scprimary dark:xpo_text-gray-300">
-            <div className="xpo_text-xs xpo_leading-tight">Returns</div>
-            <div className="xpo_font-semibold">& Orders</div>
+            <div className="xpo_text-xs xpo_leading-tight">{__('Returns', 'site-core')}</div>
+            <div className="xpo_font-semibold">{__('& Orders', 'site-core')}</div>
           </div>
         </Link>
 
         {/* Cart */}
-        <Link to="/carry" aria-label="Shopping Cart" className="xpo_relative xpo_flex xpo_items-center xpo_gap-2 hover:xpo_text-scaccent-300 xpo_transition-colors">
+        <Link to="/carry" aria-label={__('Shopping Cart', 'site-core')} className="xpo_relative xpo_flex xpo_items-center xpo_gap-2 hover:xpo_text-scaccent-300 xpo_transition-colors">
           <div className="xpo_relative">
             <ShoppingCart size={28} />
-            {cart?.length ? <span className="xpo_absolute xpo_-top-2 xpo_-right-2 xpo_bg-scaccent-500 xpo_text-scwhite xpo_text-xs xpo_font-bold xpo_rounded-full xpo_w-6 xpo_h-6 xpo_flex xpo_items-center xpo_justify-center xpo_ring-2 xpo_ring-gray-900">{cart?.length}</span> : null}
+            {cart?.cart_items?.length ? <span className="xpo_absolute xpo_-top-2 xpo_-right-2 xpo_bg-scaccent-500 xpo_text-scwhite xpo_text-xs xpo_font-bold xpo_rounded-full xpo_w-6 xpo_h-6 xpo_flex xpo_items-center xpo_justify-center xpo_ring-2 xpo_ring-gray-900">{cart?.cart_items?.length}</span> : null}
           </div>
-          <span className="xpo_font-semibold xpo_text-sm">Cart</span>
+          <span className="xpo_font-semibold xpo_text-sm">{__('Cart', 'site-core')}</span>
         </Link>
       </div>
     </header>

@@ -13,13 +13,18 @@ export default function Fly({ config }) {
   useEffect(() => {
     if (!config) return;
 
+    const animatedParts = [];
+
     config.parts.forEach((part) => {
       const el = partsRefs.current[part.name];
       if (!el || !part.motions) return;
 
+      animatedParts.push(el);
+
       // Flap motion example
       if (part.motions.flap) {
-        const { rotation, origin, duration, repeat, yoyo, ease } = part.motions.flap;
+        const { rotation, origin, duration, repeat, yoyo, ease } =
+          part.motions.flap;
         gsap.set(el, { transformOrigin: origin || "center center" });
         gsap.to(el, {
           rotation,
@@ -43,6 +48,10 @@ export default function Fly({ config }) {
         });
       }
     });
+
+    return () => {
+      animatedParts.forEach((el) => gsap.killTweensOf(el));
+    };
   }, [config]);
 
   // Animate flight path with orientation changes and 3D effect (scale)

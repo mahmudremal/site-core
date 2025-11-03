@@ -2,7 +2,15 @@
 module.exports = {
   darkMode: 'class', // '[data-theme="dark"]',
   prefix: 'xpo_', // /hunting
-  content: ['./server/app.jsx', './inc/widgets/ecommerce/ProductMetabox.jsx', ...Array(10)].map((u, i) => `./src/js/${[...Array(i + 1)].map(o => '**/').join('')}*.{js,jsx,ts,tsx}`),
+  content: [
+    ['./server/app.jsx', './inc/widgets/ecommerce/ProductMetabox.jsx', ...Array(10)].map((u, i) => `./src/js/${[...Array(i + 1)].map(o => '**/').join('')}*.{js,jsx,ts,tsx}`),
+    [
+      '!./src/js/backend/**/*.{js,jsx,ts,tsx}',
+      '!./src/js/hunting/**/*.{js,jsx,ts,tsx}',
+      '!./src/js/sandbox/**/*.{js,jsx,ts,tsx}',
+      '!./src/js/interface/**/*.{js,jsx,ts,tsx}',
+    ]
+  ].flatMap(i => i),
   theme: {
     extend: {
       colors: {
@@ -32,18 +40,31 @@ module.exports = {
           800: "#665213",
           900: "#33290a",
         },
-        markethia: {
-          DEFAULT: "#02424F",
-          50:  "#E6F1F3",
-          100: "#CCE3E6",
-          200: "#99C6CC",
-          300: "#66A9B3",
-          400: "#338C99",
-          500: "#007080",
-          600: "#005966",
-          700: "#00434D",
-          800: "#022D33",
-          900: "#01171A",
+        // agreements: { // markethia
+        //   DEFAULT: "#02424F",
+        //   50:  "#E6F1F3",
+        //   100: "#CCE3E6",
+        //   200: "#99C6CC",
+        //   300: "#66A9B3",
+        //   400: "#338C99",
+        //   500: "#007080",
+        //   600: "#005966",
+        //   700: "#00434D",
+        //   800: "#022D33",
+        //   900: "#01171A",
+        // },
+        agreements: {
+          50:  "#FFFBEA",
+          100: "#FFF3C4",
+          200: "#FCE588",
+          300: "#FADB5F",
+          400: "#F7C948",
+          500: "#FFD957", // base
+          600: "#F0B429",
+          700: "#DE911D",
+          800: "#CB6E17",
+          900: "#B44D12",
+          DEFAULT: "#FFD957",
         },
         scprimary: {
           DEFAULT: "#0A1D37",

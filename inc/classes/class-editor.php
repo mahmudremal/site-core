@@ -18,7 +18,7 @@ class Editor {
         add_filter('rest_api_init', [$this, 'rest_api_init']);
 		add_action('wp_ajax_put_ai_content', [$this, 'put_ai_content']);
 		add_action('wp_ajax_nopriv_put_ai_content', [$this, 'put_ai_content']);
-        add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
+        add_filter('sitecore/settings/fields', [$this, 'settings'], 10, 1);
         add_filter('admin_enqueue_scripts', [$this, 'enqueue_editor_scripts_and_styles']);
     }
     

@@ -37,7 +37,7 @@ const SchemaEditorExtension = () => {
   // Initialize socket connection
   useEffect(() => {
     // return;
-    socketRef.current = io('http://localhost:3000/bot');
+    socketRef.current = io('https://localhost:3000/bot');
     
     socketRef.current.on('connect', () => {
       // console.log('Successfully connected to the socket.io server!');

@@ -70,7 +70,7 @@ class ECGChart {
 
 class HealthMonitor {
     constructor() {
-        this.socket = io('http://localhost:3000', {
+        this.socket = io('https://localhost:3000', {
             reconnection: true,
             reconnectionAttempts: Infinity,
             reconnectionDelay: 2000,

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useLocale } from "../../hooks/useLocale";
 import { site_url } from '@functions';
 import QRCode from 'react-qr-code';
 
@@ -9,26 +10,27 @@ const OSIcons = {
 };
 
 const HeroSection = ({ slides = [], autoSlideInterval = 5000, onLoaded = null }) => {
+  const { __ } = useLocale();
   const defaultSlides = [
     {
       imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=800&fit=crop',
-      title: 'Discover Serenity Under Moonlit Skies',
-      subtitle: 'Curated products that bring peace and harmony to your everyday life',
-      ctaText: 'Explore Collection',
+      title: __('Discover Serenity Under Moonlit Skies', 'site-core'),
+      subtitle: __('Curated products that bring peace and harmony to your everyday life', 'site-core'),
+      ctaText: __('Explore Collection', 'site-core'),
       ctaLink: '/collections/special',
     },
     {
       imageUrl: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920&h=800&fit=crop',
-      title: 'Nature-Inspired Living',
-      subtitle: 'Premium eco-friendly essentials designed for mindful moments',
-      ctaText: 'Shop Now',
+      title: __('Nature-Inspired Living', 'site-core'),
+      subtitle: __('Premium eco-friendly essentials designed for mindful moments', 'site-core'),
+      ctaText: __('Shop Now', 'site-core'),
       ctaLink: '/collections/sale',
     },
     {
       imageUrl: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920&h=800&fit=crop',
-      title: 'Your Journey to Tranquility Begins Here',
-      subtitle: 'Experience products that nurture your soul and embrace nature',
-      ctaText: 'Discover More',
+      title: __('Your Journey to Tranquility Begins Here', 'site-core'),
+      subtitle: __('Experience products that nurture your soul and embrace nature', 'site-core'),
+      ctaText: __('Discover More', 'site-core'),
       ctaLink: '/collections/discover',
     },
   ];
@@ -92,8 +94,8 @@ const HeroSection = ({ slides = [], autoSlideInterval = 5000, onLoaded = null })
   const AppPromo = () => (
     <div className="xpo_bg-scwhite/50 xpo_backdrop-blur-md xpo_p-6 xpo_rounded-2xl xpo_shadow-2xl xpo_border xpo_border-scprimary/10 xpo_flex xpo_flex-col xpo_items-center xpo_text-center xpo_space-y-5 xpo_h-fit xpo_transition-all xpo_duration-300 hover:xpo_shadow-3xl hover:xpo_scale-[1.02]">
       <div className="xpo_space-y-2">
-        <h3 className="xpo_text-xl xpo_font-bold xpo_text-scprimary xpo_tracking-tight">Download Our App</h3>
-        <p className="xpo_text-sm xpo_text-scprimary/60 xpo_leading-relaxed">Scan to experience tranquility on-the-go</p>
+        <h3 className="xpo_text-xl xpo_font-bold xpo_text-scprimary xpo_tracking-tight">{__('Download Our App', 'site-core')}</h3>
+        <p className="xpo_text-sm xpo_text-scprimary/60 xpo_leading-relaxed">{__('Scan to experience tranquility on-the-go', 'site-core')}</p>
       </div>
       
       <div className="xpo_inline-block xpo_bg-scwhite/50 xpo_p-4 xpo_rounded-xl xpo_shadow-lg xpo_border xpo_border-scprimary/5">
@@ -112,10 +114,10 @@ const HeroSection = ({ slides = [], autoSlideInterval = 5000, onLoaded = null })
           target="_blank"
           rel="noopener noreferrer"
           className="xpo_flex xpo_items-center xpo_justify-center xpo_gap-3 xpo_px-5 xpo_py-3 xpo_bg-scprimary xpo_text-scwhite xpo_text-sm xpo_font-semibold xpo_rounded-xl xpo_shadow-md hover:xpo_shadow-xl xpo_transition-all xpo_duration-300 hover:xpo_scale-105 xpo_group"
-          aria-label="Download on iOS App Store"
+          aria-label={__('Download on iOS App Store', 'site-core')}
         >
           <span className="xpo_w-6 xpo_h-6 xpo_transition-transform xpo_group-hover:xpo_scale-110" dangerouslySetInnerHTML={{ __html: OSIcons.ios }} />
-          <span>App Store</span>
+          <span>{__('App Store', 'site-core')}</span>
         </a>
         
         <a
@@ -123,10 +125,10 @@ const HeroSection = ({ slides = [], autoSlideInterval = 5000, onLoaded = null })
           target="_blank"
           rel="noopener noreferrer"
           className="xpo_flex xpo_items-center xpo_justify-center xpo_gap-3 xpo_px-5 xpo_py-3 xpo_bg-scaccent xpo_text-scwhite xpo_text-sm xpo_font-semibold xpo_rounded-xl xpo_shadow-md hover:xpo_shadow-xl xpo_transition-all xpo_duration-300 hover:xpo_scale-105 xpo_group"
-          aria-label="Download on Google Play Store"
+          aria-label={__('Download on Google Play Store', 'site-core')}
         >
           <span className="xpo_w-6 xpo_h-6 xpo_transition-transform xpo_group-hover:xpo_scale-110" dangerouslySetInnerHTML={{ __html: OSIcons.android }} />
-          <span>Google Play</span>
+          <span>{__('Google Play', 'site-core')}</span>
         </a>
 
         <a
@@ -134,14 +136,14 @@ const HeroSection = ({ slides = [], autoSlideInterval = 5000, onLoaded = null })
           target="_blank"
           rel="noopener noreferrer"
           className="xpo_flex xpo_items-center xpo_justify-center xpo_gap-3 xpo_px-5 xpo_py-3 xpo_bg-scprimary-700 xpo_text-scwhite xpo_text-sm xpo_font-semibold xpo_rounded-xl xpo_shadow-md hover:xpo_shadow-xl xpo_transition-all xpo_duration-300 hover:xpo_scale-105 xpo_group"
-          aria-label="Download on Huawei AppGallery"
+          aria-label={__('Download on Huawei AppGallery', 'site-core')}
         >
           <span className="xpo_w-6 xpo_h-6 xpo_transition-transform xpo_group-hover:xpo_scale-110" dangerouslySetInnerHTML={{ __html: OSIcons.hermony }} />
-          <span>AppGallery</span>
+          <span>{__('AppGallery', 'site-core')}</span>
         </a>
       </div>
 
-      <p className="xpo_text-xs xpo_text-scprimary/50 xpo_mt-2">Available on all platforms</p>
+      <p className="xpo_text-xs xpo_text-scprimary/50 xpo_mt-2">{__('Available on all platforms', 'site-core')}</p>
     </div>
   );
 
@@ -164,7 +166,7 @@ const HeroSection = ({ slides = [], autoSlideInterval = 5000, onLoaded = null })
               onTouchEnd={handleTouchEnd}
               role="region"
               aria-roledescription="carousel"
-              aria-label="Featured products carousel"
+              aria-label={__('Featured products carousel', 'site-core')}
             >
               {activeSlides.map((slide, index) => (
                 <div
@@ -215,7 +217,7 @@ const HeroSection = ({ slides = [], autoSlideInterval = 5000, onLoaded = null })
               <button
                 onClick={prevSlide}
                 className="xpo_absolute xpo_left-4 xpo_top-1/2 xpo_-translate-y-1/2 xpo_w-10 xpo_h-10 md:xpo_w-12 md:xpo_h-12 xpo_bg-scwhite/20 xpo_backdrop-blur-sm xpo_text-scwhite xpo_rounded-full xpo_shadow-lg hover:xpo_bg-scwhite/30 xpo_transition-all xpo_duration-300 xpo_opacity-0 group-hover:xpo_opacity-100 xpo_flex xpo_items-center xpo_justify-center"
-                aria-label="Previous slide"
+                aria-label={__('Previous slide', 'site-core')}
               >
                 <svg className="xpo_w-6 xpo_h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
@@ -224,7 +226,7 @@ const HeroSection = ({ slides = [], autoSlideInterval = 5000, onLoaded = null })
 
               <button
                 onClick={nextSlide}
-                aria-label="Next slide"
+                aria-label={__('Next slide', 'site-core')}
                 className="xpo_absolute xpo_right-4 xpo_top-1/2 xpo_-translate-y-1/2 xpo_w-10 xpo_h-10 md:xpo_w-12 md:xpo_h-12 xpo_bg-scwhite/20 xpo_backdrop-blur-sm xpo_text-scwhite xpo_rounded-full xpo_shadow-lg hover:xpo_bg-scwhite/30 xpo_transition-all xpo_duration-300 xpo_opacity-0 group-hover:xpo_opacity-100 xpo_flex xpo_items-center xpo_justify-center"
               >
                 <svg className="xpo_w-6 xpo_h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

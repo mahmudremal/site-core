@@ -34,7 +34,7 @@ class HealthMonitoringAddon {
     }
 
     init() {
-        return;
+        // return;
         this.setupSocketIO();
         this.loadCachedIndex();
     }

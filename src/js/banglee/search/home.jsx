@@ -23,7 +23,13 @@ export default function SearchHome() {
     }, [filters]);
 
     return (
-        <div className="xpo_min-h-screen xpo_flex xpo_flex-col xpo_items-center xpo_justify-between xpo_bg-white xpo_text-gray-800">
+        <div
+            className="xpo_min-h-screen xpo_flex xpo_flex-col xpo_items-center xpo_justify-between xpo_bg-white xpo_text-gray-800"
+            style={{
+                background: 'linear-gradient(rgba(255, 255, 255, 0.5), rgba(0, 0, 0, 0.5)), url("https://images.unsplash.com/photo-1507187632231-5beb21a654a2?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=160&w=2401") center center no-repeat',
+                backgroundSize: 'cover'
+            }}
+        >
             {/* Navigation */}
             <NavMenu />
 

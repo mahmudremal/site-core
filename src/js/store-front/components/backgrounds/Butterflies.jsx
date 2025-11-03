@@ -96,6 +96,14 @@ export default function Butterflies({ count = 6 }) {
 
       fly();
     });
+
+    return () => {
+      nodes.forEach((node) => {
+        gsap.killTweensOf(node);
+        const wings = node.querySelectorAll(".wing");
+        gsap.killTweensOf(wings);
+      });
+    };
   }, [butterflies]);
 
   return (

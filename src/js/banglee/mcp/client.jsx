@@ -71,7 +71,7 @@ const MCPClient = () => {
   const initializeMCP = async () => {
     try {
       const mcpTransport = new StreamableHTTPClientTransport(
-        new URL("http://localhost:3000/mcp")
+        new URL("https://localhost:3000/mcp")
       );
       
       const mcpClient = new Client({

@@ -352,10 +352,10 @@ const SSLCommerzPayment = ({ orderId, onSuccess, onFailed, amount, customerData 
       const { data } = await api.post(`/payments/sslcommerz/initiate/${orderId}`, {
         total_amount: amount,
         currency: SSL_CONFIG.currency,
-        cus_name: customerData?.name || 'Customer',
-        cus_email: customerData?.email || 'customer@example.com',
-        cus_add1: customerData?.address || 'Address',
-        cus_phone: customerData?.phone || 'Phone',
+        cus_name: customerData?.name || '',
+        cus_email: customerData?.email || '',
+        cus_phone: customerData?.phone || '',
+        cus_add1: customerData?.address || '',
       });
 
       if (data.GatewayPageURL) {
@@ -383,9 +383,9 @@ const SSLCommerzPayment = ({ orderId, onSuccess, onFailed, amount, customerData 
         setLoading(false);
       }
     } catch (err) {
-      setError(err.message);
       setLoading(false);
-      onFailed({ reason: 'sslcommerz_init_error', message: err.message });
+      setError(err.message);
+      // onFailed({ reason: 'sslcommerz_init_error', message: err.message });
     }
   };
 

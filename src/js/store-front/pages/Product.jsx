@@ -74,6 +74,22 @@ const ProductPage = () => {
           ...prev,
           variations: []
         }));
+        return prod;
+      })
+      .then(_product => {
+        // analytics part
+        window?.dataLayer?.push?.({
+          'event': 'view_item',
+          'ecommerce': {
+            'items': [{
+              'item_name': _product.title,
+              'item_id': _product?.metadata?.sku || _product?.id,
+              'price': parseFloat(_product?.metadata?.sale_price || _product?.metadata?.price),
+              'category': _product?.categories?.find?.(i => i)
+            }]
+          }
+        });
+        window?.clarity?.('event', 'view_item');
       })
       .catch(err => notify.error(err))
       .finally(() => setLoading(false));
@@ -92,7 +108,7 @@ const ProductPage = () => {
 
   const handleUpdateCart = ({item_id: cart_item_id}) => {
     if (!product) return;
-    
+  
     const product_data = {
       ...visibleVariation,
       variations: cartForm.variations.map(vari => ({
@@ -195,18 +211,18 @@ const ProductPage = () => {
 
               <div className="xpo_text-2xl xpo_font-bold xpo_text-scaccent-600 xpo_mb-6">
                 {product?.metadata?.currency?.toUpperCase() || '$'}{Math.min(
-                  parseFloat(visibleVariation?.metadata?.price || 0), 
+                  parseFloat(visibleVariation?.metadata?.price || 0),
                   parseFloat(visibleVariation?.metadata?.sale_price || product?.metadata?.price || 0)
                 ).toFixed(2)}
-                {visibleVariation?.metadata?.price && 
-                  visibleVariation?.metadata?.sale_price && 
+                {visibleVariation?.metadata?.price &&
+                  visibleVariation?.metadata?.sale_price &&
                   parseFloat(visibleVariation.metadata.price) > parseFloat(visibleVariation.metadata.sale_price) && (
                   <span className="xpo_text-lg xpo_text-scprimary-400 dark:xpo_text-scwhite-500 xpo_line-through xpo_ml-3">
                     {product?.metadata?.currency?.toUpperCase() || '$'}{parseFloat(visibleVariation.metadata.price).toFixed(2)}
                   </span>
                 )}
-                {visibleVariation?.metadata?.price && 
-                  visibleVariation?.metadata?.sale_price && 
+                {visibleVariation?.metadata?.price &&
+                  visibleVariation?.metadata?.sale_price &&
                   parseFloat(visibleVariation.metadata.price) > parseFloat(visibleVariation.metadata.sale_price) && (
                   <span className="xpo_text-sm xpo_text-green-600 xpo_ml-3 xpo_bg-green-50 dark:xpo_bg-green-900/20 xpo_px-2 xpo_py-1 xpo_rounded">
                     {__('Save', 'site-core')} {Math.round(((parseFloat(visibleVariation.metadata.price) - parseFloat(visibleVariation.metadata.sale_price)) / parseFloat(visibleVariation.metadata.price)) * 100)}%
@@ -214,7 +230,7 @@ const ProductPage = () => {
                 )}
               </div>
 
-              <div className="xpo_text-scprimary-700 dark:xpo_text-scwhite-300 xpo_mb-6 xpo_leading-relaxed" 
+              <div className="xpo_text-scprimary-700 dark:xpo_text-scwhite-300 xpo_mb-6 xpo_leading-relaxed"
                     dangerouslySetInnerHTML={{__html: visibleVariation?.metadata?.short_description || visibleVariation?.excerpt || `${visibleVariation?.description??''}`.slice(0, 300)}}>
               </div>
 
@@ -225,10 +241,10 @@ const ProductPage = () => {
                   {__('Quantity', 'site-core')}
                 </label>
                 <div className="xpo_flex xpo_items-center xpo_border xpo_border-scprimary-300 dark:xpo_border-scprimary-600 xpo_rounded-md xpo_w-max xpo_bg-scwhite-50 dark:xpo_bg-scprimary-800">
-                  <button 
-                    type="button" 
-                    onClick={decrementQty} 
-                    aria-label={__('Decrease quantity', 'site-core')} 
+                  <button
+                    type="button"
+                    onClick={decrementQty}
+                    aria-label={__('Decrease quantity', 'site-core')}
                     className="xpo_px-3 xpo_py-2 xpo_text-xl xpo_text-scprimary-700 dark:xpo_text-scwhite-200 hover:xpo_bg-scprimary-100 dark:hover:xpo_bg-scprimary-700 xpo_transition-colors"
                   >
                     -
@@ -236,10 +252,10 @@ const ProductPage = () => {
                   <span className="xpo_px-4 xpo_py-2 xpo_text-center xpo_text-scprimary-800 dark:xpo_text-scwhite-100 xpo_font-semibold">
                     {cartForm.quantity}
                   </span>
-                  <button 
-                    type="button" 
-                    onClick={incrementQty} 
-                    aria-label={__('Increase quantity', 'site-core')} 
+                  <button
+                    type="button"
+                    onClick={incrementQty}
+                    aria-label={__('Increase quantity', 'site-core')}
                     className="xpo_px-3 xpo_py-2 xpo_text-xl xpo_text-scprimary-700 dark:xpo_text-scwhite-200 hover:xpo_bg-scprimary-100 dark:hover:xpo_bg-scprimary-700 xpo_transition-colors"
                   >
                     +
@@ -248,20 +264,20 @@ const ProductPage = () => {
               </div>
 
               <div className="xpo_flex xpo_flex-col sm:xpo_flex-row xpo_gap-4 xpo_mb-8">
-                <button 
-                  type="button" 
-                  aria-label="Add to Cart" 
-                  onClick={() => handleUpdateCart({item_id: variationCarted?.id})} 
+                <button
+                  type="button"
+                  aria-label={__('Add to Cart', 'site-core')}
+                  onClick={() => handleUpdateCart({item_id: variationCarted?.id})}
                   className="xpo_bg-scaccent-600 xpo_text-scwhite-50 xpo_px-6 xpo_py-3 xpo_rounded-lg xpo_font-semibold hover:xpo_bg-scaccent-700 xpo_transition-colors xpo_flex xpo_items-center xpo_justify-center xpo_shadow-md hover:xpo_shadow-lg"
                 >
                   <ShoppingCart className="xpo_w-5 xpo_h-5 xpo_mr-2" />
                   {variationCarted ? __('Update Cart', 'site-core') : __('Add to Cart', 'site-core')}
                 </button>
-                
-                <button 
-                  type="button" 
-                  aria-label="Add to Wishlist" 
-                  onClick={handleAddToWishlist} 
+              
+                <button
+                  type="button"
+                  aria-label={__('Add to Wishlist', 'site-core')}
+                  onClick={handleAddToWishlist}
                   className="xpo_bg-scwhite-100 dark:xpo_bg-scprimary-700 xpo_text-scaccent-600 dark:xpo_text-scaccent-400 xpo_px-6 xpo_py-3 xpo_rounded-lg xpo_font-semibold xpo_border xpo_border-scaccent-600 dark:xpo_border-scaccent-400 hover:xpo_bg-scaccent-50 dark:hover:xpo_bg-scprimary-600 xpo_transition-colors xpo_flex xpo_items-center xpo_justify-center"
                 >
                   <Heart strokeWidth={isInWishlist ? 3 : 2} className="xpo_w-5 xpo_h-5 xpo_mr-2" />
@@ -321,8 +337,8 @@ const SelectVariation = ({ product = {}, cart: cartFormObj = [], setVisibleVaria
             key={item.id}
             onClick={() => handleSelect(attribute.id, item.id)}
             className={`xpo_w-10 xpo_h-10 xpo_rounded-full xpo_border-2 xpo_relative xpo_cursor-pointer xpo_transition-all xpo_duration-200 hover:xpo_scale-110 ${
-              itemSelected 
-                ? 'xpo_border-blue-500 xpo_shadow-lg' 
+              itemSelected
+                ? 'xpo_border-blue-500 xpo_shadow-lg'
                 : 'xpo_border-gray-300 hover:xpo_border-gray-400'
             }`}
             style={{ backgroundColor: item.value || item.name.toLowerCase() }}
@@ -364,8 +380,8 @@ const SelectVariation = ({ product = {}, cart: cartFormObj = [], setVisibleVaria
           <label
             key={item.id}
             className={`xpo_flex xpo_items-center xpo_p-3 xpo_cursor-pointer xpo_border xpo_rounded-lg xpo_transition-all xpo_duration-200 hover:xpo_bg-gray-50 ${
-              itemSelected 
-                ? 'xpo_bg-blue-50 xpo_border-blue-300 xpo_text-blue-700' 
+              itemSelected
+                ? 'xpo_bg-blue-50 xpo_border-blue-300 xpo_text-blue-700'
                 : 'xpo_border-gray-200 xpo_text-gray-900'
             }`}
           >
@@ -391,8 +407,8 @@ const SelectVariation = ({ product = {}, cart: cartFormObj = [], setVisibleVaria
             key={item.id}
             onClick={() => handleSelect(attribute.id, item.id)}
             className={`xpo_relative xpo_aspect-square xpo_rounded-lg xpo_overflow-hidden xpo_border-2 xpo_transition-all xpo_duration-200 hover:xpo_scale-105 ${
-              itemSelected 
-                ? 'xpo_border-blue-500 xpo_shadow-lg' 
+              itemSelected
+                ? 'xpo_border-blue-500 xpo_shadow-lg'
                 : 'xpo_border-gray-200 hover:xpo_border-gray-300'
             }`}
             title={item.name}
@@ -434,8 +450,8 @@ const SelectVariation = ({ product = {}, cart: cartFormObj = [], setVisibleVaria
             key={item.id}
             onClick={() => handleSelect(attribute.id, item.id)}
             className={`xpo_p-3 xpo_text-left xpo_border xpo_rounded-lg xpo_transition-all xpo_duration-200 hover:xpo_bg-gray-50 ${
-              itemSelected 
-                ? 'xpo_bg-blue-50 xpo_border-blue-300 xpo_text-blue-700' 
+              itemSelected
+                ? 'xpo_bg-blue-50 xpo_border-blue-300 xpo_text-blue-700'
                 : 'xpo_border-gray-200 xpo_text-gray-900'
             }`}
           >
@@ -478,21 +494,21 @@ const SelectVariation = ({ product = {}, cart: cartFormObj = [], setVisibleVaria
           {product.attributes.map((attribute) => {
             const availableItems = getAvailableItems(attribute);
             const isSelected = selected[attribute.id];
-            
+          
             return (
               <div key={attribute.id} className="xpo_mb-6">
                 <label className="xpo_block xpo_mb-3 xpo_text-sm xpo_font-semibold xpo_text-gray-700">
                   {sprintf(__('Select %s', 'site-core'), attribute.label)}
                   {attribute.required && <span className="xpo_text-red-500 xpo_ml-1">*</span>}
                 </label>
-                
+              
                 {availableItems.length > 0 ? (
                   <div className="xpo_space-y-1">
                     {attribute.type === 'color' && renderColorAttribute(attribute, availableItems, isSelected)}
                     {attribute.type === 'select' && renderSelectAttribute(attribute, availableItems, isSelected)}
                     {attribute.type === 'checkbox' && renderCheckboxAttribute(attribute, availableItems, isSelected)}
                     {attribute.type === 'image' && renderImageAttribute(attribute, availableItems, isSelected)}
-                    {(!attribute.type || !['color', 'select', 'checkbox', 'image'].includes(attribute.type)) && 
+                    {(!attribute.type || !['color', 'select', 'checkbox', 'image'].includes(attribute.type)) &&
                       renderDefaultAttribute(attribute, availableItems, isSelected)}
                   </div>
                 ) : (

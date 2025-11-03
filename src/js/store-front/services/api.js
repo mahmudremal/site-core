@@ -2,7 +2,8 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { site_url } from '@functions';
 // import { get, set } from 'idb-keyval';
-import { setupCache, buildStorage } from 'axios-cache-interceptor';
+import { setupCache } from 'axios-cache-interceptor';
+// import { buildStorage } from 'axios-cache-interceptor';
 
 // const indexedDbStorage = buildStorage({
 //   async find(key) {
@@ -18,9 +19,10 @@ import { setupCache, buildStorage } from 'axios-cache-interceptor';
 //   remove: (key) => Promise.resolve(del(key)),
 // });
 
+const endpoint = '/wp-json/sitecore/v1/ecommerce';
 const api = setupCache(
   axios.create({
-    baseURL: site_url('/wp-json/sitecore/v1/ecommerce'),
+    baseURL: siteCoreConfig?.apiendpoint ? siteCoreConfig?.apiendpoint + endpoint : site_url(endpoint),
   }),
   {
     ttl: 5 * 60 * 1000,

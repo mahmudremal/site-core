@@ -14,7 +14,7 @@ class Menus {
 	}
 	protected function setup_hooks() {
 		add_filter('pm_project/settings/general', [$this, 'general'], 1, 1);
-		add_filter('pm_project/settings/fields', [$this, 'menus'], 1, 1);
+		add_filter('sitecore/settings/fields', [$this, 'menus'], 1, 1);
 	}
 	/**
 	 * WordPress Option page.
@@ -24,9 +24,9 @@ class Menus {
 	public function general($args) {
 		return [
 			...$args,
-			'page_title'					=> __('Partnership dashboard Settings', 'site-core'),
-			'menu_title'					=> __('Dashboard', 'site-core'),
-			'page_header'					=> __('Partnership dashboard application in depth configuration screen.', 'site-core'),
+			'page_title'					=> __('Site Core Settings', 'site-core'),
+			'menu_title'					=> __('Site Core', 'site-core'),
+			'page_header'					=> __('Site Core applications in depth configuration screen.', 'site-core'),
 			'page_subheader'				=> __("Place to setup your partnership program deshboard with application configurations and stuffs. Don't touch anything if you're not sure enough on this. Carefully change, update or delete anything because it may required some data to matched same stage and it does't save any revissions.", 'site-core'),
 		];
 	}

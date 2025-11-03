@@ -20,33 +20,33 @@ export default function RecommendedCrossCollections({ collectionType = 'special'
       setCollections([
         {
           id: 1,
-          name: "Summer Essentials",
-          description: "Beat the heat with our curated summer collection",
-          image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=400&fit=crop",
-          link: "/collections/summer-special",
+          name: __('Summer Essentials', 'site-core'),
+          description: __('Beat the heat with our curated summer collection', 'site-core'),
+          image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=400&fit=crop',
+          link: '/collections/summer-special',
+          badge: __('Hot', 'site-core'),
           productCount: 45,
           trending: true,
-          badge: "Hot"
         },
         {
           id: 2,
-          name: "Tech Innovation",
-          description: "Latest gadgets and smart devices for modern living",
-          image: "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=600&h=400&fit=crop",
-          link: "/collections/tech-innovation",
+          name: __('Tech Innovation', 'site-core'),
+          description: __('Latest gadgets and smart devices for modern living', 'site-core'),
+          image: 'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=600&h=400&fit=crop',
+          link: '/collections/tech-innovation',
+          badge: __('New', 'site-core'),
           productCount: 32,
           trending: false,
-          badge: "New"
         },
         {
           id: 3,
-          name: "Minimalist Home",
-          description: "Clean, functional designs for your living space",
-          image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=400&fit=crop",
-          link: "/collections/minimalist-home",
+          name: __('Minimalist Home', 'site-core'),
+          description: __('Clean, functional designs for your living space', 'site-core'),
+          image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=400&fit=crop',
+          link: '/collections/minimalist-home',
+          badge: __('Trending', 'site-core'),
           productCount: 28,
           trending: true,
-          badge: "Trending"
         }
       ])
     })

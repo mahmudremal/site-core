@@ -39,7 +39,7 @@ class Ecommerce {
 
         ];
         $this->setup_hooks();
-		add_action('init', [$this, 'init_session']);
+		add_action('after_setup_theme', [$this, 'init_session']);
 		add_action('plugins_loaded', [$this, 'load_addons']);
     }
 
@@ -49,13 +49,17 @@ class Ecommerce {
         add_action('add_meta_boxes', [$this, 'add_meta_boxes']);
         add_action('rest_api_init', [$this, 'register_routes']);
         add_filter('sitecorejs/siteconfig', [ $this, 'siteConfig' ], 1, 1);
-        add_filter('pm_project/settings/fields', [$this, 'settings'], 10, 1);
-        register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
-        register_deactivation_hook(WP_SITECORE__FILE__, [$this, 'register_deactivation_hook']);
+        add_filter('sitecore/settings/fields', [$this, 'settings'], 10, 1);
+        add_filter('sitecore/database/tables', [$this, 'database_tables'], 10, 1);
+        // register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
+        // register_deactivation_hook(WP_SITECORE__FILE__, [$this, 'register_deactivation_hook']);
     }
 
 	public function load_addons() {
-        if (apply_filters('pm_project/system/isactive', 'storefront-paused')) {return;}
+        if (
+            !apply_filters('pm_project/system/isactive', 'storefront-active')
+            && !apply_filters('pm_project/system/isactive', 'storefront-apiactive')
+        ) {return;}
         $addon_loader_file = WP_SITECORE_DIR_PATH . '/inc/widgets/ecommerce/index.php';
         if (file_exists($addon_loader_file)) {
             require_once $addon_loader_file;
@@ -68,7 +72,22 @@ class Ecommerce {
         $charset_collate = $wpdb->get_charset_collate();
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         
-        $tableSchemas = [
+        $tables = $this->get_table_schema();
+        foreach ($tables as $tableKey => $schema) {
+            $tableName = $this->tables->$tableKey;
+            dbDelta("CREATE TABLE IF NOT EXISTS {$tableName} ({$schema}) $charset_collate;");
+        }
+    }
+
+    public function register_deactivation_hook() {
+        global $wpdb;
+        foreach ((array) $this->tables as $table) {
+            $wpdb->query("DROP TABLE IF EXISTS {$table}");
+        }
+    }
+
+    protected function get_table_schema() {
+        return [
             'sessions' => "id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 session_key VARCHAR(255) UNIQUE NOT NULL,
                 user_id INT NOT NULL DEFAULT 0,
@@ -241,6 +260,7 @@ class Ecommerce {
                 
             'client_addresses' => "id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 user_id BIGINT UNSIGNED NOT NULL,
+                session_id BIGINT UNSIGNED DEFAULT 0,
                 _order BIGINT UNSIGNED NOT NULL,
                 type VARCHAR(36) NOT NULL,
                 name VARCHAR(255) NOT NULL,
@@ -251,22 +271,19 @@ class Ecommerce {
                 isDefault BOOL NOT NULL DEFAULT 0,
                 updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
         ];
-
-        foreach ($tableSchemas as $tableKey => $schema) {
-            $tableName = $this->tables->$tableKey;
-            dbDelta("CREATE TABLE IF NOT EXISTS {$tableName} ({$schema}) $charset_collate;");
-        }
     }
 
-    public function register_deactivation_hook() {
-        global $wpdb;
-        foreach ((array) $this->tables as $table) {
-            $wpdb->query("DROP TABLE IF EXISTS {$table}");
-        }
-    }
+    public function database_tables($tables) {
+		$tables[] = [
+			'id' => 'ecommerce',
+            'title' => 'Ecommerce Managements',
+			'tables' => array_map(fn($tabKey) => ['key' => $tabKey, 'name' => $this->tables->$tabKey, 'schema' => $this->get_table_schema()[$tabKey]], array_keys((array) $this->tables))
+		];
+		return $tables;
+	}
 
     public function register_routes() {
-        if (apply_filters('pm_project/system/isactive', 'storefront-paused')) {return;}
+        if (!apply_filters('pm_project/system/isactive', 'storefront-apiactive')) {return;}
 		register_rest_route('sitecore/v1', '/ecommerce/products/(?P<product_id>\d+)', [
 			'methods'  => 'POST',
 			'callback' => [$this, 'api_update_product'],
@@ -378,9 +395,9 @@ class Ecommerce {
     }
 
     public function init_session() {
-        if (apply_filters('pm_project/system/isactive', 'storefront-paused')) {return;}
+        if (!apply_filters('pm_project/system/isactive', 'storefront-active')) {return;}
         // if (!is_admin()) return false;
-        if (!isset($_COOKIE[$this->session_key])) {
+        if (!isset($_COOKIE[$this->session_key]) && !headers_sent()) {
             $token = bin2hex(random_bytes(32));
             setcookie($this->session_key, $token, time() + (86400 * 30), "/"); // 30 days
             return $this->create_session_record(
@@ -462,6 +479,7 @@ class Ecommerce {
 
     
     public function add_meta_boxes() {
+        if (!apply_filters('pm_project/system/isactive', 'storefront-apiactive')) {return;}
         add_meta_box('product_data', __('Product data', 'site-core'), [$this, 'metabox_callback'], 'sc_product', 'normal', 'default');
     }
 
@@ -484,6 +502,7 @@ class Ecommerce {
     }
 
     public function save_meta_boxes($post_id) {
+        if (!apply_filters('pm_project/system/isactive', 'storefront-apiactive')) {return;}
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
         if (!current_user_can('edit_post', $post_id)) return;
         if (!empty($_POST['sc_product-data'])) {
@@ -799,12 +818,15 @@ class Ecommerce {
 
     
     public function body_class($classes, $css_class) {
-        if (apply_filters('pm_project/system/isactive', 'storefront-paused')) {return $classes;}
+        if (!apply_filters('pm_project/system/isactive', 'storefront-active')) {return $classes;}
         return array_merge($classes, ['sc_store-front']);
     }
 
     public function siteConfig($args) {
-        if (apply_filters('pm_project/system/isactive', 'storefront-paused')) {return $args;}
+        if (!apply_filters('pm_project/system/isactive', 'storefront-active')) {return $args;}
+        // 
+        $args['apiendpoint'] = apply_filters('pm_project/system/isactive', 'storefront-apiactive') ? untrailingslashit(home_url()) : untrailingslashit(apply_filters('pm_project/system/getoption', 'storefront-apiendpoint', ''));
+        // 
         $session = $this->get_session();
         if (!$session) return $args;
         $newSession = [];
@@ -813,9 +835,8 @@ class Ecommerce {
             $newSession[$key] = $value;
         }
         if (empty($newSession)) return $args;
-		return wp_parse_args([
-			'session.requires' => $newSession
-		], (array) $args);
+        $args['session.requires'] = $newSession;
+		return $args;
 	}
     
     public function settings($args) {
@@ -824,11 +845,25 @@ class Ecommerce {
 			'description'					=> __('Store Front configuration for ecommerce features. This will include ecommerce feature for Moonlit Meadow.', 'site-core'),
 			'fields'						=> [
 				[
-					'id' 					=> 'storefront-paused',
-					'label'					=> __('Pause', 'site-core'),
-					'description'			=> __('Mark to pause the store front ecommerce.', 'site-core'),
+					'id' 					=> 'storefront-active',
+					'label'					=> __('Store Front Active', 'site-core'),
+					'description'			=> __('Mark to active the store front ecommerce.', 'site-core'),
 					'type'					=> 'checkbox',
-					'default'				=> true
+					'default'				=> false
+				],
+				[
+					'id' 					=> 'storefront-apiactive',
+					'label'					=> __('API Active', 'site-core'),
+					'description'			=> __('Mark to active the store front api server.', 'site-core'),
+					'type'					=> 'checkbox',
+					'default'				=> false
+				],
+				[
+					'id' 					=> 'storefront-apiendpoint',
+					'label'					=> __('API Endpoint', 'site-core'),
+					'description'			=> __('Provide api endpoint of headless CMS.', 'site-core'),
+					'type'					=> 'url',
+					'default'				=> ''
 				],
 			]
 		];

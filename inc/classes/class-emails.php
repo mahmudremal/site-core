@@ -33,6 +33,7 @@ class Emails {
         add_action('rest_api_init', [$this, 'rest_api_init']);
         add_shortcode('email_template', [$this, 'render_email_template']);
         add_action('template_redirect', [$this, 'handle_email_render_template']);
+        add_filter('sitecore/database/tables', [$this, 'database_tables'], 10, 1);
         add_action('admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ], 10, 1);
         register_activation_hook( WP_SITECORE__FILE__, [$this, 'register_activation_hook'] );
         register_deactivation_hook( WP_SITECORE__FILE__, [$this, 'register_deactivation_hook'] );
@@ -44,10 +45,7 @@ class Emails {
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-        $tableSchemas = [
-            'templates' => "id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,\ntitle VARCHAR(255) NOT NULL,\n_type TEXT NOT NULL,\n_template longtext NOT NULL DEFAULT ('{\"elements\":[]}'),\n_status ENUM('publish', 'draft', 'trash') DEFAULT 'draft',\ncreated_at DATETIME DEFAULT CURRENT_TIMESTAMP,\nupdated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
-            'relations' => "id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,\ntemplate_id BIGINT(20) UNSIGNED NOT NULL,\nemail_id TEXT NOT NULL,\nattachments TEXT NOT NULL",
-        ];
+        $tableSchemas = $this->get_table_schema();
         foreach ((array) $this->tables as $tableKey => $tableName) {
             dbDelta("CREATE TABLE IF NOT EXISTS {$tableName} (
                 {$tableSchemas[$tableKey]}
@@ -60,8 +58,23 @@ class Emails {
         foreach ((array) $this->tables as $table) {
             $wpdb->query("DROP TABLE IF EXISTS {$table};");
         }
-        
     }
+
+    protected function get_table_schema() {
+        return [
+            'templates' => "id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,\ntitle VARCHAR(255) NOT NULL,\n_type TEXT NOT NULL,\n_template longtext NOT NULL DEFAULT ('{\"elements\":[]}'),\n_status ENUM('publish', 'draft', 'trash') DEFAULT 'draft',\ncreated_at DATETIME DEFAULT CURRENT_TIMESTAMP,\nupdated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+            'relations' => "id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,\ntemplate_id BIGINT(20) UNSIGNED NOT NULL,\nemail_id TEXT NOT NULL,\nattachments TEXT NOT NULL",
+        ];
+    }
+
+    public function database_tables($tables) {
+		$tables[] = [
+			'id' => 'emails',
+            'title' => 'Emails Managements',
+			'tables' => array_map(fn($tabKey) => ['key' => $tabKey, 'name' => $this->tables->$tabKey, 'schema' => $this->get_table_schema()[$tabKey]], array_keys((array) $this->tables))
+		];
+		return $tables;
+	}
 
     public function rest_api_init() {
         register_rest_route('sitecore/v1', '/emails/templates', [
