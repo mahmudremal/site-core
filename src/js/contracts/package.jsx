@@ -451,7 +451,7 @@ const ServicePackage = ({ buttons = [] }) => {
                                                     <strong>Amount to Pay:</strong> <span className="xpo_text-agreements-600 xpo_font-semibold">${(totalPrice * 0.5).toFixed(2)}</span>
                                                 </p>
                                                 <p className="xpo_text-gray-700">
-                                                    <strong>Bank Details:</strong> {config.bankaddress || '[bank_address]'}
+                                                    <strong>Bank Details:</strong> <span dangerouslySetInnerHTML={{__html: (config.bankaddress || '[bank_address]').replaceAll('\n', '<br />')}}></span>
                                                 </p>
                                                 <p className="xpo_text-gray-700">
                                                     <strong>Payment Deadline:</strong> {new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toLocaleDateString()}

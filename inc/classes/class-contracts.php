@@ -76,6 +76,7 @@ class Contracts {
 	}
 
     public function register_services_cpt_and_taxonomies() {
+        if (apply_filters('pm_project/system/isactive', 'services-disabled')) {return;}
         register_post_type('service', [
             'labels' => [
                 'name' => 'Services',
@@ -150,6 +151,7 @@ class Contracts {
     }
     
     public function rest_api_init() {
+        if (apply_filters('pm_project/system/isactive', 'services-disabled')) {return;}
         register_rest_route('sitecore/v1', '/services/list', [
             'methods' => 'GET',
             'callback' => [$this, 'api_get_services_list'],
@@ -368,14 +370,8 @@ class Contracts {
     }
     
     public function service_register_meta_boxes() {
-        add_meta_box(
-            'service_basic_info',
-            'Basic Information',
-            [$this, 'service_metabox_callback'],
-            'service',
-            'normal',
-            'default'
-        );
+        if (apply_filters('pm_project/system/isactive', 'services-disabled')) {return;}
+        add_meta_box('service_basic_info', 'Basic Information', [$this, 'service_metabox_callback'], 'service', 'normal', 'default');
     }
     public function service_metabox_callback($post) {
         $metabox = get_post_meta($post->ID, '_service_conditionals', true);
@@ -402,6 +398,7 @@ class Contracts {
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
             return;
         }
+        if (apply_filters('pm_project/system/isactive', 'services-disabled')) {return;}
         if (!current_user_can('edit_post', $post_id)) {
             return;
         }
@@ -417,6 +414,7 @@ class Contracts {
 
     // [select-package hide_button=0 button_text="Get Started" tax_id="null"]
     public function select_package_shortcode($atts) {
+        if (apply_filters('pm_project/system/isactive', 'services-disabled')) {return '';}
         $atts = shortcode_atts([
             'tax_id' => null,
             'button_text' => 'Select',
@@ -580,14 +578,8 @@ class Contracts {
     }
 
     public function add_menu_page() {
-        add_menu_page(
-            __('Contract', 'site-core'),
-            __('Contract', 'site-core'),
-            'manage_options',
-            'contract',
-            [$this, 'contract_admin_menu_page'],
-            'dashicons-media-document'
-        );
+        if (apply_filters('pm_project/system/isactive', 'services-disabled')) {return;}
+        add_menu_page(__('Contract', 'site-core'), __('Contract', 'site-core'), 'manage_options', 'contract', [$this, 'contract_admin_menu_page'], 'dashicons-media-document');
     }
     public function contract_admin_menu_page() {
         wp_enqueue_script('site-core');

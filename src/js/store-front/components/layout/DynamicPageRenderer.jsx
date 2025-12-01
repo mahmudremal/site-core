@@ -7,7 +7,6 @@ const componentMap = {
   justForYou: lazy(() => import('../product/ProductCatalogue')),
   contentBlock: lazy(() => import('../common/ContentBlock')),
   categoryGrid: lazy(() => import('../category/CategoryGrid')),
-  // productCarousel: lazy(() => import('../product/ProductCarousel')),
 };
 
 export default function DynamicPageRenderer({ template: initialTemplate = [], screen = null }) {
@@ -26,7 +25,6 @@ export default function DynamicPageRenderer({ template: initialTemplate = [], sc
 
   const getOnLoadedCallback = useCallback((index) => {
     return () => {
-      // console.log('Loaded one');
       if (index === loadedCount - 1 && loadedCount < initialTemplate.length) {
         setLoadedCount((prev) => prev + 1);
       }

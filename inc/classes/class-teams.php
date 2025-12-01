@@ -10,11 +10,31 @@ class Teams {
 		$this->setup_hooks();
 	}
 	protected function setup_hooks() {
-    add_action('init', [$this, 'register_cpt_teams']);
-    add_action('add_meta_boxes', [$this, 'team_register_meta_boxes']);
-    add_action('save_post_team', [$this, 'team_save_meta_fields']);
+        add_action('init', [$this, 'register_cpt_teams']);
+        add_action('save_post_team', [$this, 'team_save_meta_fields']);
+        add_action('add_meta_boxes', [$this, 'team_register_meta_boxes']);
+        add_filter('sitecore/settings/fields', [$this, 'settings'], 10, 1);
 	}
+    
+    public function settings($args) {
+        $args['teams'] = [
+            'title'                         => __('Teams', 'site-core'),
+			'description'					=> __("Teams CPT and It's managements.", 'site-core'),
+			'fields'						=> [
+				[
+					'id' 					=> 'teams-enable',
+					'label'					=> __('Disable', 'site-core'),
+					'description'			=> __('Mark to enable Teams CPT.', 'site-core'),
+					'type'					=> 'checkbox',
+					'default'				=> false
+				],
+			]
+        ];
+        return $args;
+    }
+    
     public function register_cpt_teams() {
+        if (!apply_filters('pm_project/system/isactive', 'teams-enable')) {return;}
         $labels = [
             'name'               => _x('Teams', 'post type general name', 'sitecore'),
             'singular_name'      => _x('Team', 'post type singular name', 'sitecore'),
@@ -47,32 +67,10 @@ class Teams {
         register_post_type( 'team', $args );
     }
     public function team_register_meta_boxes() {
-        add_meta_box(
-            'team_basic_info',
-            'Basic Information',
-            [$this, 'team_basic_info_callback'],
-            'team',
-            'normal',
-            'default'
-        );
-
-        add_meta_box(
-            'team_social_links',
-            'Social Platform Links',
-            [$this, 'team_social_links_callback'],
-            'team',
-            'normal',
-            'default'
-        );
-
-        add_meta_box(
-            'team_video_url',
-            'Member Video URL',
-            [$this, 'team_video_url_callback'],
-            'team',
-            'normal',
-            'default'
-        );
+        if (!apply_filters('pm_project/system/isactive', 'teams-enable')) {return;}
+        add_meta_box('team_basic_info', 'Basic Information', [$this, 'team_basic_info_callback'], 'team', 'normal', 'default');
+        add_meta_box('team_social_links', 'Social Platform Links', [$this, 'team_social_links_callback'], 'team', 'normal', 'default');
+        add_meta_box('team_video_url', 'Member Video URL', [$this, 'team_video_url_callback'], 'team', 'normal', 'default');
     }
     public function team_basic_info_callback( $post ) {
         $designation = get_post_meta( $post->ID, '_team_designation', true );
@@ -126,7 +124,8 @@ class Teams {
     }
     public function team_save_meta_fields( $post_id ) {
         if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) return;
-
+        if (!apply_filters('pm_project/system/isactive', 'teams-enable')) {return;}
+        
         $fields = [
             'designation',
             'department',

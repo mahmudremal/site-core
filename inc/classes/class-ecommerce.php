@@ -48,6 +48,7 @@ class Ecommerce {
         add_filter('body_class', [$this, 'body_class'], 10, 2);
         add_action('add_meta_boxes', [$this, 'add_meta_boxes']);
         add_action('rest_api_init', [$this, 'register_routes']);
+        add_action('wp_body_open', [$this, 'add_root_div_after_body']);
         add_filter('sitecorejs/siteconfig', [ $this, 'siteConfig' ], 1, 1);
         add_filter('sitecore/settings/fields', [$this, 'settings'], 10, 1);
         add_filter('sitecore/database/tables', [$this, 'database_tables'], 10, 1);
@@ -281,6 +282,11 @@ class Ecommerce {
 		];
 		return $tables;
 	}
+
+    public function add_root_div_after_body() {
+        if (!apply_filters('pm_project/system/isactive', 'storefront-active')) {return;}
+        echo '<div id="ecommerce_root"></div>';
+    }
 
     public function register_routes() {
         if (!apply_filters('pm_project/system/isactive', 'storefront-apiactive')) {return;}

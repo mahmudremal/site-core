@@ -244,7 +244,7 @@ class SiteCore {
     }
 
     sc_store_front() {
-        [document.querySelector('.sc_store-front > div')].forEach(container => {
+        [document.querySelector('.sc_store-front #ecommerce_root')].forEach(container => {
             if (!container) return;
             const root = createRoot(container);root.render(
                 <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>

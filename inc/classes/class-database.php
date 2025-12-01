@@ -21,7 +21,6 @@ class Database {
 		add_filter('sitecore/settings/fields', [$this, 'settings'], 10, 1);
 	}
 
-	
     public function settings($args) {
         $args['database'] = [
             'title'                         => __('Database', 'site-core'),

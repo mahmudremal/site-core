@@ -30,20 +30,21 @@ class Project {
 		Sms::get_instance();
 		Task::get_instance();
 		Login::get_instance();
-		Credits::get_instance();
 		Utils::get_instance();
-		Editor::get_instance();
 		Menus::get_instance();
 		Redis::get_instance();
 		Option::get_instance();
 		Assets::get_instance();
 		Emails::get_instance();
+		Editor::get_instance();
+		Credits::get_instance();
 		Llmstxt::get_instance();
 		Database::get_instance();
 		Ecommerce::get_instance();
 		Affiliate::get_instance();
-		Instant_Images::get_instance();
+		Translations::get_instance();
 		Store_Manager::get_instance();
+		Instant_Images::get_instance();
 		add_action('init', [$this, 'init'], 1, 0);
 		// register_activation_hook(WP_SITECORE__FILE__, [$this, 'register_activation_hook']);
 

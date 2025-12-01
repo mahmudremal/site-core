@@ -26,32 +26,56 @@ class Login {
         add_action('wp_ajax_nopriv_custom_login', [$this, 'handle_ajax_login']);
         add_action('wp_ajax_nopriv_custom_register', [$this, 'handle_ajax_register']);
 		add_filter('sitecorejs/siteconfig', [ $this, 'siteConfig' ], 1, 1);
+        add_filter('sitecore/settings/fields', [$this, 'settings'], 10, 1);
     }
 
     public function enqueue_custom_login_assets() {
+        if (!apply_filters('pm_project/system/isactive', 'wplogin-enable')) {return;}
         Assets::get_instance()->register_styles();
         Assets::get_instance()->register_scripts();
         wp_enqueue_style('site-core');
         wp_enqueue_script('site-core');
     }
 
+    public function settings($args) {
+        $args['wplogin'] = [
+            'title'                         => __('Login', 'site-core'),
+			'description'					=> __("WordPress Login Page Styling Component.", 'site-core'),
+			'fields'						=> [
+				[
+					'id' 					=> 'wplogin-enable',
+					'label'					=> __('Enable', 'site-core'),
+					'description'			=> __('Mark to enable WP Login Screen.', 'site-core'),
+					'type'					=> 'checkbox',
+					'default'				=> false
+				],
+			]
+        ];
+        return $args;
+    }
+
     public function add_custom_login_markup() {
+        if (!apply_filters('pm_project/system/isactive', 'wplogin-enable')) {return;}
         echo '<div id="custom-login-root"></div>';
     }
 
     public function hide_default_login() {
+        if (!apply_filters('pm_project/system/isactive', 'wplogin-enable')) {return;}
         echo '<style>#login form, #login h1, .language-switcher, #nav, #backtoblog {display: none !important;}#custom-login-root input:not([type=checkbox]) {margin-bottom: 0;}body.login {background: #0f172a;}</style>';
     }
 
     public function custom_login_logo_url() {
+        if (!apply_filters('pm_project/system/isactive', 'wplogin-enable')) {return;}
         return home_url();
     }
 
     public function custom_login_logo_title() {
+        if (!apply_filters('pm_project/system/isactive', 'wplogin-enable')) {return;}
         return get_bloginfo('name');
     }
 
     public function handle_ajax_login() {
+        if (!apply_filters('pm_project/system/isactive', 'wplogin-enable')) {return;}
         check_ajax_referer('custom_login_nonce', 'nonce');
 
         $username = sanitize_user($_POST['username'] ?? '');
@@ -79,6 +103,7 @@ class Login {
     }
 
     public function handle_ajax_register() {
+        if (!apply_filters('pm_project/system/isactive', 'wplogin-enable')) {return;}
         check_ajax_referer('custom_login_nonce', 'nonce');
 
         // Check if registration is enabled
@@ -117,6 +142,7 @@ class Login {
     }
 
     public function siteConfig($args) {
+        if (!apply_filters('pm_project/system/isactive', 'wplogin-enable')) {return;}
         if ($GLOBALS['pagenow'] !== 'wp-login.php') return $args;
         
 		return wp_parse_args([

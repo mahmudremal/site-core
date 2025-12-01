@@ -1,3 +1,6 @@
+// productCarousel: lazy(() => import('../product/ProductCarousel')),
+
+
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { ProductCard2 } from './ProductCard';
