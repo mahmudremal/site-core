@@ -5,6 +5,8 @@ import '@js/backend';
 import '@sass/admin.scss';
 
 // Images.
+import '@icons/logo-color-black.svg';
+import '@icons/favicon.svg';
 // import '@img/logo.png';
 // import '@img/logo-icon.png';
 // import '@img/logo-light.png';

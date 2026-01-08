@@ -8,12 +8,12 @@ const InlineEditor = ({ content: [content, setContent] }) => {
     const [selectedTags, setSelectedTags] = useState([]);
     const editorRef = useRef(null);
     const toolbarRef = useRef(null);
-    
+
     const markHighlight = (range) => {
         const selectedText = range.toString();
         const parent = range.commonAncestorContainer.nodeType === Node.TEXT_NODE ? range.commonAncestorContainer.parentNode : range.commonAncestorContainer;
         if (parent.classList.contains('highlight')) return; // Avoid highlighting if already highlighted
-        
+
         const highlightSpan = document.createElement('span');
         highlightSpan.classList.add('xpo_bg-primary', 'xpo_text-white');
         highlightSpan.textContent = selectedText;
@@ -24,16 +24,16 @@ const InlineEditor = ({ content: [content, setContent] }) => {
     };
 
     const closestElems = () => {
-        if (!typeof window?.getSelection) {return;}
+        if (!typeof window?.getSelection) { return; }
         const _selected = window.getSelection();
         const range = _selected.rangeCount > 0 ? _selected.getRangeAt(0) : null;
         const treeElements = [];
-        
+
         // Check if we have a valid range
         if (range) {
             let parent = range.startContainer;
             let count = 0; // Counter for valid parent elements
-            
+
             // Add the initial node if it's one of the specified types
             if (parent?.tagName && ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'b', 'i', 'ul', 'ol'].includes(parent.tagName?.toLowerCase())) {
                 treeElements.push(parent.tagName.toLowerCase());
@@ -51,12 +51,12 @@ const InlineEditor = ({ content: [content, setContent] }) => {
                 }
             }
         }
-        
+
         return treeElements;
     };
 
     const handleMouseUp = () => {
-        if (!typeof window?.getSelection) {return;}
+        if (!typeof window?.getSelection) { return; }
         const _selected = window.getSelection();
         if (_selected.rangeCount > 0 && _selected.toString().length > 0) {
             const range = _selected.getRangeAt(0);
@@ -67,7 +67,7 @@ const InlineEditor = ({ content: [content, setContent] }) => {
             // if (!toolbarVisible) {setToolbarVisible(true);}
             // setSelectedTags(closestElems());
             toolbarRef.current.querySelectorAll('button.toolactive').forEach(elem => elem.classList.remove('toolactive'));
-            closestElems().forEach(elem => 
+            closestElems().forEach(elem =>
                 toolbarRef.current.querySelectorAll('button[data-element]').forEach(btn => btn && btn.dataset.element == elem && btn.classList.add('toolactive'))
             );
         } else {
@@ -83,7 +83,7 @@ const InlineEditor = ({ content: [content, setContent] }) => {
     }, []);
 
     const executeCommand = (command) => {
-        if (!typeof window?.getSelection) {return;}
+        if (!typeof window?.getSelection) { return; }
         const _selected = window.getSelection();
         if (_selected.rangeCount > 0 && _selected.toString().length > 0) {
             const range = _selected.getRangeAt(0);
@@ -173,7 +173,7 @@ const InlineEditor = ({ content: [content, setContent] }) => {
                         <span className="xpo_leading-[0]">{headingMapLabels[selectedTags] || headingMapLabels.p}</span>
                     </div>
                     <svg className={`xpo_w-2.5 xpo_h-2.5 ${isOpen ? 'xpo_rotate-180' : ''}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
                     </svg>
                 </button>
                 <div ref={dropdownRef} className={`xpo_absolute xpo_z-10 xpo_bg-white xpo_divide-y xpo_divide-gray-100 xpo_rounded-lg xpo_shadow-sm dark:xpo_bg-gray-700 ${!isOpen ? 'xpo_hidden' : 'xpo_block'}`}>

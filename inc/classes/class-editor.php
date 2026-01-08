@@ -57,7 +57,8 @@ class Editor {
 	function enqueue_editor_scripts_and_styles($hook) {
 		if (apply_filters('pm_project/system/isactive', 'editor-disabled')) {return;}
 		if ('post.php' === $hook || 'post-new.php' === $hook) {
-			// wp_enqueue_style('task-ai-editor', WP_SITECORE_BUILD_CSS_URI . '/editor.css', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_CSS_DIR_PATH . '/editor.css'), 'all');
+			wp_enqueue_style('site-core');
+			wp_enqueue_style('task-ai-editor', WP_SITECORE_BUILD_CSS_URI . '/editor.css', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_CSS_DIR_PATH . '/editor.css'), 'all');
 			wp_enqueue_script('task-ai-editor', WP_SITECORE_BUILD_JS_URI . '/editor.js', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/editor.js'), true);
 			wp_localize_script('task-ai-editor', '_aieditor_config', [
 				'_id' => get_the_ID(),
