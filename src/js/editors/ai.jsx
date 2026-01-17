@@ -1,8 +1,13 @@
 import { Ollama } from 'ollama/browser';
 import MCPClient from './mcp';
-import { parse } from 'postcss';
+
 
 export const ollama = new Ollama({ host: 'http://127.0.0.1:11434' });
+
+export const get_models = async () => {
+    const response = await ollama.list();
+    return response.models;
+}
 
 const mcpClient = new MCPClient('http://localhost:3070');
 
@@ -27,27 +32,24 @@ export const chat = (messages = [], onChunk = null, args = {}) => {
             args = {
                 stream: true,
                 model: 'gemma3:1b',
-                system: messages.find(i => i.role === 'system')?.content??'',
+                system: messages.find(i => i.role === 'system')?.content ?? '',
                 prompt: messages.filter(i => i.role !== 'system').map(i => `${i.role.toUpperCase()}:\n${i.content.trim()}`).join('\n'),
                 ...args
             };
-            // const response = await ollama.chat({model: 'gemma3:1b', messages: messages, stream: true, ...args});
-            const response = await ollama.generate(args);let fullResponse = '';
-            if (!args?.stream) {return response?.message?.content??response?.response;}
+
+            const response = await ollama.generate(args); let fullResponse = '';
+            if (!args?.stream) { return response?.message?.content ?? response?.response; }
             for await (const chunk of response) {
-                const message = chunk?.message?.content??chunk?.response;fullResponse += message;
-                if (message && typeof onChunk === 'function') {onChunk(message);}
-                // 
+                const message = chunk?.message?.content ?? chunk?.response; fullResponse += message;
+                if (message && typeof onChunk === 'function') { onChunk(message); }
             }
-            // console.log('Streaming finished');
-            resolve(fullResponse); // Resolve the promise with the full response
+            resolve(fullResponse);
         } catch (error) {
-            // console.error('Error during streaming:', error);
-            reject(error); // Reject the promise if there's an error
+            reject(error);
         }
     });
 };
-// chat(newMessages, (chunk) => console.log('Received chunk:', chunk)).then(fullResponse => console.log('Final Response:', fullResponse)).catch(error => console.error('Error:', error));
+
 
 export const get_prompt_id = (id) => {
     return `@@PROMPT_${id}@@`;
@@ -84,15 +86,15 @@ export const PROMPTS = {
                 if (match) {
                     const toolName = match[1].trim();
                     const toolInput = match[2].trim();
-                    tools.push({func: toolName, params: toolInput});
+                    tools.push({ func: toolName, params: toolInput });
                 }
                 return tools;
             },
             call: async (func, ...params) => {
-                if (!await mcpClient.has_tool(func)) {return null;}
-                
+                if (!await mcpClient.has_tool(func)) { return null; }
+
                 const toolResult = await mcpClient.callTool(func, params);
-                
+
                 return `[TOOL_RESULT: ${func}] ${JSON.stringify(toolResult)}`;
             }
         }
@@ -122,20 +124,70 @@ export const PROMPTS = {
                         result.keywords = line.substring(18).trim().split(',').map(i => i.trim());
                     }
                 });
-                // console.log(text, result);
+
                 return result;
             }
         },
         planner: {
-            prompt: "You are a specialized AI for article planning. Your task is to generate a structured outline for an article body using only content-building prompts.\n\nYou will produce a **Markdown-formatted article structure**.\n\nfor suppose for\n## Main Heading\n**PROMPT:** a AI prompt instrcution in detailed (but in one line, no line break). this prompt should include a clear instruction what to write/do, including text length, context, way of talking.\n### SubHeading\n**PROMPT:** ...\n\n### RULES\n- Do **not** write content — generate only `PROMPT:` and `IMAGE_PROMPT:` placeholders. Detailed prompt. Regarding your prompt aother AI will write those part seperately. If you want to add a list in prompt, you must put them in line (comma seperated) but in any condition, never break line on prompt.\n- All section headers must follow proper Markdown hierarchy (`##`, `###`, etc.).\n- Use `PROMPT:` for text content and `IMAGE_PROMPT:` for visual suggestions.\n- Ensure modular, expandable output to support content generation in the next stage.\n- You are only responsible for the ARTICLE BODY. DON'T write ARTICLE TITLE or other things like metadata, tags, keywords as long as they are already decided and will provide you via user prompt.\n- You are not responsibe to write content but you'll write heading, prompt placeholder and if anywhere need to put even a list, you'll write a prompt.\n",
+            prompt: `You are NOT an article writer.
+You are an ARTICLE BODY STRUCTURE GENERATOR.
+
+Your ONLY responsibility is to generate the ARTICLE BODY structure using Markdown headings and placeholder instructions.
+All other elements (title, meta description, keywords, tags, excerpts, schema, etc.) are handled by other AI systems and must NOT be generated.
+
+HARD OUTPUT CONTRACT (ANY VIOLATION = FAILURE)
+- Do NOT write article content, prose, paragraphs, sentences, or explanations.
+- Do NOT write introductions, conclusions, definitions, summaries, examples, or descriptions.
+- Do NOT write titles, headings that act as titles, meta descriptions, keywords, tags, excerpts, FAQs, resources, or related articles.
+- The ONLY allowed non-heading lines are those starting exactly with PROMPT: or IMAGE_PROMPT:.
+
+ALLOWED LINE TYPES ONLY
+1) Markdown headings using ##, ###, #### (these represent ARTICLE BODY sections only)
+2) Lines starting with PROMPT:
+3) Lines starting with IMAGE_PROMPT:
+
+ANY OTHER TEXT IS STRICTLY FORBIDDEN.
+
+FORMAT RULES (STRICT)
+- Use Markdown headings ONLY for article body structure.
+- PROMPT: and IMAGE_PROMPT: must be written in ALL CAPS exactly.
+- PROMPT: and IMAGE_PROMPT: must appear on their own line.
+- Do NOT prefix PROMPT: or IMAGE_PROMPT: with bullets, numbers, asterisks, hyphens, or Markdown symbols.
+- Do NOT wrap output in code blocks, fenced blocks, or triple backticks.
+- Output raw Markdown only.
+
+PROMPT RULES
+- Every PROMPT: must be a single line with no line breaks.
+- PROMPT: must instruct ANOTHER AI what to write, including length, tone, audience, context, and purpose.
+- PROMPT: must NEVER contain actual article content.
+- If a list is required, include it inline using comma-separated items only.
+- IMAGE_PROMPT: must be a single-line visual instruction and used only when it adds value.
+
+STRUCTURE REQUIREMENTS
+- Include an introduction section, multiple body sections with logical subsections, and a conclusion section.
+- Every heading or subheading MUST be followed by at least one PROMPT: line.
+- No section may contain free text.
+
+SCOPE LIMITATION (CRITICAL)
+- PROVIDE ARTICLE BODY ONLY.
+- DO NOT provide title, keywords, tags, meta description, summary, or any non-body elements.
+- Other AI systems are responsible for all non-body content.
+
+SELF-ENFORCEMENT
+- Before outputting, remove any line that is not a Markdown heading or does not start with PROMPT: or IMAGE_PROMPT:.
+- If any article content is generated accidentally, delete it and replace it with a PROMPT:.
+
+FINAL INSTRUCTION
+Generate ONLY the ARTICLE BODY outline following these rules. Nothing else.
+`,
             parse: (text) => {
-                const promptRegex = /^ *(?:\*\*)?(PROMPT:|IMAGE_PROMPT:)(?:\*\*)? *(.*)$/gm;
+                const promptRegex = /^ *[*-]* *(?:\*\*)?(PROMPT:|IMAGE_PROMPT:)(?:\*\*)? *(.*)$/gm;
                 const prompts = [];
                 let idCounter = 0;
 
                 const updatedText = text.replace(promptRegex, (match, type, promptText) => {
                     const id = get_prompt_id(++idCounter);
-                    // promptText = promptText.substring(type == 'PROMPT:' ? 7 : 13);
+
                     prompts.push({
                         id: id,
                         type: type.trim(),
@@ -144,7 +196,7 @@ export const PROMPTS = {
                     return `${id}`;
                 });
 
-                // console.log(prompts)
+
 
                 return {
                     text: updatedText,
@@ -153,8 +205,10 @@ export const PROMPTS = {
             }
         },
         replacer: {
-            prompt: "All future responses will follow this role and format strictly:\n\n* Act as a specialized AI assisting a professional article writer.\n* Respond only with the requested part of the article.\n* Maintain professional tone, smooth flow, and publication-ready clarity.\n* Output in clean Markdown.\n* No extra commentary, explanations, or conversational phrasing.\n\nReady for your detailed instructions. Provide only the core output without any introductory or conversational phrases or additional filler.\n",
-            parse: (text) => text
+            prompt: "All future responses will follow this role and format strictly:\n\n* Act as a specialized AI assisting a professional article writer.\n* Respond only with the requested part of the article.\n* Maintain professional tone, smooth flow, and publication-ready clarity.\n* Output in simple, clean HTML format.\n* No extra commentary, explanations, or conversational phrasing.\n\nReady for your detailed instructions. Provide only the core output without any introductory or conversational phrases or additional filler.\n",
+            parse: (text) => {
+                return text.replace(/```html\n/g, '').replace(/```/g, '');
+            }
         }
     },
     usual: {
@@ -166,21 +220,7 @@ export const PROMPTS = {
         }
     }
 }
-// sleep(500).then(() => {
-//     setEditorMode(true);
-//     chat(newMessages, (chunk) => setContent(prev => prev + chunk))
-//     .then(fullResponse => setContent(fullResponse))
-//     .catch(error => console.error('Error:', error))
-//     .finally(() => setMessages(prev => ([...prev, {role: 'user', content: prompt}, {role: 'assistant', content: content},])));
-// });
 
 
-export const chata = (index = 0) => {
-    return Promise.resolve([
-        `**Title:** Figma: Design Revolutionizing Collaboration\n\n**Meta Description:** Figma is the leading UI design tool, simplifying design workflows and collaboration. Discover its key features and benefits.\n\n**SEO Keywords:** Figma, UI Design, Design Tool, Collaboration, Prototyping, Design Software, User Interface Design, Vector Graphics, Digital Design`,
 
-        `Okay, let's start building this Figma article outline.\n\n---\n\n## 1. Introduction\n\n**PROMPT:** Begin with a captivating hook – perhaps a statistic about design trends or a relatable problem that Figma solves. Briefly introduce Figma as a collaborative design tool and highlight its growing importance in the modern design landscape.  State the article’s purpose – to provide a beginner-friendly overview of Figma and its key features. Conclude with a statement about how Figma can significantly improve design workflows.\n\n---\n\n## 2. Body Structure\n\n### 2.1 Understanding Figma Basics\n\n**PROMPT:** Explain what Figma *is* in simple terms. Focus on its core functionalities: vector graphics, prototyping, design collaboration, and file management. Use analogies to help readers grasp the concepts (e.g., “Think of Figma as a digital whiteboard” or "It’s like having a collaborative design cloud"). Include a brief explanation of its core strengths - its intuitive interface.\n\n(Repeat this structure for 2-3 sections focused on core functionalities.)\n\n### 2.2 Key Features – Vector Graphics\n\n**PROMPT:** Detail the importance of vector graphics within Figma. Explain how they’re used for scalable designs (logos, icons, illustrations) and why they're superior to raster images for many design needs. Provide real-world examples: how companies use scalable vector graphics.\n\n(Repeat this structure for 2-3 sections, delving into features like:  Auto Layout, Variants, Component Libraries, etc.)\n\n### 2.3 Prototyping with Figma\n\n**PROMPT:** Describe how Figma’s prototyping capabilities work. Explain the different prototyping modes (static, basic, advanced) and how they’re utilized.  Mention the benefits of using Figma for creating interactive prototypes.  Showcase how Figma facilitates user testing.\n\n(Repeat this structure for 2-3 sections, focusing on:  Interactive Prototyping, Storyboarding, User Testing, etc.)\n\n---\n\n## 3. Conclusion\n\n**PROMPT:** Summarize the key benefits of using Figma – improved collaboration, efficiency, scalability, and visual consistency.  Reiterate Figma’s versatility across different design disciplines (web, mobile, UX/UI).  End with a call to action – encouraging readers to explore Figma and start their design journey.\n\n---\n\n## 4. Visual Components\n\n(Note: This will be a placeholder for visual elements. We'll populate this section in the next stage.)\n\n---\n\n**IMAGE_PROMPT:**  Create a visually appealing infographic demonstrating Figma's key features – a flow chart highlighting core functionalities, a comparison chart showcasing Figma's advantages over other design tools (e.g., Adobe XD), and a mockup of a collaborative design workflow. The infographic should use icons and a clear layout.  Consider a background image of a digital design board.\n`,
 
-        `Figma offers a compelling suite of benefits that dramatically enhance the design process. At its core, it fosters **improved collaboration** through real-time, shared design experiences, allowing teams to seamlessly work together regardless of location. This results in reduced misunderstandings and faster iteration cycles.  Furthermore, Figma significantly boosts **efficiency** by providing powerful tools for prototyping, design exploration, and rapid feedback.  Its architecture encourages a streamlined workflow, minimizing wasted time.  Finally, Figma’s unparalleled **scalability** makes it ideal for both individual projects and large, complex design efforts.  Beyond the core design disciplines – web, mobile, UX/UI – Figma’s intuitive interface and robust feature set offer exceptional versatility, enabling designers to tackle any visual challenge with ease.  It's a powerful tool that adapts to your design needs, supporting a wide range of creative workflows.`
-    ][index]);
-}
