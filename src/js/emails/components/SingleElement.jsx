@@ -12,34 +12,34 @@ const ElementControls = ({ element, onEdit, onDuplicate, onDelete, className = '
 
     return (
         <>
-            <div className={`xpo_absolute xpo_-top-10 xpo_left-0 xpo_items-center xpo_gap-1 xpo_bg-blue-600 xpo_text-white xpo_px-2 xpo_py-1 xpo_rounded xpo_text-xs xpo_font-medium xpo_shadow-lg xpo_z-10 ${className}`}>
+            <div className={`absolute -top-10 left-0 items-center gap-1 bg-blue-600 text-white px-2 py-1 rounded text-xs font-medium shadow-lg z-10 ${className}`}>
                 <ElementIcon size={12} />
-                <span className="xpo_capitalize">{Addon.get_name()}</span>
-                <div className="xpo_flex xpo_items-center xpo_gap-1 xpo_ml-2">
+                <span className="capitalize">{Addon.get_name()}</span>
+                <div className="flex items-center gap-1 ml-2">
                     <button
                         title="Edit"
-                        onClick={(e) => {e.preventDefault();e.stopPropagation();onEdit(element);}}
-                        className="xpo_p-1 xpo_hover:xpo_bg-blue-700 xpo_rounded xpo_transition-colors"
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); onEdit(element); }}
+                        className="p-1 hover:bg-blue-700 rounded transition-colors"
                     >
                         <Edit size={10} />
                     </button>
                     <button
                         title="Duplicate"
-                        onClick={(e) => {e.preventDefault();e.stopPropagation();onDuplicate(element);}}
-                        className="xpo_p-1 xpo_hover:xpo_bg-blue-700 xpo_rounded xpo_transition-colors"
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); onDuplicate(element); }}
+                        className="p-1 hover:bg-blue-700 rounded transition-colors"
                     >
                         <Copy size={10} />
                     </button>
                     <button
                         title="Delete"
-                        onClick={(e) => {e.preventDefault();e.stopPropagation();confirm('Are you sure you want to remove this block!') && onDelete(element);}}
-                        className="xpo_p-1 xpo_hover:xpo_bg-red-600 xpo_rounded xpo_transition-colors"
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); confirm('Are you sure you want to remove this block!') && onDelete(element); }}
+                        className="p-1 hover:bg-red-600 rounded transition-colors"
                     >
                         <Trash2 size={10} />
                     </button>
                 </div>
             </div>
-            <div className={`xpo_absolute xpo_-left-8 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_bg-blue-600 xpo_text-white xpo_p-1 xpo_rounded xpo_cursor-move xpo_shadow-lg ${className}`}>
+            <div className={`absolute -left-8 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white p-1 rounded cursor-move shadow-lg ${className}`}>
                 <GripVertical size={12} />
             </div>
         </>
@@ -61,7 +61,7 @@ const ElementRenderer = ({ element, onSelect, onEdit, onDelete, onDuplicate, onM
     };
 
     const handleDragOver = (e) => {
-        e.preventDefault();e.stopPropagation();
+        e.preventDefault(); e.stopPropagation();
     };
 
     const handleDrop = (e) => {
@@ -80,16 +80,16 @@ const ElementRenderer = ({ element, onSelect, onEdit, onDelete, onDuplicate, onM
             onDragStart={handleDragStart}
             // onMouseEnter={() => setIsHovered(true)}
             // onMouseLeave={() => setIsHovered(false)}
-            onClick={(e) => {e.preventDefault();e.stopPropagation();!isSelected() && onSelect(element);}}
-            className={`xpo_relative xpo_group xpo_transition-all xpo_duration-200 ${isSelected() ? 'xpo_ring-2 xpo_ring-blue-500' : ''}`}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); !isSelected() && onSelect(element); }}
+            className={`relative group transition-all duration-200 ${isSelected() ? 'ring-2 ring-blue-500' : ''}`}
         >
-            <div className="xpo_relative">
+            <div className="relative">
                 <div>
                     {Addon?.render && <Addon.render element={element} />}
                 </div>
                 {(isHovered || isSelected()) && (
-                    <div className={`xpo_absolute xpo_inset-0 xpo_pointer-events-none ${(isHovered || isSelected()) ? '' : 'xpo_hidden'}`}>
-                        <div className={`xpo_absolute xpo_inset-0 xpo_border-2 xpo_rounded ${isSelected() ? 'xpo_border-blue-500' : 'xpo_border-blue-300'}`} />
+                    <div className={`absolute inset-0 pointer-events-none ${(isHovered || isSelected()) ? '' : 'hidden'}`}>
+                        <div className={`absolute inset-0 border-2 rounded ${isSelected() ? 'border-blue-500' : 'border-blue-300'}`} />
                     </div>
                 )}
             </div>
@@ -99,7 +99,7 @@ const ElementRenderer = ({ element, onSelect, onEdit, onDelete, onDuplicate, onM
                     element={element}
                     onDelete={onDelete}
                     onDuplicate={onDuplicate}
-                    className={(isHovered || isSelected()) ? 'xpo_flex' : 'xpo_hidden'}
+                    className={(isHovered || isSelected()) ? 'flex' : 'hidden'}
                 />
             )}
         </div>
@@ -176,28 +176,28 @@ const SingleElement = ({ element = {}, index = null, container = null }) => {
             }
 
             // If this is the element to duplicate
-            const duplicated = { 
-                ...elementToDuplicate, 
-                id: `${elementToDuplicate.type}-${Date.now()}`, 
-                content: elementToDuplicate.content 
+            const duplicated = {
+                ...elementToDuplicate,
+                id: `${elementToDuplicate.type}-${Date.now()}`,
+                content: elementToDuplicate.content
             };
-            setSidebar(prev => ({...prev, selectedTab: 'content', visible: true, element: duplicated}));
-            
+            setSidebar(prev => ({ ...prev, selectedTab: 'content', visible: true, element: duplicated }));
+
             // Return the original element and its duplicate
             return [el, duplicated];
         });
     };
 
     const handleElementDuplicate = (element) => {
-        setTemplate(prev => ({...prev, elements: duplicateElementRecursively(prev.elements, element)}));
+        setTemplate(prev => ({ ...prev, elements: duplicateElementRecursively(prev.elements, element) }));
     };
-    
+
     return (
         <DropZone
             element={element}
             onDrop={(e) => drop_element(e, index, container)}
         >
-            <div className="xpo_block">
+            <div className="block">
                 <ElementRenderer
                     index={index}
                     element={element}

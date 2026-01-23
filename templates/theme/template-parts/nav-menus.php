@@ -9,12 +9,12 @@
 $mega_menu = SITE_CORE\inc\Ecommerce\Addons\Template::get_instance()->get_dynamic_mega_menu_items();
 
 if ( ! empty( $mega_menu ) ) {
-    echo '<nav class="xpo_relative xpo_bg-white xpo_shadow-md">';
-    echo '<ul class="xpo_flex xpo_items-center xpo_justify-center xpo_list-none xpo_p-0 xpo_m-0">';
+    echo '<nav class="relative bg-white shadow-md">';
+    echo '<ul class="flex items-center justify-center list-none p-0 m-0">';
 
     foreach ( $mega_menu as $main_item ) {
-        echo '<li class="xpo_group xpo_relative">';
-        echo '<a href="' . esc_url( $main_item['link'] ) . '" class="xpo_px-4 xpo_py-3 xpo_flex xpo_items-center xpo_text-gray-700 hover:xpo_text-blue-600">';
+        echo '<li class="group relative">';
+        echo '<a href="' . esc_url( $main_item['link'] ) . '" class="px-4 py-3 flex items-center text-gray-700 hover:text-blue-600">';
         echo esc_html( $main_item['name'] );
         if ( ! empty( $main_item['children'] ) ) {
             echo '<span>'. do_shortcode('[svg icon="arrow-down"]') .'</span>';
@@ -22,16 +22,16 @@ if ( ! empty( $mega_menu ) ) {
         echo '</a>';
 
         if ( ! empty( $main_item['children'] ) ) {
-            echo '<div class="xpo_absolute xpo_left-0 xpo_top-full xpo_w-auto xpo_min-w-max xpo_bg-white xpo_shadow-lg xpo_rounded-md xpo_p-4 xpo_opacity-0 group-hover:xpo_opacity-100 xpo_invisible group-hover:xpo_visible xpo_transition-all xpo_duration-300 xpo_flex xpo_gap-8">';
+            echo '<div class="absolute left-0 top-full w-auto min-w-max bg-white shadow-lg rounded-md p-4 opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-300 flex gap-8">';
             
             foreach ( $main_item['children'] as $sub_item ) {
-                echo '<div class="xpo_mega-menu-column">';
-                echo '<h4 class="xpo_font-bold xpo_text-gray-800 xpo_mb-3"><a href="' . esc_url( $sub_item['link'] ) . '" class="hover:xpo_text-blue-600">' . esc_html( $sub_item['name'] ) . '</a></h4>';
+                echo '<div class="mega-menu-column">';
+                echo '<h4 class="font-bold text-gray-800 mb-3"><a href="' . esc_url( $sub_item['link'] ) . '" class="hover:text-blue-600">' . esc_html( $sub_item['name'] ) . '</a></h4>';
 
                 if ( ! empty( $sub_item['children'] ) ) {
-                    echo '<ul class="xpo_space-y-2">';
+                    echo '<ul class="space-y-2">';
                     foreach ( $sub_item['children'] as $sub_sub ) {
-                        echo '<li><a href="' . esc_url( $sub_sub['link'] ) . '" class="xpo_text-gray-600 hover:xpo_text-blue-600">' . esc_html( $sub_sub['name'] ) . '</a></li>';
+                        echo '<li><a href="' . esc_url( $sub_sub['link'] ) . '" class="text-gray-600 hover:text-blue-600">' . esc_html( $sub_sub['name'] ) . '</a></li>';
                     }
                     echo '</ul>';
                 }

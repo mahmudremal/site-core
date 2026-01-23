@@ -115,114 +115,114 @@ export default function ErrorPage() {
 
   const getBadgeColor = (badge) => {
     const colors = {
-      'Best Seller': 'xpo_bg-yellow-100 xpo_text-yellow-800',
-      'New Arrival': 'xpo_bg-green-100 xpo_text-green-800',
-      'Hot Deal': 'xpo_bg-red-100 xpo_text-red-800',
-      'Popular': 'xpo_bg-scaccent-100 xpo_text-scaccent-800',
-      'Limited': 'xpo_bg-purple-100 xpo_text-purple-800',
-      "Editor's Choice": 'xpo_bg-indigo-100 xpo_text-indigo-800'
+      'Best Seller': 'bg-yellow-100 text-yellow-800',
+      'New Arrival': 'bg-green-100 text-green-800',
+      'Hot Deal': 'bg-red-100 text-red-800',
+      'Popular': 'bg-scaccent-100 text-scaccent-800',
+      'Limited': 'bg-purple-100 text-purple-800',
+      "Editor's Choice": 'bg-indigo-100 text-indigo-800'
     };
-    return colors[badge] || 'xpo_bg-gray-100 xpo_text-gray-800';
+    return colors[badge] || 'bg-gray-100 text-gray-800';
   };
 
   return (
     <div>
       <SiteHeader />
-      <div className="xpo_min-h-screen">
+      <div className="min-h-screen">
         <ErrorPageHelmet error={currentError} />
-        <div className="xpo_container xpo_mx-auto xpo_px-4 sm:xpo_px-6 lg:xpo_px-8 xpo_py-12">
-          
-          {/* <div className="xpo_mb-8 xpo_flex xpo_gap-4">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+          {/* <div className="mb-8 flex gap-4">
             {Object.values(errorTypes).map(({ id: key, label }, i) => (
-              <button key={i} onClick={() => setErrorType(key)} className={`xpo_px-3 xpo_py-1 xpo_text-sm xpo_rounded-full ${errorType === key ? 'xpo_bg-scprimary xpo_text-scwhite' : 'xpo_bg-scwhite xpo_text-gray-600 xpo_border'}`}>{label}</button>
+              <button key={i} onClick={() => setErrorType(key)} className={`px-3 py-1 text-sm rounded-full ${errorType === key ? 'bg-scprimary text-scwhite' : 'bg-scwhite text-gray-600 border'}`}>{label}</button>
             ))}
           </div> */}
 
-          <div className="xpo_text-center xpo_py-16">
-            <div className="xpo_text-8xl xpo_mb-6 dark:xpo_text-scwhite-600">{currentError.icon}</div>
-            
-            <h1 className="xpo_text-4xl xpo_font-bold xpo_text-gray-900 dark:xpo_text-scwhite-600 xpo_mb-4">
+          <div className="text-center py-16">
+            <div className="text-8xl mb-6 dark:text-scwhite-600">{currentError.icon}</div>
+
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-scwhite-600 mb-4">
               {currentError.title}
             </h1>
-            
-            <p className="xpo_text-xl xpo_text-gray-600 dark:xpo_text-scwhite-600 xpo_mb-2 xpo_max-w-2xl xpo_mx-auto">
+
+            <p className="text-xl text-gray-600 dark:text-scwhite-600 mb-2 max-w-2xl mx-auto">
               {currentError.message}
             </p>
-            
-            <p className="xpo_text-gray-500 dark:xpo_text-scwhite-600 xpo_mb-8 xpo_max-w-xl xpo_mx-auto">
+
+            <p className="text-gray-500 dark:text-scwhite-600 mb-8 max-w-xl mx-auto">
               {currentError.description}
             </p>
 
-            <div className="xpo_flex xpo_flex-col sm:xpo_flex-row xpo_gap-4 xpo_justify-center xpo_items-center xpo_mb-12">
-              <Link to="/" className="xpo_flex xpo_items-center xpo_gap-2 xpo_bg-scprimary xpo_text-scwhite xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-800 xpo_transition-colors">
-                <Home className="xpo_w-5 xpo_h-5" />
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+              <Link to="/" className="flex items-center gap-2 bg-scprimary text-scwhite px-6 py-3 rounded-xl font-medium hover:bg-gray-800 transition-colors">
+                <Home className="w-5 h-5" />
                 {__('Go to Homepage', 'site-core')}
               </Link>
-              
-              <button onClick={() => window?.history && window.history.back()} className="xpo_flex xpo_items-center xpo_gap-2 xpo_border xpo_border-gray-300 xpo_text-gray-700 dark:xpo_text-scwhite-600 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 dark:hover:xpo_bg-scaccent-50 dark:hover:xpo_text-scprimary-600 xpo_transition-colors">
-                <ArrowLeft className="xpo_w-5 xpo_h-5" />
+
+              <button onClick={() => window?.history && window.history.back()} className="flex items-center gap-2 border border-gray-300 text-gray-700 dark:text-scwhite-600 px-6 py-3 rounded-xl font-medium hover:bg-gray-50 dark:hover:bg-scaccent-50 dark:hover:text-scprimary-600 transition-colors">
+                <ArrowLeft className="w-5 h-5" />
                 {__('Go Back', 'site-core')}
               </button>
-              
-              <button onClick={() => window?.location && window.location.reload()} className="xpo_flex xpo_items-center xpo_gap-2 xpo_border xpo_border-gray-300 xpo_text-gray-700 dark:xpo_text-scwhite-600 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 dark:hover:xpo_bg-scaccent-50 dark:hover:xpo_text-scprimary-600 xpo_transition-colors">
-                <RefreshCw className="xpo_w-5 xpo_h-5" />
+
+              <button onClick={() => window?.location && window.location.reload()} className="flex items-center gap-2 border border-gray-300 text-gray-700 dark:text-scwhite-600 px-6 py-3 rounded-xl font-medium hover:bg-gray-50 dark:hover:bg-scaccent-50 dark:hover:text-scprimary-600 transition-colors">
+                <RefreshCw className="w-5 h-5" />
                 {__('Try Again', 'site-core')}
               </button>
             </div>
 
-            <div className="xpo_max-w-md xpo_mx-auto xpo_mb-16">
-              <div className="xpo_relative">
-                <Search className="xpo_absolute xpo_left-4 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_w-5 xpo_h-5 xpo_text-gray-400" />
+            <div className="max-w-md mx-auto mb-16">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
                   placeholder={__('Search for products...', 'site-core')}
-                  className="xpo_w-full xpo_pl-12 xpo_pr-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-xl xpo_focus:ring-2 xpo_focus:ring-scprimary xpo_focus:border-transparent xpo_bg-scwhite"
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-scprimary focus:border-transparent bg-scwhite"
                 />
-                <button className="xpo_absolute xpo_right-2 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_bg-scprimary xpo_text-scwhite xpo_px-4 xpo_py-2 xpo_rounded-lg hover:xpo_bg-gray-800 xpo_transition-colors">
+                <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-scprimary text-scwhite px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors">
                   {__('Search', 'site-core')}
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="xpo_bg-scwhite-600/50 xpo_rounded-2xl xpo_shadow-lg xpo_p-8">
-            <div className="xpo_text-center xpo_mb-8">
-              <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-900 xpo_mb-2">
+          <div className="bg-scwhite-600/50 rounded-2xl shadow-lg p-8">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
                 {__("Don't leave empty-handed!", 'site-core')}
               </h2>
-              <p className="xpo_text-gray-600">
+              <p className="text-gray-600">
                 {__("Check out these popular products while you're here", 'site-core')}
               </p>
             </div>
 
-            <div className="xpo_grid xpo_grid-cols-1 sm:xpo_grid-cols-2 lg:xpo_grid-cols-3 xpo_gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {recommendedProducts.map((product, index) => (
                 <ProductCard3 key={index} product={product} />
               ))}
             </div>
 
-            <div className="xpo_text-center xpo_mt-8">
-              <Link to="/collections/special" className="xpo_bg-scprimary xpo_text-scwhite xpo_px-8 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-800 xpo_transition-colors">
+            <div className="text-center mt-8">
+              <Link to="/collections/special" className="bg-scprimary text-scwhite px-8 py-3 rounded-xl font-medium hover:bg-gray-800 transition-colors">
                 {__('View All Products', 'site-core')}
               </Link>
             </div>
           </div>
 
-          <div className="xpo_mt-12 xpo_bg-gradient-to-r xpo_from-scaccent-50/70 xpo_to-purple-50/70 xpo_rounded-2xl xpo_p-8 xpo_text-center">
-            <h3 className="xpo_text-xl xpo_font-bold xpo_text-gray-900 xpo_mb-2">
+          <div className="mt-12 bg-gradient-to-r from-scaccent-50/70 to-purple-50/70 rounded-2xl p-8 text-center">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">
               {__('Need Help?', 'site-core')}
             </h3>
-            <p className="xpo_text-gray-600 xpo_mb-6">
+            <p className="text-gray-600 mb-6">
               {__('Our customer support team is here to assist you 24/7', 'site-core')}
             </p>
-            <div className="xpo_flex xpo_flex-col sm:xpo_flex-row xpo_gap-4 xpo_justify-center">
-              <Link to="/knowledge-base/queries" className="xpo_bg-scwhite xpo_text-gray-900 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors xpo_shadow-sm">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/knowledge-base/queries" className="bg-scwhite text-gray-900 px-6 py-3 rounded-xl font-medium hover:bg-gray-50 transition-colors shadow-sm">
                 {__('Contact Support', 'site-core')}
               </Link>
-              <button onClick={() => window?.Tawk_API?.toggle?.()} className="xpo_bg-scwhite xpo_text-gray-900 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors xpo_shadow-sm">
+              <button onClick={() => window?.Tawk_API?.toggle?.()} className="bg-scwhite text-gray-900 px-6 py-3 rounded-xl font-medium hover:bg-gray-50 transition-colors shadow-sm">
                 {__('Live Chat', 'site-core')}
               </button>
-              <Link to="/help" className="xpo_bg-scwhite xpo_text-gray-900 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors xpo_shadow-sm">
+              <Link to="/help" className="bg-scwhite text-gray-900 px-6 py-3 rounded-xl font-medium hover:bg-gray-50 transition-colors shadow-sm">
                 {__('FAQs', 'site-core')}
               </Link>
             </div>

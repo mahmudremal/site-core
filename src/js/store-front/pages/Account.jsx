@@ -17,98 +17,97 @@ const AccountOverview = ({ userStats, recentOrders }) => {
 
   return (
     <>
-      <div className="xpo_space-y-8">
+      <div className="space-y-8">
         {/* Stats Grid - Matching your site's gradient style */}
-        <div className="xpo_grid xpo_grid-cols-1 md:xpo_grid-cols-2 lg:xpo_grid-cols-4 xpo_gap-6">
-          <div className="xpo_bg-gradient-to-br xpo_from-blue-500 xpo_via-blue-600 xpo_to-purple-700 xpo_rounded-2xl xpo_p-6 xpo_text-white xpo_shadow-xl">
-            <div className="xpo_flex xpo_items-center xpo_justify-between">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="bg-gradient-to-br from-blue-500 via-blue-600 to-purple-700 rounded-2xl p-6 text-white shadow-xl">
+            <div className="flex items-center justify-between">
               <div>
-                <p className="xpo_text-blue-100 xpo_text-sm xpo_font-medium">{__('Total Orders', 'site-core')}</p>
-                <p className="xpo_text-3xl xpo_font-bold xpo_mt-2">{userStats?.totalOrders || 0}</p>
-                <p className="xpo_text-blue-200 xpo_text-xs xpo_mt-1">+12% this month</p>
+                <p className="text-blue-100 text-sm font-medium">{__('Total Orders', 'site-core')}</p>
+                <p className="text-3xl font-bold mt-2">{userStats?.totalOrders || 0}</p>
+                <p className="text-blue-200 text-xs mt-1">+12% this month</p>
               </div>
-              <div className="xpo_bg-white/20 xpo_backdrop-blur-sm xpo_rounded-xl xpo_p-3">
-                <ShoppingBag className="xpo_w-8 xpo_h-8 xpo_text-white" />
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3">
+                <ShoppingBag className="w-8 h-8 text-white" />
               </div>
             </div>
           </div>
 
-          <div className="xpo_bg-gradient-to-br xpo_from-emerald-500 xpo_via-teal-600 xpo_to-cyan-700 xpo_rounded-2xl xpo_p-6 xpo_text-white xpo_shadow-xl">
-            <div className="xpo_flex xpo_items-center xpo_justify-between">
+          <div className="bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-700 rounded-2xl p-6 text-white shadow-xl">
+            <div className="flex items-center justify-between">
               <div>
-                <p className="xpo_text-emerald-100 xpo_text-sm xpo_font-medium">{__('Total Spent', 'site-core')}</p>
-                <p className="xpo_text-3xl xpo_font-bold xpo_mt-2">{money(userStats?.totalSpent || 0)}</p>
-                <p className="xpo_text-emerald-200 xpo_text-xs xpo_mt-1">+8% this month</p>
+                <p className="text-emerald-100 text-sm font-medium">{__('Total Spent', 'site-core')}</p>
+                <p className="text-3xl font-bold mt-2">{money(userStats?.totalSpent || 0)}</p>
+                <p className="text-emerald-200 text-xs mt-1">+8% this month</p>
               </div>
-              <div className="xpo_bg-white/20 xpo_backdrop-blur-sm xpo_rounded-xl xpo_p-3">
-                <DollarSign className="xpo_w-8 xpo_h-8 xpo_text-white" />
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3">
+                <DollarSign className="w-8 h-8 text-white" />
               </div>
             </div>
           </div>
 
-          <div className="xpo_bg-gradient-to-br xpo_from-purple-500 xpo_via-pink-600 xpo_to-rose-700 xpo_rounded-2xl xpo_p-6 xpo_text-white xpo_shadow-xl">
-            <div className="xpo_flex xpo_items-center xpo_justify-between">
+          <div className="bg-gradient-to-br from-purple-500 via-pink-600 to-rose-700 rounded-2xl p-6 text-white shadow-xl">
+            <div className="flex items-center justify-between">
               <div>
-                <p className="xpo_text-purple-100 xpo_text-sm xpo_font-medium">{__('Wishlist Items', 'site-core')}</p>
-                <p className="xpo_text-3xl xpo_font-bold xpo_mt-2">{userStats?.wishlistCount || 0}</p>
-                <p className="xpo_text-purple-200 xpo_text-xs xpo_mt-1">+3 this week</p>
+                <p className="text-purple-100 text-sm font-medium">{__('Wishlist Items', 'site-core')}</p>
+                <p className="text-3xl font-bold mt-2">{userStats?.wishlistCount || 0}</p>
+                <p className="text-purple-200 text-xs mt-1">+3 this week</p>
               </div>
-              <div className="xpo_bg-white/20 xpo_backdrop-blur-sm xpo_rounded-xl xpo_p-3">
-                <Heart className="xpo_w-8 xpo_h-8 xpo_text-white" />
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3">
+                <Heart className="w-8 h-8 text-white" />
               </div>
             </div>
           </div>
 
-          <div className="xpo_bg-gradient-to-br xpo_from-orange-500 xpo_via-amber-600 xpo_to-yellow-600 xpo_rounded-2xl xpo_p-6 xpo_text-white xpo_shadow-xl">
-            <div className="xpo_flex xpo_items-center xpo_justify-between">
+          <div className="bg-gradient-to-br from-orange-500 via-amber-600 to-yellow-600 rounded-2xl p-6 text-white shadow-xl">
+            <div className="flex items-center justify-between">
               <div>
-                <p className="xpo_text-orange-100 xpo_text-sm xpo_font-medium">{__('Active Stores', 'site-core')}</p>
-                <p className="xpo_text-3xl xpo_font-bold xpo_mt-2">{userStats?.activeStores || 0}</p>
-                <p className="xpo_text-orange-200 xpo_text-xs xpo_mt-1">All verified</p>
+                <p className="text-orange-100 text-sm font-medium">{__('Active Stores', 'site-core')}</p>
+                <p className="text-3xl font-bold mt-2">{userStats?.activeStores || 0}</p>
+                <p className="text-orange-200 text-xs mt-1">All verified</p>
               </div>
-              <div className="xpo_bg-white/20 xpo_backdrop-blur-sm xpo_rounded-xl xpo_p-3">
-                <Store className="xpo_w-8 xpo_h-8 xpo_text-white" />
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3">
+                <Store className="w-8 h-8 text-white" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Recent Activity */}
-        <div className="xpo_grid xpo_grid-cols-1 lg:xpo_grid-cols-2 xpo_gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Recent Orders */}
-          <div className="xpo_bg-gray-800/40 xpo_backdrop-blur-xl xpo_border xpo_border-gray-700/50 xpo_rounded-2xl xpo_p-6 xpo_shadow-2xl">
-            <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-6">
-              <h3 className="xpo_text-xl xpo_font-bold xpo_text-white">{__('Recent Orders', 'site-core')}</h3>
-              <Link 
-                to="/clients-portal/my/orders" 
-                className="xpo_text-blue-400 hover:xpo_text-blue-300 xpo_text-sm xpo_font-medium xpo_flex xpo_items-center xpo_gap-1 xpo_transition-colors"
+          <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-white">{__('Recent Orders', 'site-core')}</h3>
+              <Link
+                to="/clients-portal/my/orders"
+                className="text-blue-400 hover:text-blue-300 text-sm font-medium flex items-center gap-1 transition-colors"
               >
                 {__('View All', 'site-core')}
-                <ChevronRight className="xpo_w-4 xpo_h-4" />
+                <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
-            <div className="xpo_space-y-4">
+            <div className="space-y-4">
               {recentOrders?.slice(0, 3).map((order, index) => (
-                <div key={index} className="xpo_bg-gray-700/30 xpo_backdrop-blur-sm xpo_border xpo_border-gray-600/40 xpo_rounded-xl xpo_p-4 xpo_hover:bg-gray-700/50 xpo_transition-all">
-                  <div className="xpo_flex xpo_items-center xpo_justify-between">
-                    <div className="xpo_flex xpo_items-center xpo_gap-3">
-                      <div className="xpo_w-10 xpo_h-10 xpo_bg-blue-500/20 xpo_rounded-lg xpo_flex xpo_items-center xpo_justify-center">
-                        <Package className="xpo_w-5 xpo_h-5 xpo_text-blue-400" />
+                <div key={index} className="bg-gray-700/30 backdrop-blur-sm border border-gray-600/40 rounded-xl p-4 hover:bg-gray-700/50 transition-all">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                        <Package className="w-5 h-5 text-blue-400" />
                       </div>
                       <div>
-                        <p className="xpo_font-semibold xpo_text-white xpo_text-sm">#{order.id}</p>
-                        <p className="xpo_text-xs xpo_text-gray-400">{order.date}</p>
+                        <p className="font-semibold text-white text-sm">#{order.id}</p>
+                        <p className="text-xs text-gray-400">{order.date}</p>
                       </div>
                     </div>
-                    <div className="xpo_text-right">
-                      <p className="xpo_font-bold xpo_text-white">{money(order.total)}</p>
-                      <span className={`xpo_text-xs xpo_px-2 xpo_py-1 xpo_rounded-full xpo_font-medium ${
-                        order.status === 'delivered' 
-                          ? 'xpo_bg-emerald-500/20 xpo_text-emerald-400 xpo_border xpo_border-emerald-500/30'
+                    <div className="text-right">
+                      <p className="font-bold text-white">{money(order.total)}</p>
+                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${order.status === 'delivered'
+                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                           : order.status === 'processing'
-                          ? 'xpo_bg-amber-500/20 xpo_text-amber-400 xpo_border xpo_border-amber-500/30'
-                          : 'xpo_bg-blue-500/20 xpo_text-blue-400 xpo_border xpo_border-blue-500/30'
-                      }`}>
+                            ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                            : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                        }`}>
                         {order.status}
                       </span>
                     </div>
@@ -119,47 +118,47 @@ const AccountOverview = ({ userStats, recentOrders }) => {
           </div>
 
           {/* Quick Actions */}
-          <div className="xpo_bg-gray-800/40 xpo_backdrop-blur-xl xpo_border xpo_border-gray-700/50 xpo_rounded-2xl xpo_p-6 xpo_shadow-2xl">
-            <h3 className="xpo_text-xl xpo_font-bold xpo_text-white xpo_mb-6">{__('Quick Actions', 'site-core')}</h3>
-            <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4">
-              <Link 
-                to="/clients-portal/my/profile" 
-                className="xpo_bg-gradient-to-br xpo_from-blue-500/20 xpo_to-purple-600/20 xpo_border xpo_border-blue-500/30 xpo_backdrop-blur-sm xpo_rounded-xl xpo_p-4 xpo_text-center xpo_hover:from-blue-500/30 xpo_hover:to-purple-600/30 xpo_hover:border-blue-400/50 xpo_transition-all xpo_group"
+          <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 shadow-2xl">
+            <h3 className="text-xl font-bold text-white mb-6">{__('Quick Actions', 'site-core')}</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <Link
+                to="/clients-portal/my/profile"
+                className="bg-gradient-to-br from-blue-500/20 to-purple-600/20 border border-blue-500/30 backdrop-blur-sm rounded-xl p-4 text-center hover:from-blue-500/30 hover:to-purple-600/30 hover:border-blue-400/50 transition-all group"
               >
-                <div className="xpo_w-12 xpo_h-12 xpo_bg-blue-500/20 xpo_rounded-lg xpo_flex xpo_items-center xpo_justify-center xpo_mx-auto xpo_mb-3 xpo_group-hover:bg-blue-500/30 xpo_transition-colors">
-                  <User className="xpo_w-6 xpo_h-6 xpo_text-blue-400" />
+                <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-500/30 transition-colors">
+                  <User className="w-6 h-6 text-blue-400" />
                 </div>
-                <span className="xpo_text-sm xpo_font-medium xpo_text-white">{__('Edit Profile', 'site-core')}</span>
+                <span className="text-sm font-medium text-white">{__('Edit Profile', 'site-core')}</span>
               </Link>
 
-              <Link 
-                to="/clients-portal/my/orders" 
-                className="xpo_bg-gradient-to-br xpo_from-emerald-500/20 xpo_to-teal-600/20 xpo_border xpo_border-emerald-500/30 xpo_backdrop-blur-sm xpo_rounded-xl xpo_p-4 xpo_text-center xpo_hover:from-emerald-500/30 xpo_hover:to-teal-600/30 xpo_hover:border-emerald-400/50 xpo_transition-all xpo_group"
+              <Link
+                to="/clients-portal/my/orders"
+                className="bg-gradient-to-br from-emerald-500/20 to-teal-600/20 border border-emerald-500/30 backdrop-blur-sm rounded-xl p-4 text-center hover:from-emerald-500/30 hover:to-teal-600/30 hover:border-emerald-400/50 transition-all group"
               >
-                <div className="xpo_w-12 xpo_h-12 xpo_bg-emerald-500/20 xpo_rounded-lg xpo_flex xpo_items-center xpo_justify-center xpo_mx-auto xpo_mb-3 xpo_group-hover:bg-emerald-500/30 xpo_transition-colors">
-                  <Package className="xpo_w-6 xpo_h-6 xpo_text-emerald-400" />
+                <div className="w-12 h-12 bg-emerald-500/20 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-emerald-500/30 transition-colors">
+                  <Package className="w-6 h-6 text-emerald-400" />
                 </div>
-                <span className="xpo_text-sm xpo_font-medium xpo_text-white">{__('My Orders', 'site-core')}</span>
+                <span className="text-sm font-medium text-white">{__('My Orders', 'site-core')}</span>
               </Link>
 
-              <Link 
-                to="/clients-portal/my/wishlist" 
-                className="xpo_bg-gradient-to-br xpo_from-purple-500/20 xpo_to-pink-600/20 xpo_border xpo_border-purple-500/30 xpo_backdrop-blur-sm xpo_rounded-xl xpo_p-4 xpo_text-center xpo_hover:from-purple-500/30 xpo_hover:to-pink-600/30 xpo_hover:border-purple-400/50 xpo_transition-all xpo_group"
+              <Link
+                to="/clients-portal/my/wishlist"
+                className="bg-gradient-to-br from-purple-500/20 to-pink-600/20 border border-purple-500/30 backdrop-blur-sm rounded-xl p-4 text-center hover:from-purple-500/30 hover:to-pink-600/30 hover:border-purple-400/50 transition-all group"
               >
-                <div className="xpo_w-12 xpo_h-12 xpo_bg-purple-500/20 xpo_rounded-lg xpo_flex xpo_items-center xpo_justify-center xpo_mx-auto xpo_mb-3 xpo_group-hover:bg-purple-500/30 xpo_transition-colors">
-                  <Heart className="xpo_w-6 xpo_h-6 xpo_text-purple-400" />
+                <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-purple-500/30 transition-colors">
+                  <Heart className="w-6 h-6 text-purple-400" />
                 </div>
-                <span className="xpo_text-sm xpo_font-medium xpo_text-white">{__('Wishlist', 'site-core')}</span>
+                <span className="text-sm font-medium text-white">{__('Wishlist', 'site-core')}</span>
               </Link>
 
-              <Link 
-                to="/clients-portal/my/stores" 
-                className="xpo_bg-gradient-to-br xpo_from-orange-500/20 xpo_to-amber-600/20 xpo_border xpo_border-orange-500/30 xpo_backdrop-blur-sm xpo_rounded-xl xpo_p-4 xpo_text-center xpo_hover:from-orange-500/30 xpo_hover:to-amber-600/30 xpo_hover:border-orange-400/50 xpo_transition-all xpo_group"
+              <Link
+                to="/clients-portal/my/stores"
+                className="bg-gradient-to-br from-orange-500/20 to-amber-600/20 border border-orange-500/30 backdrop-blur-sm rounded-xl p-4 text-center hover:from-orange-500/30 hover:to-amber-600/30 hover:border-orange-400/50 transition-all group"
               >
-                <div className="xpo_w-12 xpo_h-12 xpo_bg-orange-500/20 xpo_rounded-lg xpo_flex xpo_items-center xpo_justify-center xpo_mx-auto xpo_mb-3 xpo_group-hover:bg-orange-500/30 xpo_transition-colors">
-                  <Store className="xpo_w-6 xpo_h-6 xpo_text-orange-400" />
+                <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-orange-500/30 transition-colors">
+                  <Store className="w-6 h-6 text-orange-400" />
                 </div>
-                <span className="xpo_text-sm xpo_font-medium xpo_text-white">{__('My Stores', 'site-core')}</span>
+                <span className="text-sm font-medium text-white">{__('My Stores', 'site-core')}</span>
               </Link>
             </div>
           </div>
@@ -199,20 +198,20 @@ const AccountPage = () => {
           member_since: '2022-01-15',
           verified: true
         });
-        
+
         setUserStats({
           totalOrders: 42,
           totalSpent: 1245.50,
           wishlistCount: 15,
           activeStores: 2
         });
-        
+
         setRecentOrders([
           { id: '12345', date: '2024-01-15', total: 89.99, status: 'delivered' },
           { id: '12346', date: '2024-01-10', total: 156.00, status: 'processing' },
           { id: '12347', date: '2024-01-05', total: 45.50, status: 'shipped' }
         ]);
-        
+
         setLoading(false);
       }, 1000);
     };
@@ -299,10 +298,10 @@ const AccountPage = () => {
     return (
       <div>
         <SiteHeader />
-        <div className="xpo_min-h-screen xpo_bg-gray-900 xpo_flex xpo_items-center xpo_justify-center">
-          <div className="xpo_text-center">
-            <div className="xpo_animate-spin xpo_rounded-full xpo_h-12 xpo_w-12 xpo_border-2 xpo_border-blue-500 xpo_border-t-transparent xpo_mx-auto"></div>
-            <p className="xpo_mt-4 xpo_text-gray-400">{__('Loading account...', 'site-core')}</p>
+        <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-2 border-blue-500 border-t-transparent mx-auto"></div>
+            <p className="mt-4 text-gray-400">{__('Loading account...', 'site-core')}</p>
           </div>
         </div>
         <SiteFooter />
@@ -314,103 +313,100 @@ const AccountPage = () => {
     <div>
       <SiteHeader />
 
-      <div className="xpo_relative xpo_z-10 xpo_min-h-screen">
-        <div className="xpo_container xpo_mx-auto xpo_px-4 xpo_py-8">
-          
+      <div className="relative z-10 min-h-screen">
+        <div className="container mx-auto px-4 py-8">
+
           {/* Enhanced Header */}
-          <div className="xpo_bg-gray-800/40 xpo_backdrop-blur-xl xpo_border xpo_border-gray-700/50 xpo_rounded-2xl xpo_p-8 xpo_mb-8 xpo_shadow-2xl">
-            <div className="xpo_flex xpo_flex-col md:xpo_flex-row xpo_items-start md:xpo_items-center xpo_justify-between">
-              <div className="xpo_flex xpo_items-center xpo_space-x-6 xpo_mb-6 md:xpo_mb-0">
-                <div className="xpo_relative">
-                  <div className="xpo_w-20 xpo_h-20 xpo_rounded-full xpo_bg-gradient-to-br xpo_from-blue-400 xpo_to-purple-600 xpo_p-1">
+          <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 mb-8 shadow-2xl">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
+              <div className="flex items-center space-x-6 mb-6 md:mb-0">
+                <div className="relative">
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 to-purple-600 p-1">
                     <img
                       src={user?.avatar}
                       alt={`${user?.first_name} ${user?.last_name}`}
-                      className="xpo_w-full xpo_h-full xpo_rounded-full xpo_object-cover"
+                      className="w-full h-full rounded-full object-cover"
                     />
                   </div>
                   {user?.verified && (
-                    <div className="xpo_absolute xpo_-bottom-1 xpo_-right-1 xpo_bg-emerald-500 xpo_rounded-full xpo_p-1.5 xpo_border-2 xpo_border-gray-900">
-                      <Shield className="xpo_w-3 xpo_h-3 xpo_text-white" />
+                    <div className="absolute -bottom-1 -right-1 bg-emerald-500 rounded-full p-1.5 border-2 border-gray-900">
+                      <Shield className="w-3 h-3 text-white" />
                     </div>
                   )}
                 </div>
                 <div>
-                  <h1 className="xpo_text-3xl xpo_font-bold xpo_text-white xpo_mb-1">
+                  <h1 className="text-3xl font-bold text-white mb-1">
                     {sprintf(__('Welcome back, %s!', 'site-core'), user?.first_name)}
                   </h1>
-                  <p className="xpo_text-gray-300 xpo_mb-1">{user?.email}</p>
-                  <p className="xpo_text-sm xpo_text-gray-400 xpo_flex xpo_items-center xpo_gap-2">
-                    <Calendar className="xpo_w-4 xpo_h-4" />
+                  <p className="text-gray-300 mb-1">{user?.email}</p>
+                  <p className="text-sm text-gray-400 flex items-center gap-2">
+                    <Calendar className="w-4 h-4" />
                     {sprintf(__('Member since %s', 'site-core'), new Date(user?.member_since).getFullYear())}
                   </p>
                 </div>
               </div>
-              
-              <div className="xpo_flex xpo_space-x-3">
-                <Link 
-                  to="/clients-portal/my/profile" 
-                  className="xpo_bg-gradient-to-r xpo_from-blue-500 xpo_to-purple-600 xpo_text-white xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:from-blue-600 hover:to-purple-700 xpo_transition-all xpo_shadow-lg xpo_flex xpo_items-center xpo_gap-2"
+
+              <div className="flex space-x-3">
+                <Link
+                  to="/clients-portal/my/profile"
+                  className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-xl font-medium hover:from-blue-600 hover:to-purple-700 transition-all shadow-lg flex items-center gap-2"
                 >
-                  <Edit3 className="xpo_w-4 xpo_h-4" />
+                  <Edit3 className="w-4 h-4" />
                   {__('Edit Profile', 'site-core')}
                 </Link>
-                <button 
+                <button
                   onClick={handleSignOut}
-                  className="xpo_bg-gray-700/50 xpo_backdrop-blur-sm xpo_border xpo_border-gray-600/50 xpo_text-gray-300 xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:bg-gray-600/50 hover:text-white xpo_transition-all xpo_flex xpo_items-center xpo_gap-2"
+                  className="bg-gray-700/50 backdrop-blur-sm border border-gray-600/50 text-gray-300 px-6 py-3 rounded-xl font-medium hover:bg-gray-600/50 hover:text-white transition-all flex items-center gap-2"
                 >
-                  <LogOut className="xpo_w-4 xpo_h-4" />
+                  <LogOut className="w-4 h-4" />
                   {__('Sign Out', 'site-core')}
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="xpo_grid xpo_grid-cols-1 lg:xpo_grid-cols-4 xpo_gap-8">
-            
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+
             {/* Enhanced Sidebar */}
-            <div className="lg:xpo_col-span-1">
-              <div className="xpo_bg-gray-800/40 xpo_backdrop-blur-xl xpo_border xpo_border-gray-700/50 xpo_rounded-2xl xpo_p-6 xpo_shadow-2xl xpo_sticky xpo_top-8">
-                <nav className="xpo_space-y-2">
+            <div className="lg:col-span-1">
+              <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 shadow-2xl sticky top-8">
+                <nav className="space-y-2">
                   {menuItems.map((item) => {
                     const Icon = item.icon;
                     const isActive = section === item.key;
-                    
+
                     return (
                       <button
                         key={item.key}
                         onClick={() => handleMenuClick(item.key)}
-                        className={`xpo_w-full xpo_flex xpo_items-center xpo_justify-between xpo_px-4 xpo_py-4 xpo_rounded-xl xpo_text-left xpo_transition-all xpo_group ${
-                          isActive
-                            ? 'xpo_bg-gradient-to-r xpo_from-blue-500/20 xpo_to-purple-600/20 xpo_border xpo_border-blue-500/30 xpo_text-white xpo_shadow-lg'
-                            : 'xpo_text-gray-300 hover:xpo_bg-gray-700/30 hover:xpo_text-white hover:xpo_border hover:xpo_border-gray-600/50'
-                        }`}
+                        className={`w-full flex items-center justify-between px-4 py-4 rounded-xl text-left transition-all group ${isActive
+                            ? 'bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-500/30 text-white shadow-lg'
+                            : 'text-gray-300 hover:bg-gray-700/30 hover:text-white hover:border hover:border-gray-600/50'
+                          }`}
                       >
-                        <div className="xpo_flex xpo_items-center xpo_space-x-3">
-                          <div className={`xpo_p-2 xpo_rounded-lg ${isActive ? 'xpo_bg-blue-500/20' : 'xpo_bg-gray-700/50 group-hover:xpo_bg-gray-600/50'}`}>
-                            <Icon className={`xpo_w-5 xpo_h-5 ${isActive ? 'xpo_text-blue-400' : 'xpo_text-gray-400 group-hover:xpo_text-gray-300'}`} />
+                        <div className="flex items-center space-x-3">
+                          <div className={`p-2 rounded-lg ${isActive ? 'bg-blue-500/20' : 'bg-gray-700/50 group-hover:bg-gray-600/50'}`}>
+                            <Icon className={`w-5 h-5 ${isActive ? 'text-blue-400' : 'text-gray-400 group-hover:text-gray-300'}`} />
                           </div>
                           <div>
-                            <div className="xpo_font-medium">{item.label}</div>
-                            <div className="xpo_text-xs xpo_text-gray-500 xpo_hidden lg:xpo_block">
+                            <div className="font-medium">{item.label}</div>
+                            <div className="text-xs text-gray-500 hidden lg:block">
                               {item.description}
                             </div>
                           </div>
                         </div>
-                        
-                        <div className="xpo_flex xpo_items-center xpo_space-x-2">
+
+                        <div className="flex items-center space-x-2">
                           {item.badge && (
-                            <span className={`xpo_text-xs xpo_px-2 xpo_py-1 xpo_rounded-full xpo_font-medium xpo_border ${
-                              isActive 
-                                ? 'xpo_bg-blue-500/20 xpo_text-blue-300 xpo_border-blue-500/30' 
-                                : 'xpo_bg-gray-700/50 xpo_text-gray-400 xpo_border-gray-600/50'
-                            }`}>
+                            <span className={`text-xs px-2 py-1 rounded-full font-medium border ${isActive
+                                ? 'bg-blue-500/20 text-blue-300 border-blue-500/30'
+                                : 'bg-gray-700/50 text-gray-400 border-gray-600/50'
+                              }`}>
                               {item.badge}
                             </span>
                           )}
-                          <ChevronRight className={`xpo_w-4 xpo_h-4 xpo_transition-transform ${
-                            isActive ? 'xpo_text-blue-400 xpo_rotate-90' : 'xpo_text-gray-500 group-hover:xpo_text-gray-400'
-                          }`} />
+                          <ChevronRight className={`w-4 h-4 transition-transform ${isActive ? 'text-blue-400 rotate-90' : 'text-gray-500 group-hover:text-gray-400'
+                            }`} />
                         </div>
                       </button>
                     );
@@ -420,33 +416,33 @@ const AccountPage = () => {
             </div>
 
             {/* Enhanced Main Content */}
-            <div className="lg:xpo_col-span-3">
-              <div className="xpo_bg-gray-800/40 xpo_backdrop-blur-xl xpo_border xpo_border-gray-700/50 xpo_rounded-2xl xpo_p-8 xpo_shadow-2xl xpo_min-h-96">
+            <div className="lg:col-span-3">
+              <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 shadow-2xl min-h-96">
                 {section === 'overview' && (
-                  <AccountOverview 
+                  <AccountOverview
                     userStats={userStats}
                     recentOrders={recentOrders}
                   />
                 )}
-                
+
                 {section !== 'overview' && (
-                  <div className="xpo_text-center xpo_py-16">
-                    <div className="xpo_bg-gray-700/30 xpo_backdrop-blur-sm xpo_rounded-2xl xpo_p-8 xpo_border xpo_border-gray-600/30 xpo_max-w-md xpo_mx-auto">
-                      <div className="xpo_w-16 xpo_h-16 xpo_bg-gray-600/50 xpo_rounded-xl xpo_flex xpo_items-center xpo_justify-center xpo_mx-auto xpo_mb-4">
-                        {menuItems.find(item => item.key === section)?.icon && 
+                  <div className="text-center py-16">
+                    <div className="bg-gray-700/30 backdrop-blur-sm rounded-2xl p-8 border border-gray-600/30 max-w-md mx-auto">
+                      <div className="w-16 h-16 bg-gray-600/50 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        {menuItems.find(item => item.key === section)?.icon &&
                           (() => {
                             const Icon = menuItems.find(item => item.key === section).icon;
-                            return <Icon className="xpo_w-8 xpo_h-8 xpo_text-gray-400" />;
+                            return <Icon className="w-8 h-8 text-gray-400" />;
                           })()
                         }
                       </div>
-                      <h3 className="xpo_text-xl xpo_font-semibold xpo_text-white xpo_mb-2">
+                      <h3 className="text-xl font-semibold text-white mb-2">
                         {menuItems.find(item => item.key === section)?.label}
                       </h3>
-                      <p className="xpo_text-gray-400 xpo_mb-4">
+                      <p className="text-gray-400 mb-4">
                         {menuItems.find(item => item.key === section)?.description}
                       </p>
-                      <p className="xpo_text-sm xpo_text-gray-500">
+                      <p className="text-sm text-gray-500">
                         {__('This section is under development. Individual components will be created for each tab.', 'site-core')}
                       </p>
                     </div>
@@ -457,7 +453,7 @@ const AccountPage = () => {
           </div>
         </div>
       </div>
-      
+
       <SiteFooter />
     </div>
   );

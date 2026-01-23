@@ -210,11 +210,11 @@ export const Nav = () => {
       // }
     ]);
   }, [auth]);
-  
+
   return (
     <>
       <Outlet />
-        {/* // location.host !== 'core.ecommerized.com' ? r :
+      {/* // location.host !== 'core.ecommerized.com' ? r :
         // (
         //   // , '/resources/service-docs', '/resources/partner-docs', '/packages', '/stores', '/support', '/contracts'
         //   !['/users', '/invoices', '/team', '/settings'].includes(r.route)
@@ -222,8 +222,8 @@ export const Nav = () => {
         // ) */}
       <ul className="sidebar-menu" id="sidebar-menu">
         {navMenus
-        // .map(r => ({...r, childrens: (r?.childrens??[]).filter(i => roles.has_ability(i?.caps))})).filter(r => roles.has_ability(r?.caps))
-        .map((item, index) => <NavItem key={index} item={item} />)}
+          // .map(r => ({...r, childrens: (r?.childrens??[]).filter(i => roles.has_ability(i?.caps))})).filter(r => roles.has_ability(r?.caps))
+          .map((item, index) => <NavItem key={index} item={item} />)}
       </ul>
     </>
   );
@@ -245,7 +245,7 @@ const NavItem = ({ item }) => {
 
   return (
     <li className={`${hasChildren ? 'dropdown' : ''} ${open ? '' : ''}`}>
-      <NavLink to={home_route(item.route??'#')} onClick={hasChildren ? toggleDropdown : undefined} className={({ isActive }) => isActive ? 'active-page' : ''}>
+      <NavLink to={home_route(item.route ?? '#')} onClick={hasChildren ? toggleDropdown : undefined} className={({ isActive }) => isActive ? 'active-page' : ''}>
         {item.icon && <Icon icon={item.icon} className="menu-icon" />}
         <span>{item.label}</span>
         {hasChildren && <ChevronRight />}
@@ -258,7 +258,7 @@ const NavItem = ({ item }) => {
               <NavLink to={home_route(child.route)} className={({ isActive }) => isActive ? 'active-page' : ''}>
                 {child.icon && <Icon icon={child.icon} className="menu-icon" />}
                 {!child.icon && child.iconClass && (
-                  <i className={`ri-circle-fill circle-icon ${child.iconClass} xpo_w-auto`} />
+                  <i className={`ri-circle-fill circle-icon ${child.iconClass} w-auto`} />
                 )}
                 <span>{child.label}</span>
               </NavLink>

@@ -83,8 +83,8 @@ const MoonlitMeadowLogo = () => {
   }));
 
   return (
-    <div className="xpo_relative xpo_w-80 xpo_h-24 xpo_overflow-hidden">
-      <svg viewBox="0 0 100 100" className="xpo_absolute xpo_inset-0 xpo_w-full xpo_h-full">
+    <div className="relative w-80 h-24 overflow-hidden">
+      <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full">
         <defs>
           <radialGradient id="moonGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
             <stop offset="0%" stopColor="rgb(249, 250, 252)" />
@@ -118,14 +118,14 @@ const MoonlitMeadowLogo = () => {
             ref={cloudPath1Ref}
             d="M-10 40 Q 0 20, 10 40 T 30 40 T 50 40 T 70 40 Q 60 20, 50 40 Z"
             fill={theme === 'dark' ? 'hsl(220, 15%, 20%)' : 'hsl(0, 0%, 95%)'}
-            className="xpo_transition-colors xpo_duration-500"
+            className="transition-colors duration-500"
             transform="translate(0, 0)"
           />
           <path
             ref={cloudPath2Ref}
             d="M-5 50 Q 5 30, 15 50 T 35 50 T 55 50 T 75 50 Q 65 30, 55 50 Z"
             fill={theme === 'dark' ? 'hsl(220, 15%, 20%)' : 'hsl(0, 0%, 95%)'}
-            className="xpo_transition-colors xpo_duration-500"
+            className="transition-colors duration-500"
             transform="translate(10, -5)"
           />
         </g>
@@ -136,7 +136,7 @@ const MoonlitMeadowLogo = () => {
             ref={el => starRefs.current[i] = el}
             cx={star.cx} cy={star.cy} r={star.r}
             fill="rgb(255, 255, 255)"
-            className="xpo_transition-opacity xpo_duration-500"
+            className="transition-opacity duration-500"
             style={{ opacity: theme === 'dark' ? 1 : 0 }}
           />
         ))}
@@ -145,14 +145,14 @@ const MoonlitMeadowLogo = () => {
           ref={moonRef}
           cx="85" cy="30" r="8"
           fill="url(#moonGradient)"
-          className="xpo_transition-opacity xpo_duration-500"
+          className="transition-opacity duration-500"
           style={{ filter: 'url(#moonShadow)', opacity: theme === 'dark' ? 1 : 0, display: theme === 'dark' ? 'block' : 'none' }}
         />
         <circle
           ref={sunRef}
           cx="85" cy="30" r="8"
           fill="url(#sunGradient)"
-          className="xpo_transition-opacity xpo_duration-500"
+          className="transition-opacity duration-500"
           style={{ filter: 'url(#sunGlow)', opacity: theme === 'light' ? 1 : 0, display: theme === 'light' ? 'block' : 'none' }}
         />
 
@@ -162,7 +162,7 @@ const MoonlitMeadowLogo = () => {
           textAnchor="middle"
           fontSize="18" fontWeight="bold" fontFamily="Arial, sans-serif"
           fill={theme === 'dark' ? 'rgb(245, 247, 250)' : 'rgb(10, 29, 55)'}
-          className="xpo_transition-colors xpo_duration-500"
+          className="transition-colors duration-500"
           filter="url(#textGlow)"
         >
           MoonlitMeadow

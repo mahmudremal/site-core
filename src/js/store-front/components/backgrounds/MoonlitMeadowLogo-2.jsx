@@ -21,7 +21,7 @@ const MoonlitMeadowLogo = () => {
       // Dark theme styling
       gsap.set(starsRef.current, { opacity: 1, display: 'block' });
       gsap.set([cloud1Ref.current, cloud2Ref.current], { opacity: 0.15, fill: 'hsl(220, 15%, 25%)' });
-      
+
       // Animate stars with varied timing
       starsRef.current.forEach((star, i) => {
         if (star) {
@@ -39,12 +39,12 @@ const MoonlitMeadowLogo = () => {
       });
 
       // Text entrance animation
-      gsap.fromTo(moonlitRef.current, 
+      gsap.fromTo(moonlitRef.current,
         { opacity: 0, y: -20 },
         { opacity: 1, y: 0, duration: 1.2, ease: 'back.out(1.7)', delay: 0.3 }
       );
-      
-      gsap.fromTo(meadowRef.current, 
+
+      gsap.fromTo(meadowRef.current,
         { opacity: 0, y: 20 },
         { opacity: 1, y: 0, duration: 1.2, ease: 'back.out(1.7)', delay: 0.6 }
       );
@@ -68,14 +68,14 @@ const MoonlitMeadowLogo = () => {
       // Light theme styling
       gsap.set(starsRef.current, { opacity: 0, display: 'none' });
       gsap.set([cloud1Ref.current, cloud2Ref.current], { opacity: 0.4, fill: 'hsl(0, 0%, 90%)' });
-      
+
       // Text entrance animation
-      gsap.fromTo(moonlitRef.current, 
+      gsap.fromTo(moonlitRef.current,
         { opacity: 0, y: -15 },
         { opacity: 1, y: 0, duration: 1, ease: 'back.out(1.7)', delay: 0.2 }
       );
-      
-      gsap.fromTo(meadowRef.current, 
+
+      gsap.fromTo(meadowRef.current,
         { opacity: 0, y: 15 },
         { opacity: 1, y: 0, duration: 1, ease: 'back.out(1.7)', delay: 0.4 }
       );
@@ -104,7 +104,7 @@ const MoonlitMeadowLogo = () => {
       yoyo: true,
       ease: 'none',
     });
-    
+
     gsap.to(cloud2Ref.current, {
       x: '-=10',
       duration: 22,
@@ -127,11 +127,11 @@ const MoonlitMeadowLogo = () => {
   ];
 
   return (
-    <div className="xpo_relative xpo_w-80 xpo_h-32 xpo_overflow-hidden xpo_bg-gradient-to-br xpo_from-transparent xpo_to-transparent">
-      <svg 
+    <div className="relative w-80 h-32 overflow-hidden bg-gradient-to-br from-transparent to-transparent">
+      <svg
         ref={containerRef}
-        viewBox="0 0 100 100" 
-        className="xpo_absolute xpo_inset-0 xpo_w-full xpo_h-full"
+        viewBox="0 0 100 100"
+        className="absolute inset-0 w-full h-full"
       >
         <defs>
           {/* Dark theme gradients */}
@@ -174,18 +174,18 @@ const MoonlitMeadowLogo = () => {
         </defs>
 
         {/* Background clouds */}
-        <g className="xpo_opacity-20">
+        <g className="opacity-20">
           <path
             ref={cloud1Ref}
             d="M-15 25 Q -5 15, 5 25 T 25 25 T 45 25 T 65 25 Q 55 15, 45 25 Z"
             fill={theme === 'dark' ? 'hsl(220, 15%, 25%)' : 'hsl(0, 0%, 90%)'}
-            className="xpo_transition-colors xpo_duration-500"
+            className="transition-colors duration-500"
           />
           <path
             ref={cloud2Ref}
             d="M-10 75 Q 0 65, 10 75 T 30 75 T 50 75 T 70 75 Q 60 65, 50 75 Z"
             fill={theme === 'dark' ? 'hsl(220, 15%, 25%)' : 'hsl(0, 0%, 90%)'}
-            className="xpo_transition-colors xpo_duration-500"
+            className="transition-colors duration-500"
           />
         </g>
 
@@ -196,8 +196,8 @@ const MoonlitMeadowLogo = () => {
             ref={el => starsRef.current[i] = el}
             points={star.points}
             fill="url(#starGradient)"
-            className="xpo_transition-opacity xpo_duration-500"
-            style={{ 
+            className="transition-opacity duration-500"
+            style={{
               opacity: theme === 'dark' ? 1 : 0,
               transformOrigin: `${star.cx}px ${star.cy}px`
             }}
@@ -216,12 +216,12 @@ const MoonlitMeadowLogo = () => {
             fontWeight="300"
             fontFamily="'Playfair Display', Georgia, serif"
             fill={theme === 'dark' ? 'url(#darkMoonlitGradient)' : 'url(#lightMoonlitGradient)'}
-            className="xpo_transition-colors xpo_duration-500"
+            className="transition-colors duration-500"
             style={{ letterSpacing: '0.1em' }}
           >
             Moonlit
           </text>
-          
+
           <text
             ref={meadowRef}
             x="50"
@@ -231,7 +231,7 @@ const MoonlitMeadowLogo = () => {
             fontWeight="600"
             fontFamily="'Playfair Display', Georgia, serif"
             fill={theme === 'dark' ? 'url(#darkMeadowGradient)' : 'url(#lightMeadowGradient)'}
-            className="xpo_transition-colors xpo_duration-500"
+            className="transition-colors duration-500"
             style={{ letterSpacing: '0.05em' }}
           >
             MEADOW
@@ -247,13 +247,13 @@ const MoonlitMeadowLogo = () => {
           y2="72"
           stroke="url(#underlineGradient)"
           strokeWidth="1.5"
-          className="xpo_transition-colors xpo_duration-500"
+          className="transition-colors duration-500"
           style={{ transformOrigin: 'center' }}
         />
 
         {/* Decorative dots */}
-        <circle cx="20" cy="72" r="1.5" fill={theme === 'dark' ? '#fbbf24' : '#d97706'} className="xpo_transition-colors xpo_duration-500" />
-        <circle cx="80" cy="72" r="1.5" fill={theme === 'dark' ? '#fbbf24' : '#d97706'} className="xpo_transition-colors xpo_duration-500" />
+        <circle cx="20" cy="72" r="1.5" fill={theme === 'dark' ? '#fbbf24' : '#d97706'} className="transition-colors duration-500" />
+        <circle cx="80" cy="72" r="1.5" fill={theme === 'dark' ? '#fbbf24' : '#d97706'} className="transition-colors duration-500" />
       </svg>
     </div>
   );

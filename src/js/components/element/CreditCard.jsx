@@ -4,8 +4,8 @@ import request from "@common/request";
 import { Trash } from "lucide-react";
 import { useTranslation } from "@context/LanguageProvider";
 
-export default function CreditCard({ store = [], pk = '', setAllowProceed = () => {} }) {
-    const [stored = [], setStored = () => {}] = store;
+export default function CreditCard({ store = [], pk = '', setAllowProceed = () => { } }) {
+    const [stored = [], setStored = () => { }] = store;
     const { __ } = useTranslation();
     const [showCardForm, setShowCardForm] = useState(stored.length === 0);
     const [selectedId, setSelectedId] = useState(null);
@@ -90,7 +90,7 @@ export default function CreditCard({ store = [], pk = '', setAllowProceed = () =
         setLoading(true);
 
         const result = await cardRef.current.tap.createToken(cardRef.current.card);
-        if (result.error) {alert(result.error.message);setLoading(false);return;}
+        if (result.error) { alert(result.error.message); setLoading(false); return; }
         // 
         const { id: tokenId, card: cardData } = result;
         const cardholderName = cardData.name || "";
@@ -110,17 +110,17 @@ export default function CreditCard({ store = [], pk = '', setAllowProceed = () =
                 expiry_date: expiryDate
             })
         })
-        .then(data => {
-            setStored(data?.length ? data : []);
-            setShowCardForm(false);
-            setSelectedId(data.find(c => c.token == tokenId)?.id);
-        })
-        .catch(error => console.error(error))
-        .finally(() => setLoading(false));
+            .then(data => {
+                setStored(data?.length ? data : []);
+                setShowCardForm(false);
+                setSelectedId(data.find(c => c.token == tokenId)?.id);
+            })
+            .catch(error => console.error(error))
+            .finally(() => setLoading(false));
     };
 
     const removeSavedCard = (card_id) => {
-        if (!confirm(__('Are you sure you want to remove this card?'))) {return;}
+        if (!confirm(__('Are you sure you want to remove this card?'))) { return; }
         request(rest_url(`/sitecore/v1/payment/card/${card_id}/remove`), {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
@@ -150,18 +150,18 @@ export default function CreditCard({ store = [], pk = '', setAllowProceed = () =
                 <div>
                     <div className="space-y-2">
                         {stored.map((card, index) => (
-                            <div className="xpo_flex xpo_flex-nowrap xpo_gap-4 xpo_justify-betweenxpo_items-center cursor-pointer">
-                                <label key={index} className="xpo_flex xpo_items-center space-x-2">
+                            <div className="flex flex-nowrap gap-4 justify-betweenitems-center cursor-pointer">
+                                <label key={index} className="flex items-center space-x-2">
                                     <input
                                         type="radio"
                                         checked={selectedId === card.id}
                                         onChange={() => setSelectedId(card.id)}
                                         className="form-radio form-check-input"
                                     />
-                                    <span>{card?.masked_card??card?.label??card?.id??card?.card_id}</span>
+                                    <span>{card?.masked_card ?? card?.label ?? card?.id ?? card?.card_id}</span>
                                 </label>
                                 <Trash
-                                    className="h-4 xpo_w-4 rounded-xl cursor-pointer"
+                                    className="h-4 w-4 rounded-xl cursor-pointer"
                                     title={__('Remove this card')}
                                     onClick={() => removeSavedCard(card.id)}
                                 />
@@ -169,7 +169,7 @@ export default function CreditCard({ store = [], pk = '', setAllowProceed = () =
                         ))}
                     </div>
                     <button
-                        className="mt-4 xpo_text-blue-600 underline"
+                        className="mt-4 text-blue-600 underline"
                         onClick={() => setShowCardForm(true)}
                     >{__('Use different card')}</button>
                 </div>
@@ -177,14 +177,14 @@ export default function CreditCard({ store = [], pk = '', setAllowProceed = () =
 
             {showCardForm && (
                 <div className="space-y-4">
-                    <div id="element-container" className="w-full border rounded xpo_p-2"></div>
+                    <div id="element-container" className="w-full border rounded p-2"></div>
                     <div id="error-handler" className="text-red-500"></div>
-                    <div className="xpo_flex xpo_justify-between">
+                    <div className="flex justify-between">
                         {stored.length ? (
-                        <button
-                            onClick={() => setShowCardForm(false)}
-                            className="px-4 py-2 bg-gray-300 rounded xpo_text-gray-700"
-                        >{__('Cancel')}</button>
+                            <button
+                                onClick={() => setShowCardForm(false)}
+                                className="px-4 py-2 bg-gray-300 rounded text-gray-700"
+                            >{__('Cancel')}</button>
                         ) : null}
                         <button
                             onClick={handleTapSubmit}

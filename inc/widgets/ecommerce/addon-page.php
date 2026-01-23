@@ -74,7 +74,7 @@ class Page {
                     [
                         'type' => 'productCarousel',
                         'props' => [
-                            'className' => 'xpo_w-full',
+                            'className' => 'w-full',
                             'category' => 'Sample Category',
                             'recommendationType' => 'personalized'
                         ]
@@ -167,7 +167,7 @@ class Page {
                     [
                         'type' => 'justForYou',
                         'props' => [
-                            'card_bg' => 'xpo_p-4 xpo_bg-scwhite/70 xpo_rounded-xl',
+                            'card_bg' => 'p-4 bg-scwhite/70 rounded-xl',
                             'categories' => [
                                 'electronics', 'fashion', 'home', 'toys'
                             ],
@@ -181,7 +181,7 @@ class Page {
                     // [
                     //     'type' => 'productCarousel',
                     //     'props' => [
-                    //         'className' => 'xpo_w-full',
+                    //         'className' => 'w-full',
                     //         'category' => 'Sample Category',
                     //         'recommendationType' => 'personalized'
                     //     ]

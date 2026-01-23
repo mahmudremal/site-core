@@ -10,26 +10,39 @@ const isDev = process.env.NODE_ENV === "development";
 const JS_DIR = path.resolve(__dirname, "src/js");
 const IMG_DIR = path.resolve(__dirname, "src/img");
 const LIB_DIR = path.resolve(__dirname, "src/library");
-const BUILD_DIR = path.resolve(__dirname, "build");
+// const BUILD_DIR = path.resolve(__dirname, "build"); // dist
+const BUILD_DIR = path.resolve(
+  "C:\\Users\\Lenovo",
+  "Local Sites",
+  "uxndev-llc",
+  "app",
+  "public",
+  "wp-content",
+  "plugins",
+  "site-core",
+  "dist",
+);
 const SRC_DIR = path.resolve(__dirname, "src");
 
 module.exports = {
   entry: {
     // links: JS_DIR + '/affiliate.js',
-    setting: JS_DIR + "/setting.js",
     // pricing: JS_DIR + '/pricing.js',
     // visitor: JS_DIR + '/visitor.js',
     //   invoice: JS_DIR + '/invoice.js',
+
     public: JS_DIR + "/public.js",
     editor: JS_DIR + "/editor.js",
+    setting: JS_DIR + "/setting.js",
+    core: JS_DIR + "/core.js",
+    media: JS_DIR + "/media.js",
+
     // server: JS_DIR + '/server.js',
-    // media: JS_DIR + "/media.js",
     // admin: JS_DIR + "/admin.js",
     //   popup: JS_DIR + '/popup.js',
     // // hunts: JS_DIR + '/hunts.js',
     //   pwa: JS_DIR + '/pwa.js',
     // cdn: JS_DIR + '/cdn.js',
-    // core: JS_DIR + "/core.js",
     // wa: path.resolve(__dirname, 'server/app.jsx'),
     // schemaeditor: JS_DIR + "/shop-manager/extension/schemaeditor.jsx",
 
@@ -40,7 +53,7 @@ module.exports = {
     clean: true,
     // libraryTarget: 'var',
     filename: "js/[name].js",
-    path: path.resolve(__dirname, "dist"),
+    path: BUILD_DIR,
     chunkFilename: "js/[name].[contenthash].js",
     // publicPath: '/wp-content/plugins/site-core/dist/', // __webpack_public_path__ = '';
   },
@@ -60,7 +73,7 @@ module.exports = {
       //
       "@functions": path.resolve(
         __dirname,
-        "src/js/components/common/functions"
+        "src/js/components/common/functions",
       ),
       "@entry": path.resolve(__dirname, "src/js/components/application"),
       "@context": path.resolve(__dirname, "src/js/components/context"),
@@ -83,7 +96,7 @@ module.exports = {
     hot: true,
     historyApiFallback: true,
     static: {
-      directory: path.resolve(__dirname, "dist"),
+      directory: BUILD_DIR,
     },
     port: 3000,
     open: true,
@@ -155,14 +168,14 @@ module.exports = {
     // }),
     new CopyPlugin({
       patterns: [
-        { from: LIB_DIR, to: path.resolve(__dirname, "dist/library") },
+        { from: LIB_DIR, to: path.resolve(BUILD_DIR, "library") },
         {
           from: path.resolve(SRC_DIR, "icons"),
-          to: path.resolve(__dirname, "dist/icons"),
+          to: path.resolve(BUILD_DIR, "icons"),
         },
         {
           from: path.resolve(SRC_DIR, "icons"),
-          to: path.resolve(__dirname, "dist/icons"),
+          to: path.resolve(BUILD_DIR, "icons"),
         },
       ],
     }),

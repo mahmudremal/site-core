@@ -32,7 +32,7 @@ export default function DynamicPageRenderer({ template: initialTemplate = [], sc
   }, [loadedCount, initialTemplate.length]);
 
   return (
-    <div className="xpo_flex xpo_flex-col xpo_gap-8">
+    <div className="flex flex-col gap-8">
       {template.length > 0 ? (
         template.map(({ type, props }, index) => {
           const Component = componentMap?.[type];
@@ -44,8 +44,8 @@ export default function DynamicPageRenderer({ template: initialTemplate = [], sc
             <div key={stableKey}>
               <Suspense
                 fallback={
-                  <div className="xpo_flex xpo_items-center xpo_justify-center xpo_py-12">
-                    <div className="xpo_animate-pulse">{sprintf(__('Loading %s...', 'site-core'), type)}</div>
+                  <div className="flex items-center justify-center py-12">
+                    <div className="animate-pulse">{sprintf(__('Loading %s...', 'site-core'), type)}</div>
                   </div>
                 }
               >
@@ -58,7 +58,7 @@ export default function DynamicPageRenderer({ template: initialTemplate = [], sc
           );
         })
       ) : (
-        <div className="xpo_text-center xpo_py-12">{__('No content available', 'site-core')}</div>
+        <div className="text-center py-12">{__('No content available', 'site-core')}</div>
       )}
     </div>
   );

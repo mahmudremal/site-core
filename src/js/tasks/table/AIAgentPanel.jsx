@@ -14,7 +14,7 @@ export default function AIAgentPanel({ filters = {} }) {
   const [pendingTasks, setPendingTasks] = useState([]);
   const [processingProgress, setProcessingProgress] = useState(0);
   const [currentTask, setCurrentTask] = useState(null);
-  
+
   const pendingTaskTimers = useRef(new Map());
 
   const addLog = useCallback((msg, type = 'info') => {
@@ -39,10 +39,10 @@ export default function AIAgentPanel({ filters = {} }) {
         result: JSON.parse(result),
         resolve // Store the resolve function
       };
-      
+
       setPendingTasks(prev => [pendingTask, ...prev]);
       addLog(`Task ${task.id} pending moderation (15s timeout)`, 'warning');
-      
+
       // Start countdown for this specific task
       const countdownInterval = setInterval(() => {
         setPendingTasks(prev => prev.map(pt => {
@@ -103,7 +103,7 @@ export default function AIAgentPanel({ filters = {} }) {
       }
       return pt;
     }));
-    
+
     // Remove submitted tasks after a delay
     setTimeout(() => {
       setPendingTasks(prev => prev.filter(pt => pt.id !== pendingId));
@@ -146,10 +146,10 @@ export default function AIAgentPanel({ filters = {} }) {
 
   const startAgent = async () => {
     if (isRunning) return;
-    
+
     setIsRunning(true);
     const callbacks = setupAgentCallbacks();
-    
+
     try {
       await agent.startContinuousMode(callbacks);
     } catch (error) {
@@ -164,21 +164,21 @@ export default function AIAgentPanel({ filters = {} }) {
     setIsRunning(false);
     setCurrentTask(null);
     setProcessingProgress(0);
-    
+
     // Clear all pending countdowns
     pendingTaskTimers.current.forEach(timer => clearInterval(timer));
     pendingTaskTimers.current.clear();
     setPendingTasks(prev => prev.map(pt => ({ ...pt, countdown: 0 })));
-    
+
     addLog('AI Agent stopped', 'warning');
   };
 
   const runOneTask = async () => {
     if (loading || isRunning) return;
-    
+
     setLoading(true);
     const callbacks = setupAgentCallbacks();
-    
+
     try {
       await agent.runSingleTask(callbacks);
     } catch (error) {
@@ -191,23 +191,23 @@ export default function AIAgentPanel({ filters = {} }) {
   };
 
   const editPendingTask = (pendingId) => {
-    setPendingTasks(prev => prev.map(pt => 
+    setPendingTasks(prev => prev.map(pt =>
       pt.id === pendingId ? { ...pt, editing: true } : pt
     ));
   };
 
   const updatePendingTaskResult = (pendingId, newResult) => {
-    setPendingTasks(prev => prev.map(pt => 
+    setPendingTasks(prev => prev.map(pt =>
       pt.id === pendingId ? { ...pt, result: newResult } : pt
     ));
   };
 
   const getLogIcon = (type) => {
     switch (type) {
-      case 'success': return <CheckCircle className="xpo_w-3 xpo_h-3 xpo_text-green-500 xpo_flex-shrink-0" />;
-      case 'error': return <AlertCircle className="xpo_w-3 xpo_h-3 xpo_text-red-500 xpo_flex-shrink-0" />;
-      case 'warning': return <Clock className="xpo_w-3 xpo_h-3 xpo_text-yellow-500 xpo_flex-shrink-0" />;
-      default: return <div className="xpo_w-3 xpo_h-3 xpo_bg-blue-500 xpo_rounded-full xpo_flex-shrink-0"></div>;
+      case 'success': return <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />;
+      case 'error': return <AlertCircle className="w-3 h-3 text-red-500 flex-shrink-0" />;
+      case 'warning': return <Clock className="w-3 h-3 text-yellow-500 flex-shrink-0" />;
+      default: return <div className="w-3 h-3 bg-blue-500 rounded-full flex-shrink-0"></div>;
     }
   };
 
@@ -221,69 +221,69 @@ export default function AIAgentPanel({ filters = {} }) {
   }, []);
 
   return (
-    <div className="xpo_max-w-6xl xpo_mx-auto xpo_space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6">
       {/* Header */}
-      <div className="xpo_bg-white xpo_rounded-2xl xpo_shadow-lg- xpo_border- xpo_border-gray-200- xpo_p-2">
-        <h2 className="xpo_text-3xl xpo_font-bold xpo_mb-6 xpo_text-gray-900 xpo_flex xpo_items-center xpo_gap-3">
-          <div className={`xpo_w-3 xpo_h-3 xpo_rounded-full ${isRunning ? 'xpo_bg-green-500 xpo_animate-pulse' : 'xpo_bg-gray-400'}`}></div>
+      <div className="bg-white rounded-2xl shadow-lg- border- border-gray-200- p-2">
+        <h2 className="text-3xl font-bold mb-6 text-gray-900 flex items-center gap-3">
+          <div className={`w-3 h-3 rounded-full ${isRunning ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
           AI Agent Control Panel
         </h2>
-        
+
         {/* Controls */}
-        <div className="xpo_flex xpo_flex-wrap xpo_items-center xpo_gap-4 xpo_mb-6">
+        <div className="flex flex-wrap items-center gap-4 mb-6">
           <button
             onClick={startAgent}
             disabled={isRunning}
-            className="xpo_inline-flex xpo_items-center xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_bg-green-600 xpo_text-white hover:xpo_bg-green-700 disabled:xpo_opacity-50 disabled:xpo_cursor-not-allowed xpo_font-medium xpo_transition-colors"
+            className="inline-flex items-center px-6 py-3 rounded-xl bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
           >
-            <Play className="xpo_w-5 xpo_h-5 xpo_mr-2" />
+            <Play className="w-5 h-5 mr-2" />
             Start Continuous Mode
           </button>
-          
+
           <button
             onClick={stopAgent}
             disabled={!isRunning}
-            className="xpo_inline-flex xpo_items-center xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_bg-red-600 xpo_text-white hover:xpo_bg-red-700 disabled:xpo_opacity-50 disabled:xpo_cursor-not-allowed xpo_font-medium xpo_transition-colors"
+            className="inline-flex items-center px-6 py-3 rounded-xl bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
           >
-            <StopCircle className="xpo_w-5 xpo_h-5 xpo_mr-2" />
+            <StopCircle className="w-5 h-5 mr-2" />
             Stop Agent
           </button>
-          
+
           <button
             onClick={runOneTask}
             disabled={loading || isRunning}
-            className="xpo_inline-flex xpo_items-center xpo_px-6 xpo_py-3 xpo_rounded-xl xpo_bg-blue-600 xpo_text-white hover:xpo_bg-blue-700 disabled:xpo_opacity-50 disabled:xpo_cursor-not-allowed xpo_font-medium xpo_transition-colors"
+            className="inline-flex items-center px-6 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
           >
-            <RotateCcw className={`xpo_w-5 xpo_h-5 xpo_mr-2 ${loading ? 'xpo_animate-spin' : ''}`} />
+            <RotateCcw className={`w-5 h-5 mr-2 ${loading ? 'animate-spin' : ''}`} />
             Run Single Task
           </button>
-          
-          <label className="xpo_flex xpo_items-center xpo_gap-3 xpo_bg-gray-50 xpo_px-4 xpo_py-3 xpo_rounded-xl xpo_border">
+
+          <label className="flex items-center gap-3 bg-gray-50 px-4 py-3 rounded-xl border">
             <input
               type="checkbox"
               checked={moderate}
               disabled={isRunning || loading}
               onChange={(e) => setModerate(e.target.checked)}
-              className="xpo_m-0 xpo_w-4 xpo_h-4 xpo_text-blue-600 xpo_rounded"
+              className="m-0 w-4 h-4 text-blue-600 rounded"
             />
-            <span className="xpo_font-medium xpo_text-gray-700">Enable Moderation</span>
+            <span className="font-medium text-gray-700">Enable Moderation</span>
           </label>
         </div>
 
         {/* Current Task Progress */}
         {currentTask && (
-          <div className="xpo_bg-blue-50 xpo_border xpo_border-blue-200 xpo_rounded-xl xpo_p-4">
-            <div className="xpo_flex xpo_justify-between xpo_items-center xpo_mb-2">
-              <span className="xpo_font-medium xpo_text-blue-900">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+            <div className="flex justify-between items-center mb-2">
+              <span className="font-medium text-blue-900">
                 Processing: {currentTask.id} ({currentTask.task_type})
               </span>
-              <span className="xpo_text-blue-700 xpo_font-mono xpo_text-sm">
+              <span className="text-blue-700 font-mono text-sm">
                 {processingProgress}%
               </span>
             </div>
-            <div className="xpo_w-full xpo_bg-blue-200 xpo_rounded-full xpo_h-2">
-              <div 
-                className="xpo_bg-blue-600 xpo_h-2 xpo_rounded-full xpo_transition-all xpo_duration-300"
+            <div className="w-full bg-blue-200 rounded-full h-2">
+              <div
+                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${processingProgress}%` }}
               ></div>
             </div>
@@ -291,65 +291,65 @@ export default function AIAgentPanel({ filters = {} }) {
         )}
       </div>
 
-      <div className="xpo_grid xpo_grid-cols-1 lg:xpo_grid-cols-2 xpo_gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Pending Tasks */}
-        <div className="xpo_bg-white xpo_rounded-2xl xpo_shadow-lg- xpo_border- xpo_border-gray-200- xpo_p-2">
-          <h3 className="xpo_text-xl xpo_font-bold xpo_mb-4 xpo_text-gray-900 xpo_flex xpo_items-center xpo_gap-2">
-            <Clock className="xpo_w-5 xpo_h-5 xpo_text-yellow-500" />
+        <div className="bg-white rounded-2xl shadow-lg- border- border-gray-200- p-2">
+          <h3 className="text-xl font-bold mb-4 text-gray-900 flex items-center gap-2">
+            <Clock className="w-5 h-5 text-yellow-500" />
             Pending Moderation ({pendingTasks.filter(pt => !pt.submitted).length})
           </h3>
-          
-          <div className="xpo_space-y-4 xpo_max-h-96 xpo_overflow-y-auto">
+
+          <div className="space-y-4 max-h-96 overflow-y-auto">
             {pendingTasks.filter(pt => !pt.submitted).length === 0 ? (
-              <p className="xpo_text-gray-500 xpo_text-center xpo_py-8">No pending tasks</p>
+              <p className="text-gray-500 text-center py-8">No pending tasks</p>
             ) : (
               pendingTasks.filter(pt => !pt.submitted).map((pendingTask) => (
-                <div key={pendingTask.id} className="xpo_border xpo_border-yellow-200 xpo_bg-yellow-50 xpo_rounded-xl xpo_p-4">
-                  <div className="xpo_flex xpo_justify-between xpo_items-center xpo_mb-3">
-                    <span className="xpo_font-medium xpo_text-yellow-900">
+                <div key={pendingTask.id} className="border border-yellow-200 bg-yellow-50 rounded-xl p-4">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="font-medium text-yellow-900">
                       Task: {pendingTask.task.id}
                     </span>
-                    <div className="xpo_flex xpo_items-center xpo_gap-2">
-                      <span className="xpo_text-yellow-700 xpo_font-mono xpo_text-sm">
+                    <div className="flex items-center gap-2">
+                      <span className="text-yellow-700 font-mono text-sm">
                         {pendingTask.countdown}s
                       </span>
-                      <div className={`xpo_w-2 xpo_h-2 xpo_rounded-full ${pendingTask.countdown > 5 ? 'xpo_bg-yellow-500' : 'xpo_bg-red-500'} xpo_animate-pulse`}></div>
+                      <div className={`w-2 h-2 rounded-full ${pendingTask.countdown > 5 ? 'bg-yellow-500' : 'bg-red-500'} animate-pulse`}></div>
                     </div>
                   </div>
-                  
-                  <div className="xpo_bg-white xpo_rounded-lg xpo_p-3 xpo_mb-3">
+
+                  <div className="bg-white rounded-lg p-3 mb-3">
                     {pendingTask.editing ? (
-                      <div className="xpo_relative">
+                      <div className="relative">
                         <JsonEditor
                           data={pendingTask.result}
                           setData={(newValue) => updatePendingTaskResult(pendingTask.id, newValue)}
                         />
                       </div>
                     ) : (
-                      <div className="xpo_relative">
-                        <pre className="xpo_text-xs xpo_bg-white xpo_p-2 xpo_rounded-md xpo_overflow-auto xpo_max-h-64">
+                      <div className="relative">
+                        <pre className="text-xs bg-white p-2 rounded-md overflow-auto max-h-64">
                           {JSON.stringify(pendingTask.result, null, 2)}
                         </pre>
-                        <div 
-                          className="xpo_absolute xpo_top-0 xpo_right-0 xpo_p-4 xpo_gap-4 xpo_cursor-pointer xpo_bg-white/40 xpo_w-full xpo_h-full xpo_flex xpo_items-center xpo_justify-center" 
-                          onClick={() => editPendingTask(pendingTask.id)} 
+                        <div
+                          className="absolute top-0 right-0 p-4 gap-4 cursor-pointer bg-white/40 w-full h-full flex items-center justify-center"
+                          onClick={() => editPendingTask(pendingTask.id)}
                           title={__('Edit Result', 'site-core')}
                         >
-                          <button className="xpo_flex xpo_items-center xpo_justify-center xpo_px-3 xpo_py-2 xpo_rounded-lg xpo_bg-white xpo_text-gray-500 xpo_text-sm xpo_font-medium xpo_shadow-sm">
-                            <PenIcon className="xpo_w-4 xpo_h-4 xpo_text-gray-500" />
+                          <button className="flex items-center justify-center px-3 py-2 rounded-lg bg-white text-gray-500 text-sm font-medium shadow-sm">
+                            <PenIcon className="w-4 h-4 text-gray-500" />
                             <span>Edit</span>
                           </button>
                         </div>
                       </div>
                     )}
                   </div>
-                  
-                  <div className="xpo_flex xpo_gap-2">
+
+                  <div className="flex gap-2">
                     <button
                       onClick={() => submitPendingTask(pendingTask.id)}
-                      className="xpo_flex-1 xpo_inline-flex xpo_items-center xpo_justify-center xpo_px-3 xpo_py-2 xpo_rounded-lg xpo_bg-green-600 xpo_text-white hover:xpo_bg-green-700 xpo_text-sm xpo_font-medium"
+                      className="flex-1 inline-flex items-center justify-center px-3 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 text-sm font-medium"
                     >
-                      <Send className="xpo_w-4 xpo_h-4 xpo_mr-1" />
+                      <Send className="w-4 h-4 mr-1" />
                       Submit Now
                     </button>
                   </div>
@@ -360,35 +360,34 @@ export default function AIAgentPanel({ filters = {} }) {
         </div>
 
         {/* Logs */}
-        <div className="xpo_bg-white xpo_rounded-2xl xpo_shadow-lg- xpo_border- xpo_border-gray-200- xpo_p-2">
-          <div className="xpo_flex xpo_justify-between xpo_items-center xpo_mb-4">
-            <h3 className="xpo_text-xl xpo_font-bold xpo_text-gray-900">Activity Logs</h3>
+        <div className="bg-white rounded-2xl shadow-lg- border- border-gray-200- p-2">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-bold text-gray-900">Activity Logs</h3>
             <button
               onClick={() => setLogs([])}
-              className="xpo_text-sm xpo_text-gray-500 hover:xpo_text-gray-700 xpo_px-3 xpo_py-1 xpo_rounded-lg hover:xpo_bg-gray-100"
+              className="text-sm text-gray-500 hover:text-gray-700 px-3 py-1 rounded-lg hover:bg-gray-100"
             >
               Clear
             </button>
           </div>
-          
-          <div className="xpo_bg-gray-50 xpo_rounded-xl xpo_p-4 xpo_h-96 xpo_overflow-y-auto xpo_border">
+
+          <div className="bg-gray-50 rounded-xl p-4 h-96 overflow-y-auto border">
             {logs.length === 0 ? (
-              <p className="xpo_text-gray-500 xpo_text-center xpo_py-8">No logs yet</p>
+              <p className="text-gray-500 text-center py-8">No logs yet</p>
             ) : (
-              <div className="xpo_space-y-2">
+              <div className="space-y-2">
                 {logs.map((log) => (
-                  <div key={log.id} className="xpo_flex xpo_items-start xpo_gap-3 xpo_text-sm">
+                  <div key={log.id} className="flex items-start gap-3 text-sm">
                     {getLogIcon(log.type)}
-                    <div className="xpo_flex-1 xpo_min-w-0">
-                      <span className="xpo_text-gray-500 xpo_font-mono xpo_text-xs">
+                    <div className="flex-1 min-w-0">
+                      <span className="text-gray-500 font-mono text-xs">
                         [{log.timestamp}]
                       </span>
-                      <span className={`xpo_ml-2 ${
-                        log.type === 'error' ? 'xpo_text-red-700' :
-                        log.type === 'success' ? 'xpo_text-green-700' :
-                        log.type === 'warning' ? 'xpo_text-yellow-700' :
-                        'xpo_text-gray-700'
-                      }`}>
+                      <span className={`ml-2 ${log.type === 'error' ? 'text-red-700' :
+                          log.type === 'success' ? 'text-green-700' :
+                            log.type === 'warning' ? 'text-yellow-700' :
+                              'text-gray-700'
+                        }`}>
                         {log.message}
                       </span>
                     </div>

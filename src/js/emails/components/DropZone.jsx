@@ -29,15 +29,15 @@ const DropZone = ({ onDrop, isActive, element = null, children }) => {
 
   return (
     <div
-      className={`xpo_relative xpo_min-h-[60px] xpo_transition-all xpo_duration-200 ${isDragOver ? 'xpo_bg-blue-50 xpo_border-2 xpo_border-dashed xpo_border-blue-300' : ''}`}
+      className={`relative min-h-[60px] transition-all duration-200 ${isDragOver ? 'bg-blue-50 border-2 border-dashed border-blue-300' : ''}`}
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
       {children}
       {isDragOver && (
-        <div className="xpo_absolute xpo_inset-0 xpo_flex xpo_items-center xpo_justify-center xpo_bg-blue-50 xpo_bg-opacity-90 xpo_rounded xpo_hidden">
-          <div className="xpo_text-blue-600 xpo_font-medium">Drop element here</div>
+        <div className="absolute inset-0 flex items-center justify-center bg-blue-50 bg-opacity-90 rounded hidden">
+          <div className="text-blue-600 font-medium">Drop element here</div>
         </div>
       )}
     </div>

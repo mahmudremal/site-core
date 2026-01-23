@@ -10,7 +10,7 @@ class BasicContainer extends BaseAddon {
         super();
         this.has_children = true;
     }
-    
+
     get_id() {
         return 'container';
     }
@@ -239,7 +239,7 @@ class BasicContainer extends BaseAddon {
 
     render({ element }) {
         const { sidebar, setSidebar, template, setTemplate, addons, drop_element } = useBuilder();
-        
+
         // Helper function to get setting values
         const get_setting_value = (element, tab, section, key, defaultValue) => {
             return element?.data?.[tab]?.[section]?.fields?.find(f => f.id === key)?.value ?? defaultValue;
@@ -284,18 +284,18 @@ class BasicContainer extends BaseAddon {
             const columns = Math.max(1, parseInt(get_setting_value(element, 'content', 'layout', 'columns', 1)));
             const rows = Math.max(1, parseInt(get_setting_value(element, 'content', 'layout', 'rows', 1)));
             const flexDirection = get_setting_value(element, 'content', 'layout', 'flex_direction', 'row');
-            
+
             const columnGap = get_setting_value(element, 'content', 'spacing', 'column_gap', 20);
             const rowGap = get_setting_value(element, 'content', 'spacing', 'row_gap', 20);
             const padding = get_setting_value(element, 'content', 'spacing', 'padding', { top: 0, right: 0, bottom: 0, left: 0 });
-            
+
             const justifyContent = get_setting_value(element, 'content', 'alignment', 'justify_content', 'flex-start');
             const alignItems = get_setting_value(element, 'content', 'alignment', 'align_items', 'stretch');
             const flexWrap = get_setting_value(element, 'content', 'alignment', 'flex_wrap', 'nowrap');
-            
+
             const backgroundType = get_setting_value(element, 'style', 'background', 'background_type', 'none');
             const backgroundColor = get_setting_value(element, 'style', 'background', 'background_color', '#ffffff');
-            
+
             const borderWidth = get_setting_value(element, 'style', 'border', 'border_width', 0);
             const borderStyle = get_setting_value(element, 'style', 'border', 'border_style', 'solid');
             const borderColor = get_setting_value(element, 'style', 'border', 'border_color', '#e2e8f0');
@@ -352,8 +352,8 @@ class BasicContainer extends BaseAddon {
                 e.preventDefault();
                 e.stopPropagation();
                 setSidebar(prev => ({
-                    ...prev, 
-                    visible: true, 
+                    ...prev,
+                    visible: true,
                     element: element,
                     activeCell: cellIndex
                 }));
@@ -364,10 +364,10 @@ class BasicContainer extends BaseAddon {
             };
 
             return (
-                <div 
+                <div
                     key={cellIndex}
                     onClick={handleCellClick}
-                    className="xpo_container_cell xpo_border-2 xpo_border-dashed xpo_border-slate-300 xpo_rounded-[4px] xpo_min-h-[60px] xpo_relative xpo_cursor-pointer xpo_transition-all xpo_duration-200 xpo_ease-in-out"
+                    className="container_cell border-2 border-dashed border-slate-300 rounded-[4px] min-h-[60px] relative cursor-pointer transition-all duration-200 ease-in-out"
                     style={{
                         // padding: `${!sidebar.visible ? 0 : 12}px`, // || sidebar?.element?.id == element.id
                         backgroundColor: cellData.children?.length ? 'transparent' : '#f8fafc'
@@ -383,17 +383,17 @@ class BasicContainer extends BaseAddon {
                         e.currentTarget.style.backgroundColor = cellData.children?.length ? 'transparent' : '#f8fafc';
                     }}
                 >
-                    <DropZone 
-                        element={element} 
+                    <DropZone
+                        element={element}
                         cellIndex={cellIndex}
                         onDrop={handleDrop}
                         style={{ minHeight: '40px' }}
                     >
                         {cellData.children?.length > 0 ? (
-                            <div className="xpo_cell_children">
+                            <div className="cell_children">
                                 {cellData.children.map((child, childIndex) => (
-                                    <div key={childIndex} className="xpo_child_element">
-                                        <SingleElement element={child} container={{id: element?.id, cell: cellIndex, child: childIndex}} />
+                                    <div key={childIndex} className="child_element">
+                                        <SingleElement element={child} container={{ id: element?.id, cell: cellIndex, child: childIndex }} />
                                     </div>
                                 ))}
                             </div>
@@ -403,9 +403,9 @@ class BasicContainer extends BaseAddon {
                             }} />
                         )}
                     </DropZone>
-                    
+
                     {/* Cell indicator */}
-                    <div className="xpo_absolute xpo_top-1 xpo_right-1 xpo_bg-[#3b82f6] xpo_text-white xpo_text-[10px] xpo_p-[2px_6px] xpo_rounded-1 xpo_opacity-70 xpo_pointer-events-none">
+                    <div className="absolute top-1 right-1 bg-[#3b82f6] text-white text-[10px] p-[2px_6px] rounded-1 opacity-70 pointer-events-none">
                         {cellIndex + 1}
                     </div>
                 </div>
@@ -414,35 +414,35 @@ class BasicContainer extends BaseAddon {
 
         // Initialize container structure
         const structure = initialize_structure(element);
-        
+
         // Get container styles
         const containerStyles = get_container_styles(element);
-        
+
         const handleContainerClick = (e) => {
             e.preventDefault();
             e.stopPropagation();
             setSidebar(prev => ({
-                ...prev, 
-                visible: true, 
+                ...prev,
+                visible: true,
                 element: element
             }));
         };
 
         return (
-            <div 
-                className="xpo_container"
+            <div
+                className="container"
                 style={containerStyles}
                 onClick={handleContainerClick}
                 data-element-id={element.id}
                 data-element-type="container"
             >
-                {structure.cells.map((cellData, cellIndex) => 
+                {structure.cells.map((cellData, cellIndex) =>
                     render_cell(cellData, cellIndex, element)
                 )}
-                
+
                 {/* Container overlay for selection */}
-                <div 
-                    className="xpo_container_overlay"
+                <div
+                    className="container_overlay"
                     style={{
                         zIndex: 1,
                         top: '-2px',

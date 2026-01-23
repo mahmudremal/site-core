@@ -1659,7 +1659,7 @@ class Hunts {
 		?>
 		<div id="hunting-record-table" data-params="<?php echo esc_attr(json_encode($atts)); ?>"></div>
 		<style>#hunting-record-table {top: 0;left: 0;width: 100%;height: 100vh;margin: auto;padding: unset;position: fixed;max-width: unset;}</style>
-		<style>.xpo_bg-paper {background: radial-gradient(circle, #e0c48f 0%, #b68b4c 100%);}.xpo_font-vintage {font-family: 'Georgia', serif;}.beer-horn-flip {transform: rotateY(180deg) translateY(-50%);margin-top: 0 !important;}</style>
+		<style>.bg-paper {background: radial-gradient(circle, #e0c48f 0%, #b68b4c 100%);}.font-vintage {font-family: 'Georgia', serif;}.beer-horn-flip {transform: rotateY(180deg) translateY(-50%);margin-top: 0 !important;}</style>
 		<?php
 		return ob_get_clean();
 	}
@@ -1703,45 +1703,45 @@ class Hunts {
 
 		ob_start();
 		?>
-		<div class="xpo_mx-auto xpo_text-center xpo_p-0 md:xpo_p-4 md:xpo_pt-0 xpo_relative xpo_rounded-md xpo_w-full xpo_max-w-3xl">
-			<div class="xpo_flex xpo_items-center xpo_gap-3">
-				<div class="xpo_flex xpo_flex-col xpo_items-center xpo_gap-3 xpo_text-[#5c3b10] xpo_text-center xpo_justify-center xpo_w-full">
+		<div class="mx-auto text-center p-0 md:p-4 md:pt-0 relative rounded-md w-full max-w-3xl">
+			<div class="flex items-center gap-3">
+				<div class="flex flex-col items-center gap-3 text-[#5c3b10] text-center justify-center w-full">
 					<img decoding="async" src="https://huntarizona.com/wp-content/uploads/2025/07/AZO-Draw-Odds-Tool-Logo-2-300x300.png" width="238" height="238" alt="Arizone outftters draw tools" class="wp-image-251654 alignnone size-medium">
-					<!-- <h1 class="xpo_text-3xl md:xpo_text-7xl xpo_font-bold xpo_tracking-wide draw-calculation-themetext">ARIZONA OUTFITTERS</h1>
-					<h2 class="xpo_text-3xl md:xpo_text-7xl xpo_font-bold xpo_tracking-wide draw-calculation-themetext">DRAW TOOL</h2> -->
+					<!-- <h1 class="text-3xl md:text-7xl font-bold tracking-wide draw-calculation-themetext">ARIZONA OUTFITTERS</h1>
+					<h2 class="text-3xl md:text-7xl font-bold tracking-wide draw-calculation-themetext">DRAW TOOL</h2> -->
 				</div>
 			</div>
 
-			<div class="xpo_w-full xpo_relative">
-				<div class="xpo_absolute xpo_-left-14 xpo_-translate-y-1/2 xpo_w-[150px] xpo_h-full xpo_bg-center xpo_bg-contain xpo_bg-no-repeat xpo_top-1/3" style="background-image: url('<?php echo esc_url(WP_SITECORE_BUILD_URI . '/images/7021c278bcbf3785c459.png'); ?>');"></div>
-				<div class="xpo_absolute xpo_-right-14 xpo_-translate-y-1/2 xpo_w-[150px] xpo_h-full xpo_bg-center xpo_bg-contain xpo_bg-no-repeat beer-horn-flip xpo_top-1/3" style="background-image: url('<?php echo esc_url(WP_SITECORE_BUILD_URI . '/images/7021c278bcbf3785c459.png'); ?>');"></div>
-				<div class="xpo_z-10 xpo_relative" style="font-family: 'Poppins',Helvetica,Arial,Lucida,sans-serif;">
-					<div class="xpo_flex xpo_flex-nowrap xpo_justify-center">
+			<div class="w-full relative">
+				<div class="absolute -left-14 -translate-y-1/2 w-[150px] h-full bg-center bg-contain bg-no-repeat top-1/3" style="background-image: url('<?php echo esc_url(WP_SITECORE_BUILD_URI . '/images/7021c278bcbf3785c459.png'); ?>');"></div>
+				<div class="absolute -right-14 -translate-y-1/2 w-[150px] h-full bg-center bg-contain bg-no-repeat beer-horn-flip top-1/3" style="background-image: url('<?php echo esc_url(WP_SITECORE_BUILD_URI . '/images/7021c278bcbf3785c459.png'); ?>');"></div>
+				<div class="z-10 relative" style="font-family: 'Poppins',Helvetica,Arial,Lucida,sans-serif;">
+					<div class="flex flex-nowrap justify-center">
 						<div class="">
-							<div class="xpo_bg-[#987A56] xpo_border-8 xpo_border-solid xpo_border-[#5c3b10] xpo_inline-block xpo_p-8 xpo_rounded-md xpo_shadow-lg">
-								<div class="md:xpo_w-[550px]">
-									<div class="xpo_flex xpo_flex-col xpo_gap-6 xpo_mb-6">
+							<div class="bg-[#987A56] border-8 border-solid border-[#5c3b10] inline-block p-8 rounded-md shadow-lg">
+								<div class="md:w-[550px]">
+									<div class="flex flex-col gap-6 mb-6">
 
 										<div class="draw-calculation-themetext">
-											<div class="xpo_text-center xpo_relative">
-												<h3 class="xpo_font-bold xpo_text-white xpo_mb-4" style="font-size: 42px;">
+											<div class="text-center relative">
+												<h3 class="font-bold text-white mb-4" style="font-size: 42px;">
 													<?php echo esc_html($atts['title']); ?>
 												</h3>
-												<p class="xpo_text-2xl xpo_text-white xpo_mb-6">
+												<p class="text-2xl text-white mb-6">
 													<?php echo esc_html($atts['description']); ?>
 												</p>
-												<a href="<?php echo esc_url($atts['buy_url']); ?>" class="xpo_bg-[#135242] hover:xpo_bg-[#135242]/60 xpo_text-white xpo_px-6 xpo_py-2 xpo_rounded xpo_inline-flex xpo_items-center xpo_gap-2 xpo_mx-auto xpo_mb-4" target="_blank">
+												<a href="<?php echo esc_url($atts['buy_url']); ?>" class="bg-[#135242] hover:bg-[#135242]/60 text-white px-6 py-2 rounded inline-flex items-center gap-2 mx-auto mb-4" target="_blank">
 													<?php echo esc_html($atts['button_text']); ?>
 												</a>
-												<p class="xpo_text-white xpo_mb-6">
+												<p class="text-white mb-6">
 													<?php echo esc_html($atts['login_text']); ?>
-													<a href="<?php echo esc_url($atts['login_url']); ?>" class="xpo_block xpo_text-white xpo_underline">
+													<a href="<?php echo esc_url($atts['login_url']); ?>" class="block text-white underline">
 														<?php echo esc_html($atts['login_link_text']); ?>
 													</a>
 												</p>
-												<div class="xpo_text-left">
-													<h3 class="xpo_text-3xl xpo_font-semibold xpo_text-white xpo_mb-2" style="margin-top: 30px;"><?php echo esc_html($atts['benefits_title']); ?></h3>
-													<ul class="xpo_list-disc xpo_list-inside xpo_text-white xpo_space-y-1 !xpo_pb-0">
+												<div class="text-left">
+													<h3 class="text-3xl font-semibold text-white mb-2" style="margin-top: 30px;"><?php echo esc_html($atts['benefits_title']); ?></h3>
+													<ul class="list-disc list-inside text-white space-y-1 !pb-0">
 														<li><?php echo esc_html(__('Arizona Combo Hunt & Fish License', 'site-core')); ?></li>
 														<li><?php echo esc_html(__('Combo Hunt & Fish License Renewal', 'site-core')); ?></li>
 														<li><?php echo esc_html(__('Draw Application (unlimited species)', 'site-core')); ?></li>
@@ -1765,7 +1765,7 @@ class Hunts {
 				</div>
 			</div>
 
-			<p class="xpo_text-[#5c3b10] xpo_mt-6 xpo_max-w-3xl xpo_mx-auto"><?php echo esc_html(__('Use this tool to estimate your draw chances for big game hunts in Arizona based on species, units, hunt type, residency, weapon of choice, and your bonus point profile. Updated annually using the latest AZGFD data.', 'site-core')); ?></p>
+			<p class="text-[#5c3b10] mt-6 max-w-3xl mx-auto"><?php echo esc_html(__('Use this tool to estimate your draw chances for big game hunts in Arizona based on species, units, hunt type, residency, weapon of choice, and your bonus point profile. Updated annually using the latest AZGFD data.', 'site-core')); ?></p>
 		</div>
 		<style>.beer-horn-flip {--tw-scale-x: -1;}</style>
 		<?php

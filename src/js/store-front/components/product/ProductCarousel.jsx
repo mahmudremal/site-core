@@ -19,7 +19,7 @@ const ProductCarousel = ({ category, recommendationType, filters = {}, title, cl
   const autoplayRef = useRef(null);
   const containerRef = useRef(null);
   const [responsiveSlidesPerView, setResponsiveSlidesPerView] = useState(slidesPerView);
-  
+
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
@@ -39,7 +39,7 @@ const ProductCarousel = ({ category, recommendationType, filters = {}, title, cl
   }, [slidesPerView]);
 
   useEffect(() => onLoaded && onLoaded(), [onLoaded]);
-  
+
   const buildFilters = () => {
     const apiFilters = {
       per_page: 12, // Get more products for carousel
@@ -81,10 +81,10 @@ const ProductCarousel = ({ category, recommendationType, filters = {}, title, cl
     try {
       setLoading(true);
       setError(null);
-      
+
       const apiFilters = buildFilters();
       const response = await api.get('products', { params: apiFilters });
-      
+
       if (response.data && Array.isArray(response.data)) {
         setProducts(response.data);
         setCurrentIndex(0);
@@ -124,24 +124,24 @@ const ProductCarousel = ({ category, recommendationType, filters = {}, title, cl
   const maxIndex = Math.max(0, products.length - responsiveSlidesPerView);
   const handlePrev = () => {
     if (isTransitioning) return;
-    
+
     setIsTransitioning(true);
     setCurrentIndex((prevIndex) => {
       const newIndex = prevIndex === 0 ? maxIndex : prevIndex - 1;
       return newIndex;
     });
-    
+
     setTimeout(() => setIsTransitioning(false), 300);
   };
   const handleNext = () => {
     if (isTransitioning) return;
-    
+
     setIsTransitioning(true);
     setCurrentIndex((prevIndex) => {
       const newIndex = prevIndex >= maxIndex ? 0 : prevIndex + 1;
       return newIndex;
     });
-    
+
     setTimeout(() => setIsTransitioning(false), 300);
   };
   const handleMouseEnter = () => {
@@ -152,25 +152,25 @@ const ProductCarousel = ({ category, recommendationType, filters = {}, title, cl
   };
   if (loading) {
     return (
-      <section className={`xpo_mb-12 ${className}`}>
-        {title && <h2 className="xpo_text-2xl xpo_font-bold xpo_mb-6">{title}</h2>}
-        <div className="xpo_flex xpo_items-center xpo_justify-center xpo_h-64">
-          <Loader2 className="xpo_animate-spin xpo_h-8 xpo_w-8 xpo_text-gray-500" />
-          <span className="xpo_ml-2 xpo_text-gray-600">{__('Loading products...', 'site-core')}</span>
+      <section className={`mb-12 ${className}`}>
+        {title && <h2 className="text-2xl font-bold mb-6">{title}</h2>}
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="animate-spin h-8 w-8 text-gray-500" />
+          <span className="ml-2 text-gray-600">{__('Loading products...', 'site-core')}</span>
         </div>
       </section>
     );
   }
   if (error) {
     return (
-      <section className={`xpo_mb-12 ${className}`}>
-        {title && <h2 className="xpo_text-2xl xpo_font-bold xpo_mb-6">{title}</h2>}
-        <div className="xpo_flex xpo_items-center xpo_justify-center xpo_h-64 xpo_bg-gray-50 xpo_rounded-lg">
-          <div className="xpo_text-center">
-            <p className="xpo_text-red-600 xpo_mb-2">Failed to load products</p>
-            <button 
+      <section className={`mb-12 ${className}`}>
+        {title && <h2 className="text-2xl font-bold mb-6">{title}</h2>}
+        <div className="flex items-center justify-center h-64 bg-gray-50 rounded-lg">
+          <div className="text-center">
+            <p className="text-red-600 mb-2">Failed to load products</p>
+            <button
               onClick={fetchProducts}
-              className="xpo_px-4 xpo_py-2 xpo_bg-blue-600 xpo_text-scwhite/70 xpo_rounded hover:xpo_bg-blue-700 xpo_transition-colors"
+              className="px-4 py-2 bg-blue-600 text-scwhite/70 rounded hover:bg-blue-700 transition-colors"
             >
               {__('Retry', 'site-core')}
             </button>
@@ -181,10 +181,10 @@ const ProductCarousel = ({ category, recommendationType, filters = {}, title, cl
   }
   if (!products.length) {
     return (
-      <section className={`xpo_mb-12 ${className}`}>
-        {title && <h2 className="xpo_text-2xl xpo_font-bold xpo_mb-6">{title}</h2>}
-        <div className="xpo_flex xpo_items-center xpo_justify-center xpo_h-64 xpo_bg-gray-50 xpo_rounded-lg">
-          <p className="xpo_text-gray-600">{__('No products available', 'site-core')}</p>
+      <section className={`mb-12 ${className}`}>
+        {title && <h2 className="text-2xl font-bold mb-6">{title}</h2>}
+        <div className="flex items-center justify-center h-64 bg-gray-50 rounded-lg">
+          <p className="text-gray-600">{__('No products available', 'site-core')}</p>
         </div>
       </section>
     );
@@ -192,34 +192,34 @@ const ProductCarousel = ({ category, recommendationType, filters = {}, title, cl
   const slideWidth = 100 / responsiveSlidesPerView;
   const translateX = -(currentIndex * slideWidth);
   return (
-    <section className={`xpo_mb-12 ${className}`}>
-      {title && <h2 className="xpo_text-2xl xpo_font-bold xpo_mb-6">{title}</h2>}
-      
-      <div 
-        className="xpo_relative xpo_group"
+    <section className={`mb-12 ${className}`}>
+      {title && <h2 className="text-2xl font-bold mb-6">{title}</h2>}
+
+      <div
+        className="relative group"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         ref={containerRef}
       >
-        <div className="xpo_overflow-hidden xpo_rounded-lg">
+        <div className="overflow-hidden rounded-lg">
           <div
-            className="xpo_flex xpo_transition-transform xpo_duration-300 xpo_ease-in-out"
-            style={{ 
+            className="flex transition-transform duration-300 ease-in-out"
+            style={{
               transform: `translateX(${translateX}%)`,
               width: `${(products.length / responsiveSlidesPerView) * 100}%`
             }}
           >
             {products.map((product, index) => (
-              <div 
+              <div
                 key={product.id || index}
-                className="xpo_flex-shrink-0"
-                style={{ 
+                className="flex-shrink-0"
+                style={{
                   width: `${slideWidth}%`,
                   paddingLeft: index === 0 ? '0' : `${spaceBetween / 2}px`,
                   paddingRight: index === products.length - 1 ? '0' : `${spaceBetween / 2}px`
                 }}
               >
-                <div className="xpo_h-full">
+                <div className="h-full">
                   <ProductCard2 product={product} />
                 </div>
               </div>
@@ -231,36 +231,33 @@ const ProductCarousel = ({ category, recommendationType, filters = {}, title, cl
             <button
               onClick={handlePrev}
               disabled={isTransitioning}
-              className={`xpo_absolute xpo_top-1/2 xpo_left-2 xpo_transform xpo_-translate-y-1/2 xpo_z-10 xpo_bg-scwhite/70 xpo_bg-opacity-80 hover:xpo_bg-opacity-100 xpo_p-2 xpo_rounded-full xpo_shadow-lg xpo_transition-all xpo_duration-200 disabled:xpo_opacity-50 disabled:xpo_cursor-not-allowed ${
-                currentIndex === 0 ? 'xpo_opacity-50' : 'xpo_opacity-0 group-hover:xpo_opacity-100'
-              }`}
+              className={`absolute top-1/2 left-2 transform -translate-y-1/2 z-10 bg-scwhite/70 bg-opacity-80 hover:bg-opacity-100 p-2 rounded-full shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${currentIndex === 0 ? 'opacity-50' : 'opacity-0 group-hover:opacity-100'
+                }`}
               aria-label="Previous products"
             >
-              <ChevronLeft size={20} className="xpo_text-gray-700" />
+              <ChevronLeft size={20} className="text-gray-700" />
             </button>
             <button
               onClick={handleNext}
               disabled={isTransitioning}
-              className={`xpo_absolute xpo_top-1/2 xpo_right-2 xpo_transform xpo_-translate-y-1/2 xpo_z-10 xpo_bg-scwhite/70 xpo_bg-opacity-80 hover:xpo_bg-opacity-100 xpo_p-2 xpo_rounded-full xpo_shadow-lg xpo_transition-all xpo_duration-200 disabled:xpo_opacity-50 disabled:xpo_cursor-not-allowed ${
-                currentIndex >= maxIndex ? 'xpo_opacity-50' : 'xpo_opacity-0 group-hover:xpo_opacity-100'
-              }`}
+              className={`absolute top-1/2 right-2 transform -translate-y-1/2 z-10 bg-scwhite/70 bg-opacity-80 hover:bg-opacity-100 p-2 rounded-full shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${currentIndex >= maxIndex ? 'opacity-50' : 'opacity-0 group-hover:opacity-100'
+                }`}
               aria-label="Next products"
             >
-              <ChevronRight size={20} className="xpo_text-gray-700" />
+              <ChevronRight size={20} className="text-gray-700" />
             </button>
           </>
         )}
         {products.length > responsiveSlidesPerView && (
-          <div className="xpo_flex xpo_justify-center xpo_mt-4 xpo_space-x-2">
+          <div className="flex justify-center mt-4 space-x-2">
             {Array.from({ length: maxIndex + 1 }).map((_, index) => (
               <button
                 key={index}
                 onClick={() => !isTransitioning && setCurrentIndex(index)}
-                className={`xpo_w-2 xpo_h-2 xpo_rounded-full xpo_transition-colors xpo_duration-200 ${
-                  index === currentIndex 
-                    ? 'xpo_bg-blue-600' 
-                    : 'xpo_bg-gray-300 hover:xpo_bg-gray-400'
-                }`}
+                className={`w-2 h-2 rounded-full transition-colors duration-200 ${index === currentIndex
+                    ? 'bg-blue-600'
+                    : 'bg-gray-300 hover:bg-gray-400'
+                  }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
             ))}
@@ -276,11 +273,11 @@ const ProductCarouselExamples = () => {
     <div>
       <ProductCarousel category="sample-category" title="Featured Products" />
       <ProductCarousel recommendationType="bestseller" title="Best Sellers" autoplay={true} />
-      <ProductCarousel 
-        filters={{ 
+      <ProductCarousel
+        filters={{
           meta_key: 'featured',
           meta_value: 'yes',
-          per_page: 8 
+          per_page: 8
         }}
         title="Featured Products"
         slidesPerView={3}

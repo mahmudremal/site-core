@@ -45,16 +45,16 @@ const LoginPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    login({isRegister, ...formData})
-    .then(data => {
-      // login
-      if (data?.account_id) {
-        const { account_id, verification: { emailSent = true, smsSent = false } = {} } = data;
-        navigate(`/auth/verify/${account_id}/${smsSent ? 'sms' : emailSent ? 'email' : 'token'}/0`);
-      }
-    })
-    .catch(err => notify.error(err))
-    .finally(() => setLoading(false));
+    login({ isRegister, ...formData })
+      .then(data => {
+        // login
+        if (data?.account_id) {
+          const { account_id, verification: { emailSent = true, smsSent = false } = {} } = data;
+          navigate(`/auth/verify/${account_id}/${smsSent ? 'sms' : emailSent ? 'email' : 'token'}/0`);
+        }
+      })
+      .catch(err => notify.error(err))
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -85,104 +85,104 @@ const LoginPage = () => {
       ]);
       setReviewLoading(false);
     }, 1500);
-  
+
     return () => clearTimeout(delay);
   }, []);
-  
+
 
   return (
-    <div className="xpo_min-h-screen xpo_bg-gradient-to-br xpo_from-scprimary-50 xpo_via-scwhite xpo_to-scwhite-50">
-      <div className="xpo_flex xpo_min-h-screen">
-        
-        <div className="xpo_hidden lg:xpo_flex lg:xpo_w-1/2 xpo_bg-gradient-to-br xpo_from-scprimary-600 xpo_to-scwhite-700 xpo_relative xpo_overflow-hidden">
-          <div className="xpo_absolute xpo_inset-0 xpo_bg-scprimary xpo_bg-opacity-20">
-            <div className="xpo_opacity-40 xpo_h-full">
+    <div className="min-h-screen bg-gradient-to-br from-scprimary-50 via-scwhite to-scwhite-50">
+      <div className="flex min-h-screen">
+
+        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-scprimary-600 to-scwhite-700 relative overflow-hidden">
+          <div className="absolute inset-0 bg-scprimary bg-opacity-20">
+            <div className="opacity-40 h-full">
               <MoonlitSky />
             </div>
           </div>
-          
-          <div className="xpo_relative xpo_z-10 xpo_flex xpo_flex-col xpo_justify-center xpo_items-center xpo_p-12 xpo_text-scwhite">
-            <div className="xpo_mb-8 xpo_text-center">
-              <h1 className="xpo_text-4xl xpo_font-bold xpo_mb-4">{__('Welcome to', 'site-core')}</h1>
-              <p className="xpo_text-xl xpo_text-scaccent-100 xpo_mb-8">
+
+          <div className="relative z-10 flex flex-col justify-center items-center p-12 text-scwhite">
+            <div className="mb-8 text-center">
+              <h1 className="text-4xl font-bold mb-4">{__('Welcome to', 'site-core')}</h1>
+              <p className="text-xl text-scaccent-100 mb-8">
                 {__('Your premium shopping destination', 'site-core')}
               </p>
-              
-              <div className="xpo_grid xpo_grid-cols-3 xpo_gap-8 xpo_mb-12">
-                <div className="xpo_text-center">
-                  <div className="xpo_bg-scwhite xpo_bg-opacity-20 xpo_rounded-full xpo_p-4 xpo_mb-3 xpo_inline-block">
-                    <Shield className="xpo_w-8 xpo_h-8" />
+
+              <div className="grid grid-cols-3 gap-8 mb-12">
+                <div className="text-center">
+                  <div className="bg-scwhite bg-opacity-20 rounded-full p-4 mb-3 inline-block">
+                    <Shield className="w-8 h-8" />
                   </div>
-                  <p className="xpo_text-sm xpo_text-scaccent-100">{__('Secure Shopping', 'site-core')}</p>
+                  <p className="text-sm text-scaccent-100">{__('Secure Shopping', 'site-core')}</p>
                 </div>
-                <div className="xpo_text-center">
-                  <div className="xpo_bg-scwhite xpo_bg-opacity-20 xpo_rounded-full xpo_p-4 xpo_mb-3 xpo_inline-block">
-                    <Star className="xpo_w-8 xpo_h-8" />
+                <div className="text-center">
+                  <div className="bg-scwhite bg-opacity-20 rounded-full p-4 mb-3 inline-block">
+                    <Star className="w-8 h-8" />
                   </div>
-                  <p className="xpo_text-sm xpo_text-scaccent-100">{__('Premium Quality', 'site-core')}</p>
+                  <p className="text-sm text-scaccent-100">{__('Premium Quality', 'site-core')}</p>
                 </div>
-                <div className="xpo_text-center">
-                  <div className="xpo_bg-scwhite xpo_bg-opacity-20 xpo_rounded-full xpo_p-4 xpo_mb-3 xpo_inline-block">
-                    <Users className="xpo_w-8 xpo_h-8" />
+                <div className="text-center">
+                  <div className="bg-scwhite bg-opacity-20 rounded-full p-4 mb-3 inline-block">
+                    <Users className="w-8 h-8" />
                   </div>
-                  <p className="xpo_text-sm xpo_text-scaccent-100">{sprintf(__('%s Customers', 'site-core'), '10M+')}</p>
+                  <p className="text-sm text-scaccent-100">{sprintf(__('%s Customers', 'site-core'), '10M+')}</p>
                 </div>
               </div>
             </div>
 
-            <div className="xpo_space-y-6 xpo_w-full xpo_max-w-md">
+            <div className="space-y-6 w-full max-w-md">
               {reviewLoading ? <ReviewBarSkeleton count={3} /> : testimonials.map((testimonial, index) => (
-                <div key={index} className="xpo_bg-scwhite xpo_bg-opacity-10 xpo_backdrop-blur-sm xpo_rounded-xl xpo_p-4">
-                  <div className="xpo_flex xpo_items-center xpo_mb-3">
-                    <img 
-                      src={testimonial.avatar} 
+                <div key={index} className="bg-scwhite bg-opacity-10 backdrop-blur-sm rounded-xl p-4">
+                  <div className="flex items-center mb-3">
+                    <img
+                      src={testimonial.avatar}
                       alt={testimonial.name}
-                      className="xpo_w-10 xpo_h-10 xpo_rounded-full xpo_mr-3"
+                      className="w-10 h-10 rounded-full mr-3"
                     />
                     <div>
-                      <p className="xpo_font-medium xpo_text-sm">{testimonial.name}</p>
-                      <p className="xpo_text-xs xpo_text-scaccent-200">{testimonial.role}</p>
+                      <p className="font-medium text-sm">{testimonial.name}</p>
+                      <p className="text-xs text-scaccent-200">{testimonial.role}</p>
                     </div>
-                    <div className="xpo_ml-auto xpo_flex">
+                    <div className="ml-auto flex">
                       {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star key={i} className="xpo_w-3 xpo_h-3 xpo_fill-yellow-400 xpo_text-yellow-400" />
+                        <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                       ))}
                     </div>
                   </div>
-                  <p className="xpo_text-sm xpo_text-scaccent-100">{testimonial.content}</p>
+                  <p className="text-sm text-scaccent-100">{testimonial.content}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="xpo_absolute xpo_top-0 xpo_right-0 xpo_w-64 xpo_h-64 xpo_bg-scwhite xpo_bg-opacity-10 xpo_rounded-full xpo_-mr-32 xpo_-mt-32"></div>
-          <div className="xpo_absolute xpo_bottom-0 xpo_left-0 xpo_w-48 xpo_h-48 xpo_bg-scwhite xpo_bg-opacity-10 xpo_rounded-full xpo_-ml-24 xpo_-mb-24"></div>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-scwhite bg-opacity-10 rounded-full -mr-32 -mt-32"></div>
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-scwhite bg-opacity-10 rounded-full -ml-24 -mb-24"></div>
         </div>
 
-        <div className="xpo_flex-1 xpo_flex xpo_items-center xpo_justify-center xpo_p-8 xpo_relative">
-          <div className="lg:xpo_hidden xpo_absolute xpo_top-0 xpo_left-0 xpo_w-full xpo_h-full xpo_z-0">
+        <div className="flex-1 flex items-center justify-center p-8 relative">
+          <div className="lg:hidden absolute top-0 left-0 w-full h-full z-0">
             <MoonlitSky />
           </div>
-          <div className="xpo_w-full xpo_max-w-md xpo_relative xpo_z-10">
+          <div className="w-full max-w-md relative z-10">
             {['bye', 'signin', 'register'].includes(loginType) && (
-              <div className="xpo_bg-scwhite/70 xpo_rounded-3xl xpo_shadow-2xl xpo_p-8">
-                <div className="xpo_text-center xpo_mb-8">
-                  <h2 className="xpo_text-3xl xpo_font-bold xpo_text-gray-900 xpo_mb-2">
+              <div className="bg-scwhite/70 rounded-3xl shadow-2xl p-8">
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-bold text-gray-900 mb-2">
                     {isRegister ? __('Create Account', 'site-core') : __('Welcome Back', 'site-core')}
                   </h2>
-                  <p className="xpo_text-gray-600">
-                    {isRegister 
+                  <p className="text-gray-600">
+                    {isRegister
                       ? __('Join thousands of satisfied customers', 'site-core')
                       : __('Sign in to your account to continue', 'site-core')
                     }
                   </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="xpo_space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   {isRegister && (
-                    <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4">
-                      <div className="xpo_relative">
-                        <User className="xpo_absolute xpo_left-3 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_w-5 xpo_h-5 xpo_text-gray-400" />
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <input
                           required
                           type="text"
@@ -190,11 +190,11 @@ const LoginPage = () => {
                           value={formData.firstName}
                           onChange={handleInputChange}
                           placeholder={__('First Name', 'site-core')}
-                          className="xpo_w-full xpo_pl-10 xpo_pr-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-xl focus:xpo_ring-2 focus:xpo_ring-scaccent-500 focus:xpo_border-transparent xpo_transition-all"
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-scaccent-500 focus:border-transparent transition-all"
                         />
                       </div>
-                      <div className="xpo_relative">
-                        <User className="xpo_absolute xpo_left-3 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_w-5 xpo_h-5 xpo_text-gray-400" />
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <input
                           required
                           type="text"
@@ -202,18 +202,18 @@ const LoginPage = () => {
                           value={formData.lastName}
                           onChange={handleInputChange}
                           placeholder={__('Last Name', 'site-core')}
-                          className="xpo_w-full xpo_pl-10 xpo_pr-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-xl focus:xpo_ring-2 focus:xpo_ring-scaccent-500 focus:xpo_border-transparent xpo_transition-all"
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-scaccent-500 focus:border-transparent transition-all"
                         />
                       </div>
                     </div>
                   )}
 
-                  <div className="xpo_relative">
+                  <div className="relative">
                     {
-                      isRegister ? 
-                      <Mail className="xpo_absolute xpo_left-3 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_w-5 xpo_h-5 xpo_text-gray-400" /> :
-                      <User className="xpo_absolute xpo_left-3 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_w-5 xpo_h-5 xpo_text-gray-400" />
-                      }
+                      isRegister ?
+                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" /> :
+                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    }
                     <input
                       required
                       name="email"
@@ -221,26 +221,26 @@ const LoginPage = () => {
                       onChange={handleInputChange}
                       type={isRegister ? 'email' : 'text'}
                       placeholder={isRegister ? __('Email Address', 'site-core') : __('Email address / Phone number / Username', 'site-core')}
-                      className="xpo_w-full xpo_pl-10 xpo_pr-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-xl focus:xpo_ring-2 focus:xpo_ring-scaccent-500 focus:xpo_border-transparent xpo_transition-all"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-scaccent-500 focus:border-transparent transition-all"
                     />
                   </div>
 
                   {isRegister && (
-                    <div className="xpo_relative">
-                      <Phone className="xpo_absolute xpo_left-3 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_w-5 xpo_h-5 xpo_text-gray-400" />
+                    <div className="relative">
+                      <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                       <input
                         type="tel"
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
                         placeholder={__('Phone Number', 'site-core')}
-                        className="xpo_w-full xpo_pl-10 xpo_pr-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-xl focus:xpo_ring-2 focus:xpo_ring-scaccent-500 focus:xpo_border-transparent xpo_transition-all"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-scaccent-500 focus:border-transparent transition-all"
                       />
                     </div>
                   )}
 
-                  <div className="xpo_relative">
-                    <Lock className="xpo_absolute xpo_left-3 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_w-5 xpo_h-5 xpo_text-gray-400" />
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input
                       required
                       name="password"
@@ -248,41 +248,41 @@ const LoginPage = () => {
                       onChange={handleInputChange}
                       placeholder={__('Password', 'site-core')}
                       type={showPassword ? "text" : "password"}
-                      className="xpo_w-full xpo_pl-10 xpo_pr-12 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-xl focus:xpo_ring-2 focus:xpo_ring-scaccent-500 focus:xpo_border-transparent xpo_transition-all"
+                      className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-scaccent-500 focus:border-transparent transition-all"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(prev => !prev)}
-                      className="xpo_absolute xpo_right-3 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_text-gray-400 hover:xpo_text-gray-600"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     >
-                      {showPassword ? <Eye className="xpo_w-5 xpo_h-5" /> : <EyeOff className="xpo_w-5 xpo_h-5" />}
+                      {showPassword ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
                     </button>
                   </div>
 
                   {isRegister && (
-                    <div className="xpo_relative">
-                      <Lock className="xpo_absolute xpo_left-3 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_w-5 xpo_h-5 xpo_text-gray-400" />
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                       <input
                         name="confirmPassword"
                         onChange={handleInputChange}
                         placeholder="Confirm Password"
                         value={formData.confirmPassword}
                         type={showPassword ? "text" : "password"}
-                        className="xpo_w-full xpo_pl-10 xpo_pr-12 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-xl focus:xpo_ring-2 focus:xpo_ring-scaccent-500 focus:xpo_border-transparent xpo_transition-all"
+                        className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-scaccent-500 focus:border-transparent transition-all"
                         required
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(prev => !prev)}
-                        className="xpo_absolute xpo_right-3 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_text-gray-400 hover:xpo_text-gray-600"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                       >
-                        {showPassword ? <Eye className="xpo_w-5 xpo_h-5" /> : <EyeOff className="xpo_w-5 xpo_h-5" />}
+                        {showPassword ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
                       </button>
                     </div>
                   )}
 
                   {isRegister && (
-                    <div className="xpo_flex xpo_items-start xpo_gap-3">
+                    <div className="flex items-start gap-3">
                       <input
                         required
                         type="checkbox"
@@ -290,27 +290,27 @@ const LoginPage = () => {
                         name="agreeTerms"
                         onChange={handleInputChange}
                         checked={formData.agreeTerms}
-                        className="xpo_mt-1 xpo_w-4 xpo_h-4 xpo_text-scaccent-600 xpo_bg-gray-100 xpo_border-gray-300 xpo_rounded focus:xpo_ring-scaccent-500"
+                        className="mt-1 w-4 h-4 text-scaccent-600 bg-gray-100 border-gray-300 rounded focus:ring-scaccent-500"
                       />
-                      <label htmlFor="agreeTerms" className="xpo_text-sm xpo_text-gray-600" dangerouslySetInnerHTML={{__html: sprintf(__('I agree to the %s Terms of Service %s and %s Privacy Policy %s', 'site-core'), '<a href="#" target="_blank" class="xpo_text-scaccent-600 hover:xpo_text-scaccent-800 xpo_underline">', '</a>', '<a href="#" target="_blank" class="xpo_text-scaccent-600 hover:xpo_text-scaccent-800 xpo_underline">', '</a>')}}>
+                      <label htmlFor="agreeTerms" className="text-sm text-gray-600" dangerouslySetInnerHTML={{ __html: sprintf(__('I agree to the %s Terms of Service %s and %s Privacy Policy %s', 'site-core'), '<a href="#" target="_blank" class="text-scaccent-600 hover:text-scaccent-800 underline">', '</a>', '<a href="#" target="_blank" class="text-scaccent-600 hover:text-scaccent-800 underline">', '</a>') }}>
                       </label>
                     </div>
                   )}
 
                   {!isRegister && (
-                    <div className="xpo_flex xpo_items-center xpo_justify-between">
-                      <label className="xpo_flex xpo_items-center">
+                    <div className="flex items-center justify-between">
+                      <label className="flex items-center">
                         <input
                           type="checkbox"
                           id="rememberMe"
                           name="rememberMe"
                           onChange={handleInputChange}
                           checked={formData.rememberMe}
-                          className="xpo_w-4 xpo_h-4 xpo_text-scaccent-600 xpo_bg-gray-100 xpo_border-gray-300 xpo_rounded focus:xpo_ring-scaccent-500"
+                          className="w-4 h-4 text-scaccent-600 bg-gray-100 border-gray-300 rounded focus:ring-scaccent-500"
                         />
-                        <span className="xpo_ml-2 xpo_text-sm xpo_text-gray-600">{__('Remember me', 'site-core')}</span>
+                        <span className="ml-2 text-sm text-gray-600">{__('Remember me', 'site-core')}</span>
                       </label>
-                      <Link href="/auth/reset-password" className="xpo_text-sm xpo_text-scaccent-600 hover:xpo_text-scaccent-800 xpo_underline">
+                      <Link href="/auth/reset-password" className="text-sm text-scaccent-600 hover:text-scaccent-800 underline">
                         {__('Forgot password?', 'site-core')}
                       </Link>
                     </div>
@@ -319,40 +319,40 @@ const LoginPage = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="xpo_w-full xpo_bg-gradient-to-r xpo_from-scprimary-600 xpo_to-scwhite-600 xpo_text-scwhite xpo_py-3 xpo_px-6 xpo_rounded-xl xpo_font-medium hover:xpo_from-scprimary-700 hover:xpo_to-scwhite-700 xpo_transition-all xpo_transform hover:xpo_scale-[1.02] xpo_flex xpo_items-center xpo_justify-center xpo_gap-2"
+                    className="w-full bg-gradient-to-r from-scprimary-600 to-scwhite-600 text-scwhite py-3 px-6 rounded-xl font-medium hover:from-scprimary-700 hover:to-scwhite-700 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2"
                   >
                     {loading ? __('Matching...', 'site-core') : isRegister ? __('Create Account', 'site-core') : __('Sign In', 'site-core')}
-                    {loading ? <Loader2 className="xpo_w-4 xpo_h-4 xpo_animate-spin" /> : <ArrowRight className="xpo_w-4 xpo_h-4" />}
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
                   </button>
 
-                  <div className="xpo_relative xpo_flex xpo_items-center xpo_justify-center">
-                    <div className="xpo_absolute xpo_inset-0 xpo_flex xpo_items-center">
-                      <div className="xpo_w-full xpo_border-t xpo_border-gray-300"></div>
+                  <div className="relative flex items-center justify-center">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-gray-300"></div>
                     </div>
-                    <div className="xpo_relative xpo_bg-scwhite/60 xpo_px-4 xpo_text-sm xpo_text-gray-500">
+                    <div className="relative bg-scwhite/60 px-4 text-sm text-gray-500">
                       {__('Or continue with', 'site-core')}
                     </div>
                   </div>
 
-                  <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4">
+                  <div className="grid grid-cols-2 gap-4">
                     <button
                       type="button"
-                      className="xpo_w-full xpo_border xpo_border-gray-300 xpo_py-3 xpo_px-4 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors xpo_flex xpo_items-center xpo_justify-center xpo_gap-2"
+                      className="w-full border border-gray-300 py-3 px-4 rounded-xl font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
                     >
-                      <svg className="xpo_w-5 xpo_h-5" viewBox="0 0 24 24">
-                        <path fill="#4285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                        <path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                        <path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                        <path fill="#ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                      <svg className="w-5 h-5" viewBox="0 0 24 24">
+                        <path fill="#4285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                        <path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                        <path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                        <path fill="#ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                       </svg>
                       Google
                     </button>
                     <button
                       type="button"
-                      className="xpo_w-full xpo_border xpo_border-gray-300 xpo_py-3 xpo_px-4 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors xpo_flex xpo_items-center xpo_justify-center xpo_gap-2"
+                      className="w-full border border-gray-300 py-3 px-4 rounded-xl font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
                     >
-                      <svg className="xpo_w-5 xpo_h-5" fill="#1877f2" viewBox="0 0 24 24">
-                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                      <svg className="w-5 h-5" fill="#1877f2" viewBox="0 0 24 24">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                       </svg>
                       Facebook
                     </button>
@@ -362,12 +362,12 @@ const LoginPage = () => {
             )}
 
             {['signin', 'register'].includes(loginType) && (
-              <div className="xpo_text-center xpo_mt-6">
-                <p className="xpo_text-gray-600">
+              <div className="text-center mt-6">
+                <p className="text-gray-600">
                   {isRegister ? 'Already have an account?' : "Don't have an account?"}
                   <Link
                     to={`/auth/${isRegister ? 'signin' : 'register'}`}
-                    className="xpo_ml-1 xpo_text-scaccent-600 hover:xpo_text-scaccent-800 xpo_font-medium xpo_underline"
+                    className="ml-1 text-scaccent-600 hover:text-scaccent-800 font-medium underline"
                   >
                     {isRegister ? __('Sign In', 'site-core') : __('Create Account', 'site-core')}
                   </Link>

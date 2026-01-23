@@ -19,10 +19,10 @@ export const ProductGallery = ({ images, loading }) => {
 
   return (
     <div>
-      {mainImage && (<img src={mainImage} alt="Product main" className="xpo_w-full xpo_h-96 xpo_object-cover xpo_rounded-lg xpo_mb-4" />)}
-      <div className="xpo_grid xpo_grid-cols-4 xpo_gap-2">
+      {mainImage && (<img src={mainImage} alt="Product main" className="w-full h-96 object-cover rounded-lg mb-4" />)}
+      <div className="grid grid-cols-4 gap-2">
         {images.map((img, i) => (
-          <img key={i} src={img?.url} alt={`Thumbnail ${i + 1}`} onClick={() => setMainImage(img?.url)} className={`xpo_w-full xpo_h-24 xpo_object-cover xpo_rounded xpo_cursor-pointer xpo_border-2 ${mainImage === img?.url ? 'xpo_border-indigo-500' : 'xpo_border-transparent'} hover:xpo_border-indigo-500`} />
+          <img key={i} src={img?.url} alt={`Thumbnail ${i + 1}`} onClick={() => setMainImage(img?.url)} className={`w-full h-24 object-cover rounded cursor-pointer border-2 ${mainImage === img?.url ? 'border-indigo-500' : 'border-transparent'} hover:border-indigo-500`} />
         ))}
       </div>
     </div>

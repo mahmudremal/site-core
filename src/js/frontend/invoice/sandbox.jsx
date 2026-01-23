@@ -31,7 +31,7 @@ const Sandbox = ({ publicKey = null, bgImage = '' }) => {
   useEffect(() => {
     axios.get(`/wp-json/sitecore/v1/invoice/${invoiceId}`)
       .then(res => {
-        const data = res?.data??res;
+        const data = res?.data ?? res;
         if (data && !data.code) {
           setInvoiceData(data);
           switch (data?.status) {
@@ -88,30 +88,30 @@ const Sandbox = ({ publicKey = null, bgImage = '' }) => {
           // .then(verify => {
           //     if (verify?.success) {
           //         setPopup(
-          //             <div className="text-center xpo_p-8">
-          //                 <span className="w-100-px xpo_h-100-px bg-success-600 rounded-circle d-inline-flex xpo_justify-content-center xpo_items-center xpo_text-2xxl xpo_mb-32 xpo_text-white">
+          //             <div className="text-center p-8">
+          //                 <span className="w-100-px h-100-px bg-success-600 rounded-circle d-inline-flex justify-content-center items-center text-2xxl mb-32 text-white">
           //                     <Check />
           //                 </span>
-          //                 <h5 className="mb-8 xpo_text-2xl">{__('Payment Successful')}</h5>
-          //                 <p className="text-neutral-500 xpo_mb-0">{__('Thank you for your payment!')}</p>
+          //                 <h5 className="mb-8 text-2xl">{__('Payment Successful')}</h5>
+          //                 <p className="text-neutral-500 mb-0">{__('Thank you for your payment!')}</p>
           //             </div>
           //         );
           //     } else {
           //         setPopup(
-          //             <div className="text-center xpo_p-8">
-          //                 <span className="w-100-px xpo_h-100-px bg-danger-600 rounded-circle d-inline-flex xpo_justify-content-center xpo_items-center xpo_text-2xxl xpo_mb-32 xpo_text-white">
+          //             <div className="text-center p-8">
+          //                 <span className="w-100-px h-100-px bg-danger-600 rounded-circle d-inline-flex justify-content-center items-center text-2xxl mb-32 text-white">
           //                     <X />
           //                 </span>
-          //                 <h5 className="mb-8 xpo_text-2xl">{__('Payment Failed')}</h5>
-          //                 <p className="text-neutral-500 xpo_mb-0">{__('The transaction could not be completed.')}</p>
+          //                 <h5 className="mb-8 text-2xl">{__('Payment Failed')}</h5>
+          //                 <p className="text-neutral-500 mb-0">{__('The transaction could not be completed.')}</p>
           //             </div>
           //         );
           //     }
           // })
           // .catch(() => {
           //     setPopup(
-          //         <div className="text-center xpo_p-8">
-          //             <h5 className="mb-8 xpo_text-2xl">{__('Error')}</h5>
+          //         <div className="text-center p-8">
+          //             <h5 className="mb-8 text-2xl">{__('Error')}</h5>
           //             <p className="text-neutral-500">{__('Failed to verify payment. Please try again.')}</p>
           //         </div>
           //     );
@@ -130,7 +130,7 @@ const Sandbox = ({ publicKey = null, bgImage = '' }) => {
     try {
       const tapInstance = window.Tapjsli(publicKey);
       const elementsInstance = tapInstance.elements({
-        currencyCode: invoiceData?.currency??'SAR',
+        currencyCode: invoiceData?.currency ?? 'SAR',
         locale: 'en',
       });
 
@@ -145,14 +145,14 @@ const Sandbox = ({ publicKey = null, bgImage = '' }) => {
           }
         },
         {
-          currencyCode:["KWD","USD","SAR"],
-          labels : {
-            cardNumber:"Card Number",
-            expirationDate:"MM/YY",
-            cvv:"CVV",
-            cardHolder:"Card Holder Name"
+          currencyCode: ["KWD", "USD", "SAR"],
+          labels: {
+            cardNumber: "Card Number",
+            expirationDate: "MM/YY",
+            cvv: "CVV",
+            cardHolder: "Card Holder Name"
           },
-          TextDirection:'ltr',
+          TextDirection: 'ltr',
           paymentAllowed: 'all', // ['VISA', 'MASTERCARD', 'AMERICAN_EXPRESS', 'MADA']
         }
       );
@@ -217,26 +217,26 @@ const Sandbox = ({ publicKey = null, bgImage = '' }) => {
 
   if (error && !invoiceData) {
     return (
-      <div className="xpo_min-h-screen xpo_flex xpo_items-center xpo_justify-center xpo_text-red-600 xpo_text-xl">
+      <div className="min-h-screen flex items-center justify-center text-red-600 text-xl">
         {error}
       </div>
     );
   }
 
   return (
-    <div className="xpo_min-h-screen xpo_bg-cover xpo_bg-center xpo_flex xpo_items-center xpo_justify-center xpo_px-4" style={{ backgroundImage: bgImage ? `url(${bgImage})` : 'unset' }}>
+    <div className="min-h-screen bg-cover bg-center flex items-center justify-center px-4" style={{ backgroundImage: bgImage ? `url(${bgImage})` : 'unset' }}>
       <div
         // id="bookContainer"
         // onClick={(event) => event.target.parentElement.classList.toggle('closed')}
-        className="xpo_bg-white xpo_shadow-2xl xpo_rounded-xl xpo_max-w-3xl xpo_w-full xpo_flex xpo_flex-col md:xpo_flex-row"
+        className="bg-white shadow-2xl rounded-xl max-w-3xl w-full flex flex-col md:flex-row"
       >
         {invoiceError ?
-          <div className="xpo_w-full md:xpo_w-1/2 xpo_flex xpo_items-center xpo_justify-center xpo_bg-white">
-            <div className="xpo_bg-red-100 xpo_text-red-800 xpo_p-4 xpo_rounded-lg xpo_border xpo_border-red-300 xpo_mb-4">
-              <div className="xpo_flex xpo_items-start">
+          <div className="w-full md:w-1/2 flex items-center justify-center bg-white">
+            <div className="bg-red-100 text-red-800 p-4 rounded-lg border border-red-300 mb-4">
+              <div className="flex items-start">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="xpo_h-5 xpo_w-5 xpo_mt-1 xpo_mr-2"
+                  className="h-5 w-5 mt-1 mr-2"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -248,36 +248,36 @@ const Sandbox = ({ publicKey = null, bgImage = '' }) => {
             </div>
           </div>
           :
-          <div className="xpo_w-full md:xpo_w-1/2 xpo_p-8">
-            <h2 className="xpo_text-3xl xpo_font-bold xpo_mb-6">Complete Your Payment</h2>
-            <form onSubmit={handleSubmit} className="xpo_space-y-4">
-              <div className="xpo_grid xpo_grid-cols-1 md:xpo_grid-cols-3 xpo_gap-4">
-                <input className="xpo_bg-gray-50 xpo_border xpo_border-gray-300 xpo_text-gray-900 xpo_text-sm xpo_rounded-lg focus:xpo_ring-blue-500 focus:xpo_border-blue-500 xpo_block xpo_w-full xpo_p-2.5 dark:xpo_bg-gray-700 dark:xpo_border-gray-600 dark:xpo_placeholder-gray-400 dark:xpo_text-white dark:focus:xpo_ring-blue-500 dark:focus:xpo_border-blue-500" name="firstName" placeholder="First Name" required value={formData.firstName} onChange={handleInputChange} />
-                <input className="xpo_bg-gray-50 xpo_border xpo_border-gray-300 xpo_text-gray-900 xpo_text-sm xpo_rounded-lg focus:xpo_ring-blue-500 focus:xpo_border-blue-500 xpo_block xpo_w-full xpo_p-2.5 dark:xpo_bg-gray-700 dark:xpo_border-gray-600 dark:xpo_placeholder-gray-400 dark:xpo_text-white dark:focus:xpo_ring-blue-500 dark:focus:xpo_border-blue-500" name="middleName" placeholder="Middle Name" value={formData.middleName} onChange={handleInputChange} />
-                <input className="xpo_bg-gray-50 xpo_border xpo_border-gray-300 xpo_text-gray-900 xpo_text-sm xpo_rounded-lg focus:xpo_ring-blue-500 focus:xpo_border-blue-500 xpo_block xpo_w-full xpo_p-2.5 dark:xpo_bg-gray-700 dark:xpo_border-gray-600 dark:xpo_placeholder-gray-400 dark:xpo_text-white dark:focus:xpo_ring-blue-500 dark:focus:xpo_border-blue-500" name="lastName" placeholder="Last Name" required value={formData.lastName} onChange={handleInputChange} />
+          <div className="w-full md:w-1/2 p-8">
+            <h2 className="text-3xl font-bold mb-6">Complete Your Payment</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="firstName" placeholder="First Name" required value={formData.firstName} onChange={handleInputChange} />
+                <input className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="middleName" placeholder="Middle Name" value={formData.middleName} onChange={handleInputChange} />
+                <input className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="lastName" placeholder="Last Name" required value={formData.lastName} onChange={handleInputChange} />
               </div>
-              <input className="xpo_bg-gray-50 xpo_border xpo_border-gray-300 xpo_text-gray-900 xpo_text-sm xpo_rounded-lg focus:xpo_ring-blue-500 focus:xpo_border-blue-500 xpo_block xpo_w-full xpo_p-2.5 dark:xpo_bg-gray-700 dark:xpo_border-gray-600 dark:xpo_placeholder-gray-400 dark:xpo_text-white dark:focus:xpo_ring-blue-500 dark:focus:xpo_border-blue-500" name="email" type="email" placeholder="Email" required value={formData.email} onChange={handleInputChange} />
+              <input className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="email" type="email" placeholder="Email" required value={formData.email} onChange={handleInputChange} />
               <PhoneInput
                 country={formData.countryCode}
                 value={formData.phone}
                 onChange={handlePhoneChange}
-                containerClass="xpo_w-full"
-                inputClass="xpo_bg-gray-50 xpo_border xpo_border-gray-300 xpo_text-gray-900 xpo_text-sm xpo_rounded-lg focus:xpo_ring-blue-500 focus:xpo_border-blue-500 xpo_block !xpo_w-full xpo_p-2.5 dark:xpo_bg-gray-700 dark:xpo_border-gray-600 dark:xpo_placeholder-gray-400 dark:xpo_text-white dark:focus:xpo_ring-blue-500 dark:focus:xpo_border-blue-500"
+                containerClass="w-full"
+                inputClass="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block !w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 enableSearch
               />
               <div>
-                <label className="xpo_block xpo_mb-1 xpo_font-medium">Card Details</label>
-                <div ref={cardRef} id="tap-element-container" className="xpo_p-3 xpo_border xpo_rounded xpo_bg-gray-50" />
+                <label className="block mb-1 font-medium">Card Details</label>
+                <div ref={cardRef} id="tap-element-container" className="p-3 border rounded bg-gray-50" />
               </div>
-              {error && <div className="xpo_text-red-600">{error}</div>}
-              <button type="submit" className="xpo_btn xpo_btn-primary" disabled={loading}>
+              {error && <div className="text-red-600">{error}</div>}
+              <button type="submit" className="btn btn-primary" disabled={loading}>
                 {loading ? 'Processing...' : 'Pay Now'}
               </button>
             </form>
 
             {successUrl && (
-              <div className="xpo_mt-4">
-                <a href={successUrl} target="_blank" rel="noopener noreferrer" className="xpo_text-blue-600 xpo_underline">
+              <div className="mt-4">
+                <a href={successUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
                   Click here to complete payment
                 </a>
               </div>
@@ -288,18 +288,18 @@ const Sandbox = ({ publicKey = null, bgImage = '' }) => {
         {invoiceData && (
           <div
             // id="rightPage"
-            className="xpo_w-full md:xpo_w-1/2 xpo_bg-gray-50 xpo_p-8 xpo_border-l"
+            className="w-full md:w-1/2 bg-gray-50 p-8 border-l"
           >
-            <h3 className="xpo_text-xl xpo_font-semibold xpo_mb-4">Invoice Summary</h3>
-            <ul className="xpo_space-y-2">
-              {(invoiceData.items??[]).map((item, idx) => (
-                <li key={idx} className="xpo_flex xpo_justify-between">
+            <h3 className="text-xl font-semibold mb-4">Invoice Summary</h3>
+            <ul className="space-y-2">
+              {(invoiceData.items ?? []).map((item, idx) => (
+                <li key={idx} className="flex justify-between">
                   <span>{item.label}</span>
                   <span>{item.price} {invoiceData.currency}</span>
                 </li>
               ))}
             </ul>
-            <div className="xpo_border-t xpo_mt-4 xpo_pt-4 xpo_text-right xpo_font-bold">
+            <div className="border-t mt-4 pt-4 text-right font-bold">
               Total: {invoiceData.total} {invoiceData.currency}
             </div>
           </div>

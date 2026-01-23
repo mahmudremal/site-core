@@ -20,14 +20,14 @@ const SchemaEditorExtension = () => {
   const [isHighlightMode, setIsHighlightMode] = useState(false);
   const [currentPath, setCurrentPath] = useState('');
   const [linkImport, setLinkImport] = useState(null);
-  
+
   const socketRef = useRef(null);
   const dragRef = useRef(null);
 
   const getTopLevelLinks = () => {
     if (siteSchema?.extract?.links?.length) {
       // console.log('SiteSchema: ', siteSchema)
-      const [ link, attr = '#', regix = null ] = siteSchema.extract.links;
+      const [link, attr = '#', regix = null] = siteSchema.extract.links;
       const allLinks = document.querySelectorAll(link || 'a[href]:not([href=""]):not([href="#"])');
       return Array.from(allLinks).filter(link => !link.parentElement.closest('a'));
     }
@@ -38,14 +38,14 @@ const SchemaEditorExtension = () => {
   useEffect(() => {
     // return;
     socketRef.current = io('https://localhost:3000/bot');
-    
+
     socketRef.current.on('connect', () => {
       // console.log('Successfully connected to the socket.io server!');
       setIsConnected(true);
-      socketRef.current.emit('extension_site_opened', { 
-        title: document.title, 
-        host: location.host, 
-        href: location.href 
+      socketRef.current.emit('extension_site_opened', {
+        title: document.title,
+        host: location.host,
+        href: location.href
       });
     });
 
@@ -70,55 +70,55 @@ const SchemaEditorExtension = () => {
 
   const allLinksRef = useRef([]);
   useEffect(() => {
-      if (!linkImport) {
-        allLinksRef.current.forEach(i => i.exim && i.exim.remove());
-        allLinksRef.current = [];
-        return;
-      }
+    if (!linkImport) {
       allLinksRef.current.forEach(i => i.exim && i.exim.remove());
+      allLinksRef.current = [];
+      return;
+    }
+    allLinksRef.current.forEach(i => i.exim && i.exim.remove());
 
-      const newLinks = [document.body, ...getTopLevelLinks()].map(i => {
-        const isBody = i.nodeName.toLowerCase() === 'body';
-        const exim = document.createElement('button');
-        exim.type = "button";
-        i.appendChild(exim);
+    const newLinks = [document.body, ...getTopLevelLinks()].map(i => {
+      const isBody = i.nodeName.toLowerCase() === 'body';
+      const exim = document.createElement('button');
+      exim.type = "button";
+      i.appendChild(exim);
 
-        exim.title = __('Send this link to crawler', 'site-core');
-        exim.className = `xpo_items-center xpo_justify-center xpo_flex xpo_absolute xpo_top-2 xpo_right-2 xpo_bg-white hover:xpo_bg-gray-200 xpo_border xpo_border-gray-300 xpo_shadow-sm xpo_h-8 ${isBody ? 'xpo_w-auto xpo_rounded-2 xpo_z-[999]' : 'xpo_w-8 xpo_rounded-full xpo_z-10'}`;
-        exim.innerHTML = `<svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.5" d="M4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12" stroke="#1C274C" strokeWidth="1.5" strokeLinecap="round"/><path d="M12 4L12 14M12 14L15 11M12 14L9 11" stroke="#1C274C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>${isBody ? 'Import all Links' : ''}`;
-        
-        const clickHandler = (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          const links = isBody ? getTopLevelLinks().map(l => l.href).filter(l => l).join(',') : i.href;
-          socketRef.current && socketRef.current.emit('update-links', { links });
-          if (!isBody) {
-            exim.innerHTML = `<svg width="20px" height="20px" viewBox="0 -0.5 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 12.5L10.167 17L19.5 8" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>`;
-            exim.disabled = true;
-          }
-        };
+      exim.title = __('Send this link to crawler', 'site-core');
+      exim.className = `items-center justify-center flex absolute top-2 right-2 bg-white hover:bg-gray-200 border border-gray-300 shadow-sm h-8 ${isBody ? 'w-auto rounded-2 z-[999]' : 'w-8 rounded-full z-10'}`;
+      exim.innerHTML = `<svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.5" d="M4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12" stroke="#1C274C" strokeWidth="1.5" strokeLinecap="round"/><path d="M12 4L12 14M12 14L15 11M12 14L9 11" stroke="#1C274C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>${isBody ? 'Import all Links' : ''}`;
 
-        exim.addEventListener('click', clickHandler);
-        
-        return { element: i, exim, clickHandler };
+      const clickHandler = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const links = isBody ? getTopLevelLinks().map(l => l.href).filter(l => l).join(',') : i.href;
+        socketRef.current && socketRef.current.emit('update-links', { links });
+        if (!isBody) {
+          exim.innerHTML = `<svg width="20px" height="20px" viewBox="0 -0.5 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 12.5L10.167 17L19.5 8" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>`;
+          exim.disabled = true;
+        }
+      };
+
+      exim.addEventListener('click', clickHandler);
+
+      return { element: i, exim, clickHandler };
+    });
+    allLinksRef.current = newLinks;
+
+    const popstate = (e) => {
+      setLinkImport(true);
+    };
+
+    window.addEventListener('popstate', popstate);
+
+    return () => {
+      allLinksRef.current.forEach(i => {
+        i.exim && i.exim.remove();
+        if (i.clickHandler) {
+          i.exim && i.exim.removeEventListener('click', i.clickHandler);
+        }
       });
-      allLinksRef.current = newLinks;
-
-      const popstate = (e) => {
-        setLinkImport(true);
-      };
-
-      window.addEventListener('popstate', popstate);
-
-      return () => {
-        allLinksRef.current.forEach(i => {
-          i.exim && i.exim.remove();
-          if (i.clickHandler) {
-            i.exim && i.exim.removeEventListener('click', i.clickHandler);
-          }
-        });
-        window.removeEventListener('popstate', popstate);
-      };
+      window.removeEventListener('popstate', popstate);
+    };
   }, [linkImport]);
 
 
@@ -153,17 +153,17 @@ const SchemaEditorExtension = () => {
     if (!isHighlightMode) return;
 
     let highlightedElement = null;
-    
+
     const handleMouseOver = (e) => {
       e.preventDefault();
       e.stopPropagation();
-      
+
       // Remove previous highlight
       if (highlightedElement) {
         highlightedElement.style.outline = '';
         highlightedElement.style.backgroundColor = '';
       }
-      
+
       // Add highlight to current element
       highlightedElement = e.target;
       highlightedElement.style.outline = '2px solid #3b82f6';
@@ -173,11 +173,11 @@ const SchemaEditorExtension = () => {
     const handleClick = (e) => {
       e.preventDefault();
       e.stopPropagation();
-      
+
       const selector = generateSelector(e.target);
       setCurrentPath(selector);
       setIsHighlightMode(false);
-      
+
       // Remove highlight
       if (highlightedElement) {
         highlightedElement.style.outline = '';
@@ -203,20 +203,20 @@ const SchemaEditorExtension = () => {
     if (element.id) {
       return `#${element.id}`;
     }
-    
+
     const path = [];
     let current = element;
-    
+
     while (current && current !== document.body) {
       let selector = current.tagName.toLowerCase();
-      
+
       if (current.className) {
         const classes = current.className.split(' ').filter(c => c.trim());
         if (classes.length > 0) {
           selector += '.' + classes.join('.');
         }
       }
-      
+
       // Add nth-child if there are siblings
       const siblings = Array.from(current.parentElement?.children || []);
       const sameTagSiblings = siblings.filter(s => s.tagName === current.tagName);
@@ -224,11 +224,11 @@ const SchemaEditorExtension = () => {
         const index = sameTagSiblings.indexOf(current) + 1;
         selector += `:nth-child(${index})`;
       }
-      
+
       path.unshift(selector);
       current = current.parentElement;
     }
-    
+
     return path.join(' > ');
   };
 
@@ -259,8 +259,8 @@ const SchemaEditorExtension = () => {
 
   if (!isVisible) {
     return (
-      <div onClick={() => setIsVisible(true)} className="xpo_fixed xpo_top-4 xpo_left-4 xpo_z-[10000] xpo_bg-blue-600 xpo_text-white xpo_p-2 xpo_rounded-full xpo_cursor-pointer xpo_shadow-lg hover:xpo_bg-blue-700 xpo_transition-colors">
-        <Settings className="xpo_w-4 xpo_h-4" />
+      <div onClick={() => setIsVisible(true)} className="fixed top-4 left-4 z-[10000] bg-blue-600 text-white p-2 rounded-full cursor-pointer shadow-lg hover:bg-blue-700 transition-colors">
+        <Settings className="w-4 h-4" />
       </div>
     );
   }
@@ -270,45 +270,45 @@ const SchemaEditorExtension = () => {
       {/* Draggable Main Button */}
       <div
         ref={dragRef}
-        className={`xpo_fixed xpo_z-[10000] xpo_bg-gradient-to-r xpo_from-blue-600 xpo_to-purple-600 xpo_text-white xpo_p-3 xpo_rounded-lg xpo_cursor-move xpo_shadow-2xl xpo_border xpo_border-white/20 xpo_backdrop-blur-sm ${isDragging ? 'xpo_cursor-grabbing' : 'xpo_cursor-grab'}`}
+        className={`fixed z-[10000] bg-gradient-to-r from-blue-600 to-purple-600 text-white p-3 rounded-lg cursor-move shadow-2xl border border-white/20 backdrop-blur-sm ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
         style={{ left: `${position.x}px`, top: `${position.y}px` }}
         onMouseDown={handleMouseDown}
       >
-        <div className="xpo_flex xpo_items-center xpo_space-x-2">
-          <div className={`xpo_w-2 xpo_h-2 xpo_rounded-full ${isConnected ? 'xpo_bg-green-400' : 'xpo_bg-red-400'}`} />
+        <div className="flex items-center space-x-2">
+          <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-400' : 'bg-red-400'}`} />
           <button
-            className="xpo_flex xpo_items-center xpo_space-x-2 hover:xpo_scale-105 xpo_transition-transform"
+            className="flex items-center space-x-2 hover:scale-105 transition-transform"
             onClick={(e) => {
               e.stopPropagation();
               setIsPopupOpen(true);
             }}
           >
-            <Edit3 className="xpo_w-5 xpo_h-5" />
-            <span className="xpo_text-sm xpo_font-medium">Schema Editor</span>
+            <Edit3 className="w-5 h-5" />
+            <span className="text-sm font-medium">Schema Editor</span>
           </button>
           <button
-            className="xpo_ml-2 xpo_p-1 hover:xpo_bg-white/20 xpo_rounded"
+            className="ml-2 p-1 hover:bg-white/20 rounded"
             onClick={(e) => {
               e.stopPropagation();
               setIsVisible(false);
             }}
           >
-            <EyeOff className="xpo_w-4 xpo_h-4" />
+            <EyeOff className="w-4 h-4" />
           </button>
         </div>
       </div>
 
       {/* Highlight Mode Indicator */}
       {isHighlightMode && (
-        <div className="xpo_fixed xpo_top-4 xpo_right-4 xpo_z-[10001] xpo_bg-yellow-500 xpo_text-black xpo_px-4 xpo_py-2 xpo_rounded-lg xpo_shadow-lg xpo_font-medium">
-          <div className="xpo_flex xpo_items-center xpo_space-x-2">
-            <Eye className="xpo_w-4 xpo_h-4" />
+        <div className="fixed top-4 right-4 z-[10001] bg-yellow-500 text-black px-4 py-2 rounded-lg shadow-lg font-medium">
+          <div className="flex items-center space-x-2">
+            <Eye className="w-4 h-4" />
             <span>Click on element to select</span>
             <button
               onClick={() => setIsHighlightMode(false)}
-              className="xpo_ml-2 xpo_p-1 hover:xpo_bg-black/20 xpo_rounded"
+              className="ml-2 p-1 hover:bg-black/20 rounded"
             >
-              <X className="xpo_w-4 xpo_h-4" />
+              <X className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -316,50 +316,49 @@ const SchemaEditorExtension = () => {
 
       {/* Schema Editor Popup */}
       {isPopupOpen && (
-        <div className="xpo_fixed xpo_inset-0 xpo_z-[10002] xpo_bg-black/50 xpo_backdrop-blur-sm xpo_flex xpo_items-center xpo_justify-center xpo_p-4">
-          <div className="xpo_bg-white xpo_rounded-xl xpo_shadow-2xl xpo_w-full xpo_max-w-4xl xpo_max-h-[90vh] xpo_flex xpo_flex-col">
+        <div className="fixed inset-0 z-[10002] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
             {/* Header */}
-            <div className="xpo_flex xpo_items-center xpo_justify-between xpo_p-6 xpo_border-b xpo_border-gray-200">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <div>
-                <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-800">Schema Editor</h2>
-                <p className="xpo_text-sm xpo_text-gray-600 xpo_mt-1">
-                  Domain: <span className="xpo_font-medium">{location.host}</span>
+                <h2 className="text-2xl font-bold text-gray-800">Schema Editor</h2>
+                <p className="text-sm text-gray-600 mt-1">
+                  Domain: <span className="font-medium">{location.host}</span>
                 </p>
               </div>
-              <div className="xpo_flex xpo_items-center xpo_space-x-2">
+              <div className="flex items-center space-x-2">
                 <button
                   onClick={toggleHighlightMode}
-                  className={`xpo_px-4 xpo_py-2 xpo_rounded-lg xpo_font-medium xpo_transition-colors ${
-                    isHighlightMode 
-                      ? 'xpo_bg-yellow-500 xpo_text-black hover:xpo_bg-yellow-600'
-                      : 'xpo_bg-blue-500 xpo_text-white hover:xpo_bg-blue-600'
-                  }`}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${isHighlightMode
+                      ? 'bg-yellow-500 text-black hover:bg-yellow-600'
+                      : 'bg-blue-500 text-white hover:bg-blue-600'
+                    }`}
                 >
-                  <Eye className="xpo_w-4 xpo_h-4 xpo_mr-2 xpo_inline" />
+                  <Eye className="w-4 h-4 mr-2 inline" />
                   {isHighlightMode ? 'Exit Select Mode' : 'Select Element'}
                 </button>
                 <button
                   onClick={() => setIsPopupOpen(false)}
-                  className="xpo_p-2 hover:xpo_bg-gray-100 xpo_rounded-lg xpo_transition-colors"
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                  <X className="xpo_w-5 xpo_h-5 xpo_text-gray-500" />
+                  <X className="w-5 h-5 text-gray-500" />
                 </button>
               </div>
             </div>
 
             {/* Current Path Display */}
             {currentPath && (
-              <div className="xpo_px-6 xpo_py-3 xpo_bg-blue-50 xpo_border-b xpo_border-blue-200">
-                <div className="xpo_flex xpo_items-center xpo_space-x-2">
-                  <span className="xpo_text-sm xpo_font-medium xpo_text-blue-800">Selected:</span>
-                  <code className="xpo_text-sm xpo_bg-blue-100 xpo_px-2 xpo_py-1 xpo_rounded xpo_text-blue-900 xpo_font-mono">
+              <div className="px-6 py-3 bg-blue-50 border-b border-blue-200">
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm font-medium text-blue-800">Selected:</span>
+                  <code className="text-sm bg-blue-100 px-2 py-1 rounded text-blue-900 font-mono">
                     {currentPath}
                   </code>
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(currentPath);
                     }}
-                    className="xpo_text-xs xpo_bg-blue-500 xpo_text-white xpo_px-2 xpo_py-1 xpo_rounded hover:xpo_bg-blue-600 xpo_transition-colors"
+                    className="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition-colors"
                   >
                     Copy
                   </button>
@@ -368,54 +367,54 @@ const SchemaEditorExtension = () => {
             )}
 
             {/* Schema Editor Content */}
-            <div className="xpo_flex-1 xpo_overflow-auto xpo_p-6">
+            <div className="flex-1 overflow-auto p-6">
               {siteSchema ? (
-                <div className="xpo_h-full xpo_border xpo_border-gray-200 xpo_rounded-lg">
+                <div className="h-full border border-gray-200 rounded-lg">
                   <JsonEditor
                     data={editedSchema}
                     rootName={'Schema'}
                     onUpdate={({ currentData, newData }) => setEditedSchema(newData)}
                     styles={{
-                        container: {
-                            backgroundColor: '#f6f6f6',
-                            fontFamily: 'monospace',
-                            maxWidth: 'min(100%, 90vw)'
-                        },
+                      container: {
+                        backgroundColor: '#f6f6f6',
+                        fontFamily: 'monospace',
+                        maxWidth: 'min(100%, 90vw)'
+                      },
                     }}
                   />
                 </div>
               ) : (
-                <div className="xpo_flex xpo_items-center xpo_justify-center xpo_h-64 xpo_text-gray-500">
-                  <div className="xpo_text-center">
-                    <Settings className="xpo_w-12 xpo_h-12 xpo_mx-auto xpo_mb-4 xpo_opacity-50" />
+                <div className="flex items-center justify-center h-64 text-gray-500">
+                  <div className="text-center">
+                    <Settings className="w-12 h-12 mx-auto mb-4 opacity-50" />
                     <p>No schema loaded for this domain</p>
-                    <p className="xpo_text-sm xpo_mt-2">The server will provide the schema when available</p>
+                    <p className="text-sm mt-2">The server will provide the schema when available</p>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Footer */}
-            <div className="xpo_flex xpo_items-center xpo_justify-between xpo_p-6 xpo_border-t xpo_border-gray-200 xpo_bg-gray-50">
-              <div className="xpo_flex xpo_items-center xpo_space-x-2">
-                <div className={`xpo_w-2 xpo_h-2 xpo_rounded-full ${isConnected ? 'xpo_bg-green-500' : 'xpo_bg-red-500'}`} />
-                <span className="xpo_text-sm xpo_text-gray-600">
+            <div className="flex items-center justify-between p-6 border-t border-gray-200 bg-gray-50">
+              <div className="flex items-center space-x-2">
+                <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
+                <span className="text-sm text-gray-600">
                   {isConnected ? 'Connected to server' : 'Disconnected from server'}
                 </span>
               </div>
-              <div className="xpo_flex xpo_space-x-3">
+              <div className="flex space-x-3">
                 <button
                   onClick={() => setIsPopupOpen(false)}
-                  className="xpo_px-4 xpo_py-2 xpo_text-gray-600 hover:xpo_bg-gray-200 xpo_rounded-lg xpo_transition-colors xpo_font-medium"
+                  className="px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-lg transition-colors font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSchemaUpdate}
                   disabled={!editedSchema || !isConnected}
-                  className="xpo_px-6 xpo_py-2 xpo_bg-gradient-to-r xpo_from-blue-600 xpo_to-purple-600 xpo_text-white xpo_rounded-lg hover:xpo_from-blue-700 hover:xpo_to-purple-700 xpo_transition-colors xpo_font-medium xpo_flex xpo_items-center xpo_space-x-2 disabled:xpo_opacity-50 disabled:xpo_cursor-not-allowed"
+                  className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-colors font-medium flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Save className="xpo_w-4 xpo_h-4" />
+                  <Save className="w-4 h-4" />
                   <span>Update Schema</span>
                 </button>
               </div>
@@ -424,7 +423,7 @@ const SchemaEditorExtension = () => {
         </div>
       )}
 
-      <StoreScraper schema={siteSchema?.extensionscraper??{}} />
+      <StoreScraper schema={siteSchema?.extensionscraper ?? {}} />
     </>
   );
 };
@@ -445,7 +444,7 @@ const initializeExtension = () => {
     pointer-events: none;
     z-index: 9999;
   `;
-  
+
   // Make sure clicks can pass through except for our components
   extensionContainer.addEventListener('click', (e) => {
     if (e.target === extensionContainer) {
@@ -456,7 +455,7 @@ const initializeExtension = () => {
   // Add pointer events back for our components
   const style = document.createElement('style');
   style.textContent = `
-    [class*="xpo_"] {
+    [class*=""] {
       pointer-events: auto !important;
     }
     
@@ -480,10 +479,10 @@ const initializeExtension = () => {
       background: #a1a1a1;
     }
   `;
-  
+
   document.head.appendChild(style);
   document.body.appendChild(extensionContainer);
-  
+
   // Render React component
   const root = createRoot(extensionContainer);
   root.render(<SchemaEditorExtension />);

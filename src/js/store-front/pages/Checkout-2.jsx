@@ -86,47 +86,47 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="xpo_bg-gray-50 xpo_min-h-screen xpo_py-8">
+    <div className="bg-gray-50 min-h-screen py-8">
       <CheckoutPageHelmet />
-      <div className="xpo_container xpo_mx-auto xpo_px-4 xpo_sm:px-6 xpo_lg:px-8">
-        <div className="xpo_flex xpo_items-center xpo_mb-8">
-          <button className="xpo_flex xpo_items-center xpo_gap-2 xpo_text-gray-600 xpo_hover:text-gray-900 xpo_transition-colors">
-            <ArrowLeft className="xpo_w-5 xpo_h-5" />
-            <span className="xpo_font-medium">Back to Cart</span>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center mb-8">
+          <button className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
+            <ArrowLeft className="w-5 h-5" />
+            <span className="font-medium">Back to Cart</span>
           </button>
         </div>
 
-        <div className="xpo_grid xpo_grid-cols-1 xpo_lg:grid-cols-2 xpo_gap-8">
-          <div className="xpo_space-y-8">
-            <div className="xpo_bg-white xpo_rounded-2xl xpo_shadow-lg xpo_p-6">
-              <div className="xpo_flex xpo_items-center xpo_gap-4 xpo_mb-6">
-                <div className={`xpo_w-8 xpo_h-8 xpo_rounded-full xpo_flex xpo_items-center xpo_justify-center ${currentStep >= 1 ? 'xpo_bg-black xpo_text-white' : 'xpo_bg-gray-200 xpo_text-gray-500'}`}>
-                  <User className="xpo_w-4 xpo_h-4" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="space-y-8">
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="flex items-center gap-4 mb-6">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 1 ? 'bg-black text-white' : 'bg-gray-200 text-gray-500'}`}>
+                  <User className="w-4 h-4" />
                 </div>
-                <h2 className="xpo_text-xl xpo_font-bold xpo_text-gray-900">Contact Information</h2>
+                <h2 className="text-xl font-bold text-gray-900">Contact Information</h2>
               </div>
 
-              <div className="xpo_space-y-4">
+              <div className="space-y-4">
                 <div>
-                  <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700 xpo_mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Email address
                   </label>
-                  <div className="xpo_relative">
-                    <Mail className="xpo_absolute xpo_left-3 xpo_top-3 xpo_w-5 xpo_h-5 xpo_text-gray-400" />
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
                     <input
                       type="email"
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="xpo_w-full xpo_pl-10 xpo_pr-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_focus:ring-2 xpo_focus:ring-black xpo_focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                       placeholder="john@example.com"
                     />
                   </div>
                 </div>
 
-                <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700 xpo_mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       First name
                     </label>
                     <input
@@ -134,12 +134,12 @@ export default function CheckoutPage() {
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleInputChange}
-                      className="xpo_w-full xpo_px-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_focus:ring-2 xpo_focus:ring-black xpo_focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                       placeholder="John"
                     />
                   </div>
                   <div>
-                    <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700 xpo_mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       Last name
                     </label>
                     <input
@@ -147,56 +147,56 @@ export default function CheckoutPage() {
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleInputChange}
-                      className="xpo_w-full xpo_px-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_focus:ring-2 xpo_focus:ring-black xpo_focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                       placeholder="Doe"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700 xpo_mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Phone number
                   </label>
-                  <div className="xpo_relative">
-                    <Phone className="xpo_absolute xpo_left-3 xpo_top-3 xpo_w-5 xpo_h-5 xpo_text-gray-400" />
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
                     <input
                       type="tel"
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="xpo_w-full xpo_pl-10 xpo_pr-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_focus:ring-2 xpo_focus:ring-black xpo_focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                       placeholder="+1 (555) 123-4567"
                     />
                   </div>
                 </div>
 
-                <div className="xpo_flex xpo_items-center">
+                <div className="flex items-center">
                   <input
                     id="newsletter"
                     name="newsletter"
                     type="checkbox"
                     checked={formData.newsletter}
                     onChange={handleInputChange}
-                    className="xpo_h-4 xpo_w-4 xpo_text-black xpo_focus:ring-black xpo_border-gray-300 xpo_rounded"
+                    className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
                   />
-                  <label htmlFor="newsletter" className="xpo_ml-2 xpo_text-sm xpo_text-gray-600">
+                  <label htmlFor="newsletter" className="ml-2 text-sm text-gray-600">
                     Subscribe to our newsletter for updates and offers
                   </label>
                 </div>
               </div>
             </div>
 
-            <div className="xpo_bg-white xpo_rounded-2xl xpo_shadow-lg xpo_p-6">
-              <div className="xpo_flex xpo_items-center xpo_gap-4 xpo_mb-6">
-                <div className={`xpo_w-8 xpo_h-8 xpo_rounded-full xpo_flex xpo_items-center xpo_justify-center ${currentStep >= 2 ? 'xpo_bg-black xpo_text-white' : 'xpo_bg-gray-200 xpo_text-gray-500'}`}>
-                  <MapPin className="xpo_w-4 xpo_h-4" />
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="flex items-center gap-4 mb-6">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 2 ? 'bg-black text-white' : 'bg-gray-200 text-gray-500'}`}>
+                  <MapPin className="w-4 h-4" />
                 </div>
-                <h2 className="xpo_text-xl xpo_font-bold xpo_text-gray-900">Shipping Address</h2>
+                <h2 className="text-xl font-bold text-gray-900">Shipping Address</h2>
               </div>
 
-              <div className="xpo_space-y-4">
+              <div className="space-y-4">
                 <div>
-                  <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700 xpo_mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Address
                   </label>
                   <input
@@ -204,13 +204,13 @@ export default function CheckoutPage() {
                     name="address"
                     value={formData.address}
                     onChange={handleInputChange}
-                    className="xpo_w-full xpo_px-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_focus:ring-2 xpo_focus:ring-black xpo_focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                     placeholder="123 Main Street"
                   />
                 </div>
 
                 <div>
-                  <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700 xpo_mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Apartment, suite, etc. (optional)
                   </label>
                   <input
@@ -218,14 +218,14 @@ export default function CheckoutPage() {
                     name="apartment"
                     value={formData.apartment}
                     onChange={handleInputChange}
-                    className="xpo_w-full xpo_px-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_focus:ring-2 xpo_focus:ring-black xpo_focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                     placeholder="Apt 4B"
                   />
                 </div>
 
-                <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700 xpo_mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       City
                     </label>
                     <input
@@ -233,19 +233,19 @@ export default function CheckoutPage() {
                       name="city"
                       value={formData.city}
                       onChange={handleInputChange}
-                      className="xpo_w-full xpo_px-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_focus:ring-2 xpo_focus:ring-black xpo_focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                       placeholder="New York"
                     />
                   </div>
                   <div>
-                    <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700 xpo_mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       State
                     </label>
                     <select
                       name="state"
                       value={formData.state}
                       onChange={handleInputChange}
-                      className="xpo_w-full xpo_px-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_focus:ring-2 xpo_focus:ring-black xpo_focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                     >
                       <option value="">Select State</option>
                       <option value="NY">New York</option>
@@ -256,9 +256,9 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700 xpo_mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       ZIP Code
                     </label>
                     <input
@@ -266,19 +266,19 @@ export default function CheckoutPage() {
                       name="zipCode"
                       value={formData.zipCode}
                       onChange={handleInputChange}
-                      className="xpo_w-full xpo_px-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_focus:ring-2 xpo_focus:ring-black xpo_focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                       placeholder="10001"
                     />
                   </div>
                   <div>
-                    <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700 xpo_mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       Country
                     </label>
                     <select
                       name="country"
                       value={formData.country}
                       onChange={handleInputChange}
-                      className="xpo_w-full xpo_px-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_focus:ring-2 xpo_focus:ring-black xpo_focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                     >
                       <option value="United States">United States</option>
                       <option value="Canada">Canada</option>
@@ -288,94 +288,94 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              <div className="xpo_mt-6 xpo_p-4 xpo_bg-blue-50 xpo_rounded-lg">
-                <div className="xpo_flex xpo_items-center xpo_gap-3">
-                  <Truck className="xpo_w-5 xpo_h-5 xpo_text-blue-600" />
+              <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Truck className="w-5 h-5 text-blue-600" />
                   <div>
-                    <p className="xpo_font-medium xpo_text-blue-900">Free Standard Shipping</p>
-                    <p className="xpo_text-sm xpo_text-blue-700">Delivery in 5-7 business days</p>
+                    <p className="font-medium text-blue-900">Free Standard Shipping</p>
+                    <p className="text-sm text-blue-700">Delivery in 5-7 business days</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="xpo_bg-white xpo_rounded-2xl xpo_shadow-lg xpo_p-6">
-              <div className="xpo_flex xpo_items-center xpo_gap-4 xpo_mb-6">
-                <div className={`xpo_w-8 xpo_h-8 xpo_rounded-full xpo_flex xpo_items-center xpo_justify-center ${currentStep >= 3 ? 'xpo_bg-black xpo_text-white' : 'xpo_bg-gray-200 xpo_text-gray-500'}`}>
-                  <CreditCard className="xpo_w-4 xpo_h-4" />
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="flex items-center gap-4 mb-6">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 3 ? 'bg-black text-white' : 'bg-gray-200 text-gray-500'}`}>
+                  <CreditCard className="w-4 h-4" />
                 </div>
-                <h2 className="xpo_text-xl xpo_font-bold xpo_text-gray-900">Payment Information</h2>
+                <h2 className="text-xl font-bold text-gray-900">Payment Information</h2>
               </div>
 
-              <div className="xpo_space-y-4">
+              <div className="space-y-4">
                 <div>
-                  <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700 xpo_mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Card number
                   </label>
-                  <div className="xpo_relative">
-                    <CreditCard className="xpo_absolute xpo_left-3 xpo_top-3 xpo_w-5 xpo_h-5 xpo_text-gray-400" />
+                  <div className="relative">
+                    <CreditCard className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
                     <input
                       type="text"
                       name="cardNumber"
                       value={formData.cardNumber}
                       onChange={handleCardNumberChange}
-                      className="xpo_w-full xpo_pl-10 xpo_pr-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_focus:ring-2 xpo_focus:ring-black xpo_focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                       placeholder="1234 5678 9012 3456"
                       maxLength="19"
                     />
-                    <div className="xpo_absolute xpo_right-3 xpo_top-3 xpo_flex xpo_gap-1">
-                      <img src="https://js.stripe.com/v3/fingerprinted/img/visa-729c05c240c4bdb47b03ac81d9945bfe.svg" alt="Visa" className="xpo_w-8 xpo_h-5" />
-                      <img src="https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg" alt="Mastercard" className="xpo_w-8 xpo_h-5" />
+                    <div className="absolute right-3 top-3 flex gap-1">
+                      <img src="https://js.stripe.com/v3/fingerprinted/img/visa-729c05c240c4bdb47b03ac81d9945bfe.svg" alt="Visa" className="w-8 h-5" />
+                      <img src="https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg" alt="Mastercard" className="w-8 h-5" />
                     </div>
                   </div>
                 </div>
 
-                <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700 xpo_mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       Expiry date
                     </label>
-                    <div className="xpo_relative">
-                      <Calendar className="xpo_absolute xpo_left-3 xpo_top-3 xpo_w-5 xpo_h-5 xpo_text-gray-400" />
+                    <div className="relative">
+                      <Calendar className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
                       <input
                         type="text"
                         name="expiryDate"
                         value={formData.expiryDate}
                         onChange={handleExpiryChange}
-                        className="xpo_w-full xpo_pl-10 xpo_pr-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_focus:ring-2 xpo_focus:ring-black xpo_focus:border-transparent"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                         placeholder="MM/YY"
                         maxLength="5"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700 xpo_mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       CVV
                     </label>
-                    <div className="xpo_relative">
-                      <Lock className="xpo_absolute xpo_left-3 xpo_top-3 xpo_w-5 xpo_h-5 xpo_text-gray-400" />
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
                       <input
                         type={showCvv ? "text" : "password"}
                         name="cvv"
                         value={formData.cvv}
                         onChange={handleInputChange}
-                        className="xpo_w-full xpo_pl-10 xpo_pr-10 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_focus:ring-2 xpo_focus:ring-black xpo_focus:border-transparent"
+                        className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                         placeholder="123"
                         maxLength="4"
                       />
                       <button
                         type="button"
                         onClick={() => setShowCvv(!showCvv)}
-                        className="xpo_absolute xpo_right-3 xpo_top-3 xpo_text-gray-400 xpo_hover:text-gray-600"
+                        className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
                       >
-                        {showCvv ? <EyeOff className="xpo_w-5 xpo_h-5" /> : <Eye className="xpo_w-5 xpo_h-5" />}
+                        {showCvv ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                       </button>
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700 xpo_mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Name on card
                   </label>
                   <input
@@ -383,32 +383,32 @@ export default function CheckoutPage() {
                     name="nameOnCard"
                     value={formData.nameOnCard}
                     onChange={handleInputChange}
-                    className="xpo_w-full xpo_px-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_focus:ring-2 xpo_focus:ring-black xpo_focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                     placeholder="John Doe"
                   />
                 </div>
 
-                <div className="xpo_flex xpo_items-center">
+                <div className="flex items-center">
                   <input
                     id="saveCard"
                     name="saveCard"
                     type="checkbox"
                     checked={formData.saveCard}
                     onChange={handleInputChange}
-                    className="xpo_h-4 xpo_w-4 xpo_text-black xpo_focus:ring-black xpo_border-gray-300 xpo_rounded"
+                    className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
                   />
-                  <label htmlFor="saveCard" className="xpo_ml-2 xpo_text-sm xpo_text-gray-600">
+                  <label htmlFor="saveCard" className="ml-2 text-sm text-gray-600">
                     Save card for future purchases
                   </label>
                 </div>
               </div>
 
-              <div className="xpo_mt-6 xpo_p-4 xpo_bg-green-50 xpo_rounded-lg">
-                <div className="xpo_flex xpo_items-center xpo_gap-3">
-                  <Shield className="xpo_w-5 xpo_h-5 xpo_text-green-600" />
+              <div className="mt-6 p-4 bg-green-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Shield className="w-5 h-5 text-green-600" />
                   <div>
-                    <p className="xpo_font-medium xpo_text-green-900">Secure Payment</p>
-                    <p className="xpo_text-sm xpo_text-green-700">Your payment information is encrypted and secure</p>
+                    <p className="font-medium text-green-900">Secure Payment</p>
+                    <p className="text-sm text-green-700">Your payment information is encrypted and secure</p>
                   </div>
                 </div>
               </div>
@@ -416,59 +416,59 @@ export default function CheckoutPage() {
           </div>
 
           <div>
-            <div className="xpo_bg-white xpo_rounded-2xl xpo_shadow-lg xpo_p-6 xpo_sticky xpo_top-8">
-              <h2 className="xpo_text-xl xpo_font-bold xpo_text-gray-900 xpo_mb-6">Order Summary</h2>
-              
-              <div className="xpo_space-y-4 xpo_mb-6">
+            <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h2>
+
+              <div className="space-y-4 mb-6">
                 {orderItems.map((item) => (
-                  <div key={item.id} className="xpo_flex xpo_gap-3">
-                    <div className="xpo_relative">
+                  <div key={item.id} className="flex gap-3">
+                    <div className="relative">
                       <img
                         src={item.image}
                         alt={item.name}
-                        className="xpo_w-16 xpo_h-16 xpo_object-cover xpo_rounded-lg"
+                        className="w-16 h-16 object-cover rounded-lg"
                       />
-                      <div className="xpo_absolute xpo_-top-2 xpo_-right-2 xpo_bg-gray-900 xpo_text-white xpo_text-xs xpo_rounded-full xpo_w-5 xpo_h-5 xpo_flex xpo_items-center xpo_justify-center">
+                      <div className="absolute -top-2 -right-2 bg-gray-900 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                         {item.quantity}
                       </div>
                     </div>
-                    <div className="xpo_flex-1">
-                      <h3 className="xpo_font-medium xpo_text-gray-900 xpo_text-sm">{item.name}</h3>
-                      <p className="xpo_text-gray-600 xpo_text-sm">${item.price.toFixed(2)}</p>
+                    <div className="flex-1">
+                      <h3 className="font-medium text-gray-900 text-sm">{item.name}</h3>
+                      <p className="text-gray-600 text-sm">${item.price.toFixed(2)}</p>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="xpo_space-y-3 xpo_mb-6 xpo_border-t xpo_border-gray-200 xpo_pt-6">
-                <div className="xpo_flex xpo_justify-between xpo_text-sm">
-                  <span className="xpo_text-gray-600">Subtotal</span>
-                  <span className="xpo_font-medium">${subtotal.toFixed(2)}</span>
+              <div className="space-y-3 mb-6 border-t border-gray-200 pt-6">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Subtotal</span>
+                  <span className="font-medium">${subtotal.toFixed(2)}</span>
                 </div>
-                <div className="xpo_flex xpo_justify-between xpo_text-sm">
-                  <span className="xpo_text-gray-600">Shipping</span>
-                  <span className="xpo_font-medium xpo_text-green-600">Free</span>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Shipping</span>
+                  <span className="font-medium text-green-600">Free</span>
                 </div>
-                <div className="xpo_flex xpo_justify-between xpo_text-sm">
-                  <span className="xpo_text-gray-600">Tax</span>
-                  <span className="xpo_font-medium">${tax.toFixed(2)}</span>
-                </div>
-              </div>
-              
-              <div className="xpo_border-t xpo_border-gray-200 xpo_pt-4 xpo_mb-6">
-                <div className="xpo_flex xpo_justify-between">
-                  <span className="xpo_text-lg xpo_font-bold xpo_text-gray-900">Total</span>
-                  <span className="xpo_text-lg xpo_font-bold xpo_text-gray-900">${total.toFixed(2)}</span>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Tax</span>
+                  <span className="font-medium">${tax.toFixed(2)}</span>
                 </div>
               </div>
-              
-              <button className="xpo_w-full xpo_bg-black xpo_text-white xpo_py-4 xpo_px-4 xpo_rounded-xl xpo_font-medium xpo_hover:bg-gray-800 xpo_transition-colors xpo_flex xpo_items-center xpo_justify-center xpo_gap-2">
-                <Check className="xpo_w-5 xpo_h-5" />
+
+              <div className="border-t border-gray-200 pt-4 mb-6">
+                <div className="flex justify-between">
+                  <span className="text-lg font-bold text-gray-900">Total</span>
+                  <span className="text-lg font-bold text-gray-900">${total.toFixed(2)}</span>
+                </div>
+              </div>
+
+              <button className="w-full bg-black text-white py-4 px-4 rounded-xl font-medium hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
+                <Check className="w-5 h-5" />
                 Complete Order
               </button>
 
-              <div className="xpo_mt-4 xpo_text-center">
-                <p className="xpo_text-xs xpo_text-gray-500">
+              <div className="mt-4 text-center">
+                <p className="text-xs text-gray-500">
                   By completing your order, you agree to our Terms of Service and Privacy Policy
                 </p>
               </div>

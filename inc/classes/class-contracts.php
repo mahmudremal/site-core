@@ -380,9 +380,9 @@ class Contracts {
         wp_enqueue_style('site-core');
         wp_enqueue_script('site-core');
         ?>
-        <div class="xpo_flex xpo_flex-col xpo_gap-3">
+        <div class="flex flex-col gap-3">
             <fieldset>
-                <div class="xpo_flex xpo_items-center xpo_gap-2">
+                <div class="flex items-center gap-2">
                     <label for="_service_base_tax"><?php esc_html_e('Base Taxonomy ID', 'site-core'); ?></label>
                     <input type="text" name="_service_base_tax" id="_service_base_tax" value="<?php echo esc_attr($base_tax); ?>" />
                 </div>

@@ -1,12 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
-import { 
-  Navigation, 
-  MapPin, 
-  Clock, 
-  Phone, 
-  User, 
-  Package, 
+import {
+  Navigation,
+  MapPin,
+  Clock,
+  Phone,
+  User,
+  Package,
   CheckCircle,
   AlertCircle,
   Radio,
@@ -43,7 +43,7 @@ const createCustomIcon = (color, iconSvg, pulse = false) => {
   });
 };
 
-const currentLocationIcon = createCustomIcon('#10b981', 
+const currentLocationIcon = createCustomIcon('#10b981',
   `<svg width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2">
     <circle cx="12" cy="12" r="8"></circle>
   </svg>`,
@@ -74,7 +74,7 @@ function RouteLayer({ start, end, onRouteCalculated }) {
 
     // Fetch route from OSRM (Open Source Routing Machine)
     const url = `https://router.project-osrm.org/route/v1/driving/${start[1]},${start[0]};${end[1]},${end[0]}?overview=full&geometries=geojson`;
-    
+
     fetch(url)
       .then(res => res.json())
       .then(data => {
@@ -82,7 +82,7 @@ function RouteLayer({ start, end, onRouteCalculated }) {
           const route = data.routes[0];
           const coords = route.geometry.coordinates.map(coord => [coord[1], coord[0]]);
           setRouteCoords(coords);
-          
+
           if (onRouteCalculated) {
             onRouteCalculated({
               distance: (route.distance / 1000).toFixed(2), // km
@@ -144,7 +144,7 @@ export default function DeliveryManTracker() {
     watchIdRef.current = navigator.geolocation.watchPosition(
       (position) => {
         const { latitude, longitude, accuracy, heading, speed } = position.coords;
-        
+
         const newLocation = {
           lat: latitude,
           lng: longitude
@@ -239,10 +239,10 @@ export default function DeliveryManTracker() {
     const R = 6371; // Earth's radius in km
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return (R * c).toFixed(2);
   };
 
@@ -256,37 +256,37 @@ export default function DeliveryManTracker() {
     alert('Delivery marked as complete!');
   };
 
-  const mapCenter = currentLocation 
+  const mapCenter = currentLocation
     ? [(currentLocation.lat + destination.lat) / 2, (currentLocation.lng + destination.lng) / 2]
     : [destination.lat, destination.lng];
 
-  const straightLineDistance = currentLocation 
+  const straightLineDistance = currentLocation
     ? calculateDistance(currentLocation.lat, currentLocation.lng, destination.lat, destination.lng)
     : null;
 
   return (
-    <div className="xpo_min-h-screen xpo_bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="xpo_bg-gradient-to-r xpo_from-blue-600 xpo_to-blue-700 xpo_text-white xpo_p-4 xpo_shadow-lg">
-        <div className="xpo_max-w-6xl xpo_mx-auto">
-          <div className="xpo_flex xpo_items-center xpo_justify-between">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 shadow-lg">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-between">
             <div>
-              <h1 className="xpo_text-xl xpo_font-bold xpo_flex xpo_items-center xpo_gap-2">
-                <Navigation className="xpo_w-6 xpo_h-6" />
+              <h1 className="text-xl font-bold flex items-center gap-2">
+                <Navigation className="w-6 h-6" />
                 Delivery Navigation
               </h1>
-              <p className="xpo_text-sm xpo_opacity-90">Order #{orderId}</p>
+              <p className="text-sm opacity-90">Order #{orderId}</p>
             </div>
-            <div className="xpo_flex xpo_items-center xpo_gap-2">
+            <div className="flex items-center gap-2">
               {isTracking ? (
-                <div className="xpo_flex xpo_items-center xpo_gap-2 xpo_bg-green-500 xpo_px-3 xpo_py-1 xpo_rounded-full xpo_animate-pulse">
-                  <Radio className="xpo_w-4 xpo_h-4" />
-                  <span className="xpo_text-sm xpo_font-medium">Live</span>
+                <div className="flex items-center gap-2 bg-green-500 px-3 py-1 rounded-full animate-pulse">
+                  <Radio className="w-4 h-4" />
+                  <span className="text-sm font-medium">Live</span>
                 </div>
               ) : (
-                <div className="xpo_flex xpo_items-center xpo_gap-2 xpo_bg-gray-500 xpo_px-3 xpo_py-1 xpo_rounded-full">
-                  <AlertCircle className="xpo_w-4 xpo_h-4" />
-                  <span className="xpo_text-sm xpo_font-medium">Offline</span>
+                <div className="flex items-center gap-2 bg-gray-500 px-3 py-1 rounded-full">
+                  <AlertCircle className="w-4 h-4" />
+                  <span className="text-sm font-medium">Offline</span>
                 </div>
               )}
             </div>
@@ -294,59 +294,59 @@ export default function DeliveryManTracker() {
         </div>
       </div>
 
-      <div className="xpo_max-w-6xl xpo_mx-auto xpo_p-4">
+      <div className="max-w-6xl mx-auto p-4">
         {/* Stats Cards */}
-        <div className="xpo_grid xpo_grid-cols-2 lg:xpo_grid-cols-4 xpo_gap-4 xpo_mb-4">
-          <div className="xpo_bg-white xpo_rounded-xl xpo_shadow-md xpo_p-4">
-            <div className="xpo_flex xpo_items-center xpo_gap-3">
-              <div className="xpo_bg-blue-100 xpo_p-3 xpo_rounded-lg">
-                <MapPin className="xpo_w-5 xpo_h-5 xpo_text-blue-600" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+          <div className="bg-white rounded-xl shadow-md p-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-blue-100 p-3 rounded-lg">
+                <MapPin className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <p className="xpo_text-xs xpo_text-gray-600">Distance</p>
-                <p className="xpo_text-lg xpo_font-bold xpo_text-gray-900">
+                <p className="text-xs text-gray-600">Distance</p>
+                <p className="text-lg font-bold text-gray-900">
                   {routeInfo ? `${routeInfo.distance} km` : straightLineDistance ? `~${straightLineDistance} km` : '--'}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="xpo_bg-white xpo_rounded-xl xpo_shadow-md xpo_p-4">
-            <div className="xpo_flex xpo_items-center xpo_gap-3">
-              <div className="xpo_bg-green-100 xpo_p-3 xpo_rounded-lg">
-                <Clock className="xpo_w-5 xpo_h-5 xpo_text-green-600" />
+          <div className="bg-white rounded-xl shadow-md p-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-green-100 p-3 rounded-lg">
+                <Clock className="w-5 h-5 text-green-600" />
               </div>
               <div>
-                <p className="xpo_text-xs xpo_text-gray-600">ETA</p>
-                <p className="xpo_text-lg xpo_font-bold xpo_text-gray-900">
+                <p className="text-xs text-gray-600">ETA</p>
+                <p className="text-lg font-bold text-gray-900">
                   {routeInfo ? `${routeInfo.duration} min` : '--'}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="xpo_bg-white xpo_rounded-xl xpo_shadow-md xpo_p-4">
-            <div className="xpo_flex xpo_items-center xpo_gap-3">
-              <div className="xpo_bg-purple-100 xpo_p-3 xpo_rounded-lg">
-                <Activity className="xpo_w-5 xpo_h-5 xpo_text-purple-600" />
+          <div className="bg-white rounded-xl shadow-md p-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-purple-100 p-3 rounded-lg">
+                <Activity className="w-5 h-5 text-purple-600" />
               </div>
               <div>
-                <p className="xpo_text-xs xpo_text-gray-600">Speed</p>
-                <p className="xpo_text-lg xpo_font-bold xpo_text-gray-900">
+                <p className="text-xs text-gray-600">Speed</p>
+                <p className="text-lg font-bold text-gray-900">
                   {speed} km/h
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="xpo_bg-white xpo_rounded-xl xpo_shadow-md xpo_p-4">
-            <div className="xpo_flex xpo_items-center xpo_gap-3">
-              <div className="xpo_bg-orange-100 xpo_p-3 xpo_rounded-lg">
-                <Compass className="xpo_w-5 xpo_h-5 xpo_text-orange-600" />
+          <div className="bg-white rounded-xl shadow-md p-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-orange-100 p-3 rounded-lg">
+                <Compass className="w-5 h-5 text-orange-600" />
               </div>
               <div>
-                <p className="xpo_text-xs xpo_text-gray-600">Accuracy</p>
-                <p className="xpo_text-lg xpo_font-bold xpo_text-gray-900">
+                <p className="text-xs text-gray-600">Accuracy</p>
+                <p className="text-lg font-bold text-gray-900">
                   {accuracy > 0 ? `${accuracy}m` : '--'}
                 </p>
               </div>
@@ -354,12 +354,12 @@ export default function DeliveryManTracker() {
           </div>
         </div>
 
-        <div className="xpo_grid xpo_grid-cols-1 lg:xpo_grid-cols-3 xpo_gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Map */}
-          <div className="lg:xpo_col-span-2">
-            <div className="xpo_bg-white xpo_rounded-2xl xpo_shadow-lg xpo_overflow-hidden">
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
               {currentLocation ? (
-                <MapContainer 
+                <MapContainer
                   center={mapCenter}
                   zoom={14}
                   style={{ height: '500px', width: '100%' }}
@@ -369,35 +369,35 @@ export default function DeliveryManTracker() {
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   />
-                  
+
                   {/* Current location */}
-                  <Marker 
+                  <Marker
                     position={[currentLocation.lat, currentLocation.lng]}
                     icon={currentLocationIcon}
                   >
                     <Popup>
-                      <div className="xpo_text-center">
+                      <div className="text-center">
                         <strong>Your Location</strong>
-                        <p className="xpo_text-sm">Accuracy: {accuracy}m</p>
+                        <p className="text-sm">Accuracy: {accuracy}m</p>
                       </div>
                     </Popup>
                   </Marker>
 
                   {/* Destination */}
-                  <Marker 
+                  <Marker
                     position={[destination.lat, destination.lng]}
                     icon={destinationIcon}
                   >
                     <Popup>
-                      <div className="xpo_text-center">
+                      <div className="text-center">
                         <strong>{destination.customerName}</strong>
-                        <p className="xpo_text-sm">{destination.address}</p>
+                        <p className="text-sm">{destination.address}</p>
                       </div>
                     </Popup>
                   </Marker>
 
                   {/* Route */}
-                  <RouteLayer 
+                  <RouteLayer
                     start={[currentLocation.lat, currentLocation.lng]}
                     end={[destination.lat, destination.lng]}
                     onRouteCalculated={handleRouteCalculated}
@@ -406,31 +406,31 @@ export default function DeliveryManTracker() {
                   <MapUpdater center={mapCenter} zoom={14} />
                 </MapContainer>
               ) : (
-                <div className="xpo_flex xpo_items-center xpo_justify-center xpo_h-96 xpo_bg-gray-100">
-                  <div className="xpo_text-center">
-                    <div className="xpo_animate-spin xpo_w-8 xpo_h-8 xpo_border-4 xpo_border-blue-600 xpo_border-t-transparent xpo_rounded-full xpo_mx-auto xpo_mb-4"></div>
-                    <p className="xpo_text-gray-600">Getting your location...</p>
+                <div className="flex items-center justify-center h-96 bg-gray-100">
+                  <div className="text-center">
+                    <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+                    <p className="text-gray-600">Getting your location...</p>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Control Buttons */}
-            <div className="xpo_mt-4 xpo_flex xpo_gap-4">
+            <div className="mt-4 flex gap-4">
               {!isTracking ? (
                 <button
                   onClick={startTracking}
-                  className="xpo_flex-1 xpo_bg-green-600 xpo_text-white xpo_py-3 xpo_rounded-xl xpo_font-semibold xpo_flex xpo_items-center xpo_justify-center xpo_gap-2 hover:xpo_bg-green-700 xpo_transition-colors xpo_shadow-lg"
+                  className="flex-1 bg-green-600 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-green-700 transition-colors shadow-lg"
                 >
-                  <Navigation className="xpo_w-5 xpo_h-5" />
+                  <Navigation className="w-5 h-5" />
                   Start Navigation
                 </button>
               ) : (
                 <button
                   onClick={stopTracking}
-                  className="xpo_flex-1 xpo_bg-red-600 xpo_text-white xpo_py-3 xpo_rounded-xl xpo_font-semibold xpo_flex xpo_items-center xpo_justify-center xpo_gap-2 hover:xpo_bg-red-700 xpo_transition-colors xpo_shadow-lg"
+                  className="flex-1 bg-red-600 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-red-700 transition-colors shadow-lg"
                 >
-                  <AlertCircle className="xpo_w-5 xpo_h-5" />
+                  <AlertCircle className="w-5 h-5" />
                   Stop Navigation
                 </button>
               )}
@@ -438,56 +438,56 @@ export default function DeliveryManTracker() {
           </div>
 
           {/* Sidebar */}
-          <div className="xpo_space-y-4">
+          <div className="space-y-4">
             {/* Customer Info */}
-            <div className="xpo_bg-white xpo_rounded-2xl xpo_shadow-lg xpo_p-6">
-              <h2 className="xpo_text-lg xpo_font-bold xpo_text-gray-900 xpo_mb-4 xpo_flex xpo_items-center xpo_gap-2">
-                <User className="xpo_w-5 xpo_h-5" />
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <User className="w-5 h-5" />
                 Customer Details
               </h2>
-              <div className="xpo_space-y-3">
+              <div className="space-y-3">
                 <div>
-                  <p className="xpo_text-sm xpo_text-gray-600">Name</p>
-                  <p className="xpo_font-medium xpo_text-gray-900">{destination.customerName}</p>
+                  <p className="text-sm text-gray-600">Name</p>
+                  <p className="font-medium text-gray-900">{destination.customerName}</p>
                 </div>
                 <div>
-                  <p className="xpo_text-sm xpo_text-gray-600">Address</p>
-                  <p className="xpo_font-medium xpo_text-gray-900 xpo_text-sm">{destination.address}</p>
+                  <p className="text-sm text-gray-600">Address</p>
+                  <p className="font-medium text-gray-900 text-sm">{destination.address}</p>
                 </div>
                 <a
                   href={`tel:${destination.customerPhone}`}
-                  className="xpo_w-full xpo_bg-blue-600 xpo_text-white xpo_py-2 xpo_rounded-lg xpo_font-medium hover:xpo_bg-blue-700 xpo_transition-colors xpo_flex xpo_items-center xpo_justify-center xpo_gap-2 xpo_mt-4"
+                  className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 mt-4"
                 >
-                  <Phone className="xpo_w-4 xpo_h-4" />
+                  <Phone className="w-4 h-4" />
                   Call Customer
                 </a>
               </div>
             </div>
 
             {/* Delivery Status */}
-            <div className="xpo_bg-white xpo_rounded-2xl xpo_shadow-lg xpo_p-6">
-              <h2 className="xpo_text-lg xpo_font-bold xpo_text-gray-900 xpo_mb-4 xpo_flex xpo_items-center xpo_gap-2">
-                <Package className="xpo_w-5 xpo_h-5" />
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <Package className="w-5 h-5" />
                 Delivery Status
               </h2>
-              <div className="xpo_space-y-3">
-                <select 
+              <div className="space-y-3">
+                <select
                   value={deliveryStatus}
                   onChange={(e) => setDeliveryStatus(e.target.value)}
-                  className="xpo_w-full xpo_p-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_font-medium xpo_text-gray-900 focus:xpo_outline-none focus:xpo_ring-2 focus:xpo_ring-blue-500"
+                  className="w-full p-3 border border-gray-300 rounded-lg font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="picked_up">Picked Up</option>
                   <option value="on_the_way">On The Way</option>
                   <option value="arrived">Arrived</option>
                   <option value="delivered">Delivered</option>
                 </select>
-                
+
                 {deliveryStatus !== 'delivered' && (
                   <button
                     onClick={handleDeliveryComplete}
-                    className="xpo_w-full xpo_bg-green-600 xpo_text-white xpo_py-3 xpo_rounded-lg xpo_font-semibold hover:xpo_bg-green-700 xpo_transition-colors xpo_flex xpo_items-center xpo_justify-center xpo_gap-2"
+                    className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
                   >
-                    <CheckCircle className="xpo_w-5 xpo_h-5" />
+                    <CheckCircle className="w-5 h-5" />
                     Mark as Delivered
                   </button>
                 )}
@@ -495,24 +495,24 @@ export default function DeliveryManTracker() {
             </div>
 
             {/* GPS Status */}
-            <div className="xpo_bg-white xpo_rounded-2xl xpo_shadow-lg xpo_p-6">
-              <h2 className="xpo_text-lg xpo_font-bold xpo_text-gray-900 xpo_mb-4">GPS Status</h2>
-              <div className="xpo_space-y-2 xpo_text-sm">
-                <div className="xpo_flex xpo_justify-between">
-                  <span className="xpo_text-gray-600">Tracking</span>
-                  <span className={`xpo_font-semibold ${isTracking ? 'xpo_text-green-600' : 'xpo_text-red-600'}`}>
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h2 className="text-lg font-bold text-gray-900 mb-4">GPS Status</h2>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Tracking</span>
+                  <span className={`font-semibold ${isTracking ? 'text-green-600' : 'text-red-600'}`}>
                     {isTracking ? 'Active' : 'Inactive'}
                   </span>
                 </div>
                 {currentLocation && (
                   <>
-                    <div className="xpo_flex xpo_justify-between">
-                      <span className="xpo_text-gray-600">Latitude</span>
-                      <span className="xpo_font-mono xpo_text-gray-900">{currentLocation.lat.toFixed(6)}</span>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Latitude</span>
+                      <span className="font-mono text-gray-900">{currentLocation.lat.toFixed(6)}</span>
                     </div>
-                    <div className="xpo_flex xpo_justify-between">
-                      <span className="xpo_text-gray-600">Longitude</span>
-                      <span className="xpo_font-mono xpo_text-gray-900">{currentLocation.lng.toFixed(6)}</span>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Longitude</span>
+                      <span className="font-mono text-gray-900">{currentLocation.lng.toFixed(6)}</span>
                     </div>
                   </>
                 )}

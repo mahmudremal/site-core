@@ -4,10 +4,10 @@ export default function MoonlitMeadowLogo() {
   const { theme } = useTheme();
   return (
     <>
-      <h1 className="xpo_text-3xl xpo_font-bold xpo_bg-gradient-to-r xpo_from-blue-400 xpo_to-purple-500 xpo_bg-clip-text xpo_text-transparent">
+      <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
         MoonlitMeadow
       </h1>
-      <div className="xpo_text-yellow-400 xpo_text-xl">™</div>
+      <div className="text-yellow-400 text-xl">™</div>
     </>
   )
 }

@@ -29,7 +29,72 @@ class Editor {
 			'callback' => [$this, 'api_submit_ai_content'],
 			'permission_callback' => '__return_true' // [Security::get_instance(), 'permission_callback']
 		]);
+		register_rest_route('sitecore/v1', '/search/posts', [
+			'methods' => 'GET',
+			'callback' => [$this, 'api_search_posts'],
+			'permission_callback' => '__return_true'
+		]);
+		register_rest_route('sitecore/v1', '/search/terms', [
+			'methods' => 'GET',
+			'callback' => [$this, 'api_search_terms'],
+			'permission_callback' => '__return_true'
+		]);
     }
+
+	public function api_search_posts(WP_REST_Request $request) {
+		$search = $request->get_param('s');
+		$post_type = $request->get_param('post_type') ?: 'post';
+		
+		$query = new \WP_Query([
+			's' => $search,
+			'post_type' => $post_type,
+			'posts_per_page' => 10,
+			'post_status' => 'publish'
+		]);
+
+		$results = [];
+		if ($query->have_posts()) {
+			while ($query->have_posts()) {
+				$query->the_post();
+				$results[] = [
+					'id' => get_the_ID(),
+					'title' => get_the_title(),
+					'link' => get_permalink(),
+					'type' => get_post_type()
+				];
+			}
+		}
+		wp_reset_postdata();
+
+		return rest_ensure_response($results);
+	}
+
+	public function api_search_terms(WP_REST_Request $request) {
+		$search = $request->get_param('s');
+		$taxonomy = $request->get_param('taxonomy') ?: 'category';
+
+		$terms = get_terms([
+			'taxonomy' => $taxonomy,
+			'search' => $search,
+			'hide_empty' => false,
+			'number' => 10
+		]);
+
+		if (is_wp_error($terms)) {
+			return rest_ensure_response([]);
+		}
+
+		$results = array_map(function($term) {
+			return [
+				'id' => $term->term_id,
+				'name' => $term->name,
+				'slug' => $term->slug,
+				'taxonomy' => $term->taxonomy
+			];
+		}, $terms);
+
+		return rest_ensure_response($results);
+	}
 
     public function settings($args) {
 		$args['editor']		= [
@@ -58,14 +123,22 @@ class Editor {
 		if (apply_filters('pm_project/system/isactive', 'editor-disabled')) {return;}
 		if ('post.php' === $hook || 'post-new.php' === $hook) {
 			wp_enqueue_style('site-core');
-			wp_enqueue_style('task-ai-editor', WP_SITECORE_BUILD_CSS_URI . '/editor.css', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_CSS_DIR_PATH . '/editor.css'), 'all');
-			wp_enqueue_script('task-ai-editor', WP_SITECORE_BUILD_JS_URI . '/editor.js', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/editor.js'), true);
-			wp_localize_script('task-ai-editor', '_aieditor_config', [
-				'_id' => get_the_ID(),
-				'_rest' => home_url('/wp-json/sitecore/v1'),
-				'_nonce' => site_url('_ai_editor_nonce'),
-				'_locale' => get_user_locale(),
-			]);
+			if (file_exists(WP_SITECORE_BUILD_CSS_DIR_PATH . '/editor.css')) {
+				wp_enqueue_style('task-ai-editor', WP_SITECORE_BUILD_CSS_URI . '/editor.css', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_CSS_DIR_PATH . '/editor.css'), 'all');
+			}
+			if (file_exists(WP_SITECORE_BUILD_JS_DIR_PATH . '/editor.js')) {
+				wp_enqueue_script('task-ai-editor', WP_SITECORE_BUILD_JS_URI . '/editor.js', [], Assets::get_instance()->filemtime(WP_SITECORE_BUILD_JS_DIR_PATH . '/editor.js'), true);
+				wp_localize_script('task-ai-editor', '_aieditor_config', [
+					'_id' => get_the_ID(),
+					'_rest' => home_url('/wp-json/sitecore/v1'),
+					'_nonce' => wp_create_nonce('_ai_editor_nonce'),
+					'_locale' => get_user_locale(),
+					'onprocessai' => [
+						'image' => false,
+						'text' => true,
+					]
+				]);
+			}
 		}
 	}
 

@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 import Webcam from 'react-webcam';
 import * as tf from '@tensorflow/tfjs';
 import * as cocossd from '@tensorflow-models/coco-ssd';
-import { Play, StopCircle, Loader2, Download } from 'lucide-react'; 
+import { Play, StopCircle, Loader2, Download } from 'lucide-react';
 import { __ } from '@js/utils';
 
 const Radar = () => {
@@ -24,7 +24,7 @@ const Radar = () => {
     const [detectables, setDetectables] = useState([
         'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light', 'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow', 'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee', 'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard', 'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple', 'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch', 'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush'
     ]);
-    
+
     const drawInitialCanvasPattern = useCallback(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -33,9 +33,9 @@ const Radar = () => {
         const height = canvas.height;
         ctx.clearRect(0, 0, width, height);
 
-        ctx.strokeStyle = '#374151'; 
+        ctx.strokeStyle = '#374151';
         ctx.lineWidth = 1;
-        
+
         const centerX = width / 2;
         const centerY = height / 2;
         const maxRadius = Math.min(centerX, centerY) * 0.9;
@@ -44,7 +44,7 @@ const Radar = () => {
             ctx.arc(centerX, centerY, (maxRadius / 5) * i, 0, 2 * Math.PI);
             ctx.stroke();
         }
-        
+
         for (let i = 0; i < 12; i++) {
             ctx.beginPath();
             ctx.moveTo(centerX, centerY);
@@ -52,9 +52,9 @@ const Radar = () => {
             ctx.lineTo(centerX + maxRadius * Math.cos(angle), centerY + maxRadius * Math.sin(angle));
             ctx.stroke();
         }
-        
+
         ctx.font = '20px sans-serif';
-        ctx.fillStyle = '#6B7280'; 
+        ctx.fillStyle = '#6B7280';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         if (!hasCameras) {
@@ -66,14 +66,14 @@ const Radar = () => {
         }
     }, [hasCameras, loadingModel, running]);
     const initialize = async () => {
-        
+
         const mediaDevices = await navigator.mediaDevices.enumerateDevices();
         const videoDevices = mediaDevices.filter(device => device.kind === 'videoinput');
         setDevices(videoDevices);
         if (videoDevices.length > 0) {
             setHasCameras(true);
             setSelectedDeviceId(videoDevices[0].deviceId);
-            
+
             try {
                 await tf.ready();
                 const loadedModel = await cocossd.load();
@@ -81,17 +81,17 @@ const Radar = () => {
             } catch (error) {
                 console.error("Failed to load TensorFlow model:", error);
             } finally {
-                setLoadingModel(false); 
+                setLoadingModel(false);
             }
         } else {
             setHasCameras(false);
-            setLoadingModel(false); 
+            setLoadingModel(false);
         }
     };
     // useEffect(() => {
     //     initialize();
     // }, []);
-    
+
     useEffect(() => {
         drawInitialCanvasPattern();
     }, [drawInitialCanvasPattern, hasCameras, loadingModel, running]);
@@ -146,26 +146,26 @@ const Radar = () => {
     const drawBoundingBox = (detection) => {
         const ctx = canvasRef.current.getContext('2d');
         const canvas = canvasRef.current;
-        
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         const [x, y, width, height] = detection.bbox;
         const label = `${detection.class} (${(detection.score * 100).toFixed(1)}%)`;
         ctx.save();
-        ctx.scale(-1, 1); 
+        ctx.scale(-1, 1);
         ctx.translate(-canvas.width, 0);
-        ctx.strokeStyle = '#f87171'; 
+        ctx.strokeStyle = '#f87171';
         ctx.lineWidth = 2;
         ctx.strokeRect(x, y, width, height);
         ctx.restore();
         ctx.font = '14px sans-serif';
-        ctx.fillStyle = '#f87171'; 
-        
+        ctx.fillStyle = '#f87171';
+
         ctx.fillText(label, canvas.width - x - width, y > 20 ? y - 5 : y + 15);
     };
     const clearCanvas = () => {
         const ctx = canvasRef.current.getContext('2d');
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        if (!running) { 
+        if (!running) {
             drawInitialCanvasPattern();
         }
     };
@@ -175,7 +175,7 @@ const Radar = () => {
             interval = setInterval(detectObjects, 200);
         } else {
             clearInterval(interval);
-            clearCanvas(); 
+            clearCanvas();
         }
         return () => clearInterval(interval);
     }, [model, running]);
@@ -186,21 +186,21 @@ const Radar = () => {
     const handleStop = () => {
         setRunning(false);
         setShowCamera(false);
-        
+
         setDetected(false);
         setDetection(null);
         setPosition({ x: 0, y: 0, z: 0 });
         setFiprimary(false);
     };
     return (
-        <div className="xpo_relative xpo_w-[640px] xpo_h-[520px] xpo_flex xpo_flex-col xpo_gap-2">
-            <div className="xpo_flex xpo_items-center xpo_gap-2 xpo_mb-1">
-                {hasCameras && ( 
+        <div className="relative w-[640px] h-[520px] flex flex-col gap-2">
+            <div className="flex items-center gap-2 mb-1">
+                {hasCameras && (
                     <select
-                        className="xpo_p-2 xpo_text-sm xpo_rounded xpo_border"
+                        className="p-2 text-sm rounded border"
                         value={selectedDeviceId || ''}
                         onChange={(e) => setSelectedDeviceId(e.target.value)}
-                        disabled={running || loadingModel} 
+                        disabled={running || loadingModel}
                     >
                         {devices.map((device) => (
                             <option key={device.deviceId} value={device.deviceId}>
@@ -210,41 +210,41 @@ const Radar = () => {
                     </select>
                 )}
                 {loadingModel ? (
-                    <div className="xpo_flex xpo_items-center xpo_gap-1 xpo_px-3 xpo_py-1 xpo_rounded xpo_bg-gray-200 xpo_text-gray-700">
-                        <Loader2 className="xpo_w-4 xpo_h-4 xpo_animate-spin" />
+                    <div className="flex items-center gap-1 px-3 py-1 rounded bg-gray-200 text-gray-700">
+                        <Loader2 className="w-4 h-4 animate-spin" />
                         Loading Model...
                     </div>
                 ) : !hasCameras ? (
-                    <div className="xpo_text-primary-500 xpo_font-bold">No camera detected.</div>
+                    <div className="text-primary-500 font-bold">No camera detected.</div>
                 ) : (
                     <>
                         {!running && (
                             <button
                                 onClick={handleStart}
-                                className="xpo_flex xpo_items-center xpo_gap-1 xpo_bg-primary-600 xpo_text-white xpo_px-3 xpo_py-1 xpo_rounded"
-                                disabled={!model} 
+                                className="flex items-center gap-1 bg-primary-600 text-white px-3 py-1 rounded"
+                                disabled={!model}
                             >
-                                <Play className="xpo_w-4 xpo_h-4" />
+                                <Play className="w-4 h-4" />
                                 Start
                             </button>
                         )}
                     </>
                 )}
             </div>
-            <div className="xpo_relative xpo_w-[640px] xpo_h-[480px] xpo_border xpo_border-gray-300 xpo_overflow-hidden">
-                {!showCamera && ( 
+            <div className="relative w-[640px] h-[480px] border border-gray-300 overflow-hidden">
+                {!showCamera && (
                     <canvas
                         ref={canvasRef}
                         width={640}
                         height={480}
-                        className="xpo_absolute xpo_top-0 xpo_left-0 xpo_w-full xpo_h-full xpo_bg-gray-800" 
+                        className="absolute top-0 left-0 w-full h-full bg-gray-800"
                     />
                 )}
-                {showCamera && ( 
+                {showCamera && (
                     <>
                         <Webcam
                             ref={webcamRef}
-                            className="xpo_absolute xpo_top-0 xpo_left-0 xpo_w-full xpo_h-full"
+                            className="absolute top-0 left-0 w-full h-full"
                             style={{ objectFit: 'cover' }}
                             audio={false}
                             mirroprimary={true}
@@ -257,7 +257,7 @@ const Radar = () => {
                             ref={canvasRef}
                             width={640}
                             height={480}
-                            className="xpo_absolute xpo_top-0 xpo_left-0 xpo_w-full xpo_h-full"
+                            className="absolute top-0 left-0 w-full h-full"
                         />
                     </>
                 )}
@@ -266,9 +266,9 @@ const Radar = () => {
                         type="button"
                         onClick={initialize}
                         title={__('Install')}
-                        className="xpo_absolute xpo_top-2 xpo_right-2 xpo_bg-primary-600 xpo_text-white xpo_p-1 xpo_rounded-full z-10"
+                        className="absolute top-2 right-2 bg-primary-600 text-white p-1 rounded-full z-10"
                     >
-                        <Download className="xpo_w-5 xpo_h-5" />
+                        <Download className="w-5 h-5" />
                     </button>
                 )}
                 {running && (
@@ -276,18 +276,18 @@ const Radar = () => {
                         type="button"
                         title={__('Stop')}
                         onClick={handleStop}
-                        className="xpo_absolute xpo_top-2 xpo_right-2 xpo_bg-primary-600 xpo_text-white xpo_p-1 xpo_rounded-full z-10"
+                        className="absolute top-2 right-2 bg-primary-600 text-white p-1 rounded-full z-10"
                     >
-                        <StopCircle className="xpo_w-5 xpo_h-5" />
+                        <StopCircle className="w-5 h-5" />
                     </button>
                 )}
                 {detected && (
-                    <div className="xpo_absolute xpo_top-4 xpo_left-4 xpo_bg-primary-600 xpo_text-white xpo_p-2 xpo_rounded z-10 xpo_capitalize">
+                    <div className="absolute top-4 left-4 bg-primary-600 text-white p-2 rounded z-10 capitalize">
                         {detection.class} Detected! ({(detection.score * 100).toFixed(1)}%)
                     </div>
                 )}
                 {running && (
-                    <div className="xpo_absolute xpo_bottom-4 xpo_left-4 xpo_text-white xpo_bg-black/50 xpo_p-2 xpo_rounded z-10">
+                    <div className="absolute bottom-4 left-4 text-white bg-black/50 p-2 rounded z-10">
                         <div>X: {position.x.toFixed(2)} m</div>
                         <div>Y: {position.y.toFixed(2)} m</div>
                         <div>Z: {position.z.toFixed(2)} m</div>

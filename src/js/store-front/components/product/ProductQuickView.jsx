@@ -48,9 +48,8 @@ export default function ProductQuickView({ prod = {} }) {
       stars.push(
         <Star
           key={i}
-          className={`inline-block w-4 h-4 ${
-            i < count ? 'text-yellow-400' : 'text-gray-300'
-          }`}
+          className={`inline-block w-4 h-4 ${i < count ? 'text-yellow-400' : 'text-gray-300'
+            }`}
         />
       );
     }
@@ -67,34 +66,34 @@ export default function ProductQuickView({ prod = {} }) {
     };
 
     api.post(`/cart/${product.id}`, cartData).then(res => res.data)
-    .then(res => {
-      if (res?.action === 'added') {
-        setCart(prev => [product, ...prev]);
-        notify.success('Product added to cart!');
-      } else if (res?.action === 'removed') {
-        setCart(prev => prev.filter(i => i.id !== res.id));
-        notify.success('Product removed from cart!');
-      } else {
-        notify.error('Something went wrong!');
-      }
-    })
-    .catch(err => notify.error(err));
+      .then(res => {
+        if (res?.action === 'added') {
+          setCart(prev => [product, ...prev]);
+          notify.success('Product added to cart!');
+        } else if (res?.action === 'removed') {
+          setCart(prev => prev.filter(i => i.id !== res.id));
+          notify.success('Product removed from cart!');
+        } else {
+          notify.error('Something went wrong!');
+        }
+      })
+      .catch(err => notify.error(err));
   };
 
   const handleAddToWishlist = () => {
     if (!product) return;
 
     api.post(`/wishlist/${product.id}`).then(res => res.data)
-    .then(res => {
-      if (res?.action === 'added') {
-        setWishlist(prev => [product, ...prev]);
-        notify.success('Product added to wishlist!');
-      } else if (res?.action === 'removed') {
-        setWishlist(prev => prev.filter(p => p.product_id !== product.id));
-        notify.success('Product removed from wishlist!');
-      }
-    })
-    .catch(err => notify.error(err));
+      .then(res => {
+        if (res?.action === 'added') {
+          setWishlist(prev => [product, ...prev]);
+          notify.success('Product added to wishlist!');
+        } else if (res?.action === 'removed') {
+          setWishlist(prev => prev.filter(p => p.product_id !== product.id));
+          notify.success('Product removed from wishlist!');
+        }
+      })
+      .catch(err => notify.error(err));
   };
 
   const isInCart = cart.cart_items.some(p => p.product_id === product?.id);
@@ -103,59 +102,58 @@ export default function ProductQuickView({ prod = {} }) {
   useEffect(() => {
     sleep(2000).then(() => setLoading(false));
   }, []);
-  
+
   return (
-    <div className="xpo_container">
-      <div className="xpo_w-full xpo_max-h-[90vh] xpo_overflow-y-auto xpo_relative">
+    <div className="container">
+      <div className="w-full max-h-[90vh] overflow-y-auto relative">
         {loading ? (
           <ProductDetailsSkeleton />
         ) : (
-          <div className="xpo_p-2 xpo_grid xpo_grid-cols-1 md:xpo_grid-cols-2 xpo_gap-6">
+          <div className="p-2 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               {product?.metadata?.gallery && product?.metadata.gallery?.length ? (
                 <img
                   alt={product.title}
                   src={product?.metadata.gallery?.[0]?.url}
-                  className="xpo_w-full xpo_h-auto xpo_rounded-md xpo_object-contain"
+                  className="w-full h-auto rounded-md object-contain"
                 />
               ) : (
-                <SkeletonLoader className="xpo_w-full xpo_h-64" />
+                <SkeletonLoader className="w-full h-64" />
               )}
             </div>
 
             <div>
-              <h2 className="xpo_text-2xl xpo_font-bold xpo_mb-2">{product.title}</h2>
-              <div className="xpo_flex xpo_items-center xpo_space-x-2 xpo_mb-2">
-                <div className="xpo_flex">{renderStars(Math.round(product.average_rating || 0))}</div>
-                <span className="xpo_text-sm">{sprintf(__('(%s Reviews)', 'site-core'), product.reviews_count || 0)}</span>
+              <h2 className="text-2xl font-bold mb-2">{product.title}</h2>
+              <div className="flex items-center space-x-2 mb-2">
+                <div className="flex">{renderStars(Math.round(product.average_rating || 0))}</div>
+                <span className="text-sm">{sprintf(__('(%s Reviews)', 'site-core'), product.reviews_count || 0)}</span>
               </div>
-              <div className="xpo_text-xl xpo_font-semibold xpo_text-scprimary-600 xpo_mb-4">
+              <div className="text-xl font-semibold text-scprimary-600 mb-4">
                 {money(product.metadata.sale_price, product.metadata.currency)}
                 {product.metadata.price && product.metadata.price !== product.metadata.sale_price && (
-                  <span className="xpo_text-sm xpo_line-through xpo_ml-2">
+                  <span className="text-sm line-through ml-2">
                     {money(product.metadata.price, product.metadata.currency)}
                   </span>
                 )}
               </div>
-              <p className="xpo_mb-4">{product.metadata.short_description}</p>
+              <p className="mb-4">{product.metadata.short_description}</p>
 
               {product.variations && Object.keys(product.variations).map((variationKey) => {
                 const variation = product.variations[variationKey];
                 return (
-                  <div key={variationKey} className="xpo_mb-4">
-                    <label className="xpo_block xpo_text-sm xpo_font-medium xpo_mb-1">
+                  <div key={variationKey} className="mb-4">
+                    <label className="block text-sm font-medium mb-1">
                       {variation.label || variationKey}
                     </label>
                     {variation.type === 'color' ? (
-                      <div className="xpo_flex xpo_space-x-2">
+                      <div className="flex space-x-2">
                         {variation.options?.map(option => (
                           <button
                             key={option.value}
-                            className={`xpo_w-7 xpo_h-7 xpo_rounded-full xpo_border-2 ${
-                              cartForm.selectedVariations[variationKey] === option.value
-                                ? 'xpo_border-scprimary-500'
-                                : 'xpo_border-gray-300 hover:xpo_border-scprimary-500'
-                            }`}
+                            className={`w-7 h-7 rounded-full border-2 ${cartForm.selectedVariations[variationKey] === option.value
+                                ? 'border-scprimary-500'
+                                : 'border-gray-300 hover:border-scprimary-500'
+                              }`}
                             style={{ backgroundColor: option.color || option.value }}
                             onClick={() => updateVariation(variationKey, option.value)}
                             aria-label={`Select ${option.label || option.value}`}
@@ -166,7 +164,7 @@ export default function ProductQuickView({ prod = {} }) {
                       <select
                         value={cartForm.selectedVariations[variationKey] || ''}
                         onChange={e => updateVariation(variationKey, e.target.value)}
-                        className="xpo_border xpo_border-gray-300 xpo_rounded-md xpo_px-3 xpo_py-2 xpo_w-full"
+                        className="border border-gray-300 rounded-md px-3 py-2 w-full"
                       >
                         {variation.options?.map(option => (
                           <option key={option.value} value={option.value}>
@@ -179,22 +177,22 @@ export default function ProductQuickView({ prod = {} }) {
                 );
               })}
 
-              <div className="xpo_mb-4">
-                <label className="xpo_block xpo_text-sm xpo_font-medium xpo_mb-1">{__('Quantity', 'site-core')}</label>
-                <div className="xpo_flex xpo_items-center xpo_border xpo_border-gray-300 xpo_rounded-md xpo_w-max">
-                  <button type="button" onClick={decrementQty} aria-label="Decrease quantity" className="xpo_px-3 xpo_py-1 xpo_text-xl hover:xpo_bg-gray-100">-</button>
-                  <span className="xpo_px-4 xpo_py-1 xpo_text-center">{cartForm.quantity}</span>
-                  <button type="button" onClick={incrementQty} aria-label="Increase quantity" className="xpo_px-3 xpo_py-1 xpo_text-xl hover:xpo_bg-gray-100">+</button>
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-1">{__('Quantity', 'site-core')}</label>
+                <div className="flex items-center border border-gray-300 rounded-md w-max">
+                  <button type="button" onClick={decrementQty} aria-label="Decrease quantity" className="px-3 py-1 text-xl hover:bg-gray-100">-</button>
+                  <span className="px-4 py-1 text-center">{cartForm.quantity}</span>
+                  <button type="button" onClick={incrementQty} aria-label="Increase quantity" className="px-3 py-1 text-xl hover:bg-gray-100">+</button>
                 </div>
               </div>
 
-              <div className="xpo_flex xpo_space-x-4">
-                <button type="button" aria-label={__('Add to Cart', 'site-core')} onClick={handleAddToCart} className="xpo_bg-scprimary-600 xpo_text-scwhite/70 xpo_px-5 xpo_py-2 xpo_rounded-lg xpo_font-semibold hover:xpo_bg-scprimary-700 xpo_transition-colors xpo_flex xpo_items-center">
-                  <ShoppingCart strokeWidth={isInCart ? 5 : 2} className="xpo_w-5 xpo_h-5 xpo_mr-2" />
+              <div className="flex space-x-4">
+                <button type="button" aria-label={__('Add to Cart', 'site-core')} onClick={handleAddToCart} className="bg-scprimary-600 text-scwhite/70 px-5 py-2 rounded-lg font-semibold hover:bg-scprimary-700 transition-colors flex items-center">
+                  <ShoppingCart strokeWidth={isInCart ? 5 : 2} className="w-5 h-5 mr-2" />
                   {isInCart ? __('Remove from Cart', 'site-core') : __('Add to Cart', 'site-core')}
                 </button>
-                <button type="button" aria-label={__('Add to Wishlist', 'site-core')} onClick={handleAddToWishlist} className="xpo_bg-scwhite/70 xpo_text-scprimary-600 xpo_px-5 xpo_py-2 xpo_rounded-lg xpo_font-semibold xpo_border xpo_border-scprimary-600 hover:xpo_bg-scprimary-50 xpo_transition-colors xpo_flex xpo_items-center">
-                  <Heart strokeWidth={isInWishlist ? 5 : 2} className="xpo_w-5 xpo_h-5 xpo_mr-2" />
+                <button type="button" aria-label={__('Add to Wishlist', 'site-core')} onClick={handleAddToWishlist} className="bg-scwhite/70 text-scprimary-600 px-5 py-2 rounded-lg font-semibold border border-scprimary-600 hover:bg-scprimary-50 transition-colors flex items-center">
+                  <Heart strokeWidth={isInWishlist ? 5 : 2} className="w-5 h-5 mr-2" />
                   {isInWishlist ? __('Remove from Wishlist', 'site-core') : __('Add to Wishlist', 'site-core')}
                 </button>
               </div>

@@ -48,35 +48,34 @@ function SearchAutocomplete({ searchTerm, visible, highlightedIndex, onSelect, a
   return (
     <div
       ref={autocompleteRef}
-      className="xpo_absolute xpo_z-30 xpo_w-full xpo_mt-2 xpo_bg-scwhite xpo_shadow-2xl xpo_rounded-lg xpo_border xpo_border-gray-200 xpo_max-h-96 xpo_overflow-hidden"
+      className="absolute z-30 w-full mt-2 bg-scwhite shadow-2xl rounded-lg border border-gray-200 max-h-96 overflow-hidden"
       role="listbox"
       aria-label={__('Search suggestions', 'site-core')}
     >
-      <div className="xpo_p-3 xpo_border-b xpo_bg-gray-50">
-        <h4 className="xpo_text-sm xpo_font-semibold xpo_text-gray-700 xpo_mb-2">
+      <div className="p-3 border-b bg-gray-50">
+        <h4 className="text-sm font-semibold text-gray-700 mb-2">
           {__('Search Suggestions', 'site-core')}
         </h4>
       </div>
-      
-      <div className="xpo_max-h-80 xpo_overflow-auto">
+
+      <div className="max-h-80 overflow-auto">
         {filteredSuggestions.map((item, idx) => (
           <div
             key={item.text}
             role="option"
             aria-selected={highlightedIndex === idx}
             onMouseDown={() => onSelect(item.text)}
-            className={`xpo_group xpo_cursor-pointer xpo_px-4 xpo_py-3 xpo_border-b xpo_border-gray-100 xpo_flex xpo_items-center xpo_justify-between hover:xpo_bg-scaccent-50 xpo_transition-all xpo_duration-200 ${
-              highlightedIndex === idx ? "xpo_bg-scaccent-50" : ""
-            }`}
+            className={`group cursor-pointer px-4 py-3 border-b border-gray-100 flex items-center justify-between hover:bg-scaccent-50 transition-all duration-200 ${highlightedIndex === idx ? "bg-scaccent-50" : ""
+              }`}
           >
-            <div className="xpo_flex xpo_items-center xpo_gap-3">
-              <Search size={14} className="xpo_text-gray-400" />
-              <div dangerouslySetInnerHTML={{__html: sprintf(__('%s %sin %s %s', 'site-core'), `<div class="xpo_text-sm xpo_text-gray-800 group-hover:xpo_text-scaccent-700">${item.text}</div>`, `<div class="xpo_text-xs xpo_text-gray-500">`, `</div>`)}}></div>
+            <div className="flex items-center gap-3">
+              <Search size={14} className="text-gray-400" />
+              <div dangerouslySetInnerHTML={{ __html: sprintf(__('%s %sin %s %s', 'site-core'), `<div class="text-sm text-gray-800 group-hover:text-scaccent-700">${item.text}</div>`, `<div class="text-xs text-gray-500">`, `</div>`) }}></div>
             </div>
             {item.trending && (
-              <div className="xpo_flex xpo_items-center xpo_gap-1 xpo_px-2 xpo_py-1 xpo_bg-scaccent-100 xpo_rounded-full">
-                <TrendingUp size={12} className="xpo_text-scaccent-500" />
-                <span className="xpo_text-xs xpo_text-scaccent-600 xpo_font-medium">
+              <div className="flex items-center gap-1 px-2 py-1 bg-scaccent-100 rounded-full">
+                <TrendingUp size={12} className="text-scaccent-500" />
+                <span className="text-xs text-scaccent-600 font-medium">
                   {__('Trending', 'site-core')}
                 </span>
               </div>
@@ -84,9 +83,9 @@ function SearchAutocomplete({ searchTerm, visible, highlightedIndex, onSelect, a
           </div>
         ))}
       </div>
-      
-      <div className="xpo_p-3 xpo_border-t xpo_bg-gray-50">
-        <div className="xpo_text-xs xpo_text-gray-500 xpo_text-center">
+
+      <div className="p-3 border-t bg-gray-50">
+        <div className="text-xs text-gray-500 text-center">
           {__('Press Enter to search or click on a suggestion', 'site-core')}
         </div>
       </div>
@@ -100,17 +99,17 @@ function CategoriesDropdown({ selectedCategory, onCategorySelect }) {
   return (
     <Dropdown button={(
       <button
-        className="xpo_flex xpo_items-center xpo_gap-2 xpo_bg-gray-100 hover:xpo_bg-gray-200 xpo_px-4 xpo_py-3 xpo_rounded-l-lg xpo_text-sm xpo_text-gray-700 xpo_font-medium xpo_transition-all xpo_duration-200 xpo_min-w-[160px] xpo_justify-between"
+        className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-4 py-3 rounded-l-lg text-sm text-gray-700 font-medium transition-all duration-200 min-w-[160px] justify-between"
         aria-haspopup="listbox"
         aria-expanded="false"
       >
-        <span className="xpo_truncate">{selectedCategory}</span>
+        <span className="truncate">{selectedCategory}</span>
         <ChevronDown size={16} />
       </button>
     )}>
-      <div className="xpo_bg-scwhite xpo_min-w-[200px] xpo_max-h-80 xpo_overflow-auto">
-        <div className="xpo_p-3 xpo_border-b xpo_bg-gray-50">
-          <h4 className="xpo_text-sm xpo_font-semibold xpo_text-gray-700">
+      <div className="bg-scwhite min-w-[200px] max-h-80 overflow-auto">
+        <div className="p-3 border-b bg-gray-50">
+          <h4 className="text-sm font-semibold text-gray-700">
             {__('Browse Categories', 'site-core')}
           </h4>
         </div>
@@ -118,11 +117,10 @@ function CategoriesDropdown({ selectedCategory, onCategorySelect }) {
           <button
             key={category}
             onClick={() => onCategorySelect(category)}
-            className={`xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm hover:xpo_bg-scaccent-50 xpo_transition-colors xpo_border-b xpo_border-gray-100 last:xpo_border-b-0 ${
-              selectedCategory === category
-                ? "xpo_bg-scaccent-50 xpo_text-scaccent-700 xpo_font-medium"
-                : "xpo_text-gray-700"
-            }`}
+            className={`w-full text-left px-4 py-2 text-sm hover:bg-scaccent-50 transition-colors border-b border-gray-100 last:border-b-0 ${selectedCategory === category
+                ? "bg-scaccent-50 text-scaccent-700 font-medium"
+                : "text-gray-700"
+              }`}
           >
             {category}
           </button>
@@ -142,33 +140,32 @@ function LanguageDropdown({ onLanguageSelect }) {
       button={(
         <button
           aria-label={__('Language selector', 'site-core')}
-          className="xpo_flex xpo_items-center xpo_gap-2 xpo_text-sm hover:xpo_text-scaccent-300 xpo_transition-colors"
+          className="flex items-center gap-2 text-sm hover:text-scaccent-300 transition-colors"
         >
-          <span className="xpo_text-lg">{currentLang.flag}</span>
-          <span className="xpo_font-medium">{currentLang.name}</span>
+          <span className="text-lg">{currentLang.flag}</span>
+          <span className="font-medium">{currentLang.name}</span>
           <ChevronDown size={14} />
         </button>
       )}
-      className="xpo_z-50 xpo_bg-scwhite dark:xpo_bg-scprimary xpo_border xpo_rounded xpo_shadow xpo_mt-2 xpo_p-2 xpo_min-w-[120px]"
+      className="z-50 bg-scwhite dark:bg-scprimary border rounded shadow mt-2 p-2 min-w-[120px]"
     >
-      <div className="xpo_rounded-lg xpo_min-w-[200px]">
-        <div className="xpo_p-3 xpo_border-b">
-          <h4 className="xpo_text-sm xpo_font-semibold xpo_text-gray-700 dark:xpo_text-scwhite-700">{__('Choose Language', 'site-core')}</h4>
+      <div className="rounded-lg min-w-[200px]">
+        <div className="p-3 border-b">
+          <h4 className="text-sm font-semibold text-gray-700 dark:text-scwhite-700">{__('Choose Language', 'site-core')}</h4>
         </div>
         {languages.map((language) => (
           <button
             key={language.code}
             onClick={() => onLanguageSelect(language.code)}
-            className={`xpo_w-full xpo_text-left xpo_px-4 xpo_py-3 xpo_text-sm hover:xpo_bg-scaccent-50 dark:hover:xpo_bg-scprimary xpo_transition-colors xpo_border-b xpo_border-gray-100 last:xpo_border-b-0 xpo_flex xpo_items-center xpo_gap-3 ${
-              currentLanguage === language.code
-                ? "xpo_bg-scaccent-50 dark:xpo_bg-scprimary xpo_text-scprimary-700 dark:xpo_text-scaccent-700 xpo_font-medium"
-                : "xpo_text-gray-700 dark:xpo_text-scwhite-700"
-            }`}
+            className={`w-full text-left px-4 py-3 text-sm hover:bg-scaccent-50 dark:hover:bg-scprimary transition-colors border-b border-gray-100 last:border-b-0 flex items-center gap-3 ${currentLanguage === language.code
+                ? "bg-scaccent-50 dark:bg-scprimary text-scprimary-700 dark:text-scaccent-700 font-medium"
+                : "text-gray-700 dark:text-scwhite-700"
+              }`}
           >
-            <span className="xpo_text-lg">{language.flag}</span>
+            <span className="text-lg">{language.flag}</span>
             <span>{language.name}</span>
             {currentLanguage === language.code && (
-              <span className="xpo_ml-auto xpo_text-scaccent-500">✓</span>
+              <span className="ml-auto text-scaccent-500">✓</span>
             )}
           </button>
         ))}
@@ -184,98 +181,98 @@ function AccountDropdown({ isSignedIn }) {
     <Dropdown
       button={(
         <button
-          className="xpo_flex xpo_items-center xpo_gap-2 xpo_text-sm hover:xpo_text-scaccent-300 xpo_transition-colors"
+          className="flex items-center gap-2 text-sm hover:text-scaccent-300 transition-colors"
           aria-label="Account and Lists"
         >
           <User size={18} />
-          <div className="xpo_text-left">
-            <div className="xpo_text-xs xpo_leading-tight xpo_text-scprimary dark:xpo_text-gray-300">
-              {isSignedIn ? sprintf(__('Hello, %s', 'site-core'), user?.display_name??'Buddy') : __('Hello, sign in', 'site-core')}
+          <div className="text-left">
+            <div className="text-xs leading-tight text-scprimary dark:text-gray-300">
+              {isSignedIn ? sprintf(__('Hello, %s', 'site-core'), user?.display_name ?? 'Buddy') : __('Hello, sign in', 'site-core')}
             </div>
-            <div className="xpo_font-semibold xpo_text-scprimary dark:xpo_text-scwhite">{__('Account & Lists', 'site-core')}</div>
+            <div className="font-semibold text-scprimary dark:text-scwhite">{__('Account & Lists', 'site-core')}</div>
           </div>
           <ChevronDown size={14} />
         </button>
       )}
-      className="xpo_z-50 xpo_bg-scwhite dark:xpo_bg-scprimary xpo_border xpo_rounded xpo_shadow xpo_mt-2 xpo_p-2 xpo_min-w-[120px]"
+      className="z-50 bg-scwhite dark:bg-scprimary border rounded shadow mt-2 p-2 min-w-[120px]"
     >
-      <div className="xpo_min-w-[280px]">
+      <div className="min-w-[280px]">
         {!isSignedIn ? (
-          <div className="xpo_p-4 xpo_border-b xpo_text-center xpo_flex xpo_flex-col xpo_gap-2">
-            <Link to="/auth/signin" className="xpo_w-full xpo_bg-scaccent-400 hover:xpo_bg-scaccent-500 xpo_text-gray-900 xpo_py-2 xpo_px-4 xpo_rounded-lg xpo_font-medium xpo_transition-colors xpo_mb-2">
-              <LogIn size={16} className="xpo_inline xpo_mr-2" />
+          <div className="p-4 border-b text-center flex flex-col gap-2">
+            <Link to="/auth/signin" className="w-full bg-scaccent-400 hover:bg-scaccent-500 text-gray-900 py-2 px-4 rounded-lg font-medium transition-colors mb-2">
+              <LogIn size={16} className="inline mr-2" />
               {__('Sign In', 'site-core')}
             </Link>
-            <div className="xpo_text-xs xpo_text-gray-600">
-              {__('New customer?', 'site-core')} 
-              <Link to="/auth/register" className="xpo_text-scaccent-600 hover:xpo_text-scaccent-700 xpo_ml-1">
+            <div className="text-xs text-gray-600">
+              {__('New customer?', 'site-core')}
+              <Link to="/auth/register" className="text-scaccent-600 hover:text-scaccent-700 ml-1">
                 {__('Start here', 'site-core')}
               </Link>
             </div>
           </div>
         ) : null}
 
-        <div className="xpo_p-2">
-          <div className="xpo_mb-3 xpo_flex xpo_flex-col">
-            <h4 className="xpo_text-sm xpo_font-semibold xpo_text-gray-700 xpo_px-2 xpo_py-2">
+        <div className="p-2">
+          <div className="mb-3 flex flex-col">
+            <h4 className="text-sm font-semibold text-gray-700 px-2 py-2">
               {__('Your Lists', 'site-core')}
             </h4>
-            <Link to="/my-bookmark" className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 dark:xpo_text-scwhite-700 hover:xpo_bg-gray-50 dark:hover:xpo_bg-scprimary-700 xpo_rounded">
-              <Heart size={16} className="xpo_inline xpo_mr-3 xpo_text-gray-400" />
+            <Link to="/my-bookmark" className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-scwhite-700 hover:bg-gray-50 dark:hover:bg-scprimary-700 rounded">
+              <Heart size={16} className="inline mr-3 text-gray-400" />
               {__('Create a List', 'site-core')}
             </Link>
-            <Link to="/my-bookmark" className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 dark:xpo_text-scwhite-700 hover:xpo_bg-gray-50 dark:hover:xpo_bg-scprimary-700 xpo_rounded">
-              <Search size={16} className="xpo_inline xpo_mr-3 xpo_text-gray-400" />
+            <Link to="/my-bookmark" className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-scwhite-700 hover:bg-gray-50 dark:hover:bg-scprimary-700 rounded">
+              <Search size={16} className="inline mr-3 text-gray-400" />
               {__('Find a List or Registry', 'site-core')}
             </Link>
           </div>
 
-          <div className="xpo_border-t xpo_pt-3 xpo_flex xpo_flex-col">
-            <h4 className="xpo_text-sm xpo_font-semibold xpo_text-gray-700 xpo_px-2 xpo_py-2">
+          <div className="border-t pt-3 flex flex-col">
+            <h4 className="text-sm font-semibold text-gray-700 px-2 py-2">
               {__('Your Account', 'site-core')}
             </h4>
-            <Link to="/clients-portal/my/overview" className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 dark:xpo_text-scwhite-700 hover:xpo_bg-gray-50 dark:hover:xpo_bg-scprimary-700 xpo_rounded">
-              <User size={16} className="xpo_inline xpo_mr-3 xpo_text-gray-400" />
+            <Link to="/clients-portal/my/overview" className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-scwhite-700 hover:bg-gray-50 dark:hover:bg-scprimary-700 rounded">
+              <User size={16} className="inline mr-3 text-gray-400" />
               {__('Account', 'site-core')}
             </Link>
-            <Link to="/orders/history" className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 dark:xpo_text-scwhite-700 hover:xpo_bg-gray-50 dark:hover:xpo_bg-scprimary-700 xpo_rounded">
-              <Package size={16} className="xpo_inline xpo_mr-3 xpo_text-gray-400" />
+            <Link to="/orders/history" className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-scwhite-700 hover:bg-gray-50 dark:hover:bg-scprimary-700 rounded">
+              <Package size={16} className="inline mr-3 text-gray-400" />
               {__('Orders', 'site-core')}
             </Link>
-            <button className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 dark:xpo_text-scwhite-700 hover:xpo_bg-gray-50 dark:hover:xpo_bg-scprimary-700 xpo_rounded">
-              <Star size={16} className="xpo_inline xpo_mr-3 xpo_text-gray-400" />
+            <button className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-scwhite-700 hover:bg-gray-50 dark:hover:bg-scprimary-700 rounded">
+              <Star size={16} className="inline mr-3 text-gray-400" />
               {__('Recommendations', 'site-core')}
             </button>
-            <Link to="/history/products" className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 dark:xpo_text-scwhite-700 hover:xpo_bg-gray-50 dark:hover:xpo_bg-scprimary-700 xpo_rounded">
-              <Clock size={16} className="xpo_inline xpo_mr-3 xpo_text-gray-400" />
+            <Link to="/history/products" className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-scwhite-700 hover:bg-gray-50 dark:hover:bg-scprimary-700 rounded">
+              <Clock size={16} className="inline mr-3 text-gray-400" />
               {__('Browsing History', 'site-core')}
             </Link>
-            {/* <Link to="/watch/history" className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 dark:xpo_text-scwhite-700 hover:xpo_bg-gray-50 dark:hover:xpo_bg-scprimary-700 xpo_rounded">
-              <Heart size={16} className="xpo_inline xpo_mr-3 xpo_text-gray-400" />
+            {/* <Link to="/watch/history" className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-scwhite-700 hover:bg-gray-50 dark:hover:bg-scprimary-700 rounded">
+              <Heart size={16} className="inline mr-3 text-gray-400" />
               {__('Watchlist', 'site-core')}
             </Link>
-            <button className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 dark:xpo_text-scwhite-700 hover:xpo_bg-gray-50 dark:hover:xpo_bg-scprimary-700 xpo_rounded">
-              <Video size={16} className="xpo_inline xpo_mr-3 xpo_text-gray-400" />
+            <button className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-scwhite-700 hover:bg-gray-50 dark:hover:bg-scprimary-700 rounded">
+              <Video size={16} className="inline mr-3 text-gray-400" />
               {__('Video Purchases & Rentals', 'site-core')}
             </button>
-            <button className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 dark:xpo_text-scwhite-700 hover:xpo_bg-gray-50 dark:hover:xpo_bg-scprimary-700 xpo_rounded">
-              <BookOpen size={16} className="xpo_inline xpo_mr-3 xpo_text-gray-400" />
+            <button className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-scwhite-700 hover:bg-gray-50 dark:hover:bg-scprimary-700 rounded">
+              <BookOpen size={16} className="inline mr-3 text-gray-400" />
               {__('Kindle Unlimited', 'site-core')}
             </button>
-            <button className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 dark:xpo_text-scwhite-700 hover:xpo_bg-gray-50 dark:hover:xpo_bg-scprimary-700 xpo_rounded">
-              <Settings size={16} className="xpo_inline xpo_mr-3 xpo_text-gray-400" />
+            <button className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-scwhite-700 hover:bg-gray-50 dark:hover:bg-scprimary-700 rounded">
+              <Settings size={16} className="inline mr-3 text-gray-400" />
               {__('Content & Devices', 'site-core')}
             </button>
-            <button className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 dark:xpo_text-scwhite-700 hover:xpo_bg-gray-50 dark:hover:xpo_bg-scprimary-700 xpo_rounded">
-              <ListOrdered size={16} className="xpo_inline xpo_mr-3 xpo_text-gray-400" />
+            <button className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-scwhite-700 hover:bg-gray-50 dark:hover:bg-scprimary-700 rounded">
+              <ListOrdered size={16} className="inline mr-3 text-gray-400" />
               {__('Subscribe & Save Items', 'site-core')}
             </button>
-            <button className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 dark:xpo_text-scwhite-700 hover:xpo_bg-gray-50 dark:hover:xpo_bg-scprimary-700 xpo_rounded">
-              <Settings size={16} className="xpo_inline xpo_mr-3 xpo_text-gray-400" />
+            <button className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-scwhite-700 hover:bg-gray-50 dark:hover:bg-scprimary-700 rounded">
+              <Settings size={16} className="inline mr-3 text-gray-400" />
               {__('Memberships & Subscriptions', 'site-core')}
             </button>
-            <button className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 dark:xpo_text-scwhite-700 hover:xpo_bg-gray-50 dark:hover:xpo_bg-scprimary-700 xpo_rounded">
-              <Music size={16} className="xpo_inline xpo_mr-3 xpo_text-gray-400" />
+            <button className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-scwhite-700 hover:bg-gray-50 dark:hover:bg-scprimary-700 rounded">
+              <Music size={16} className="inline mr-3 text-gray-400" />
               {__('Music Library', 'site-core')}
             </button> */}
           </div>
@@ -291,43 +288,43 @@ function DeliveryZonePicker() {
   const { money } = useCurrency();
   const { setPopup } = usePopup();
   const [country, setCountry] = useState('BD');
-  
+
   return (
-    <div className="xpo_p-2 xpo_min-w-sm">
-      <div className="xpo_text-gray-700 dark:xpo_text-scwhite-700 xpo_mb-4">
-        <p className="xpo_text-sm xpo_leading-relaxed" dangerouslySetInnerHTML={{__html: sprintf(__('We\'re showing you items that ship to %sBangladesh%s. To see items that ship to a different country, change your delivery address.', 'site-core'), '<strong>', '</strong>')}}>
+    <div className="p-2 min-w-sm">
+      <div className="text-gray-700 dark:text-scwhite-700 mb-4">
+        <p className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: sprintf(__('We\'re showing you items that ship to %sBangladesh%s. To see items that ship to a different country, change your delivery address.', 'site-core'), '<strong>', '</strong>') }}>
         </p>
       </div>
-      <div className="xpo_flex xpo_gap-2">
-        <button className="xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 dark:xpo_text-scwhite-700 xpo_transition-colors">
+      <div className="flex gap-2">
+        <button className="px-4 py-2 text-sm text-gray-700 dark:text-scwhite-700 transition-colors">
           {__('Dismiss', 'site-core')}
         </button>
         <button
           onClick={(e) => {
             e.preventDefault();
             setPopup(
-              <div className="xpo_p-6 xpo_rounded-lg xpo_max-w-md xpo_w-full">
-                <h3 className="xpo_text-lg xpo_font-semibold xpo_mb-2">{__('Choose your location', 'site-core')}</h3>
-                <p className="xpo_text-sm xpo_text-gray-600 dark:xpo_text-scwhite-600 xpo_mb-4">
+              <div className="p-6 rounded-lg max-w-md w-full">
+                <h3 className="text-lg font-semibold mb-2">{__('Choose your location', 'site-core')}</h3>
+                <p className="text-sm text-gray-600 dark:text-scwhite-600 mb-4">
                   {__('Delivery options and delivery speeds may vary for different locations', 'site-core')}
                 </p>
-                
+
                 {!loggedin && (
-                  <Link to="/auth/signin" className="xpo_w-full xpo_bg-scaccent-400 hover:xpo_bg-scaccent-500 xpo_text-gray-900 xpo_py-2 xpo_px-4 xpo_rounded-lg xpo_font-medium xpo_transition-colors xpo_mb-4">
+                  <Link to="/auth/signin" className="w-full bg-scaccent-400 hover:bg-scaccent-500 text-gray-900 py-2 px-4 rounded-lg font-medium transition-colors mb-4">
                     {__('Sign in to see your addresses', 'site-core')}
                   </Link>
                 )}
-                
-                <div className="xpo_text-center xpo_text-sm xpo_text-gray-500 dark:xpo_text-scwhite-500 xpo_mb-4">{__('or enter a zip code', 'site-core')}</div>
-                
+
+                <div className="text-center text-sm text-gray-500 dark:text-scwhite-500 mb-4">{__('or enter a zip code', 'site-core')}</div>
+
                 <LocationSelector __={__} onChangeCountry={(countryCode) => setCountry(countryCode)} />
-                
-                <div className="xpo_text-center xpo_text-sm xpo_text-gray-500 dark:xpo_text-scwhite xpo_mb-4">{__('or ship outside the Bangladesh', 'site-core')}</div>
-                
+
+                <div className="text-center text-sm text-gray-500 dark:text-scwhite mb-4">{__('or ship outside the Bangladesh', 'site-core')}</div>
+
                 <select
                   value={country}
                   onChange={e => setCountry(e.target.value)}
-                  className="xpo_w-full xpo_border xpo_text-gray-500 dark:xpo_text-scwhite-300 xpo_bg-scwhite dark:xpo_bg-scprimary xpo_border-gray-300 dark:xpo_border-scwhite xpo_rounded xpo_px-3 xpo_py-2 xpo_text-sm xpo_mb-4"
+                  className="w-full border text-gray-500 dark:text-scwhite-300 bg-scwhite dark:bg-scprimary border-gray-300 dark:border-scwhite rounded px-3 py-2 text-sm mb-4"
                 >
                   <option value="BD">Bangladesh</option>
                   <option value="US">United States</option>
@@ -338,12 +335,12 @@ function DeliveryZonePicker() {
                   <option value="GR">Germany</option>
                   <option value="FR">France</option>
                 </select>
-                
-                <button onClick={(e) => {e.preventDefault();setPopup(null);}} className="xpo_w-full xpo_bg-scaccent-600 hover:xpo_bg-scaccent-700 xpo_text-scwhite xpo_py-2 xpo_px-4 xpo_rounded-lg xpo_font-medium xpo_transition-colors">{__('Done', 'site-core')}</button>
+
+                <button onClick={(e) => { e.preventDefault(); setPopup(null); }} className="w-full bg-scaccent-600 hover:bg-scaccent-700 text-scwhite py-2 px-4 rounded-lg font-medium transition-colors">{__('Done', 'site-core')}</button>
               </div>
             );
           }}
-          className="xpo_bg-scaccent-600 hover:xpo_bg-scaccent-700 xpo_text-scwhite xpo_px-4 xpo_py-2 xpo_rounded xpo_text-sm xpo_font-medium xpo_transition-colors xpo_whitespace-nowrap"
+          className="bg-scaccent-600 hover:bg-scaccent-700 text-scwhite px-4 py-2 rounded text-sm font-medium transition-colors whitespace-nowrap"
         >
           {__('Change Address', 'site-core')}
         </button>
@@ -421,37 +418,37 @@ export default function SiteHeader() {
   };
 
   return (
-    <header className="xpo_bg-scwhite dark:xpo_bg-scprimary xpo_bg-gradient-to-t xpo_from-scwhite-700 dark:xpo_from-scprimary-700 xpo_via-scwhite-600 dark:xpo_via-scprimary-600 xpo_to-scwhite-500 dark:xpo_to-scprimary-500 xpo_text-primary dark:xpo_text-scwhite">
-      <div className="xpo_container xpo_mx-auto xpo_flex xpo_items-center xpo_gap-4 xpo_px-4 xpo_py-3">
+    <header className="bg-scwhite dark:bg-scprimary bg-gradient-to-t from-scwhite-700 dark:from-scprimary-700 via-scwhite-600 dark:via-scprimary-600 to-scwhite-500 dark:to-scprimary-500 text-primary dark:text-scwhite">
+      <div className="container mx-auto flex items-center gap-4 px-4 py-3">
         {/* Logo */}
-        <Link to="/" className="xpo_flex xpo_items-center xpo_gap-2 xpo_cursor-pointer">
+        <Link to="/" className="flex items-center gap-2 cursor-pointer">
           <MoonlitMeadowLogo />
         </Link>
 
         {/* Delivery Location */}
         <Dropdown
           button={(
-            <div className="xpo_flex xpo_items-center xpo_gap-1 xpo_text-sm xpo_cursor-pointer hover:xpo_text-scaccent-300 xpo_transition-colors xpo_hidden lg:xpo_flex">
+            <div className="flex items-center gap-1 text-sm cursor-pointer hover:text-scaccent-300 transition-colors hidden lg:flex">
               <MapPin size={18} />
-              <div dangerouslySetInnerHTML={{__html: sprintf(__('Deliver to %s%s%s', 'site-core'), '<strong>', __('Bangladesh', 'site-core'), '</strong>')}}></div>
+              <div dangerouslySetInnerHTML={{ __html: sprintf(__('Deliver to %s%s%s', 'site-core'), '<strong>', __('Bangladesh', 'site-core'), '</strong>') }}></div>
               <ChevronDown size={14} />
             </div>
           )}
-          className="xpo_z-50 xpo_bg-scwhite dark:xpo_bg-scprimary xpo_border xpo_rounded xpo_shadow xpo_mt-2 xpo_p-2 xpo_min-w-[120px]"
+          className="z-50 bg-scwhite dark:bg-scprimary border rounded shadow mt-2 p-2 min-w-[120px]"
         >
           <DeliveryZonePicker />
         </Dropdown>
 
         {/* Search Section */}
-        <div className="xpo_flex xpo_flex-1 xpo_items-center xpo_bg-scwhite xpo_rounded-lg xpo_shadow-md">
+        <div className="flex flex-1 items-center bg-scwhite rounded-lg shadow-md">
           {/* Categories Dropdown */}
-          <CategoriesDropdown 
+          <CategoriesDropdown
             selectedCategory={selectedCategory}
             onCategorySelect={setSelectedCategory}
           />
 
           {/* Search Box */}
-          <div className="xpo_relative xpo_flex-1">
+          <div className="relative flex-1">
             <input
               type="text"
               aria-label={__('Search products', 'site-core')}
@@ -465,7 +462,7 @@ export default function SiteHeader() {
               onKeyDown={handleKeyDown}
               onFocus={() => setAutocompleteVisible(true)}
               placeholder={sprintf(__('Search %s', 'site-core'), selectedCategory === "All Categories" ? "products" : selectedCategory)}
-              className="xpo_w-full xpo_h-12 xpo_pl-4 xpo_pr-4 xpo_border-none xpo_outline-none xpo_text-gray-800 placeholder:xpo_text-gray-400"
+              className="w-full h-12 pl-4 pr-4 border-none outline-none text-gray-800 placeholder:text-gray-400"
             />
 
             {/* Enhanced Autocomplete */}
@@ -479,18 +476,18 @@ export default function SiteHeader() {
           </div>
 
           {/* Search Button */}
-          <button aria-label={__('Search', 'site-core')} className="xpo_h-12 xpo_w-12 xpo_bg-scaccent-400 hover:xpo_bg-scaccent-500 xpo_text-scwhite xpo_flex xpo_items-center xpo_justify-center xpo_transition-colors">
+          <button aria-label={__('Search', 'site-core')} className="h-12 w-12 bg-scaccent-400 hover:bg-scaccent-500 text-scwhite flex items-center justify-center transition-colors">
             <Search size={20} />
           </button>
         </div>
 
         {/* Theme Selector */}
-        <button onClick={() => toggleTheme()} title={__('Toggle Light/Dark Mode', 'site-core')} className="xpo_cursor-pointer hover:xpo_text-scaccent-300 xpo_transition-colors">
+        <button onClick={() => toggleTheme()} title={__('Toggle Light/Dark Mode', 'site-core')} className="cursor-pointer hover:text-scaccent-300 transition-colors">
           {theme == 'dark' ? <Sun size={20} /> : <Moon size={20} />}
         </button>
 
         {/* Language Selector */}
-        <LanguageDropdown 
+        <LanguageDropdown
           currentLanguage={currentLanguage}
           onLanguageSelect={(lang) => switchLanguage(lang).then(() => setCurrentLanguage(lang))}
         />
@@ -502,22 +499,22 @@ export default function SiteHeader() {
         <Link
           to="/orders/history"
           aria-label={__('Returns and Orders', 'site-core')}
-          className="xpo_flex xpo_items-center xpo_gap-2 xpo_text-sm hover:xpo_text-scaccent-300 xpo_transition-colors"
+          className="flex items-center gap-2 text-sm hover:text-scaccent-300 transition-colors"
         >
           <Undo size={18} />
-          <div className="xpo_text-left xpo_text-scprimary dark:xpo_text-gray-300">
-            <div className="xpo_text-xs xpo_leading-tight">{__('Returns', 'site-core')}</div>
-            <div className="xpo_font-semibold">{__('& Orders', 'site-core')}</div>
+          <div className="text-left text-scprimary dark:text-gray-300">
+            <div className="text-xs leading-tight">{__('Returns', 'site-core')}</div>
+            <div className="font-semibold">{__('& Orders', 'site-core')}</div>
           </div>
         </Link>
 
         {/* Cart */}
-        <Link to="/carry" aria-label={__('Shopping Cart', 'site-core')} className="xpo_relative xpo_flex xpo_items-center xpo_gap-2 hover:xpo_text-scaccent-300 xpo_transition-colors">
-          <div className="xpo_relative">
+        <Link to="/carry" aria-label={__('Shopping Cart', 'site-core')} className="relative flex items-center gap-2 hover:text-scaccent-300 transition-colors">
+          <div className="relative">
             <ShoppingCart size={28} />
-            {cart?.cart_items?.length ? <span className="xpo_absolute xpo_-top-2 xpo_-right-2 xpo_bg-scaccent-500 xpo_text-scwhite xpo_text-xs xpo_font-bold xpo_rounded-full xpo_w-6 xpo_h-6 xpo_flex xpo_items-center xpo_justify-center xpo_ring-2 xpo_ring-gray-900">{cart?.cart_items?.length}</span> : null}
+            {cart?.cart_items?.length ? <span className="absolute -top-2 -right-2 bg-scaccent-500 text-scwhite text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center ring-2 ring-gray-900">{cart?.cart_items?.length}</span> : null}
           </div>
-          <span className="xpo_font-semibold xpo_text-sm">{__('Cart', 'site-core')}</span>
+          <span className="font-semibold text-sm">{__('Cart', 'site-core')}</span>
         </Link>
       </div>
     </header>

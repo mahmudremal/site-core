@@ -20,18 +20,18 @@ export default function ProductCard({ product, className = '' }) {
     const { id, slug, name, price, image } = product;
 
     return (
-        <Link key={product.id} to={product?.permalink??`/products/${product.slug}/`} className={`xpo_bg-scwhite/70 xpo_rounded-lg xpo_shadow-md xpo_p-4 hover:xpo_shadow-xl xpo_transition-shadow ${className}`}>
-            <img alt={product.title} src={product.image} className="xpo_w-full xpo_h-40 xpo_object-cover xpo_rounded" />
-            <h3 className="xpo_mt-2 xpo_font-semibold">{product.title}</h3>
-            <p className="xpo_text-gray-700">{money(product?.metadata?.price, product?.metadata?.currency)}</p>
+        <Link key={product.id} to={product?.permalink ?? `/products/${product.slug}/`} className={`bg-scwhite/70 rounded-lg shadow-md p-4 hover:shadow-xl transition-shadow ${className}`}>
+            <img alt={product.title} src={product.image} className="w-full h-40 object-cover rounded" />
+            <h3 className="mt-2 font-semibold">{product.title}</h3>
+            <p className="text-gray-700">{money(product?.metadata?.price, product?.metadata?.currency)}</p>
         </Link>
     )
-    
+
     // return (
-    //     <Link key={id} tabIndex={0} role="button" to={product?.permalink??`/products/${slug}/`} aria-label={`View product ${name}`} className="xpo_bg-gray-50 xpo_p-4 xpo_rounded-lg xpo_cursor-pointer hover:xpo_shadow-lg xpo_transition-shadow">
-    //         <img alt={name} src={image} className="xpo_w-full xpo_h-48 xpo_object-cover xpo_rounded" />
-    //         <h4 className="xpo_text-lg xpo_font-semibold xpo_mt-4">{name}</h4>
-    //         <p className="xpo_text-indigo-600 xpo_font-bold">${price}</p>
+    //     <Link key={id} tabIndex={0} role="button" to={product?.permalink??`/products/${slug}/`} aria-label={`View product ${name}`} className="bg-gray-50 p-4 rounded-lg cursor-pointer hover:shadow-lg transition-shadow">
+    //         <img alt={name} src={image} className="w-full h-48 object-cover rounded" />
+    //         <h4 className="text-lg font-semibold mt-4">{name}</h4>
+    //         <p className="text-indigo-600 font-bold">${price}</p>
     //     </Link>
     // )
 }
@@ -43,98 +43,98 @@ export const ProductCard2 = ({ product: prod, viewMode = 'card' }) => {
     const { cart, add_to_cart } = useCart();
     const { is_in_wishlist, toggle_wishlist } = useWishlist();
     const [adding, setAdding] = useState(null);
-    const [product, setProduct] = useState({...prod});
-    
+    const [product, setProduct] = useState({ ...prod });
+
     const toggleWishlist = (e, product) => {
-        e.preventDefault();e.stopPropagation();
+        e.preventDefault(); e.stopPropagation();
         toggle_wishlist({ product });
     };
 
     const addToCart = (e, product) => {
-        e.preventDefault();e.stopPropagation();
-        setAdding(true);add_to_cart({item: product})
-        .finally(() => setAdding(false));
+        e.preventDefault(); e.stopPropagation();
+        setAdding(true); add_to_cart({ item: product })
+            .finally(() => setAdding(false));
     };
 
     const quickView = (e, product) => {
-        e.preventDefault();e.stopPropagation();
+        e.preventDefault(); e.stopPropagation();
         setPopup(<ProductQuickView prod={product} />);
     };
 
-    const isInWishlist = is_in_wishlist({product_id: product?.id});
-    
+    const isInWishlist = is_in_wishlist({ product_id: product?.id });
+
     return (
         <>
-            <Link to={product?.permalink??`/products/${product.slug}`} className={`xpo_group xpo_bg-scwhite/70 xpo_border xpo_border-gray-200 xpo_rounded-xl xpo_overflow-hidden hover:xpo_shadow-lg xpo_transition-all xpo_duration-300 xpo_cursor-pointer ${viewMode === 'list' ? 'xpo_flex xpo_items-center xpo_p-4' : 'xpo_p-4'}`}>
-                <div className={`xpo_relative ${viewMode === 'list' ? 'xpo_w-32 xpo_h-32 xpo_flex-shrink-0 xpo_mr-6' : 'xpo_mb-4'}`}>
-                    <div className="xpo_relative xpo_rounded-lg group-hover:xpo_scale-105 xpo_transition-transform xpo_duration-300">
-                        <img alt={product.title} src={product.image || product?.metadata?.gallery?.[0]?.url} className={`xpo_w-full xpo_object-cover xpo_rounded-t-xl ${viewMode === 'list' ? 'xpo_h-full' : 'xpo_h-48'}`} />
-                        <div className="xpo_absolute xpo_top-0 xpo_left-0 xpo_w-full xpo_h-full"></div>
+            <Link to={product?.permalink ?? `/products/${product.slug}`} className={`group bg-scwhite/70 border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer ${viewMode === 'list' ? 'flex items-center p-4' : 'p-4'}`}>
+                <div className={`relative ${viewMode === 'list' ? 'w-32 h-32 flex-shrink-0 mr-6' : 'mb-4'}`}>
+                    <div className="relative rounded-lg group-hover:scale-105 transition-transform duration-300">
+                        <img alt={product.title} src={product.image || product?.metadata?.gallery?.[0]?.url} className={`w-full object-cover rounded-t-xl ${viewMode === 'list' ? 'h-full' : 'h-48'}`} />
+                        <div className="absolute top-0 left-0 w-full h-full"></div>
                     </div>
-                    
+
                     {product.badge && (
-                        <div className={`xpo_absolute xpo_top-2 xpo_left-2 ${getBadgeColor(product.badge)} xpo_text-white xpo_text-xs xpo_font-bold xpo_px-2 xpo_py-1 xpo_rounded-full`}>{product.badge}</div>
+                        <div className={`absolute top-2 left-2 ${getBadgeColor(product.badge)} text-white text-xs font-bold px-2 py-1 rounded-full`}>{product.badge}</div>
                     )}
 
                     {product.viewedRecently && (
-                        <div className="xpo_absolute xpo_top-2 xpo_right-2 xpo_bg-blue-500 xpo_text-white xpo_p-1 xpo_rounded-full">
-                            <Eye className="xpo_w-3 xpo_h-3" />
+                        <div className="absolute top-2 right-2 bg-blue-500 text-white p-1 rounded-full">
+                            <Eye className="w-3 h-3" />
                         </div>
                     )}
 
-                    <div className="xpo_absolute xpo_bottom-2 xpo_right-2 xpo_flex xpo_gap-1 xpo_opacity-0 group-hover:xpo_opacity-100 xpo_transition-opacity">
-                        <button onClick={(e) => toggleWishlist(e, product)} className={`xpo_p-2 xpo_rounded-full xpo_shadow-lg xpo_transition-colors ${isInWishlist ? 'xpo_bg-red-500 xpo_text-white' : 'xpo_bg-scwhite/70 xpo_text-gray-600 hover:xpo_text-red-500'}`}>
-                            <Heart className="xpo_w-4 xpo_h-4" />
+                    <div className="absolute bottom-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onClick={(e) => toggleWishlist(e, product)} className={`p-2 rounded-full shadow-lg transition-colors ${isInWishlist ? 'bg-red-500 text-white' : 'bg-scwhite/70 text-gray-600 hover:text-red-500'}`}>
+                            <Heart className="w-4 h-4" />
                         </button>
-                        <button onClick={(e) => quickView(e, product)} className="xpo_p-2 xpo_bg-scwhite/70 xpo_text-gray-600 xpo_rounded-full xpo_shadow-lg hover:xpo_text-blue-500 xpo_transition-colors">
-                            <Eye className="xpo_w-4 xpo_h-4" />
+                        <button onClick={(e) => quickView(e, product)} className="p-2 bg-scwhite/70 text-gray-600 rounded-full shadow-lg hover:text-blue-500 transition-colors">
+                            <Eye className="w-4 h-4" />
                         </button>
                     </div>
                 </div>
 
-                <div className={viewMode === 'list' ? 'xpo_flex-1' : ''}>
-                    <div className="xpo_flex xpo_items-center xpo_gap-1 xpo_mb-2">
-                        <div className="xpo_flex xpo_text-yellow-400">
-                            {[...Array(5)].map((_, i) => <Star key={i} className={`xpo_w-4 xpo_h-4 ${i < Math.floor(product.rating) ? 'xpo_fill-current' : 'xpo_text-gray-200'}`} />)}
+                <div className={viewMode === 'list' ? 'flex-1' : ''}>
+                    <div className="flex items-center gap-1 mb-2">
+                        <div className="flex text-yellow-400">
+                            {[...Array(5)].map((_, i) => <Star key={i} className={`w-4 h-4 ${i < Math.floor(product.rating) ? 'fill-current' : 'text-gray-200'}`} />)}
                         </div>
-                        <span className="xpo_text-sm xpo_text-gray-500">{sprintf(__('(%s)', 'site-core'), product?.reviews || 0)}</span>
+                        <span className="text-sm text-gray-500">{sprintf(__('(%s)', 'site-core'), product?.reviews || 0)}</span>
                     </div>
 
-                    <h3 className="xpo_font-semibold xpo_text-gray-900 xpo_mb-2 group-hover:xpo_text-blue-600 xpo_transition-colors">{product.title}</h3>
+                    <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">{product.title}</h3>
 
-                    <div className="xpo_flex xpo_items-center xpo_gap-2 xpo_mb-2">
-                        <span className="xpo_text-xs xpo_text-gray-500 xpo_bg-gray-100 xpo_px-2 xpo_py-1 xpo_rounded-full">{product.category}</span>
-                        <span className="xpo_text-xs xpo_text-gray-500">{product.brand}</span>
+                    <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{product.category}</span>
+                        <span className="text-xs text-gray-500">{product.brand}</span>
                     </div>
 
-                    <div className={`xpo_flex xpo_items-center ${viewMode === 'list' ? 'xpo_justify-between' : 'xpo_justify-between'} xpo_mt-auto`}>
+                    <div className={`flex items-center ${viewMode === 'list' ? 'justify-between' : 'justify-between'} mt-auto`}>
                         <div>
-                            <span className="xpo_font-bold xpo_text-lg xpo_text-gray-900">{money(product.metadata.sale_price, product.metadata.currency)}</span>
+                            <span className="font-bold text-lg text-gray-900">{money(product.metadata.sale_price, product.metadata.currency)}</span>
                             {product.metadata.price > product.metadata.sale_price && (
-                                <span className="xpo_text-sm xpo_text-gray-400 xpo_line-through xpo_ml-2">
+                                <span className="text-sm text-gray-400 line-through ml-2">
                                     {money(product.metadata.price, product.metadata.currency)}
                                 </span>
                             )}
                         </div>
-                        
-                        <button disabled={adding} onClick={(e) => addToCart(e, product)} className="xpo_bg-black xpo_flex xpo_gap-2 xpo_items-center xpo_text-white xpo_p-2 xpo_px-4 xpo_rounded-lg hover:xpo_bg-gray-800 xpo_transition-colors xpo_opacity-0 group-hover:xpo_opacity-100">
-                            <span className="xpo_leading-none xpo_text-sm">{__('Add to Cart', 'site-core')}</span>
-                            {adding ? <Loader2 className="xpo_animate-spin xpo_w-4 xpo_h-4" /> : <ShoppingCart className="xpo_w-4 xpo_h-4" />}
+
+                        <button disabled={adding} onClick={(e) => addToCart(e, product)} className="bg-black flex gap-2 items-center text-white p-2 px-4 rounded-lg hover:bg-gray-800 transition-colors opacity-0 group-hover:opacity-100">
+                            <span className="leading-none text-sm">{__('Add to Cart', 'site-core')}</span>
+                            {adding ? <Loader2 className="animate-spin w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
                         </button>
                     </div>
                 </div>
             </Link>
             {popup && (
                 <Popup
-                    className="xpo_fixed xpo_inset-0 xpo_z-50 xpo_flex xpo_items-center xpo_justify-center"
-                    bodyClassName="xpo_relative xpo_z-10 xpo_bg-scwhite dark:xpo_bg-scprimary xpo_text-scprimary dark:xpo_text-scwhite xpo_rounded-xl xpo_shadow-lg xpo_p-6 xpo_max-w-full xpo_min-w-[90vw] md:xpo_min-w-[28rem]"
-                    backdropClassName="xpo_absolute xpo_inset-0 xpo_bg-black/40 dark:xpo_bg-scprimary/40 xpo_bg-opacity-30"
+                    className="fixed inset-0 z-50 flex items-center justify-center"
+                    bodyClassName="relative z-10 bg-scwhite dark:bg-scprimary text-scprimary dark:text-scwhite rounded-xl shadow-lg p-6 max-w-full min-w-[90vw] md:min-w-[28rem]"
+                    backdropClassName="absolute inset-0 bg-black/40 dark:bg-scprimary/40 bg-opacity-30"
                     onClose={() => setPopup(null)}
                 >
-                    <div className="xpo_absolute xpo_top-0 xpo_left-0 xpo_w-full xpo_h-full xpo_hidden dark:xpo_block">
+                    <div className="absolute top-0 left-0 w-full h-full hidden dark:block">
                         <MoonlitSky moon={false} />
                     </div>
-                    <div className="xpo_relative xpo_z-10">{popup}</div>
+                    <div className="relative z-10">{popup}</div>
                 </Popup>
             )}
         </>
@@ -148,7 +148,7 @@ export const ProductCard3 = ({ product: prod, viewMode = 'card' }) => {
     const { cart, add_to_cart } = useCart();
     const { is_in_wishlist, toggle_wishlist } = useWishlist();
     const [adding, setAdding] = useState(false);
-    const [product, setProduct] = useState({...prod});
+    const [product, setProduct] = useState({ ...prod });
 
     const toggleWishlist = (e, product) => {
         e.preventDefault();
@@ -160,7 +160,7 @@ export const ProductCard3 = ({ product: prod, viewMode = 'card' }) => {
         e.preventDefault();
         e.stopPropagation();
         setAdding(true);
-        add_to_cart({item: product})
+        add_to_cart({ item: product })
             .finally(() => setAdding(false));
     };
 
@@ -170,125 +170,125 @@ export const ProductCard3 = ({ product: prod, viewMode = 'card' }) => {
         setPopup(<ProductQuickView prod={product} />);
     };
 
-    const isInWishlist = is_in_wishlist({product_id: product?.id});
-    
+    const isInWishlist = is_in_wishlist({ product_id: product?.id });
+
     return (
         <>
-            <Link 
-                to={product?.permalink ?? `/products/${product.slug}`} 
-                className="xpo_group xpo_bg-scwhite/70 xpo_border xpo_border-gray-200 xpo_rounded-xl xpo_p-4 hover:xpo_shadow-lg xpo_transition-all xpo_duration-300 hover:xpo_border-gray-300 xpo_block"
+            <Link
+                to={product?.permalink ?? `/products/${product.slug}`}
+                className="group bg-scwhite/70 border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300 hover:border-gray-300 block"
             >
-                <div className="xpo_relative xpo_mb-4">
-                    <img 
-                        alt={product.title || product.name} 
-                        src={product.image || product?.metadata?.gallery?.[0]?.url} 
-                        className="xpo_w-full xpo_h-48 xpo_object-cover xpo_rounded-lg group-hover:xpo_scale-105 xpo_transition-transform xpo_duration-300" 
+                <div className="relative mb-4">
+                    <img
+                        alt={product.title || product.name}
+                        src={product.image || product?.metadata?.gallery?.[0]?.url}
+                        className="w-full h-48 object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
                     />
-                    
+
                     {product.badge && (
-                        <div className={`xpo_absolute xpo_top-3 xpo_left-3 xpo_text-xs xpo_font-semibold xpo_px-2 xpo_py-1 xpo_rounded-full ${getBadgeColor(product.badge)}`}>
+                        <div className={`absolute top-3 left-3 text-xs font-semibold px-2 py-1 rounded-full ${getBadgeColor(product.badge)}`}>
                             {product.badge}
                         </div>
                     )}
 
                     {product.viewedRecently && (
-                        <div className="xpo_absolute xpo_top-3 xpo_right-14 xpo_bg-blue-500 xpo_text-white xpo_p-1 xpo_rounded-full">
-                            <Eye className="xpo_w-3 xpo_h-3" />
+                        <div className="absolute top-3 right-14 bg-blue-500 text-white p-1 rounded-full">
+                            <Eye className="w-3 h-3" />
                         </div>
                     )}
-                    
-                    <button 
+
+                    <button
                         onClick={(e) => toggleWishlist(e, product)}
-                        className={`xpo_absolute xpo_top-3 xpo_right-3 xpo_p-2 xpo_rounded-full xpo_shadow-md xpo_opacity-0 group-hover:xpo_opacity-100 xpo_transition-all ${isInWishlist ? 'xpo_bg-red-500 xpo_text-white' : 'xpo_bg-scwhite/70 xpo_text-gray-600 hover:xpo_text-red-500 hover:xpo_bg-gray-50'}`}
+                        className={`absolute top-3 right-3 p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all ${isInWishlist ? 'bg-red-500 text-white' : 'bg-scwhite/70 text-gray-600 hover:text-red-500 hover:bg-gray-50'}`}
                     >
-                        <Heart className={`xpo_w-4 xpo_h-4 ${isInWishlist ? 'xpo_fill-current' : ''}`} />
+                        <Heart className={`w-4 h-4 ${isInWishlist ? 'fill-current' : ''}`} />
                     </button>
 
                     {product.metadata?.price && product.originalPrice && (
-                        <div className="xpo_absolute xpo_bottom-3 xpo_left-3 xpo_bg-red-500 xpo_text-white xpo_text-xs xpo_font-bold xpo_px-2 xpo_py-1 xpo_rounded-full">
+                        <div className="absolute bottom-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                             {Math.round(((product.originalPrice - product.metadata.price) / product.originalPrice) * 100)}% OFF
                         </div>
                     )}
 
-                    <button 
+                    <button
                         onClick={(e) => quickView(e, product)}
-                        className="xpo_absolute xpo_bottom-3 xpo_right-3 xpo_bg-scwhite/70 xpo_p-2 xpo_rounded-full xpo_shadow-md xpo_opacity-0 group-hover:xpo_opacity-100 xpo_transition-opacity hover:xpo_bg-gray-50 hover:xpo_text-blue-500"
+                        className="absolute bottom-3 right-3 bg-scwhite/70 p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-50 hover:text-blue-500"
                     >
-                        <Eye className="xpo_w-4 xpo_h-4 xpo_text-gray-600" />
+                        <Eye className="w-4 h-4 text-gray-600" />
                     </button>
                 </div>
-                
-                <h3 className="xpo_font-medium xpo_text-gray-900 xpo_mb-2 group-hover:xpo_text-blue-600 xpo_transition-colors xpo_line-clamp-2">
+
+                <h3 className="font-medium text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
                     {product.title || product.name}
                 </h3>
-                
-                <div className="xpo_flex xpo_items-center xpo_mb-3">
-                    <div className="xpo_flex xpo_text-yellow-400 xpo_mr-2">
+
+                <div className="flex items-center mb-3">
+                    <div className="flex text-yellow-400 mr-2">
                         {[...Array(5)].map((_, i) => (
-                            <Star key={i} className={`xpo_w-4 xpo_h-4 ${i < Math.floor(product.rating) ? 'xpo_fill-current' : 'xpo_stroke-gray-400'}`} />
+                            <Star key={i} className={`w-4 h-4 ${i < Math.floor(product.rating) ? 'fill-current' : 'stroke-gray-400'}`} />
                         ))}
                     </div>
-                    <span className="xpo_text-sm xpo_text-gray-600">
+                    <span className="text-sm text-gray-600">
                         {sprintf(__('%s (%s)', 'site-core'), product?.rating?.toFixed?.(1), product?.reviews || 0)}
                     </span>
                 </div>
-                
-                <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-4">
-                    <div className="xpo_flex xpo_items-center xpo_gap-2">
-                        <span className="xpo_font-bold xpo_text-lg xpo_text-gray-900">
+
+                <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                        <span className="font-bold text-lg text-gray-900">
                             {money(product.metadata?.sale_price || product.metadata?.price, product.metadata?.currency)}
                         </span>
                         {product.originalPrice && product.originalPrice > (product.metadata?.sale_price || product.metadata?.price) && (
-                            <span className="xpo_text-sm xpo_text-gray-400 xpo_line-through">
+                            <span className="text-sm text-gray-400 line-through">
                                 {money(product.originalPrice, product.metadata?.currency)}
                             </span>
                         )}
                     </div>
                     {product.originalPrice && (
-                        <span className="xpo_text-sm xpo_text-green-600 xpo_font-medium">
+                        <span className="text-sm text-green-600 font-medium">
                             {sprintf(__('Save %s', 'site-core'), money(product.originalPrice - (product.metadata?.sale_price || product.metadata?.price), product.metadata?.currency))}
                         </span>
                     )}
                 </div>
-                
-                <div className="xpo_flex xpo_gap-2">
-                    <button 
+
+                <div className="flex gap-2">
+                    <button
                         disabled={adding}
                         onClick={(e) => addToCart(e, product)}
-                        className="xpo_flex-1 xpo_bg-gray-900 xpo_text-white xpo_py-2 xpo_px-4 xpo_rounded-lg xpo_font-medium hover:xpo_bg-gray-800 xpo_transition-colors xpo_flex xpo_items-center xpo_justify-center xpo_gap-2 disabled:xpo_opacity-50 disabled:xpo_cursor-not-allowed"
+                        className="flex-1 bg-gray-900 text-white py-2 px-4 rounded-lg font-medium hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {adding ? (
                             <>
-                                <Loader2 className="xpo_w-4 xpo_h-4 xpo_animate-spin" />
+                                <Loader2 className="w-4 h-4 animate-spin" />
                                 {__('Adding...', 'site-core')}
                             </>
                         ) : (
                             <>
-                                <ShoppingBag className="xpo_w-4 xpo_h-4" />
+                                <ShoppingBag className="w-4 h-4" />
                                 {__('Add to Cart', 'site-core')}
                             </>
                         )}
                     </button>
-                    <button 
+                    <button
                         onClick={(e) => quickView(e, product)}
-                        className="xpo_p-2 xpo_border xpo_border-gray-200 xpo_rounded-lg hover:xpo_bg-gray-50 xpo_transition-colors"
+                        className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                     >
-                        <Eye className="xpo_w-4 xpo_h-4 xpo_text-gray-600" />
+                        <Eye className="w-4 h-4 text-gray-600" />
                     </button>
                 </div>
             </Link>
 
             {popup && (
                 <Popup
-                    className="xpo_fixed xpo_inset-0 xpo_z-50 xpo_flex xpo_items-center xpo_justify-center"
-                    bodyClassName="xpo_relative xpo_z-10 xpo_bg-scwhite dark:xpo_bg-scprimary xpo_text-scprimary dark:xpo_text-scwhite xpo_rounded-xl xpo_shadow-lg xpo_p-6 xpo_max-w-full xpo_min-w-[90vw] md:xpo_min-w-[28rem]"
-                    backdropClassName="xpo_absolute xpo_inset-0 xpo_bg-black/40 dark:xpo_bg-scprimary/40 xpo_bg-opacity-30"
+                    className="fixed inset-0 z-50 flex items-center justify-center"
+                    bodyClassName="relative z-10 bg-scwhite dark:bg-scprimary text-scprimary dark:text-scwhite rounded-xl shadow-lg p-6 max-w-full min-w-[90vw] md:min-w-[28rem]"
+                    backdropClassName="absolute inset-0 bg-black/40 dark:bg-scprimary/40 bg-opacity-30"
                     onClose={() => setPopup(null)}
                 >
-                    <div className="xpo_absolute xpo_top-0 xpo_left-0 xpo_w-full xpo_h-full xpo_hidden dark:xpo_block">
+                    <div className="absolute top-0 left-0 w-full h-full hidden dark:block">
                         <MoonlitSky moon={false} />
                     </div>
-                    <div className="xpo_relative xpo_z-10">{popup}</div>
+                    <div className="relative z-10">{popup}</div>
                 </Popup>
             )}
         </>

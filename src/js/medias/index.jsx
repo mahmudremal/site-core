@@ -5,14 +5,15 @@ import { install_media_tab } from './media-library';
 
 class Medias {
     constructor() {
-        this.state = {tailwind: {installed: false}};
+        this.state = { tailwind: { installed: false } };
         this.setup_hooks();
     }
     setup_hooks() {
         this.media_screen();
     }
     media_screen() {
-        tailwind_install().finally(() => install_media_tab());
+        install_media_tab()
+        // tailwind_install().finally(() => install_media_tab());
     }
 }
 const task = new Medias();

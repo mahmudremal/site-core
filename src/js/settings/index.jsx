@@ -17,8 +17,8 @@ export default function settings_screen() {
             container.innerHTML = '';
             container.setAttribute('colspan', 2);
             const config = JSON.parse(field.dataset.config);
-            const root = createRoot(container);root.render(
-                <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
+            const root = createRoot(container); root.render(
+                <Suspense fallback={<div className="text-center p-4">{__('Loading...')}</div>}>
                     <RoleBased config={config} />
                 </Suspense>
             );
@@ -32,8 +32,8 @@ export default function settings_screen() {
             container.innerHTML = '';
             container.setAttribute('colspan', 2);
             const config = JSON.parse(field.dataset.config);
-            const root = createRoot(container);root.render(
-                <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
+            const root = createRoot(container); root.render(
+                <Suspense fallback={<div className="text-center p-4">{__('Loading...')}</div>}>
                     {/* <AppsApiKeys config={config} /> */}
                 </Suspense>
             );
@@ -46,8 +46,8 @@ export default function settings_screen() {
             container.innerHTML = '';
             container.setAttribute('colspan', 2);
             const config = JSON.parse(field.dataset.config);
-            const root = createRoot(container);root.render(
-                <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
+            const root = createRoot(container); root.render(
+                <Suspense fallback={<div className="text-center p-4">{__('Loading...')}</div>}>
                     {/* <TaskConfig config={config} /> */}
                 </Suspense>
             );
@@ -61,8 +61,8 @@ export default function settings_screen() {
             container.innerHTML = '';
             container.setAttribute('colspan', 2);
             const config = JSON.parse(field.dataset.config);
-            const root = createRoot(container);root.render(
-                <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
+            const root = createRoot(container); root.render(
+                <Suspense fallback={<div className="text-center p-4">{__('Loading...')}</div>}>
                     <Radar config={config} />
                 </Suspense>
             );
@@ -78,8 +78,8 @@ export default function settings_screen() {
             // await this.tailwind_install();
             container.innerHTML = '';
             container.setAttribute('colspan', 2);
-            const root = createRoot(container);root.render(
-                <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
+            const root = createRoot(container); root.render(
+                <Suspense fallback={<div className="text-center p-4">{__('Loading...')}</div>}>
                     <PostTypes name={inputName} value={inputValue} cpts={cpts} />
                 </Suspense>
             );
@@ -91,8 +91,8 @@ export default function settings_screen() {
         if (container) {
             container.innerHTML = '';
             container.setAttribute('colspan', 2);
-            const root = createRoot(container);root.render(
-                <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
+            const root = createRoot(container); root.render(
+                <Suspense fallback={<div className="text-center p-4">{__('Loading...')}</div>}>
                     <DatabaseTables />
                 </Suspense>
             );

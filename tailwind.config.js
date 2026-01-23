@@ -1,16 +1,23 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: 'class', // '[data-theme="dark"]',
-  prefix: 'xpo_', // /hunting
+  darkMode: "class", // '[data-theme="dark"]',
+  // prefix: "", // /hunting
   content: [
-    ['./server/app.jsx', './inc/widgets/ecommerce/ProductMetabox.jsx', ...Array(10)].map((u, i) => `./src/js/${[...Array(i + 1)].map(o => '**/').join('')}*.{js,jsx,ts,tsx}`),
     [
-      '!./src/js/backend/**/*.{js,jsx,ts,tsx}',
-      '!./src/js/hunting/**/*.{js,jsx,ts,tsx}',
-      '!./src/js/sandbox/**/*.{js,jsx,ts,tsx}',
-      '!./src/js/interface/**/*.{js,jsx,ts,tsx}',
-    ]
-  ].flatMap(i => i),
+      "./server/app.jsx",
+      "./inc/widgets/ecommerce/ProductMetabox.jsx",
+      ...Array(10),
+    ].map(
+      (u, i) =>
+        `./src/js/${[...Array(i + 1)].map((o) => "**/").join("")}*.{js,jsx,ts,tsx}`,
+    ),
+    [
+      "!./src/js/backend/**/*.{js,jsx,ts,tsx}",
+      "!./src/js/hunting/**/*.{js,jsx,ts,tsx}",
+      "!./src/js/sandbox/**/*.{js,jsx,ts,tsx}",
+      "!./src/js/interface/**/*.{js,jsx,ts,tsx}",
+    ],
+  ].flatMap((i) => i),
   theme: {
     extend: {
       colors: {
@@ -29,7 +36,7 @@ module.exports = {
         },
         secondary: {
           DEFAULT: "#FFC52F",
-          50: "#fff9e6", 
+          50: "#fff9e6",
           100: "#fff3cc",
           200: "#ffe799",
           300: "#ffdb66",
@@ -54,7 +61,7 @@ module.exports = {
         //   900: "#01171A",
         // },
         agreements: {
-          50:  "#FFFBEA",
+          50: "#FFFBEA",
           100: "#FFF3C4",
           200: "#FCE588",
           300: "#FADB5F",
@@ -68,7 +75,7 @@ module.exports = {
         },
         scprimary: {
           DEFAULT: "#0A1D37",
-          50:  "#e1e5ec",
+          50: "#e1e5ec",
           100: "#bcc7d8",
           200: "#8ba1b9",
           300: "#597b9a",
@@ -77,11 +84,11 @@ module.exports = {
           600: "#091931",
           700: "#061225",
           800: "#040d1a",
-          900: "#02090f"
+          900: "#02090f",
         },
         scwhite: {
           DEFAULT: "#F5F7FA",
-          50:  "#FFFFFF",
+          50: "#FFFFFF",
           100: "#FDFEFF",
           200: "#F9FAFC",
           300: "#F5F7FA",
@@ -90,11 +97,11 @@ module.exports = {
           600: "#C3CBD6",
           700: "#9FA8B4",
           800: "#7A8491",
-          900: "#5B626D"
+          900: "#5B626D",
         },
         scaccent: {
           DEFAULT: "#6C5DD3",
-          50:  "#F0EEFC",
+          50: "#F0EEFC",
           100: "#DCD8F7",
           200: "#C1B8F2",
           300: "#A697ED",
@@ -103,31 +110,28 @@ module.exports = {
           600: "#5E50BB",
           700: "#4C4097",
           800: "#393172",
-          900: "#28234F"
-        }
-        
+          900: "#28234F",
+        },
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ["Inter", "sans-serif"],
       },
       zIndex: {
-        100: '100',
-        999: '999',
+        100: "100",
+        999: "999",
       },
       screens: {
-        '3xl': '1920px',
-      }
-    }
+        "3xl": "1920px",
+      },
+    },
   },
-  plugins: [
-    require('daisyui')
-  ],
+  plugins: [require("daisyui")],
   // corePlugins: {
   //   preflight: false,
   // },
   // safelist: [
   //   {
-  //     pattern: /xpo_/,
+  //     pattern: //,
   //   },
   // ],
-}
+};

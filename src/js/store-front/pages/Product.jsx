@@ -54,9 +54,8 @@ const ProductPage = () => {
       stars.push(
         <Star
           key={i}
-          className={`xpo_inline-block xpo_w-5 xpo_h-5 ${
-            i < count ? 'xpo_text-yellow-400' : 'xpo_text-gray-300'
-          }`}
+          className={`inline-block w-5 h-5 ${i < count ? 'text-yellow-400' : 'text-gray-300'
+            }`}
         />
       );
     }
@@ -67,32 +66,32 @@ const ProductPage = () => {
     setLoading(true);
     sleep(2000).then(() => {
       api.get(`products/${post_id}`).then(res => formatProduct(res.data))
-      .then(prod => {
-        setProduct(prod);
-        setVisibleVariation(prod);
-        setCartForm(prev => ({
-          ...prev,
-          variations: []
-        }));
-        return prod;
-      })
-      .then(_product => {
-        // analytics part
-        window?.dataLayer?.push?.({
-          'event': 'view_item',
-          'ecommerce': {
-            'items': [{
-              'item_name': _product.title,
-              'item_id': _product?.metadata?.sku || _product?.id,
-              'price': parseFloat(_product?.metadata?.sale_price || _product?.metadata?.price),
-              'category': _product?.categories?.find?.(i => i)
-            }]
-          }
-        });
-        window?.clarity?.('event', 'view_item');
-      })
-      .catch(err => notify.error(err))
-      .finally(() => setLoading(false));
+        .then(prod => {
+          setProduct(prod);
+          setVisibleVariation(prod);
+          setCartForm(prev => ({
+            ...prev,
+            variations: []
+          }));
+          return prod;
+        })
+        .then(_product => {
+          // analytics part
+          window?.dataLayer?.push?.({
+            'event': 'view_item',
+            'ecommerce': {
+              'items': [{
+                'item_name': _product.title,
+                'item_id': _product?.metadata?.sku || _product?.id,
+                'price': parseFloat(_product?.metadata?.sale_price || _product?.metadata?.price),
+                'category': _product?.categories?.find?.(i => i)
+              }]
+            }
+          });
+          window?.clarity?.('event', 'view_item');
+        })
+        .catch(err => notify.error(err))
+        .finally(() => setLoading(false));
     });
   };
 
@@ -106,9 +105,9 @@ const ProductPage = () => {
     fetchProduct();
   }, [post_id]);
 
-  const handleUpdateCart = ({item_id: cart_item_id}) => {
+  const handleUpdateCart = ({ item_id: cart_item_id }) => {
     if (!product) return;
-  
+
     const product_data = {
       ...visibleVariation,
       variations: cartForm.variations.map(vari => ({
@@ -132,29 +131,29 @@ const ProductPage = () => {
       ...cartData,
       product_data
     }).then(res => res.data)
-    .then(res => {
-      setCart(prev => ({
-        ...prev,
-        cart_items: prev.cart_items.find(i => i.id == res.id) ? prev.cart_items.map(i => i.id == res.id ? res : i) : [res, ...prev.cart_items]
-      }));
-    })
-    .catch(err => notify.error(err)).finally(() => {});
+      .then(res => {
+        setCart(prev => ({
+          ...prev,
+          cart_items: prev.cart_items.find(i => i.id == res.id) ? prev.cart_items.map(i => i.id == res.id ? res : i) : [res, ...prev.cart_items]
+        }));
+      })
+      .catch(err => notify.error(err)).finally(() => { });
   };
 
   const handleAddToWishlist = () => {
     if (!product) return;
     api.post(`/wishlist/${product.id}`).then(res => res.data)
-    .then(res => {
-      if (res?.action == 'added') {
-        setWishlist(prev => [product, ...prev]);
-        return notify.success('Product added to wishlist!');
-      }
-      if (res?.action == 'removed') {
-        setWishlist(prev => prev.filter(p => p.product_id != product.id));
-        return notify.success('Product removed to wishlist!');
-      }
-    })
-    .catch(err => notify.error(err)).finally(() => {});
+      .then(res => {
+        if (res?.action == 'added') {
+          setWishlist(prev => [product, ...prev]);
+          return notify.success('Product added to wishlist!');
+        }
+        if (res?.action == 'removed') {
+          setWishlist(prev => prev.filter(p => p.product_id != product.id));
+          return notify.success('Product removed to wishlist!');
+        }
+      })
+      .catch(err => notify.error(err)).finally(() => { });
   };
 
   const isInWishlist = wishlist.some(p => p.product_id == product?.id);
@@ -162,54 +161,54 @@ const ProductPage = () => {
   return (
     <>
       <ProductPageHelmet product={product} />
-      <nav className="xpo_text-sm xpo_text-scwhite-600 xpo_mb-6 xpo_space-x-2">
-        {!loading && (<Link to="/" className="hover:xpo_text-scwhite-800">{__('Home', 'site-core')}</Link>)}
-        {loading ? [...Array(3).keys()].map(i => <SkeletonLoader key={i} className="xpo_h-4 xpo_w-32 xpo_inline-block" />) : !product?.categories?.length ? (
+      <nav className="text-sm text-scwhite-600 mb-6 space-x-2">
+        {!loading && (<Link to="/" className="hover:text-scwhite-800">{__('Home', 'site-core')}</Link>)}
+        {loading ? [...Array(3).keys()].map(i => <SkeletonLoader key={i} className="h-4 w-32 inline-block" />) : !product?.categories?.length ? (
           <>
-            <Link to="/categories" className="hover:xpo_text-scwhite-800">{__('Categories', 'site-core')}</Link>
-            <span className="xpo_text-scwhite-800">{visibleVariation?.title}</span>
+            <Link to="/categories" className="hover:text-scwhite-800">{__('Categories', 'site-core')}</Link>
+            <span className="text-scwhite-800">{visibleVariation?.title}</span>
           </>
         ) : (
           <>
-            {product.categories.map((cat, catI) => typeof cat === 'string' ? <span key={catI} className="xpo_text-scwhite-800">{cat}</span> : <Link key={catI} to={`/collections/${cat.slug}`} className="hover:xpo_text-scwhite-800">{cat.name}</Link>)}
-            <span className="xpo_text-scwhite-800">{visibleVariation?.title}</span>
+            {product.categories.map((cat, catI) => typeof cat === 'string' ? <span key={catI} className="text-scwhite-800">{cat}</span> : <Link key={catI} to={`/collections/${cat.slug}`} className="hover:text-scwhite-800">{cat.name}</Link>)}
+            <span className="text-scwhite-800">{visibleVariation?.title}</span>
           </>
         )}
       </nav>
 
-      <div className="xpo_product_section xpo_bg-scwhite/70 xpo_rounded-lg xpo_shadow-lg xpo_p-8 xpo_mb-12 xpo_grid xpo_grid-cols-1 md:xpo_grid-cols-2 xpo_gap-8">
-        <ProductGallery images={visibleVariation?.metadata?.gallery??[]} loading={loading} />
+      <div className="product_section bg-scwhite/70 rounded-lg shadow-lg p-8 mb-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <ProductGallery images={visibleVariation?.metadata?.gallery ?? []} loading={loading} />
 
         <div>
           {loading ? (
             <ProductDetailsSkeleton />
           ) : (
             <>
-              <h1 className="xpo_text-3xl xpo_font-bold xpo_mb-4 xpo_text-scprimary-800 dark:xpo_text-scwhite-100">
+              <h1 className="text-3xl font-bold mb-4 text-scprimary-800 dark:text-scwhite-100">
                 {visibleVariation?.title}
               </h1>
 
-              <div className="xpo_flex xpo_items-center xpo_mb-4">
-                <div className="xpo_flex xpo_items-center xpo_space-x-1">
+              <div className="flex items-center mb-4">
+                <div className="flex items-center space-x-1">
                   {renderStars(Math.round(product?.seller?.short_rating || 0))}
                 </div>
-                <span className="xpo_text-sm xpo_text-scprimary-600 dark:xpo_text-scwhite-400 xpo_ml-2">
+                <span className="text-sm text-scprimary-600 dark:text-scwhite-400 ml-2">
                   {sprintf(__('(%s Rating)', 'site-core'), product?.seller?.short_rating || '0.0')}
                 </span>
                 {product?.seller?.shop_name && (
-                  <span className="xpo_text-sm xpo_text-scprimary-500 dark:xpo_text-scwhite-500 xpo_ml-4">
+                  <span className="text-sm text-scprimary-500 dark:text-scwhite-500 ml-4">
                     {__('by', 'site-core')} {product.seller.shop_name}
                   </span>
                 )}
               </div>
 
               {visibleVariation?.metadata?.sku && (
-                <div className="xpo_text-sm xpo_text-scprimary-600 dark:xpo_text-scwhite-400 xpo_mb-4">
-                  <span className="xpo_font-medium">{__('SKU:', 'site-core')}</span> {visibleVariation.metadata.sku}
+                <div className="text-sm text-scprimary-600 dark:text-scwhite-400 mb-4">
+                  <span className="font-medium">{__('SKU:', 'site-core')}</span> {visibleVariation.metadata.sku}
                 </div>
               )}
 
-              <div className="xpo_text-2xl xpo_font-bold xpo_text-scaccent-600 xpo_mb-6">
+              <div className="text-2xl font-bold text-scaccent-600 mb-6">
                 {product?.metadata?.currency?.toUpperCase() || '$'}{Math.min(
                   parseFloat(visibleVariation?.metadata?.price || 0),
                   parseFloat(visibleVariation?.metadata?.sale_price || product?.metadata?.price || 0)
@@ -217,70 +216,70 @@ const ProductPage = () => {
                 {visibleVariation?.metadata?.price &&
                   visibleVariation?.metadata?.sale_price &&
                   parseFloat(visibleVariation.metadata.price) > parseFloat(visibleVariation.metadata.sale_price) && (
-                  <span className="xpo_text-lg xpo_text-scprimary-400 dark:xpo_text-scwhite-500 xpo_line-through xpo_ml-3">
-                    {product?.metadata?.currency?.toUpperCase() || '$'}{parseFloat(visibleVariation.metadata.price).toFixed(2)}
-                  </span>
-                )}
+                    <span className="text-lg text-scprimary-400 dark:text-scwhite-500 line-through ml-3">
+                      {product?.metadata?.currency?.toUpperCase() || '$'}{parseFloat(visibleVariation.metadata.price).toFixed(2)}
+                    </span>
+                  )}
                 {visibleVariation?.metadata?.price &&
                   visibleVariation?.metadata?.sale_price &&
                   parseFloat(visibleVariation.metadata.price) > parseFloat(visibleVariation.metadata.sale_price) && (
-                  <span className="xpo_text-sm xpo_text-green-600 xpo_ml-3 xpo_bg-green-50 dark:xpo_bg-green-900/20 xpo_px-2 xpo_py-1 xpo_rounded">
-                    {__('Save', 'site-core')} {Math.round(((parseFloat(visibleVariation.metadata.price) - parseFloat(visibleVariation.metadata.sale_price)) / parseFloat(visibleVariation.metadata.price)) * 100)}%
-                  </span>
-                )}
+                    <span className="text-sm text-green-600 ml-3 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded">
+                      {__('Save', 'site-core')} {Math.round(((parseFloat(visibleVariation.metadata.price) - parseFloat(visibleVariation.metadata.sale_price)) / parseFloat(visibleVariation.metadata.price)) * 100)}%
+                    </span>
+                  )}
               </div>
 
-              <div className="xpo_text-scprimary-700 dark:xpo_text-scwhite-300 xpo_mb-6 xpo_leading-relaxed"
-                    dangerouslySetInnerHTML={{__html: visibleVariation?.metadata?.short_description || visibleVariation?.excerpt || `${visibleVariation?.description??''}`.slice(0, 300)}}>
+              <div className="text-scprimary-700 dark:text-scwhite-300 mb-6 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: visibleVariation?.metadata?.short_description || visibleVariation?.excerpt || `${visibleVariation?.description ?? ''}`.slice(0, 300) }}>
               </div>
 
               {product && (<SelectVariation product={product} cart={[cartForm, setCartForm]} setVisibleVariation={setVisibleVariation} setVariationCarted={setVariationCarted} />)}
 
-              <div className="xpo_mb-6">
-                <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-scprimary-700 dark:xpo_text-scwhite-200 xpo_mb-2">
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-scprimary-700 dark:text-scwhite-200 mb-2">
                   {__('Quantity', 'site-core')}
                 </label>
-                <div className="xpo_flex xpo_items-center xpo_border xpo_border-scprimary-300 dark:xpo_border-scprimary-600 xpo_rounded-md xpo_w-max xpo_bg-scwhite-50 dark:xpo_bg-scprimary-800">
+                <div className="flex items-center border border-scprimary-300 dark:border-scprimary-600 rounded-md w-max bg-scwhite-50 dark:bg-scprimary-800">
                   <button
                     type="button"
                     onClick={decrementQty}
                     aria-label={__('Decrease quantity', 'site-core')}
-                    className="xpo_px-3 xpo_py-2 xpo_text-xl xpo_text-scprimary-700 dark:xpo_text-scwhite-200 hover:xpo_bg-scprimary-100 dark:hover:xpo_bg-scprimary-700 xpo_transition-colors"
+                    className="px-3 py-2 text-xl text-scprimary-700 dark:text-scwhite-200 hover:bg-scprimary-100 dark:hover:bg-scprimary-700 transition-colors"
                   >
                     -
                   </button>
-                  <span className="xpo_px-4 xpo_py-2 xpo_text-center xpo_text-scprimary-800 dark:xpo_text-scwhite-100 xpo_font-semibold">
+                  <span className="px-4 py-2 text-center text-scprimary-800 dark:text-scwhite-100 font-semibold">
                     {cartForm.quantity}
                   </span>
                   <button
                     type="button"
                     onClick={incrementQty}
                     aria-label={__('Increase quantity', 'site-core')}
-                    className="xpo_px-3 xpo_py-2 xpo_text-xl xpo_text-scprimary-700 dark:xpo_text-scwhite-200 hover:xpo_bg-scprimary-100 dark:hover:xpo_bg-scprimary-700 xpo_transition-colors"
+                    className="px-3 py-2 text-xl text-scprimary-700 dark:text-scwhite-200 hover:bg-scprimary-100 dark:hover:bg-scprimary-700 transition-colors"
                   >
                     +
                   </button>
                 </div>
               </div>
 
-              <div className="xpo_flex xpo_flex-col sm:xpo_flex-row xpo_gap-4 xpo_mb-8">
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <button
                   type="button"
                   aria-label={__('Add to Cart', 'site-core')}
-                  onClick={() => handleUpdateCart({item_id: variationCarted?.id})}
-                  className="xpo_bg-scaccent-600 xpo_text-scwhite-50 xpo_px-6 xpo_py-3 xpo_rounded-lg xpo_font-semibold hover:xpo_bg-scaccent-700 xpo_transition-colors xpo_flex xpo_items-center xpo_justify-center xpo_shadow-md hover:xpo_shadow-lg"
+                  onClick={() => handleUpdateCart({ item_id: variationCarted?.id })}
+                  className="bg-scaccent-600 text-scwhite-50 px-6 py-3 rounded-lg font-semibold hover:bg-scaccent-700 transition-colors flex items-center justify-center shadow-md hover:shadow-lg"
                 >
-                  <ShoppingCart className="xpo_w-5 xpo_h-5 xpo_mr-2" />
+                  <ShoppingCart className="w-5 h-5 mr-2" />
                   {variationCarted ? __('Update Cart', 'site-core') : __('Add to Cart', 'site-core')}
                 </button>
-              
+
                 <button
                   type="button"
                   aria-label={__('Add to Wishlist', 'site-core')}
                   onClick={handleAddToWishlist}
-                  className="xpo_bg-scwhite-100 dark:xpo_bg-scprimary-700 xpo_text-scaccent-600 dark:xpo_text-scaccent-400 xpo_px-6 xpo_py-3 xpo_rounded-lg xpo_font-semibold xpo_border xpo_border-scaccent-600 dark:xpo_border-scaccent-400 hover:xpo_bg-scaccent-50 dark:hover:xpo_bg-scprimary-600 xpo_transition-colors xpo_flex xpo_items-center xpo_justify-center"
+                  className="bg-scwhite-100 dark:bg-scprimary-700 text-scaccent-600 dark:text-scaccent-400 px-6 py-3 rounded-lg font-semibold border border-scaccent-600 dark:border-scaccent-400 hover:bg-scaccent-50 dark:hover:bg-scprimary-600 transition-colors flex items-center justify-center"
                 >
-                  <Heart strokeWidth={isInWishlist ? 3 : 2} className="xpo_w-5 xpo_h-5 xpo_mr-2" />
+                  <Heart strokeWidth={isInWishlist ? 3 : 2} className="w-5 h-5 mr-2" />
                   {isInWishlist ? __('Remove from Wishlist', 'site-core') : __('Add to Wishlist', 'site-core')}
                 </button>
               </div>
@@ -297,7 +296,7 @@ const ProductPage = () => {
 
 const SelectVariation = ({ product = {}, cart: cartFormObj = [], setVisibleVariation, setVariationCarted }) => {
   const [selected, setSelected] = useState({});
-  const [cartForm = {}, setCartForm = () => {}] = cartFormObj;
+  const [cartForm = {}, setCartForm = () => { }] = cartFormObj;
   const { cart, setCart, carted_this_variation } = useCart();
 
   const handleSelect = (attId, itemId) => {
@@ -329,24 +328,23 @@ const SelectVariation = ({ product = {}, cart: cartFormObj = [], setVisibleVaria
   };
 
   const renderColorAttribute = (attribute, availableItems, isSelected) => (
-    <div className="xpo_flex xpo_flex-wrap xpo_gap-3">
+    <div className="flex flex-wrap gap-3">
       {availableItems.map((item) => {
         const itemSelected = isSelected === item.id;
         return (
           <button
             key={item.id}
             onClick={() => handleSelect(attribute.id, item.id)}
-            className={`xpo_w-10 xpo_h-10 xpo_rounded-full xpo_border-2 xpo_relative xpo_cursor-pointer xpo_transition-all xpo_duration-200 hover:xpo_scale-110 ${
-              itemSelected
-                ? 'xpo_border-blue-500 xpo_shadow-lg'
-                : 'xpo_border-gray-300 hover:xpo_border-gray-400'
-            }`}
+            className={`w-10 h-10 rounded-full border-2 relative cursor-pointer transition-all duration-200 hover:scale-110 ${itemSelected
+                ? 'border-blue-500 shadow-lg'
+                : 'border-gray-300 hover:border-gray-400'
+              }`}
             style={{ backgroundColor: item.value || item.name.toLowerCase() }}
             title={item.name}
           >
             {itemSelected && (
-              <div className="xpo_absolute xpo_inset-0 xpo_flex xpo_items-center xpo_justify-center">
-                <svg className="xpo_w-5 xpo_h-5 xpo_text-white" fill="currentColor" viewBox="0 0 20 20">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
               </div>
@@ -361,7 +359,7 @@ const SelectVariation = ({ product = {}, cart: cartFormObj = [], setVisibleVaria
     <select
       value={isSelected || ''}
       onChange={(e) => handleSelect(attribute.id, e.target.value)}
-      className="xpo_w-full xpo_p-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_bg-white xpo_text-sm focus:xpo_ring-2 focus:xpo_ring-blue-500 focus:xpo_border-blue-500 xpo_transition-colors"
+      className="w-full p-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
     >
       <option value="">{sprintf(__('Choose %s', 'site-core'), attribute.label)}</option>
       {availableItems.map((item) => (
@@ -373,25 +371,24 @@ const SelectVariation = ({ product = {}, cart: cartFormObj = [], setVisibleVaria
   );
 
   const renderCheckboxAttribute = (attribute, availableItems, isSelected) => (
-    <div className="xpo_space-y-2">
+    <div className="space-y-2">
       {availableItems.map((item) => {
         const itemSelected = isSelected === item.id;
         return (
           <label
             key={item.id}
-            className={`xpo_flex xpo_items-center xpo_p-3 xpo_cursor-pointer xpo_border xpo_rounded-lg xpo_transition-all xpo_duration-200 hover:xpo_bg-gray-50 ${
-              itemSelected
-                ? 'xpo_bg-blue-50 xpo_border-blue-300 xpo_text-blue-700'
-                : 'xpo_border-gray-200 xpo_text-gray-900'
-            }`}
+            className={`flex items-center p-3 cursor-pointer border rounded-lg transition-all duration-200 hover:bg-gray-50 ${itemSelected
+                ? 'bg-blue-50 border-blue-300 text-blue-700'
+                : 'border-gray-200 text-gray-900'
+              }`}
           >
             <input
               type="checkbox"
               checked={itemSelected}
               onChange={() => handleSelect(attribute.id, item.id)}
-              className="xpo_mr-3 xpo_h-4 xpo_w-4 xpo_text-blue-600 xpo_border-gray-300 xpo_rounded focus:xpo_ring-blue-500"
+              className="mr-3 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
             />
-            <span className="xpo_text-sm xpo_font-medium">{item.name}</span>
+            <span className="text-sm font-medium">{item.name}</span>
           </label>
         );
       })}
@@ -399,37 +396,36 @@ const SelectVariation = ({ product = {}, cart: cartFormObj = [], setVisibleVaria
   );
 
   const renderImageAttribute = (attribute, availableItems, isSelected) => (
-    <div className="xpo_grid xpo_grid-cols-4 xpo_gap-3">
+    <div className="grid grid-cols-4 gap-3">
       {availableItems.map((item) => {
         const itemSelected = isSelected === item.id;
         return (
           <button
             key={item.id}
             onClick={() => handleSelect(attribute.id, item.id)}
-            className={`xpo_relative xpo_aspect-square xpo_rounded-lg xpo_overflow-hidden xpo_border-2 xpo_transition-all xpo_duration-200 hover:xpo_scale-105 ${
-              itemSelected
-                ? 'xpo_border-blue-500 xpo_shadow-lg'
-                : 'xpo_border-gray-200 hover:xpo_border-gray-300'
-            }`}
+            className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all duration-200 hover:scale-105 ${itemSelected
+                ? 'border-blue-500 shadow-lg'
+                : 'border-gray-200 hover:border-gray-300'
+              }`}
             title={item.name}
           >
             {item.image ? (
               <img
                 src={item.image}
                 alt={item.name}
-                className="xpo_w-full xpo_h-full xpo_object-cover"
+                className="w-full h-full object-cover"
               />
             ) : (
-              <div className="xpo_w-full xpo_h-full xpo_bg-gray-100 xpo_flex xpo_items-center xpo_justify-center">
-                <span className="xpo_text-xs xpo_text-gray-500 xpo_text-center xpo_p-1">
+              <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                <span className="text-xs text-gray-500 text-center p-1">
                   {item.name}
                 </span>
               </div>
             )}
             {itemSelected && (
-              <div className="xpo_absolute xpo_inset-0 xpo_bg-blue-500 xpo_bg-opacity-20 xpo_flex xpo_items-center xpo_justify-center">
-                <div className="xpo_bg-blue-500 xpo_rounded-full xpo_p-1">
-                  <svg className="xpo_w-4 xpo_h-4 xpo_text-white" fill="currentColor" viewBox="0 0 20 20">
+              <div className="absolute inset-0 bg-blue-500 bg-opacity-20 flex items-center justify-center">
+                <div className="bg-blue-500 rounded-full p-1">
+                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                 </div>
@@ -442,20 +438,19 @@ const SelectVariation = ({ product = {}, cart: cartFormObj = [], setVisibleVaria
   );
 
   const renderDefaultAttribute = (attribute, availableItems, isSelected) => (
-    <div className="xpo_grid xpo_grid-cols-2 xpo_gap-2">
+    <div className="grid grid-cols-2 gap-2">
       {availableItems.map((item) => {
         const itemSelected = isSelected === item.id;
         return (
           <button
             key={item.id}
             onClick={() => handleSelect(attribute.id, item.id)}
-            className={`xpo_p-3 xpo_text-left xpo_border xpo_rounded-lg xpo_transition-all xpo_duration-200 hover:xpo_bg-gray-50 ${
-              itemSelected
-                ? 'xpo_bg-blue-50 xpo_border-blue-300 xpo_text-blue-700'
-                : 'xpo_border-gray-200 xpo_text-gray-900'
-            }`}
+            className={`p-3 text-left border rounded-lg transition-all duration-200 hover:bg-gray-50 ${itemSelected
+                ? 'bg-blue-50 border-blue-300 text-blue-700'
+                : 'border-gray-200 text-gray-900'
+              }`}
           >
-            <span className="xpo_text-sm xpo_font-medium">{item.name}</span>
+            <span className="text-sm font-medium">{item.name}</span>
           </button>
         );
       })}
@@ -465,11 +460,11 @@ const SelectVariation = ({ product = {}, cart: cartFormObj = [], setVisibleVaria
   const allSelected = Object.keys(selected).length === product.attributes.length;
   const matchingVariation = allSelected
     ? product.variations.find(variation => {
-        const varMap = Object.fromEntries(
-          variation.attributes.map(a => [a.attribute_id, a.attribute_item_id])
-        );
-        return Object.entries(selected).every(([aid, iid]) => varMap[aid] === iid);
-      })
+      const varMap = Object.fromEntries(
+        variation.attributes.map(a => [a.attribute_id, a.attribute_item_id])
+      );
+      return Object.entries(selected).every(([aid, iid]) => varMap[aid] === iid);
+    })
     : null;
 
   useEffect(() => {
@@ -490,20 +485,20 @@ const SelectVariation = ({ product = {}, cart: cartFormObj = [], setVisibleVaria
   return (
     <div>
       {product?.variations?.length > 0 && (
-        <div className="xpo_mb-6">
+        <div className="mb-6">
           {product.attributes.map((attribute) => {
             const availableItems = getAvailableItems(attribute);
             const isSelected = selected[attribute.id];
-          
+
             return (
-              <div key={attribute.id} className="xpo_mb-6">
-                <label className="xpo_block xpo_mb-3 xpo_text-sm xpo_font-semibold xpo_text-gray-700">
+              <div key={attribute.id} className="mb-6">
+                <label className="block mb-3 text-sm font-semibold text-gray-700">
                   {sprintf(__('Select %s', 'site-core'), attribute.label)}
-                  {attribute.required && <span className="xpo_text-red-500 xpo_ml-1">*</span>}
+                  {attribute.required && <span className="text-red-500 ml-1">*</span>}
                 </label>
-              
+
                 {availableItems.length > 0 ? (
-                  <div className="xpo_space-y-1">
+                  <div className="space-y-1">
                     {attribute.type === 'color' && renderColorAttribute(attribute, availableItems, isSelected)}
                     {attribute.type === 'select' && renderSelectAttribute(attribute, availableItems, isSelected)}
                     {attribute.type === 'checkbox' && renderCheckboxAttribute(attribute, availableItems, isSelected)}
@@ -512,9 +507,9 @@ const SelectVariation = ({ product = {}, cart: cartFormObj = [], setVisibleVaria
                       renderDefaultAttribute(attribute, availableItems, isSelected)}
                   </div>
                 ) : (
-                  <div className="xpo_p-4 xpo_bg-gray-50 xpo_border xpo_border-gray-200 xpo_rounded-lg">
-                    <p className="xpo_text-sm xpo_text-gray-500 xpo_italic xpo_flex xpo_items-center">
-                      <svg className="xpo_w-4 xpo_h-4 xpo_mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <p className="text-sm text-gray-500 italic flex items-center">
+                      <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                       </svg>
                       No options available based on previous selections.
@@ -534,7 +529,7 @@ export default function PageBody() {
   return (
     <div>
       <SiteHeader />
-      <div className="xpo_container xpo_relative xpo_mx-auto xpo_px-4 xpo_py-8 xpo_z-10">
+      <div className="container relative mx-auto px-4 py-8 z-10">
         <ProductPage />
         <RelatedProducts />
       </div>

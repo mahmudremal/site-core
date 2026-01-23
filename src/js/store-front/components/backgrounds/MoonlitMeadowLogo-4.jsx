@@ -38,11 +38,11 @@ const MoonlitMeadowLogo = () => {
   }, [theme]);
 
   return (
-    <div className="xpo_relative xpo_flex xpo_items-center xpo_h-9" style={{ width: '242px' }}>
-      <svg 
+    <div className="relative flex items-center h-9" style={{ width: '242px' }}>
+      <svg
         ref={containerRef}
-        viewBox="0 0 242 36" 
-        className="xpo_w-full xpo_h-full"
+        viewBox="0 0 242 36"
+        className="w-full h-full"
       >
         <defs>
           <linearGradient id="textGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -85,7 +85,7 @@ const MoonlitMeadowLogo = () => {
           fontWeight="500"
           fontFamily="'SF Pro Display', 'Segoe UI', system-ui, sans-serif"
           fill="url(#textGradient)"
-          className="xpo_transition-colors xpo_duration-500"
+          className="transition-colors duration-500"
           style={{ letterSpacing: '-0.01em' }}
         >
           MoonlitMeadow

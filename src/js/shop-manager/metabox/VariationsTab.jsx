@@ -8,7 +8,7 @@ import { __ } from "@js/utils";
 const TextInput = ({ ...props }) => (
   <input
     type="text"
-    className="xpo_w-full xpo_p-2 xpo_border xpo_border-gray-300 xpo_rounded-md"
+    className="w-full p-2 border border-gray-300 rounded-md"
     {...props}
   />
 );
@@ -30,7 +30,7 @@ const Textarea = ({ value, onChange, ...props }) => {
 
   return (
     <textarea
-      className="xpo_w-full xpo_p-2 xpo_border xpo_border-gray-300 xpo_rounded-md xpo_min-h-[200px]"
+      className="w-full p-2 border border-gray-300 rounded-md min-h-[200px]"
       value={localValue}
       onChange={(e) => setLocalValue(e.target.value)}
       {...props}
@@ -40,22 +40,21 @@ const Textarea = ({ value, onChange, ...props }) => {
 
 const Button = ({ children, onClick, variant = "primary", disabled = false }) => {
   const baseClasses =
-    "xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_flex xpo_items-center xpo_gap-2 xpo_transition-colors";
+    "px-4 py-2 rounded-md font-semibold flex items-center gap-2 transition-colors";
   const variants = {
     primary:
-      "xpo_bg-blue-600 xpo_text-scwhite hover:xpo_bg-blue-700 disabled:xpo_bg-blue-400",
+      "bg-blue-600 text-scwhite hover:bg-blue-700 disabled:bg-blue-400",
     secondary:
-      "xpo_bg-gray-200 xpo_text-gray-800 hover:xpo_bg-gray-300 disabled:xpo_bg-gray-100",
+      "bg-gray-200 text-gray-800 hover:bg-gray-300 disabled:bg-gray-100",
     danger:
-      "xpo_bg-red-600 xpo_text-scwhite hover:xpo_bg-red-700 disabled:xpo_bg-red-400",
+      "bg-red-600 text-scwhite hover:bg-red-700 disabled:bg-red-400",
   };
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`${baseClasses} ${variants[variant]} ${
-        disabled ? "xpo_cursor-not-allowed" : "xpo_cursor-pointer"
-      }`}
+      className={`${baseClasses} ${variants[variant]} ${disabled ? "cursor-not-allowed" : "cursor-pointer"
+        }`}
     >
       {children}
     </button>
@@ -72,7 +71,7 @@ const VariationsTab = ({ meta, variations = [], onMetaChange, attributes = [], p
         .get(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations`))
         .then((res) => res.data)
         // .then(res => setVariations(res));
-        .catch(() => {});
+        .catch(() => { });
     }, 1500);
     return () => clearTimeout(delay);
   }, [variations, product_id]);
@@ -87,16 +86,16 @@ const VariationsTab = ({ meta, variations = [], onMetaChange, attributes = [], p
         price: meta?.price || '',
         sale_price: meta?.sale_price || '',
         description: meta?.description || '',
-        title: [meta?.seo_title??`Variation #${product_id}`, ...attribute_items.map(i => i.name)].join(' - '),
+        title: [meta?.seo_title ?? `Variation #${product_id}`, ...attribute_items.map(i => i.name)].join(' - '),
       };
       axios
-      .post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations/0`), {
-        variation_data: newVariation,
-        attributes: attribute_items,
-      })
-      .then((res) => res.data)
-      .then((data) => data?.id && onMetaChange([...variations, data]))
-      .catch((err) => notify.error(err));
+        .post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations/0`), {
+          variation_data: newVariation,
+          attributes: attribute_items,
+        })
+        .then((res) => res.data)
+        .then((data) => data?.id && onMetaChange([...variations, data]))
+        .catch((err) => notify.error(err));
     },
     [variations, onMetaChange, product_id]
   );
@@ -134,7 +133,7 @@ const VariationsTab = ({ meta, variations = [], onMetaChange, attributes = [], p
         axios.post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/variations/${variation_id}`), {
           variation_data,
         })
-        .catch((err) => notify.error(err));
+          .catch((err) => notify.error(err));
       }, 1500);
       return () => clearTimeout(delay);
     }, [variation, firstCall, product_id]);
@@ -151,9 +150,9 @@ const VariationsTab = ({ meta, variations = [], onMetaChange, attributes = [], p
 
       return (
         <div>
-          <div className="xpo_flex xpo_flex-col xpo_gap-3">
+          <div className="flex flex-col gap-3">
             {specifications.map((row, rowIndex) => (
-              <div key={rowIndex} className="xpo_p-4 xpo_flex xpo_gap-3">
+              <div key={rowIndex} className="p-4 flex gap-3">
                 <TextInput
                   value={row.label || ""}
                   placeholder={__("Label", "site-core")}
@@ -182,7 +181,7 @@ const VariationsTab = ({ meta, variations = [], onMetaChange, attributes = [], p
               <button
                 type="button"
                 onClick={() => setSpecifications((prev) => [...prev, { label: "", value: "" }])}
-                className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_flex xpo_items-center xpo_gap-2 xpo_transition-colors xpo_bg-gray-600 xpo_text-scwhite hover:xpo_bg-gray-700 disabled:xpo_bg-gray-400 xpo_cursor-pointer"
+                className="px-4 py-2 rounded-md font-semibold flex items-center gap-2 transition-colors bg-gray-600 text-scwhite hover:bg-gray-700 disabled:bg-gray-400 cursor-pointer"
               >
                 {__("Add Item", "site-core")}
               </button>
@@ -206,9 +205,9 @@ const VariationsTab = ({ meta, variations = [], onMetaChange, attributes = [], p
 
       return (
         <div>
-          <div className="xpo_flex xpo_flex-col xpo_gap-3">
+          <div className="flex flex-col gap-3">
             {gallery.map((row, rowIndex) => (
-              <div key={rowIndex} className="xpo_p-4 xpo_flex xpo_gap-3">
+              <div key={rowIndex} className="p-4 flex gap-3">
                 <TextInput
                   value={row.url || ""}
                   placeholder={__("Full Image URL", "site-core")}
@@ -233,7 +232,7 @@ const VariationsTab = ({ meta, variations = [], onMetaChange, attributes = [], p
               <button
                 type="button"
                 onClick={() => setGallery((prev) => [...prev, { url: "", thumbnail: "" }])}
-                className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_flex xpo_items-center xpo_gap-2 xpo_transition-colors xpo_bg-gray-600 xpo_text-scwhite hover:xpo_bg-gray-700 disabled:xpo_bg-gray-400 xpo_cursor-pointer"
+                className="px-4 py-2 rounded-md font-semibold flex items-center gap-2 transition-colors bg-gray-600 text-scwhite hover:bg-gray-700 disabled:bg-gray-400 cursor-pointer"
               >
                 {__("Add Item", "site-core")}
               </button>
@@ -244,8 +243,8 @@ const VariationsTab = ({ meta, variations = [], onMetaChange, attributes = [], p
     };
 
     return (
-      <div className="xpo_p-4 xpo_border-t xpo_border-gray-200 xpo_bg-scwhite">
-        <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4">
+      <div className="p-4 border-t border-gray-200 bg-scwhite">
+        <div className="grid grid-cols-2 gap-4">
           <TextInput
             value={variation.title || ""}
             placeholder={__("Variation Name", "site-core")}
@@ -257,13 +256,13 @@ const VariationsTab = ({ meta, variations = [], onMetaChange, attributes = [], p
             onChange={(e) => setVariation((prev) => ({ ...prev, sku: e.target.value }))}
           />
         </div>
-        <div className="xpo_mt-4">
+        <div className="mt-4">
           <Textarea
             value={variation.description || ""}
             onChange={(data) => setVariation((prev) => ({ ...prev, description: data }))}
           />
         </div>
-        <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4 xpo_mt-4">
+        <div className="grid grid-cols-2 gap-4 mt-4">
           <TextInput
             type="number"
             value={variation.price || ""}
@@ -277,18 +276,18 @@ const VariationsTab = ({ meta, variations = [], onMetaChange, attributes = [], p
             onChange={(e) => setVariation((prev) => ({ ...prev, sale_price: e.target.value }))}
           />
         </div>
-        <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4 xpo_mt-4">
+        <div className="grid grid-cols-2 gap-4 mt-4">
           <button
             type="button"
             onClick={() => setPopup(<GalleryPopup items={variation.gallery} />)}
-            className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_flex xpo_items-center xpo_gap-2 xpo_transition-colors xpo_bg-gray-600 xpo_text-scwhite hover:xpo_bg-gray-700 disabled:xpo_bg-gray-400 xpo_cursor-pointer"
+            className="px-4 py-2 rounded-md font-semibold flex items-center gap-2 transition-colors bg-gray-600 text-scwhite hover:bg-gray-700 disabled:bg-gray-400 cursor-pointer"
           >
             {__("Gallery", "site-core")}
           </button>
           <button
             type="button"
             onClick={() => setPopup(<SpecificationsPopup items={variation.specifications} />)}
-            className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_flex xpo_items-center xpo_gap-2 xpo_transition-colors xpo_bg-gray-600 xpo_text-scwhite hover:xpo_bg-gray-700 disabled:xpo_bg-gray-400 xpo_cursor-pointer"
+            className="px-4 py-2 rounded-md font-semibold flex items-center gap-2 transition-colors bg-gray-600 text-scwhite hover:bg-gray-700 disabled:bg-gray-400 cursor-pointer"
           >
             {__("Specifications", "site-core")}
           </button>
@@ -297,118 +296,117 @@ const VariationsTab = ({ meta, variations = [], onMetaChange, attributes = [], p
     );
   };
 
-// 
-const SelectAttributes = () => {
-  const [selected, setSelected] = useState({});
+  // 
+  const SelectAttributes = () => {
+    const [selected, setSelected] = useState({});
 
-  const toggleSelect = (attId, item) => {
-    setSelected((prev) => {
-      if (prev[attId]?.id === item.id) {
-        const newSelected = { ...prev };
-        delete newSelected[attId];
-        return newSelected;
-      }
-      return { ...prev, [attId]: item };
-    });
-  };
-
-  const selectedItems = Object.values(selected);
-  const allAttributesSelected = Object.keys(selected).length === attributes.length;
-
-  const getFilteredItems = (att) => {
-    if (selected[att.id]) {
-      return att.items.filter(Boolean);
-    }
-    if (Object.keys(selected).length === 0) {
-      return att.items.filter(Boolean);
-    }
-    const currentIds = Object.fromEntries(
-      Object.entries(selected).map(([aid, item]) => [aid, item.id])
-    );
-    return att.items.filter((item) => {
-      const tempIds = { ...currentIds, [att.id]: item.id };
-      const isDuplicate = variations.some((variation) => {
-        const varMap = Object.fromEntries(
-          variation.attributes.map((a) => [a.attribute_id, a.attribute_item_id])
-        );
-        return Object.entries(tempIds).every(([key, val]) => varMap[key] === val);
+    const toggleSelect = (attId, item) => {
+      setSelected((prev) => {
+        if (prev[attId]?.id === item.id) {
+          const newSelected = { ...prev };
+          delete newSelected[attId];
+          return newSelected;
+        }
+        return { ...prev, [attId]: item };
       });
-      return !isDuplicate;
-    });
-  };
+    };
 
-  return (
-    <div className="xpo_flex xpo_flex-col xpo_gap-3 xpo_p-4 xpo_w-80">
-      <h2 className="xpo_text-lg xpo_font-semibold">{__("Select Attributes", "site-core")}</h2>
-      <div className="xpo_mb-2">
-        {selectedItems.length > 0 && (
-          <div className="xpo_flex xpo_flex-wrap xpo_gap-2">
-            {selectedItems.map((s, sI) => (
-              <span key={sI} className="xpo_bg-blue-100 xpo_text-blue-700 xpo_px-2 xpo_py-1 xpo_rounded">
-                {s.name}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-      <div className="xpo_border xpo_border-gray-300 xpo_rounded xpo_max-h-48 xpo_overflow-y-auto">
-        {attributes.map((att) => (
-          <div key={att.id} className="xpo_p-3 xpo_border-b xpo_border-gray-200 last:xpo_border-b-0">
-            <h4 className="xpo_font-medium xpo_mb-2 xpo_text-sm xpo_text-gray-700">{att.label}</h4>
-            <div className="xpo_space-y-1">
-              {getFilteredItems(att).map((item) => {
-                const isSelected = selected[att.id]?.id === item.id;
-                return (
-                  <label
-                    key={item.id}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      toggleSelect(att.id, item);
-                    }}
-                    className={`xpo_flex xpo_items-center xpo_p-2 xpo_cursor-pointer hover:xpo_bg-gray-50 xpo_rounded ${
-                      isSelected ? 'xpo_bg-blue-100 xpo_text-blue-700' : 'xpo_text-gray-900'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      checked={isSelected}
-                      className="xpo_mr-2 xpo_h-4 xpo_w-4 xpo_text-blue-600 xpo_border-gray-300 focus:xpo_ring-blue-500"
-                    />
-                    <span className="xpo_text-sm">{item.name} #{item.id}</span>
-                  </label>
-                );
-              })}
-              {getFilteredItems(att).length === 0 && !selected[att.id] && (
-                <p className="xpo_text-sm xpo_text-gray-500 xpo_italic">No available options for this attribute based on current selections.</p>
-              )}
+    const selectedItems = Object.values(selected);
+    const allAttributesSelected = Object.keys(selected).length === attributes.length;
+
+    const getFilteredItems = (att) => {
+      if (selected[att.id]) {
+        return att.items.filter(Boolean);
+      }
+      if (Object.keys(selected).length === 0) {
+        return att.items.filter(Boolean);
+      }
+      const currentIds = Object.fromEntries(
+        Object.entries(selected).map(([aid, item]) => [aid, item.id])
+      );
+      return att.items.filter((item) => {
+        const tempIds = { ...currentIds, [att.id]: item.id };
+        const isDuplicate = variations.some((variation) => {
+          const varMap = Object.fromEntries(
+            variation.attributes.map((a) => [a.attribute_id, a.attribute_item_id])
+          );
+          return Object.entries(tempIds).every(([key, val]) => varMap[key] === val);
+        });
+        return !isDuplicate;
+      });
+    };
+
+    return (
+      <div className="flex flex-col gap-3 p-4 w-80">
+        <h2 className="text-lg font-semibold">{__("Select Attributes", "site-core")}</h2>
+        <div className="mb-2">
+          {selectedItems.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {selectedItems.map((s, sI) => (
+                <span key={sI} className="bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                  {s.name}
+                </span>
+              ))}
             </div>
-          </div>
-        ))}
+          )}
+        </div>
+        <div className="border border-gray-300 rounded max-h-48 overflow-y-auto">
+          {attributes.map((att) => (
+            <div key={att.id} className="p-3 border-b border-gray-200 last:border-b-0">
+              <h4 className="font-medium mb-2 text-sm text-gray-700">{att.label}</h4>
+              <div className="space-y-1">
+                {getFilteredItems(att).map((item) => {
+                  const isSelected = selected[att.id]?.id === item.id;
+                  return (
+                    <label
+                      key={item.id}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        toggleSelect(att.id, item);
+                      }}
+                      className={`flex items-center p-2 cursor-pointer hover:bg-gray-50 rounded ${isSelected ? 'bg-blue-100 text-blue-700' : 'text-gray-900'
+                        }`}
+                    >
+                      <input
+                        type="radio"
+                        checked={isSelected}
+                        className="mr-2 h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                      />
+                      <span className="text-sm">{item.name} #{item.id}</span>
+                    </label>
+                  );
+                })}
+                {getFilteredItems(att).length === 0 && !selected[att.id] && (
+                  <p className="text-sm text-gray-500 italic">No available options for this attribute based on current selections.</p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+        <Button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            addVariation(selectedItems);
+            setPopup(null);
+          }}
+          disabled={!allAttributesSelected}
+        >
+          {__("Create Variation", "site-core")}
+        </Button>
       </div>
-      <Button
-        type="button"
-        onClick={(e) => {
-          e.preventDefault();
-          addVariation(selectedItems);
-          setPopup(null);
-        }}
-        disabled={!allAttributesSelected}
-      >
-        {__("Create Variation", "site-core")}
-      </Button>
-    </div>
-  );
-};
+    );
+  };
 
 
 
   const ConfirmDelete = ({ id, onConfirm, onCancel }) => (
-    <div className="xpo_p-6">
-      <h3 className="xpo_text-lg xpo_font-bold">{__("Confirm Deletion", "site-core")}</h3>
-      <p className="xpo_my-4">
+    <div className="p-6">
+      <h3 className="text-lg font-bold">{__("Confirm Deletion", "site-core")}</h3>
+      <p className="my-4">
         {__("Are you sure you want to delete this variation? This action cannot be undone.", "site-core")}
       </p>
-      <div className="xpo_flex xpo_justify-end xpo_gap-4 xpo_mt-6">
+      <div className="flex justify-end gap-4 mt-6">
         <Button variant="secondary" onClick={onCancel}>
           {__("Cancel", "site-core")}
         </Button>
@@ -500,36 +498,36 @@ const SelectAttributes = () => {
         variation_data: newVariation,
         attributes: variationAttributes,
       })
-      .then((res) => res.data)
-      .then((data) => {
-        if (data?.id) {
-          onMetaChange([...variations, { id: data.id, ...newVariation }]);
-        }
-      })
-      .catch((err) => notify.error(err));
+        .then((res) => res.data)
+        .then((data) => {
+          if (data?.id) {
+            onMetaChange([...variations, { id: data.id, ...newVariation }]);
+          }
+        })
+        .catch((err) => notify.error(err));
     });
   };
 
   return (
-    <div className="xpo_space-y-4">
-      <div className="xpo_space-y-2">
+    <div className="space-y-4">
+      <div className="space-y-2">
         {variations.map((v, index) => (
-          <div key={v.id} className="xpo_bg-gray-50 xpo_border xpo_border-gray-200 xpo_rounded">
-            <div className="xpo_flex xpo_items-center xpo_p-3">
-              <GripVertical className="xpo_cursor-move xpo_text-gray-400" size={20} />
-              <span className="xpo_font-semibold xpo_ml-2">{v.title || `Variation #${index + 1}`}</span>
-              <div className="xpo_flex xpo_gap-2 xpo_items-center xpo_ml-4">
-                {v.attributes.map((attr, attrIndex) => <span key={attrIndex} className="xpo_bg-gray-300 xpo_px-2 xpo_rounded">{attr.name}</span>)}
+          <div key={v.id} className="bg-gray-50 border border-gray-200 rounded">
+            <div className="flex items-center p-3">
+              <GripVertical className="cursor-move text-gray-400" size={20} />
+              <span className="font-semibold ml-2">{v.title || `Variation #${index + 1}`}</span>
+              <div className="flex gap-2 items-center ml-4">
+                {v.attributes.map((attr, attrIndex) => <span key={attrIndex} className="bg-gray-300 px-2 rounded">{attr.name}</span>)}
               </div>
-              <div className="xpo_ml-auto xpo_flex xpo_items-center xpo_gap-2">
+              <div className="ml-auto flex items-center gap-2">
                 <button
                   onClick={() => setOpenVariation(openVariation === v.id ? null : v.id)}
-                  className="xpo_p-1 xpo_transition-transform"
+                  className="p-1 transition-transform"
                   aria-label={__("Toggle variation details", "site-core")}
                 >
                   <ChevronDown
                     size={20}
-                    className={`xpo_transition-transform ${openVariation === v.id ? "xpo_rotate-180" : ""}`}
+                    className={`transition-transform ${openVariation === v.id ? "rotate-180" : ""}`}
                   />
                 </button>
                 <button
@@ -542,7 +540,7 @@ const SelectAttributes = () => {
                       />
                     )
                   }
-                  className="xpo_p-1 xpo_text-red-500 hover:xpo_text-red-700 xpo_transition-colors"
+                  className="p-1 text-red-500 hover:text-red-700 transition-colors"
                   aria-label={__("Delete variation", "site-core")}
                 >
                   <Trash2 size={16} />
@@ -553,7 +551,7 @@ const SelectAttributes = () => {
           </div>
         ))}
       </div>
-      <div className="xpo_mt-4 xpo_flex xpo_flex-wrap xpo_gap-4 xpo_items-center">
+      <div className="mt-4 flex flex-wrap gap-4 items-center">
         <Button onClick={handleGenerateVariations} variant="secondary">
           {__("Generate Variations", "site-core")}
         </Button>

@@ -52,12 +52,12 @@ const AttributesTab = ({ attributes, setAttributes, product_id }) => {
         // items: attr.items || [],
       };
       axios.post(rest_url(`/sitecore/v1/ecommerce/products/${product_id}/metabox/attributes/0`), { attribute_data: newAttribute })
-      .then((res) => res.data)
-      .then((data) => {
-        if (data?.id) setAttributes([...attributes, { id: data.id, items: attr.items || [], ...newAttribute }]);
-        setPopup(null);
-      })
-      .catch((err) => notify.error(err));
+        .then((res) => res.data)
+        .then((data) => {
+          if (data?.id) setAttributes([...attributes, { id: data.id, items: attr.items || [], ...newAttribute }]);
+          setPopup(null);
+        })
+        .catch((err) => notify.error(err));
     },
     [attributes, product_id, setAttributes]
   );
@@ -165,10 +165,10 @@ const AttributesTab = ({ attributes, setAttributes, product_id }) => {
       };
 
       return (
-        <div className="xpo_flex xpo_items-center xpo_gap-2 xpo_border xpo_border-gray-300 xpo_p-2 xpo_rounded-md">
+        <div className="flex items-center gap-2 border border-gray-300 p-2 rounded-md">
           <input
             type="text"
-            className="xpo_flex-1 xpo_p-1 xpo_border xpo_border-gray-300 xpo_rounded-md"
+            className="flex-1 p-1 border border-gray-300 rounded-md"
             value={localItem.name}
             onChange={(e) => setLocalItem((prev) => ({ ...prev, name: e.target.value }))}
             placeholder={__('Item Name', 'site-core')}
@@ -176,7 +176,7 @@ const AttributesTab = ({ attributes, setAttributes, product_id }) => {
           <button
             type="button"
             onClick={removeItem}
-            className="xpo_text-red-600 hover:xpo_text-red-800"
+            className="text-red-600 hover:text-red-800"
             aria-label={__('Remove item', 'site-core')}
           >
             <X size={16} />
@@ -186,17 +186,17 @@ const AttributesTab = ({ attributes, setAttributes, product_id }) => {
     };
 
     return (
-      <div className="xpo_p-4 xpo_border-t xpo_border-gray-200 xpo_bg-scwhite xpo_flex xpo_flex-col xpo_gap-4">
-        <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4">
+      <div className="p-4 border-t border-gray-200 bg-scwhite flex flex-col gap-4">
+        <div className="grid grid-cols-2 gap-4">
           <input
             type="text"
-            className="xpo_w-full xpo_p-2 xpo_border xpo_border-gray-300 xpo_rounded-md"
+            className="w-full p-2 border border-gray-300 rounded-md"
             value={attr.label || ""}
             placeholder={__('Attribute Label', 'site-core')}
             onChange={(e) => setAttr((prev) => ({ ...prev, label: e.target.value }))}
           />
           <select
-            className="xpo_w-full xpo_p-2 xpo_border xpo_border-gray-300 xpo_rounded-md"
+            className="w-full p-2 border border-gray-300 rounded-md"
             value={attr.type || ""}
             onChange={(e) => setAttr((prev) => ({ ...prev, type: e.target.value }))}
           >
@@ -205,9 +205,9 @@ const AttributesTab = ({ attributes, setAttributes, product_id }) => {
             <option value="checkbox">{__('Checkbox', 'site-core')}</option>
           </select>
         </div>
-        <div className="xpo_w-full xpo_min-h-24">
-          <h2 className="xpo_font-semibold xpo_mb-2">{__('Attribute Items', 'site-core')}</h2>
-          <div className="xpo_flex xpo_flex-col xpo_gap-2 xpo_mb-2">
+        <div className="w-full min-h-24">
+          <h2 className="font-semibold mb-2">{__('Attribute Items', 'site-core')}</h2>
+          <div className="flex flex-col gap-2 mb-2">
             {items.map((item, i) => (
               <AttributeItem key={item.id || i} item={item} />
             ))}
@@ -215,7 +215,7 @@ const AttributesTab = ({ attributes, setAttributes, product_id }) => {
           <button
             type="button"
             onClick={addItem}
-            className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_bg-blue-600 xpo_text-scwhite hover:xpo_bg-blue-700"
+            className="px-4 py-2 rounded-md font-semibold bg-blue-600 text-scwhite hover:bg-blue-700"
           >
             {__('Add new', 'site-core')}
           </button>
@@ -238,18 +238,18 @@ const AttributesTab = ({ attributes, setAttributes, product_id }) => {
 
     return (
       <div className="">
-        <h3 className="xpo_text-lg xpo_font-bold xpo_mb-4">{__('Add New Attribute', 'site-core')}</h3>
-        <label className="xpo_block xpo_font-semibold xpo_mb-1">{__('Label', 'site-core')}</label>
+        <h3 className="text-lg font-bold mb-4">{__('Add New Attribute', 'site-core')}</h3>
+        <label className="block font-semibold mb-1">{__('Label', 'site-core')}</label>
         <input
           type="text"
-          className="xpo_w-full xpo_p-2 xpo_border xpo_border-gray-300 xpo_rounded-md xpo_mb-4"
+          className="w-full p-2 border border-gray-300 rounded-md mb-4"
           value={label}
           onChange={(e) => setLabel(e.target.value)}
           placeholder={__('Attribute Label', 'site-core')}
         />
-        <label className="xpo_block xpo_font-semibold xpo_mb-1">{__('Type', 'site-core')}</label>
+        <label className="block font-semibold mb-1">{__('Type', 'site-core')}</label>
         <select
-          className="xpo_w-full xpo_p-2 xpo_border xpo_border-gray-300 xpo_rounded-md xpo_mb-4"
+          className="w-full p-2 border border-gray-300 rounded-md mb-4"
           value={type}
           onChange={(e) => setType(e.target.value)}
         >
@@ -257,18 +257,18 @@ const AttributesTab = ({ attributes, setAttributes, product_id }) => {
           <option value="color">{__('Color', 'site-core')}</option>
           <option value="checkbox">{__('Checkbox', 'site-core')}</option>
         </select>
-        <div className="xpo_flex xpo_justify-end xpo_gap-4">
+        <div className="flex justify-end gap-4">
           <button
             type="button"
             onClick={() => setPopup(null)}
-            className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_bg-gray-200 xpo_text-gray-800 hover:xpo_bg-gray-300"
+            className="px-4 py-2 rounded-md bg-gray-200 text-gray-800 hover:bg-gray-300"
           >
             {__('Cancel', 'site-core')}
           </button>
           <button
             type="button"
             onClick={handleAdd}
-            className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_bg-blue-600 xpo_text-scwhite hover:xpo_bg-blue-700"
+            className="px-4 py-2 rounded-md bg-blue-600 text-scwhite hover:bg-blue-700"
           >
             {__('Add Attribute', 'site-core')}
           </button>
@@ -290,26 +290,26 @@ const AttributesTab = ({ attributes, setAttributes, product_id }) => {
 
     return (
       <div className="">
-        <h3 className="xpo_text-lg xpo_font-bold xpo_mb-4">{__('Add New Item', 'site-core')}</h3>
+        <h3 className="text-lg font-bold mb-4">{__('Add New Item', 'site-core')}</h3>
         <input
           type="text"
-          className="xpo_w-full xpo_p-2 xpo_border xpo_border-gray-300 xpo_rounded-md xpo_mb-4"
+          className="w-full p-2 border border-gray-300 rounded-md mb-4"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder={__('Item Name', 'site-core')}
         />
-        <div className="xpo_flex xpo_justify-end xpo_gap-4">
+        <div className="flex justify-end gap-4">
           <button
             type="button"
             onClick={onCancel}
-            className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_bg-gray-200 xpo_text-gray-800 hover:xpo_bg-gray-300"
+            className="px-4 py-2 rounded-md bg-gray-200 text-gray-800 hover:bg-gray-300"
           >
             {__('Cancel', 'site-core')}
           </button>
           <button
             type="button"
             onClick={handleAdd}
-            className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_bg-blue-600 xpo_text-scwhite hover:xpo_bg-blue-700"
+            className="px-4 py-2 rounded-md bg-blue-600 text-scwhite hover:bg-blue-700"
           >
             {__('Add Item', 'site-core')}
           </button>
@@ -319,41 +319,41 @@ const AttributesTab = ({ attributes, setAttributes, product_id }) => {
   };
 
   return (
-    <div className="xpo_space-y-4">
-      <div className="xpo_space-y-2">
+    <div className="space-y-4">
+      <div className="space-y-2">
         {attributes.map((attr, index) => (
-          <div key={attr.id} className="xpo_bg-gray-50 xpo_border xpo_border-gray-200 xpo_rounded">
-            <div className="xpo_flex xpo_items-center xpo_p-3">
-              <GripVertical className="xpo_cursor-move xpo_text-gray-400" size={20} />
-              <span className="xpo_font-semibold xpo_ml-2">{attr.label || `Attribute #${index + 1}`}</span>
-              <div className="xpo_ml-auto xpo_flex xpo_items-center xpo_gap-2">
+          <div key={attr.id} className="bg-gray-50 border border-gray-200 rounded">
+            <div className="flex items-center p-3">
+              <GripVertical className="cursor-move text-gray-400" size={20} />
+              <span className="font-semibold ml-2">{attr.label || `Attribute #${index + 1}`}</span>
+              <div className="ml-auto flex items-center gap-2">
                 <button
                   onClick={() => setOpenAttribute((prev) => (prev === attr.id ? null : attr.id))}
-                  className="xpo_p-1 xpo_transition-transform"
+                  className="p-1 transition-transform"
                   aria-label={__('Toggle attribute details', 'site-core')}
                 >
                   <ChevronDown
                     size={20}
-                    className={`xpo_transition-transform ${openAttribute === attr.id ? "xpo_rotate-180" : ""}`}
+                    className={`transition-transform ${openAttribute === attr.id ? "rotate-180" : ""}`}
                   />
                 </button>
                 <button
                   onClick={() =>
                     setPopup(
-                      <div className="xpo_p-6">
-                        <h3 className="xpo_text-lg xpo_font-bold">{__('Confirm Deletion', 'site-core')}</h3>
-                        <p className="xpo_my-4">
+                      <div className="p-6">
+                        <h3 className="text-lg font-bold">{__('Confirm Deletion', 'site-core')}</h3>
+                        <p className="my-4">
                           {__('Are you sure you want to delete this attribute? This action cannot be undone.', 'site-core')}
                         </p>
-                        <div className="xpo_flex xpo_justify-end xpo_gap-4 xpo_mt-6">
+                        <div className="flex justify-end gap-4 mt-6">
                           <button
-                            className="xpo_bg-gray-200 xpo_text-gray-800 xpo_px-4 xpo_py-2 xpo_rounded-md"
+                            className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md"
                             onClick={() => setPopup(null)}
                           >
                             {__('Cancel', 'site-core')}
                           </button>
                           <button
-                            className="xpo_bg-red-600 xpo_text-scwhite xpo_px-4 xpo_py-2 xpo_rounded-md"
+                            className="bg-red-600 text-scwhite px-4 py-2 rounded-md"
                             onClick={() => removeAttribute(attr.id)}
                           >
                             {__('Confirm', 'site-core')}
@@ -362,7 +362,7 @@ const AttributesTab = ({ attributes, setAttributes, product_id }) => {
                       </div>
                     )
                   }
-                  className="xpo_p-1 xpo_text-red-500 hover:xpo_text-red-700 xpo_transition-colors"
+                  className="p-1 text-red-500 hover:text-red-700 transition-colors"
                   aria-label={__('Delete attribute', 'site-core')}
                 >
                   <Trash2 size={16} />
@@ -373,11 +373,11 @@ const AttributesTab = ({ attributes, setAttributes, product_id }) => {
           </div>
         ))}
       </div>
-      <div className="xpo_mt-4">
+      <div className="mt-4">
         <button
           type="button"
           onClick={() => setPopup(<AddAttributePopup />)}
-          className="xpo_px-4 xpo_py-2 xpo_rounded-md xpo_font-semibold xpo_bg-blue-600 xpo_text-scwhite hover:xpo_bg-blue-700"
+          className="px-4 py-2 rounded-md font-semibold bg-blue-600 text-scwhite hover:bg-blue-700"
         >
           {__('Add Attribute', 'site-core')}
         </button>

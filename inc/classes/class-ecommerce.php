@@ -493,9 +493,9 @@ class Ecommerce {
         wp_enqueue_style('site-core');
         wp_enqueue_script('site-core');
         ?>
-        <div class="xpo_flex xpo_flex-col xpo_gap-3">
+        <div class="flex flex-col gap-3">
             <!-- <fieldset>
-                <div class="xpo_flex xpo_items-center xpo_gap-2">
+                <div class="flex items-center gap-2">
                     <h3><?php esc_html_e('Product data', 'site-core'); ?></h3>
                 </div>
             </fieldset> -->

@@ -48,11 +48,11 @@ export default function Application({ children, config = {} }) {
                                                         {children}
                                                     </div>
                                                     {isLocked && (
-                                                        <div className="absolute top-0 left-0 xpo_w-full xpo_h-full bg-black bg-opacity-75 flex xpo_flex-col xpo_justify-center xpo_items-center">
+                                                        <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-75 flex flex-col justify-center items-center">
                                                             <ShieldCheck size={200} color="white" className="mb-8" />
                                                             <button
                                                                 onClick={(e) => setIsLocked(null)}
-                                                                className="px-4 py-2 bg-primary-500 xpo_text-white rounded-full hover:bg-primary-600"
+                                                                className="px-4 py-2 bg-primary-500 text-white rounded-full hover:bg-primary-600"
                                                             >{__('Unlock')}</button>
                                                         </div>
                                                     )}

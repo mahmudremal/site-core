@@ -41,19 +41,19 @@ export default function MoonlitMeadowLogo() {
         const tl = gsap.timeline({ repeat: -1 });
         const xMove = Math.random() * 80 - 40;
         const yMove = Math.random() * 60 - 30;
-        
+
         tl.to(firefly, {
           x: `+=${xMove}`,
           y: `+=${yMove}`,
           duration: Math.random() * 4 + 3,
           ease: 'sine.inOut'
         })
-        .to(firefly, {
-          x: `-=${xMove}`,
-          y: `-=${yMove}`,
-          duration: Math.random() * 4 + 3,
-          ease: 'sine.inOut'
-        });
+          .to(firefly, {
+            x: `-=${xMove}`,
+            y: `-=${yMove}`,
+            duration: Math.random() * 4 + 3,
+            ease: 'sine.inOut'
+          });
 
         gsap.to(firefly, {
           opacity: 0.2,
@@ -117,27 +117,27 @@ export default function MoonlitMeadowLogo() {
   }, []);
 
   return (
-    <div ref={containerRef} className="xpo_w-full xpo_h-screen xpo_bg-gradient-to-b xpo_from-gray-900 xpo_via-slate-900 xpo_to-slate-800 xpo_flex xpo_items-center xpo_justify-center xpo_overflow-hidden">
-      <svg viewBox="0 0 800 600" className="xpo_w-full xpo_h-auto">
+    <div ref={containerRef} className="w-full h-screen bg-gradient-to-b from-gray-900 via-slate-900 to-slate-800 flex items-center justify-center overflow-hidden">
+      <svg viewBox="0 0 800 600" className="w-full h-auto">
         <defs>
           <linearGradient id="nightSky" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#0a0e1a" />
             <stop offset="40%" stopColor="#151b2e" />
             <stop offset="100%" stopColor="#1a1f35" />
           </linearGradient>
-          
+
           <linearGradient id="moonLight" x1="30%" y1="30%" x2="70%" y2="70%">
             <stop offset="0%" stopColor="#fffbeb" />
             <stop offset="50%" stopColor="#fef3c7" />
             <stop offset="100%" stopColor="#fde68a" />
           </linearGradient>
-          
+
           <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#7c3aed" />
             <stop offset="50%" stopColor="#6d28d9" />
             <stop offset="100%" stopColor="#5b21b6" />
           </linearGradient>
-          
+
           <radialGradient id="moonHalo">
             <stop offset="0%" stopColor="#fef3c7" stopOpacity="0.25" />
             <stop offset="50%" stopColor="#fde68a" stopOpacity="0.1" />
@@ -151,18 +151,18 @@ export default function MoonlitMeadowLogo() {
           </radialGradient>
 
           <filter id="softGlow">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
             <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
 
           <filter id="strongGlow">
-            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation="4" result="coloredBlur" />
             <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
         </defs>
@@ -202,7 +202,7 @@ export default function MoonlitMeadowLogo() {
             strokeLinejoin="round"
             opacity="0.85"
           />
-          
+
           <path
             d="M35 -100 L35 -30 L70 -100 L105 -30 L140 -100 L140 0"
             stroke="url(#logoGrad)"
@@ -215,9 +215,9 @@ export default function MoonlitMeadowLogo() {
 
           <g className="girl-sway" transform="translate(0, -130)">
             <ellipse cx="0" cy="8" rx="12" ry="16" fill="#2d3748" />
-            
+
             <ellipse cx="0" cy="-6" rx="9" ry="11" fill="#d4a574" />
-            
+
             <path
               className="hair-flow"
               d="M-4 -12 Q-6 -14 -8 -13 Q-9 -11 -7 -9 M4 -12 Q6 -14 8 -13 Q9 -11 7 -9"
@@ -226,17 +226,17 @@ export default function MoonlitMeadowLogo() {
               fill="none"
               strokeLinecap="round"
             />
-            
+
             <ellipse cx="0" cy="-14" rx="7" ry="6" fill="#1a1a1a" />
-            
+
             <path
               d="M-12 8 Q-14 16 -13 24 L-8 28 L-8 22 L8 22 L8 28 L13 24 Q14 16 12 8 Z"
               fill="#4c1d95"
             />
-            
+
             <rect x="-7" y="24" width="4" height="16" rx="2" fill="#2d3748" />
             <rect x="3" y="24" width="4" height="16" rx="2" fill="#2d3748" />
-            
+
             <path
               d="M-12 10 Q-20 12 -24 18 L-22 20"
               stroke="#d4a574"
@@ -244,7 +244,7 @@ export default function MoonlitMeadowLogo() {
               fill="none"
               strokeLinecap="round"
             />
-            
+
             <path
               d="M12 10 Q20 12 24 18 L22 20"
               stroke="#d4a574"

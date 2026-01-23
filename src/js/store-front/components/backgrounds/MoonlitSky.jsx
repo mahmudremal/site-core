@@ -44,11 +44,11 @@ export default function MoonlitSky({ moon = true }) {
   const starsArray = Array.from({ length: 60 });
 
   return (
-    <div ref={skyRef} className="xpo_relative xpo_min-h-screen xpo_h-full xpo_bg-gradient-to-b xpo_from-scprimary-900 xpo_via-scprimary-700 xpo_to-scprimary-500 xpo_overflow-hidden">
+    <div ref={skyRef} className="relative min-h-screen h-full bg-gradient-to-b from-scprimary-900 via-scprimary-700 to-scprimary-500 overflow-hidden">
       {starsArray.map((_, i) => (
         <div
           key={`star-${i}`}
-          className="star xpo_absolute xpo_rounded-full xpo_bg-scwhite-50"
+          className="star absolute rounded-full bg-scwhite-50"
           style={{
             width: "2px",
             height: "2px",
@@ -62,7 +62,7 @@ export default function MoonlitSky({ moon = true }) {
       {moonPositions.map((pos, i) => (
         <div
           key={`moon-${i}`}
-          className="moon xpo_absolute xpo_rounded-full xpo_bg-scwhite-200"
+          className="moon absolute rounded-full bg-scwhite-200"
           style={{
             width: `${pos.size}px`,
             height: `${pos.size}px`,
@@ -72,8 +72,8 @@ export default function MoonlitSky({ moon = true }) {
           }}
         />
       ))}
-      
-      {/* <div className="xpo_absolute xpo_z-10">
+
+      {/* <div className="absolute z-10">
         <Scene />
       </div> */}
     </div>
@@ -82,7 +82,7 @@ export default function MoonlitSky({ moon = true }) {
 
 export const MoonlitSkyBg = ({ moon = true }) => {
   return (
-    <div className="xpo_fixed xpo_max-h-screen xpo_z-[-1] xpo_inset-0 xpo_pointer-events-none xpo_select-none xpo_hidden dark:xpo_block">
+    <div className="fixed max-h-screen z-[-1] inset-0 pointer-events-none select-none hidden dark:block">
       <MoonlitSky moon={moon} />
     </div>
   )

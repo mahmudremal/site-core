@@ -92,42 +92,42 @@ const HeroSection = ({ slides = [], autoSlideInterval = 5000, onLoaded = null })
   };
 
   const AppPromo = () => (
-    <div className="xpo_bg-scwhite/50 xpo_backdrop-blur-md xpo_p-6 xpo_rounded-2xl xpo_shadow-2xl xpo_border xpo_border-scprimary/10 xpo_flex xpo_flex-col xpo_items-center xpo_text-center xpo_space-y-5 xpo_h-fit xpo_transition-all xpo_duration-300 hover:xpo_shadow-3xl hover:xpo_scale-[1.02]">
-      <div className="xpo_space-y-2">
-        <h3 className="xpo_text-xl xpo_font-bold xpo_text-scprimary xpo_tracking-tight">{__('Download Our App', 'site-core')}</h3>
-        <p className="xpo_text-sm xpo_text-scprimary/60 xpo_leading-relaxed">{__('Scan to experience tranquility on-the-go', 'site-core')}</p>
+    <div className="bg-scwhite/50 backdrop-blur-md p-6 rounded-2xl shadow-2xl border border-scprimary/10 flex flex-col items-center text-center space-y-5 h-fit transition-all duration-300 hover:shadow-3xl hover:scale-[1.02]">
+      <div className="space-y-2">
+        <h3 className="text-xl font-bold text-scprimary tracking-tight">{__('Download Our App', 'site-core')}</h3>
+        <p className="text-sm text-scprimary/60 leading-relaxed">{__('Scan to experience tranquility on-the-go', 'site-core')}</p>
       </div>
-      
-      <div className="xpo_inline-block xpo_bg-scwhite/50 xpo_p-4 xpo_rounded-xl xpo_shadow-lg xpo_border xpo_border-scprimary/5">
+
+      <div className="inline-block bg-scwhite/50 p-4 rounded-xl shadow-lg border border-scprimary/5">
         <QRCode
           size={160}
           value={site_url(`/apps`)}
           bgColor="#FFFFFF00"
           fgColor="#0A1D37"
-          className="xpo_w-40 xpo_h-40"
+          className="w-40 h-40"
         />
       </div>
 
-      <div className="xpo_flex xpo_flex-col xpo_gap-3 xpo_w-full">
+      <div className="flex flex-col gap-3 w-full">
         <a
           href="https://apps.apple.com/us/app/moonlit-meadow/id123456789"
           target="_blank"
           rel="noopener noreferrer"
-          className="xpo_flex xpo_items-center xpo_justify-center xpo_gap-3 xpo_px-5 xpo_py-3 xpo_bg-scprimary xpo_text-scwhite xpo_text-sm xpo_font-semibold xpo_rounded-xl xpo_shadow-md hover:xpo_shadow-xl xpo_transition-all xpo_duration-300 hover:xpo_scale-105 xpo_group"
+          className="flex items-center justify-center gap-3 px-5 py-3 bg-scprimary text-scwhite text-sm font-semibold rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 group"
           aria-label={__('Download on iOS App Store', 'site-core')}
         >
-          <span className="xpo_w-6 xpo_h-6 xpo_transition-transform xpo_group-hover:xpo_scale-110" dangerouslySetInnerHTML={{ __html: OSIcons.ios }} />
+          <span className="w-6 h-6 transition-transform group-hover:scale-110" dangerouslySetInnerHTML={{ __html: OSIcons.ios }} />
           <span>{__('App Store', 'site-core')}</span>
         </a>
-        
+
         <a
           href="https://play.google.com/store/apps/details?id=com.moonlitmeadow.app"
           target="_blank"
           rel="noopener noreferrer"
-          className="xpo_flex xpo_items-center xpo_justify-center xpo_gap-3 xpo_px-5 xpo_py-3 xpo_bg-scaccent xpo_text-scwhite xpo_text-sm xpo_font-semibold xpo_rounded-xl xpo_shadow-md hover:xpo_shadow-xl xpo_transition-all xpo_duration-300 hover:xpo_scale-105 xpo_group"
+          className="flex items-center justify-center gap-3 px-5 py-3 bg-scaccent text-scwhite text-sm font-semibold rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 group"
           aria-label={__('Download on Google Play Store', 'site-core')}
         >
-          <span className="xpo_w-6 xpo_h-6 xpo_transition-transform xpo_group-hover:xpo_scale-110" dangerouslySetInnerHTML={{ __html: OSIcons.android }} />
+          <span className="w-6 h-6 transition-transform group-hover:scale-110" dangerouslySetInnerHTML={{ __html: OSIcons.android }} />
           <span>{__('Google Play', 'site-core')}</span>
         </a>
 
@@ -135,30 +135,30 @@ const HeroSection = ({ slides = [], autoSlideInterval = 5000, onLoaded = null })
           href="https://appgallery.huawei.com/app/moonlitmeadow"
           target="_blank"
           rel="noopener noreferrer"
-          className="xpo_flex xpo_items-center xpo_justify-center xpo_gap-3 xpo_px-5 xpo_py-3 xpo_bg-scprimary-700 xpo_text-scwhite xpo_text-sm xpo_font-semibold xpo_rounded-xl xpo_shadow-md hover:xpo_shadow-xl xpo_transition-all xpo_duration-300 hover:xpo_scale-105 xpo_group"
+          className="flex items-center justify-center gap-3 px-5 py-3 bg-scprimary-700 text-scwhite text-sm font-semibold rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 group"
           aria-label={__('Download on Huawei AppGallery', 'site-core')}
         >
-          <span className="xpo_w-6 xpo_h-6 xpo_transition-transform xpo_group-hover:xpo_scale-110" dangerouslySetInnerHTML={{ __html: OSIcons.hermony }} />
+          <span className="w-6 h-6 transition-transform group-hover:scale-110" dangerouslySetInnerHTML={{ __html: OSIcons.hermony }} />
           <span>{__('AppGallery', 'site-core')}</span>
         </a>
       </div>
 
-      <p className="xpo_text-xs xpo_text-scprimary/50 xpo_mt-2">{__('Available on all platforms', 'site-core')}</p>
+      <p className="text-xs text-scprimary/50 mt-2">{__('Available on all platforms', 'site-core')}</p>
     </div>
   );
 
   return (
-    <section 
-      className="xpo_relative xpo_w-full xpo_overflow-hidden xpo_bg-gradient-to-b xpo_from-scprimary-50/10 xpo_to-scwhite-50/50 xpo_py-6 md:xpo_py-8 xpo_rounded-xl"
+    <section
+      className="relative w-full overflow-hidden bg-gradient-to-b from-scprimary-50/10 to-scwhite-50/50 py-6 md:py-8 rounded-xl"
       role="region"
       aria-label="Hero banner with product carousel"
     >
-      <div className="xpo_container xpo_mx-auto xpo_px-4">
-        <div className="xpo_grid xpo_grid-cols-1 lg:xpo_grid-cols-6 xpo_gap-6 xpo_items-stretch">
-          
-          <div className="lg:xpo_col-span-5 xpo_w-full">
-            <div 
-              className="xpo_relative xpo_w-full xpo_h-[450px] md:xpo_h-[550px] lg:xpo_h-[600px] xpo_overflow-hidden xpo_rounded-3xl xpo_shadow-2xl xpo_group"
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-6 gap-6 items-stretch">
+
+          <div className="lg:col-span-5 w-full">
+            <div
+              className="relative w-full h-[450px] md:h-[550px] lg:h-[600px] overflow-hidden rounded-3xl shadow-2xl group"
               onMouseEnter={() => setIsPaused(true)}
               onMouseLeave={() => setIsPaused(false)}
               onTouchStart={handleTouchStart}
@@ -171,11 +171,10 @@ const HeroSection = ({ slides = [], autoSlideInterval = 5000, onLoaded = null })
               {activeSlides.map((slide, index) => (
                 <div
                   key={index}
-                  className={`xpo_absolute xpo_inset-0 xpo_transition-all xpo_duration-700 xpo_ease-in-out ${
-                    index === currentSlide 
-                      ? 'xpo_opacity-100 xpo_scale-100' 
-                      : 'xpo_opacity-0 xpo_scale-105'
-                  }`}
+                  className={`absolute inset-0 transition-all duration-700 ease-in-out ${index === currentSlide
+                      ? 'opacity-100 scale-100'
+                      : 'opacity-0 scale-105'
+                    }`}
                   role="group"
                   aria-roledescription="slide"
                   aria-label={`${index + 1} of ${activeSlides.length}`}
@@ -184,27 +183,27 @@ const HeroSection = ({ slides = [], autoSlideInterval = 5000, onLoaded = null })
                   <img
                     src={slide.imageUrl}
                     alt={slide.title}
-                    className="xpo_w-full xpo_h-full xpo_object-cover xpo_brightness-[0.85]"
+                    className="w-full h-full object-cover brightness-[0.85]"
                   />
-                  
-                  <div className="xpo_absolute xpo_inset-0 xpo_bg-gradient-to-br xpo_from-scprimary/60 xpo_via-scprimary/30 xpo_to-transparent" />
-                  
-                  <div className="xpo_absolute xpo_inset-0 xpo_flex xpo_flex-col xpo_justify-center xpo_p-8 md:xpo_p-12 lg:xpo_p-16">
-                    <div className="xpo_max-w-3xl xpo_space-y-6">
-                      <h1 className="xpo_text-3xl md:xpo_text-5xl lg:xpo_text-6xl xpo_font-bold xpo_text-scwhite xpo_leading-tight xpo_drop-shadow-2xl xpo_animate-fade-in">
+
+                  <div className="absolute inset-0 bg-gradient-to-br from-scprimary/60 via-scprimary/30 to-transparent" />
+
+                  <div className="absolute inset-0 flex flex-col justify-center p-8 md:p-12 lg:p-16">
+                    <div className="max-w-3xl space-y-6">
+                      <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-scwhite leading-tight drop-shadow-2xl animate-fade-in">
                         {slide.title}
                       </h1>
-                      <p className="xpo_text-base md:xpo_text-xl lg:xpo_text-2xl xpo_text-scwhite/95 xpo_leading-relaxed xpo_drop-shadow-lg xpo_max-w-2xl">
+                      <p className="text-base md:text-xl lg:text-2xl text-scwhite/95 leading-relaxed drop-shadow-lg max-w-2xl">
                         {slide.subtitle}
                       </p>
                       {slide.ctaText && (
                         <a
                           href={slide.ctaLink}
-                          className="xpo_inline-flex xpo_items-center xpo_gap-3 xpo_px-8 xpo_py-4 xpo_bg-scaccent xpo_text-scwhite xpo_text-base md:xpo_text-lg xpo_font-semibold xpo_rounded-full xpo_shadow-2xl hover:xpo_bg-scaccent-600 xpo_transition-all xpo_duration-300 xpo_transform hover:xpo_scale-105 hover:xpo_shadow-3xl xpo_mt-4"
+                          className="inline-flex items-center gap-3 px-8 py-4 bg-scaccent text-scwhite text-base md:text-lg font-semibold rounded-full shadow-2xl hover:bg-scaccent-600 transition-all duration-300 transform hover:scale-105 hover:shadow-3xl mt-4"
                           aria-label={slide.ctaText}
                         >
                           {slide.ctaText}
-                          <svg className="xpo_w-5 xpo_h-5 xpo_transition-transform xpo_group-hover:xpo_translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                           </svg>
                         </a>
@@ -216,10 +215,10 @@ const HeroSection = ({ slides = [], autoSlideInterval = 5000, onLoaded = null })
 
               <button
                 onClick={prevSlide}
-                className="xpo_absolute xpo_left-4 xpo_top-1/2 xpo_-translate-y-1/2 xpo_w-10 xpo_h-10 md:xpo_w-12 md:xpo_h-12 xpo_bg-scwhite/20 xpo_backdrop-blur-sm xpo_text-scwhite xpo_rounded-full xpo_shadow-lg hover:xpo_bg-scwhite/30 xpo_transition-all xpo_duration-300 xpo_opacity-0 group-hover:xpo_opacity-100 xpo_flex xpo_items-center xpo_justify-center"
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 bg-scwhite/20 backdrop-blur-sm text-scwhite rounded-full shadow-lg hover:bg-scwhite/30 transition-all duration-300 opacity-0 group-hover:opacity-100 flex items-center justify-center"
                 aria-label={__('Previous slide', 'site-core')}
               >
-                <svg className="xpo_w-6 xpo_h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
@@ -227,27 +226,26 @@ const HeroSection = ({ slides = [], autoSlideInterval = 5000, onLoaded = null })
               <button
                 onClick={nextSlide}
                 aria-label={__('Next slide', 'site-core')}
-                className="xpo_absolute xpo_right-4 xpo_top-1/2 xpo_-translate-y-1/2 xpo_w-10 xpo_h-10 md:xpo_w-12 md:xpo_h-12 xpo_bg-scwhite/20 xpo_backdrop-blur-sm xpo_text-scwhite xpo_rounded-full xpo_shadow-lg hover:xpo_bg-scwhite/30 xpo_transition-all xpo_duration-300 xpo_opacity-0 group-hover:xpo_opacity-100 xpo_flex xpo_items-center xpo_justify-center"
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 bg-scwhite/20 backdrop-blur-sm text-scwhite rounded-full shadow-lg hover:bg-scwhite/30 transition-all duration-300 opacity-0 group-hover:opacity-100 flex items-center justify-center"
               >
-                <svg className="xpo_w-6 xpo_h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                 </svg>
               </button>
 
-              <div 
+              <div
                 role="tablist"
                 aria-label="Slide controls"
-                className="xpo_absolute xpo_bottom-6 xpo_left-1/2 xpo_transform xpo_-translate-x-1/2 xpo_flex xpo_gap-3 xpo_bg-scwhite/10 xpo_backdrop-blur-sm xpo_px-4 xpo_py-2 xpo_rounded-full"
+                className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-3 bg-scwhite/10 backdrop-blur-sm px-4 py-2 rounded-full"
               >
                 {activeSlides.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => goToSlide(index)}
-                    className={`xpo_h-2 xpo_rounded-full xpo_transition-all xpo_duration-300 ${
-                      index === currentSlide
-                        ? 'xpo_w-8 xpo_bg-scwhite xpo_shadow-lg'
-                        : 'xpo_w-2 xpo_bg-scwhite/50 hover:xpo_bg-scwhite/70'
-                    }`}
+                    className={`h-2 rounded-full transition-all duration-300 ${index === currentSlide
+                        ? 'w-8 bg-scwhite shadow-lg'
+                        : 'w-2 bg-scwhite/50 hover:bg-scwhite/70'
+                      }`}
                     aria-label={`Go to slide ${index + 1}`}
                     aria-selected={index === currentSlide}
                     role="tab"
@@ -257,7 +255,7 @@ const HeroSection = ({ slides = [], autoSlideInterval = 5000, onLoaded = null })
             </div>
           </div>
 
-          <div className="lg:xpo_col-span-1 xpo_w-full lg:xpo_sticky lg:xpo_top-2 xpo_self-start">
+          <div className="lg:col-span-1 w-full lg:sticky lg:top-2 self-start">
             <AppPromo />
           </div>
         </div>

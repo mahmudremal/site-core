@@ -2,26 +2,26 @@ import { X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
 export const Popup = ({ onClose = null, showCross = true, backdrop = true, backdropClose = true, className = null, crossClassName = null, bodyClassName = null, backdropClassName = null, children }) => {
-  if (!className) {className = "xpo_fixed xpo_inset-0 xpo_z-50 xpo_flex xpo_items-center xpo_justify-center";}
-  if (!bodyClassName) {bodyClassName = "xpo_relative xpo_z-10 xpo_bg-white xpo_rounded-xl xpo_shadow-lg xpo_p-6 xpo_max-w-full xpo_min-w-[90vw] md:xpo_min-w-[28rem]";}
-  if (!crossClassName) {crossClassName = "xpo_p-2 hover:xpo_bg-gray-100 xpo_rounded-lg";}
-  if (!backdropClassName) {backdropClassName = "xpo_absolute xpo_inset-0 xpo_bg-black/40 xpo_bg-opacity-30";}
+  if (!className) {className = "fixed inset-0 z-50 flex items-center justify-center";}
+  if (!bodyClassName) {bodyClassName = "relative z-10 bg-white rounded-xl shadow-lg p-6 max-w-full min-w-[90vw] md:min-w-[28rem]";}
+  if (!crossClassName) {crossClassName = "p-2 hover:bg-gray-100 rounded-lg";}
+  if (!backdropClassName) {backdropClassName = "absolute inset-0 bg-black/40 bg-opacity-30";}
   // 
   return (
     <div className={className} aria-modal="true" role="dialog">
       {backdrop ? <div className={backdropClassName} onClick={e => backdropClose && onClose && onClose(e)} aria-label={__('Close popup')}></div> : null}
       <div className={bodyClassName}>
-        {/* xpo_-translate-x-1 xpo_-translate-y-1 */}
+        {/* -translate-x-1 -translate-y-1 */}
         {typeof onClose === 'function' && showCross ? (
-          <div className="xpo_absolute xpo_top-1 xpo_right-1">
-            {/* <button type="button" className="xpo_p-0 xpo_border-none xpo_bg-transparent" onClick={(e) => onClose()}>
+          <div className="absolute top-1 right-1">
+            {/* <button type="button" className="p-0 border-none bg-transparent" onClick={(e) => onClose()}>
               <X size={16} />
             </button> */}
             <button
               onClick={() => onClose()}
               className={crossClassName}
             >
-              <X className="xpo_w-5 xpo_h-5" />
+              <X className="w-5 h-5" />
             </button>
           </div>
         ) : null}
@@ -38,16 +38,16 @@ export const ClipboardInput = ({ text }) => {
   const inputRef = useRef(null);
 
   return (
-    <section className="xpo_bg-white dark:xpo_bg-primary">
-      <div className="xpo_w-full">
-        <div className="xpo_mx-auto xpo_w-full">
-          <div className="xpo_relative">
+    <section className="bg-white dark:bg-primary">
+      <div className="w-full">
+        <div className="mx-auto w-full">
+          <div className="relative">
             <input
               disabled
               type="text"
               value={text}
               ref={inputRef}
-              className="xpo_h-12 xpo_w-full xpo_rounded-lg xpo_border xpo_border-stroke xpo_bg-gray-1 xpo_py-3 xpo_pl-5 xpo_pr-14 xpo_text-primary xpo_outline-none xpo_duration-200 selection:xpo_bg-transparent focus:xpo_border-primary dark:xpo_border-primary-3 dark:xpo_bg-primary-2 dark:xpo_text-white"
+              className="h-12 w-full rounded-lg border border-stroke bg-gray-1 py-3 pl-5 pr-14 text-primary outline-none duration-200 selection:bg-transparent focus:border-primary dark:border-primary-3 dark:bg-primary-2 dark:text-white"
             />
             <button
               type="button"
@@ -62,7 +62,7 @@ export const ClipboardInput = ({ text }) => {
                   setTimeout(() => setCopySuccess(''), 2000);
                 }
               }}
-              className="xpo_absolute xpo_right-2 xpo_top-1/2 xpo_inline-flex xpo_h-8 xpo_-translate-y-1/2 xpo_items-center xpo_justify-center xpo_gap-1 xpo_rounded-md xpo_bg-primary xpo_px-2.5 xpo_py-1.5 xpo_text-sm xpo_font-medium xpo_text-white xpo_duration-200 hover:xpo_bg-primary/90"
+              className="absolute right-2 top-1/2 inline-flex h-8 -translate-y-1/2 items-center justify-center gap-1 rounded-md bg-primary px-2.5 py-1.5 text-sm font-medium text-white duration-200 hover:bg-primary/90"
             >
               <span>
                 {copySuccess ? (
@@ -134,7 +134,7 @@ export const tailwind_install = () => {
       window.tailwind = window.tailwind || {};
       window.tailwind.config = {
         darkMode: 'class', // '[data-theme="dark"]',
-        prefix: 'xpo_',
+        prefix: '',
         theme: {
           extend: {
             colors: {

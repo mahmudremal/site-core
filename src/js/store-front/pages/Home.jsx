@@ -12,19 +12,19 @@ const PageBody = () => {
   const [template, setTemplate] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  
+
   useEffect(() => {
     const delay = setTimeout(() => {
       // setLoading(true);
       api.get('pages/home')
-      .then(res => res.data)
-      .then(data => {
-        setTemplate(data.template);
-      })
-      .catch(err => notify.error(err))
-      .finally(() => setLoading(false));
+        .then(res => res.data)
+        .then(data => {
+          setTemplate(data.template);
+        })
+        .catch(err => notify.error(err))
+        .finally(() => setLoading(false));
     }, 2000);
-  
+
     return () => clearTimeout(delay);
   }, []);
 
@@ -33,7 +33,7 @@ const PageBody = () => {
       <SiteHeader />
       <HomePageHelmet />
       {/* <MoonlitMeadowLogo /> */}
-      <div className="xpo_min-h-screen">
+      <div className="min-h-screen">
         {loading ? <HomepageSkeleton /> : <DynamicPageRenderer template={template} />}
       </div>
       <SiteFooter />

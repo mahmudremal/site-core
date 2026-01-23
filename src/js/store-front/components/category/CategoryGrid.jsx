@@ -87,7 +87,7 @@ const CategoryGrid = ({ categories = [], onLoaded = null }) => {
   //   const delay = setTimeout(() => {
   //     api.get('get categories collections')
   //   }, 1000);
-  
+
   //   return () => clearTimeout(delay);
   // }, []);
 
@@ -96,57 +96,57 @@ const CategoryGrid = ({ categories = [], onLoaded = null }) => {
   if (!displayCategories?.length) return <></>;
 
   return (
-    <section className="xpo_pt-8 xpo_pb-16 xpo_px-4 xpo_bg-scwhite-300/70 dark:xpo_bg-scprimary-900/70">
-      <div className="xpo_container xpo_mx-auto">
-        
-        <div className="xpo_mb-10">
-          <h2 className="xpo_text-3xl xpo_font-bold xpo_text-scprimary-600 dark:xpo_text-scwhite-100 xpo_mb-3">
+    <section className="pt-8 pb-16 px-4 bg-scwhite-300/70 dark:bg-scprimary-900/70">
+      <div className="container mx-auto">
+
+        <div className="mb-10">
+          <h2 className="text-3xl font-bold text-scprimary-600 dark:text-scwhite-100 mb-3">
             {__('Shop by Category', 'site-core')}
           </h2>
-          <p className="xpo_text-scprimary-400 dark:xpo_text-scwhite-600">
+          <p className="text-scprimary-400 dark:text-scwhite-600">
             {__('Explore our wide range of products across different categories', 'site-core')}
           </p>
         </div>
 
-        <div className="xpo_grid xpo_grid-cols-1 sm:xpo_grid-cols-2 lg:xpo_grid-cols-4 xpo_gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {displayCategories.map((category) => (
             <Link
               key={category.id}
               to={`/collections/${category.slug}`}
-              className="xpo_group xpo_relative xpo_bg-scwhite-100 dark:xpo_bg-scprimary-800 xpo_rounded-2xl xpo_overflow-hidden xpo_border xpo_border-scwhite-500 dark:xpo_border-scprimary-700 hover:xpo_border-scaccent-400 dark:hover:xpo_border-scaccent-600 xpo_transition-all xpo_duration-300 xpo_cursor-pointer hover:xpo_shadow-lg"
+              className="group relative bg-scwhite-100 dark:bg-scprimary-800 rounded-2xl overflow-hidden border border-scwhite-500 dark:border-scprimary-700 hover:border-scaccent-400 dark:hover:border-scaccent-600 transition-all duration-300 cursor-pointer hover:shadow-lg"
             >
-              <div className="xpo_relative xpo_h-48 xpo_overflow-hidden xpo_bg-scwhite-400 dark:xpo_bg-scprimary-700">
+              <div className="relative h-48 overflow-hidden bg-scwhite-400 dark:bg-scprimary-700">
                 <img
                   alt={category.name}
                   src={category.imageUrl}
-                  className="xpo_w-full xpo_h-full xpo_object-cover group-hover:xpo_scale-110 xpo_transition-transform xpo_duration-500"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   onError={(e) => {
                     e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect width="400" height="300" fill="%23e5e7eb"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="18" fill="%239ca3af"%3ENo Image%3C/text%3E%3C/svg%3E';
                   }}
                 />
-                <div className="xpo_absolute xpo_inset-0 xpo_bg-gradient-to-t xpo_from-scprimary-900/80 xpo_via-scprimary-900/20 xpo_to-transparent"></div>
-                
+                <div className="absolute inset-0 bg-gradient-to-t from-scprimary-900/80 via-scprimary-900/20 to-transparent"></div>
+
                 {category.featured && (
-                  <div className="xpo_absolute xpo_top-3 xpo_right-3 xpo_px-3 xpo_py-1 xpo_bg-scaccent-500 xpo_text-scwhite-100 xpo_text-xs xpo_font-semibold xpo_rounded-full">
+                  <div className="absolute top-3 right-3 px-3 py-1 bg-scaccent-500 text-scwhite-100 text-xs font-semibold rounded-full">
                     {__('Featured', 'site-core')}
                   </div>
                 )}
               </div>
 
-              <div className="xpo_p-5">
-                <h3 className="xpo_text-xl xpo_font-bold xpo_text-scprimary-600 dark:xpo_text-scwhite-100 xpo_mb-2 group-hover:xpo_text-scaccent-500 dark:group-hover:xpo_text-scaccent-400 xpo_transition-colors">
+              <div className="p-5">
+                <h3 className="text-xl font-bold text-scprimary-600 dark:text-scwhite-100 mb-2 group-hover:text-scaccent-500 dark:group-hover:text-scaccent-400 transition-colors">
                   {category.name}
                 </h3>
-                <p className="xpo_text-sm xpo_text-scprimary-400 dark:xpo_text-scwhite-600 xpo_mb-3 xpo_line-clamp-2">
+                <p className="text-sm text-scprimary-400 dark:text-scwhite-600 mb-3 line-clamp-2">
                   {category.description}
                 </p>
-                
-                <div className="xpo_flex xpo_items-center xpo_justify-between">
-                  <span className="xpo_text-sm xpo_font-medium xpo_text-scaccent-500 dark:xpo_text-scaccent-400">
+
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-scaccent-500 dark:text-scaccent-400">
                     {sprintf(__('%s items', 'site-core'), (category.productCount || '0').toLocaleString())}
                   </span>
-                  <div className="xpo_w-8 xpo_h-8 xpo_bg-scaccent-100 dark:xpo_bg-scaccent-900/30 xpo_rounded-full xpo_flex xpo_items-center xpo_justify-center group-hover:xpo_bg-scaccent-500 dark:group-hover:xpo_bg-scaccent-600 xpo_transition-colors">
-                    <ArrowRight className="xpo_w-4 xpo_h-4 xpo_text-scaccent-600 dark:xpo_text-scaccent-400 group-hover:xpo_text-scwhite-100 xpo_transition-colors" />
+                  <div className="w-8 h-8 bg-scaccent-100 dark:bg-scaccent-900/30 rounded-full flex items-center justify-center group-hover:bg-scaccent-500 dark:group-hover:bg-scaccent-600 transition-colors">
+                    <ArrowRight className="w-4 h-4 text-scaccent-600 dark:text-scaccent-400 group-hover:text-scwhite-100 transition-colors" />
                   </div>
                 </div>
               </div>
@@ -154,13 +154,13 @@ const CategoryGrid = ({ categories = [], onLoaded = null }) => {
           ))}
         </div>
 
-        {/* <div className="xpo_text-center xpo_mt-10">
+        {/* <div className="text-center mt-10">
           <Link 
             to="/categories"
-            className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_px-6 xpo_py-3 xpo_bg-scwhite-100 dark:xpo_bg-scprimary-800 xpo_border xpo_border-scaccent-400 dark:xpo_border-scaccent-600 xpo_rounded-lg xpo_text-scaccent-600 dark:xpo_text-scaccent-400 xpo_font-semibold hover:xpo_bg-scaccent-500 dark:hover:xpo_bg-scaccent-600 hover:xpo_text-scwhite-100 xpo_transition-all xpo_duration-300"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-scwhite-100 dark:bg-scprimary-800 border border-scaccent-400 dark:border-scaccent-600 rounded-lg text-scaccent-600 dark:text-scaccent-400 font-semibold hover:bg-scaccent-500 dark:hover:bg-scaccent-600 hover:text-scwhite-100 transition-all duration-300"
           >
             {__('View All Categories', 'site-core')}
-            <ArrowRight className="xpo_w-5 xpo_h-5" />
+            <ArrowRight className="w-5 h-5" />
           </Link>
         </div> */}
 

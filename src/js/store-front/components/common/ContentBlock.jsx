@@ -38,32 +38,32 @@ const ContentBlock = ({ content = null, onLoaded = null }) => {
   };
 
   useEffect(() => onLoaded && onLoaded(), [onLoaded]);
-  
+
   const block = content || defaultContent;
 
   return (
-    // xpo_bg-scwhite-200 dark:xpo_bg-scprimary-900
-    <section className="xpo_py-20 xpo_px-4">
-      <div className="xpo_container xpo_mx-auto">
-        
+    // bg-scwhite-200 dark:bg-scprimary-900
+    <section className="py-20 px-4">
+      <div className="container mx-auto">
+
         {/* Trust Statement */}
-        <div className="xpo_text-center xpo_mb-16 xpo_max-w-3xl xpo_mx-auto">
-          <h2 className="xpo_text-3xl md:xpo_text-4xl xpo_font-bold xpo_text-scprimary-600 dark:xpo_text-scwhite-100 xpo_mb-6 xpo_leading-tight">
+        <div className="text-center mb-16 max-w-3xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-scprimary-600 dark:text-scwhite-100 mb-6 leading-tight">
             {block.headline}
           </h2>
-          <p className="xpo_text-lg xpo_text-scprimary-400 dark:xpo_text-scwhite-600 xpo_leading-relaxed">
+          <p className="text-lg text-scprimary-400 dark:text-scwhite-600 leading-relaxed">
             {block.description}
           </p>
         </div>
 
         {/* Statistics Bar */}
-        <div className="xpo_grid xpo_grid-cols-2 md:xpo_grid-cols-4 xpo_gap-6 xpo_mb-16 xpo_bg-scwhite-100/70 dark:xpo_bg-scprimary-800/70 xpo_rounded-2xl xpo_p-8 xpo_shadow-sm xpo_border xpo_border-scwhite-500 dark:xpo_border-scprimary-700">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16 bg-scwhite-100/70 dark:bg-scprimary-800/70 rounded-2xl p-8 shadow-sm border border-scwhite-500 dark:border-scprimary-700">
           {block.stats.map((stat, index) => (
-            <div key={index} className="xpo_text-center">
-              <div className="xpo_text-3xl md:xpo_text-4xl xpo_font-bold xpo_text-scaccent-500 dark:xpo_text-scaccent-400 xpo_mb-2">
+            <div key={index} className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-scaccent-500 dark:text-scaccent-400 mb-2">
                 {stat.number}
               </div>
-              <div className="xpo_text-sm xpo_text-scprimary-400 dark:xpo_text-scwhite-600 xpo_font-medium">
+              <div className="text-sm text-scprimary-400 dark:text-scwhite-600 font-medium">
                 {stat.label}
               </div>
             </div>
@@ -71,24 +71,24 @@ const ContentBlock = ({ content = null, onLoaded = null }) => {
         </div>
 
         {/* Commitments Grid */}
-        <div className="xpo_grid md:xpo_grid-cols-2 xpo_gap-8">
+        <div className="grid md:grid-cols-2 gap-8">
           {block.commitments.map((item, index) => {
             const Icon = item.icon;
             return (
-              <div 
+              <div
                 key={index}
-                className="xpo_flex xpo_gap-5 xpo_p-6 xpo_bg-scwhite-100/70 dark:xpo_bg-scprimary-800/70 xpo_rounded-xl xpo_border xpo_border-scwhite-500 dark:xpo_border-scprimary-700 xpo_transition-all xpo_duration-300 hover:xpo_border-scaccent-400 dark:hover:xpo_border-scaccent-600"
+                className="flex gap-5 p-6 bg-scwhite-100/70 dark:bg-scprimary-800/70 rounded-xl border border-scwhite-500 dark:border-scprimary-700 transition-all duration-300 hover:border-scaccent-400 dark:hover:border-scaccent-600"
               >
-                <div className="xpo_flex-shrink-0">
-                  <div className="xpo_w-12 xpo_h-12 xpo_bg-scaccent-100 dark:xpo_bg-scaccent-900/30 xpo_rounded-lg xpo_flex xpo_items-center xpo_justify-center">
-                    <Icon className="xpo_w-6 xpo_h-6 xpo_text-scaccent-600 dark:xpo_text-scaccent-400" />
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 bg-scaccent-100 dark:bg-scaccent-900/30 rounded-lg flex items-center justify-center">
+                    <Icon className="w-6 h-6 text-scaccent-600 dark:text-scaccent-400" />
                   </div>
                 </div>
                 <div>
-                  <h3 className="xpo_text-lg xpo_font-semibold xpo_text-scprimary-600 dark:xpo_text-scwhite-100 xpo_mb-2">
+                  <h3 className="text-lg font-semibold text-scprimary-600 dark:text-scwhite-100 mb-2">
                     {item.title}
                   </h3>
-                  <p className="xpo_text-scprimary-400 dark:xpo_text-scwhite-600 xpo_leading-relaxed xpo_text-sm">
+                  <p className="text-scprimary-400 dark:text-scwhite-600 leading-relaxed text-sm">
                     {item.text}
                   </p>
                 </div>
@@ -98,10 +98,10 @@ const ContentBlock = ({ content = null, onLoaded = null }) => {
         </div>
 
         {/* Bottom Trust Message */}
-        <div className="xpo_mt-12 xpo_text-center xpo_py-8 xpo_px-6 xpo_bg-gradient-to-r xpo_from-scaccent-50 xpo_to-scaccent-100 dark:xpo_from-scaccent-900/20 dark:xpo_to-scaccent-800/20 xpo_rounded-2xl xpo_border xpo_border-scaccent-200 dark:xpo_border-scaccent-800">
-          <p className="xpo_text-lg xpo_text-scprimary-600 dark:xpo_text-scwhite-200 xpo_font-medium">
-            {__('Join thousands who\'ve made MoonlitMeadow their trusted shopping destination.', 'site-core')} 
-            <span className="xpo_block xpo_mt-2 xpo_text-scaccent-600 dark:xpo_text-scaccent-400">{__('We\'re here to serve you, every single day.', 'site-core')}</span>
+        <div className="mt-12 text-center py-8 px-6 bg-gradient-to-r from-scaccent-50 to-scaccent-100 dark:from-scaccent-900/20 dark:to-scaccent-800/20 rounded-2xl border border-scaccent-200 dark:border-scaccent-800">
+          <p className="text-lg text-scprimary-600 dark:text-scwhite-200 font-medium">
+            {__('Join thousands who\'ve made MoonlitMeadow their trusted shopping destination.', 'site-core')}
+            <span className="block mt-2 text-scaccent-600 dark:text-scaccent-400">{__('We\'re here to serve you, every single day.', 'site-core')}</span>
           </p>
         </div>
 

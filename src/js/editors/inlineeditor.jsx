@@ -15,7 +15,7 @@ const InlineEditor = ({ content: [content, setContent] }) => {
         if (parent.classList.contains('highlight')) return; // Avoid highlighting if already highlighted
 
         const highlightSpan = document.createElement('span');
-        highlightSpan.classList.add('xpo_bg-primary', 'xpo_text-white');
+        highlightSpan.classList.add('bg-primary', 'text-white');
         highlightSpan.textContent = selectedText;
 
         range.deleteContents();
@@ -166,26 +166,26 @@ const InlineEditor = ({ content: [content, setContent] }) => {
         }, [isOpen]);
 
         return (
-            <div ref={buttonRef} className="xpo_flex xpo_gap-1">
-                <button type="button" onClick={(e) => setIsOpen(prev => !prev)} className="xpo_mx-1 xpo_flex xpo_gap-2 xpo_items-center">
-                    <div className="xpo_flex xpo_gap-1 xpo_items-center">
+            <div ref={buttonRef} className="flex gap-1">
+                <button type="button" onClick={(e) => setIsOpen(prev => !prev)} className="mx-1 flex gap-2 items-center">
+                    <div className="flex gap-1 items-center">
                         <SelectedHeading tags={selectedTags} />
-                        <span className="xpo_leading-[0]">{headingMapLabels[selectedTags] || headingMapLabels.p}</span>
+                        <span className="leading-[0]">{headingMapLabels[selectedTags] || headingMapLabels.p}</span>
                     </div>
-                    <svg className={`xpo_w-2.5 xpo_h-2.5 ${isOpen ? 'xpo_rotate-180' : ''}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                    <svg className={`w-2.5 h-2.5 ${isOpen ? 'rotate-180' : ''}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
                     </svg>
                 </button>
-                <div ref={dropdownRef} className={`xpo_absolute xpo_z-10 xpo_bg-white xpo_divide-y xpo_divide-gray-100 xpo_rounded-lg xpo_shadow-sm dark:xpo_bg-gray-700 ${!isOpen ? 'xpo_hidden' : 'xpo_block'}`}>
-                    <div className="xpo_p-2 xpo_text-sm xpo_text-gray-700 dark:xpo_text-gray-200 xpo_flex xpo_flex-col xpo_gap-2 xpo_min-w-28">
+                <div ref={dropdownRef} className={`absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 ${!isOpen ? 'hidden' : 'block'}`}>
+                    <div className="p-2 text-sm text-gray-700 dark:text-gray-200 flex flex-col gap-2 min-w-28">
                         {['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map((tag, i) => (
-                            <button key={i} data-element={tag} className="xpo_flex xpo_gap-2 xpo_items-center" onClick={(e) => {
+                            <button key={i} data-element={tag} className="flex gap-2 items-center" onClick={(e) => {
                                 e.preventDefault();
                                 executeCommand('formatBlock', tag);
                                 setSelectedTags(prev => !prev.includes(tag) ? [...prev, tag] : prev);
                             }}>
                                 <SelectedHeading tags={[tag]} />
-                                <span className="xpo_leading-[0]">{headingMapLabels[tag] || headingMapLabels.p}</span>
+                                <span className="leading-[0]">{headingMapLabels[tag] || headingMapLabels.p}</span>
                             </button>
                         ))}
                     </div>
@@ -195,47 +195,47 @@ const InlineEditor = ({ content: [content, setContent] }) => {
     };
 
     return (
-        <div className="xpo_relative">
+        <div className="relative">
             <div
                 ref={editorRef}
                 contentEditable
                 onInput={(e) => setContent(e.target.innerHTML)}
                 dangerouslySetInnerHTML={{ __html: content }}
-                className="xpo_border xpo_border-gray-300 xpo_min-h-[200px] xpo_p-2"
+                className="border border-gray-300 min-h-[200px] p-2"
             />
             <div
                 ref={toolbarRef}
                 onClick={(e) => e.stopPropagation()}
                 onMouseUp={(e) => e.stopPropagation()}
                 onMouseDown={(e) => e.stopPropagation()}
-                className={`floating-toolbar xpo_fixed xpo_bg-white xpo_border xpo_border-gray-300 xpo_rounded xpo_p-2 xpo_z-[999] xpo_flex xpo_flex-nowrap xpo_gap-2 ${toolbarVisible ? '' : 'xpo_hidden'}`}
+                className={`floating-toolbar fixed bg-white border border-gray-300 rounded p-2 z-[999] flex flex-nowrap gap-2 ${toolbarVisible ? '' : 'hidden'}`}
             >
                 <button data-element={'b'} onClick={(e) => {
                     e.preventDefault();
                     executeCommand('bold');
                     setSelectedTags(prev => !prev.includes('b') ? [...prev, 'b'] : prev);
-                }} className={`xpo_mx-1`}>
+                }} className={`mx-1`}>
                     <Bold size={20} />
                 </button>
                 <button data-element={'i'} onClick={(e) => {
                     e.preventDefault();
                     executeCommand('italic');
                     setSelectedTags(prev => !prev.includes('i') ? [...prev, 'i'] : prev);
-                }} className={`xpo_mx-1`}>
+                }} className={`mx-1`}>
                     <Italic size={20} />
                 </button>
                 <button data-element={'ol'} onClick={(e) => {
                     e.preventDefault();
                     executeCommand('insertOrderedList');
                     setSelectedTags(prev => !prev.includes('ol') ? [...prev, 'ol'] : prev);
-                }} className={`xpo_mx-1`}>
+                }} className={`mx-1`}>
                     <NumberedList size={20} />
                 </button>
                 <button data-element={'ul'} onClick={(e) => {
                     e.preventDefault();
                     executeCommand('insertUnorderedList');
                     setSelectedTags(prev => !prev.includes('ul') ? [...prev, 'ul'] : prev);
-                }} className={`xpo_mx-1`}>
+                }} className={`mx-1`}>
                     <List size={20} />
                 </button>
                 <Headings />

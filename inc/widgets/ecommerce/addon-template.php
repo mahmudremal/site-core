@@ -87,7 +87,7 @@ class Template {
     public function wp_enqueue_scripts() {
         if (!apply_filters('pm_project/system/isactive', 'storefront-active')) {return;}
         // wp_enqueue_script('tailwind-cdn', 'https://cdn.tailwindcss.com/', array(), null, true);
-        // $tailwind_config = ['prefix' => 'xpo_'];
+        // $tailwind_config = ['prefix' => ''];
         // $inline_script = 'window.tailwind = window.tailwind || {}; window.tailwind.config = ' . wp_json_encode( $tailwind_config ) . ';';
         // wp_add_inline_script( 'tailwind-cdn', $inline_script );
     }

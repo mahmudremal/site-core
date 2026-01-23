@@ -13,21 +13,21 @@ export const ThemeProvider = ({ children }) => {
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
-    setSession(prev => ({...prev, theme: newTheme}));
+    setSession(prev => ({ ...prev, theme: newTheme }));
   };
 
   useEffect(() => {
-    if (theme == 'light') return document.documentElement.classList.remove('xpo_dark');
-    document.documentElement.classList.add('xpo_dark');
+    if (theme == 'light') return document.documentElement.classList.remove('dark');
+    document.documentElement.classList.add('dark');
   }, [theme]);
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <div className="xpo_relative">
-        <div className="xpo_fixed xpo_max-h-screen xpo_z-[-1] xpo_inset-0 xpo_pointer-events-none xpo_select-none xpo_hidden dark:xpo_block">
+      <div className="relative">
+        <div className="fixed max-h-screen z-[-1] inset-0 pointer-events-none select-none hidden dark:block">
           <MoonlitSkyBg />
         </div>
-        <div className="xpo_relative xpo_z-10">
+        <div className="relative z-10">
           {children}
         </div>
       </div>

@@ -5,7 +5,7 @@ import { sprintf } from "sprintf-js";
 const Footer = () => {
     const { __ } = useTranslation();
     const [opening, setOpening] = useState(null);
-    
+
     const openDeveloper = () => {
         setOpening(true);
         setTimeout(() => {
@@ -15,10 +15,10 @@ const Footer = () => {
     }
 
     const date = new Date();
-    
+
     return (
         <footer className="d-footer">
-            <div className="row xpo_items-center xpo_justify-between">
+            <div className="row items-center justify-between">
                 <div className="col-auto">
                     <p className="mb-0">{sprintf(__('© %d %s All Rights Reserved.'), date.getFullYear(), 'UXnDev LLC.')}</p>
                 </div>

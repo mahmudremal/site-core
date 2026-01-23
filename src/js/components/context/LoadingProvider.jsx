@@ -11,8 +11,8 @@ export const LoadingProvider = ({ children }) => {
         <LoadingContext.Provider value={{ loading, setLoading }}>
             {children}
             {loading && (
-                <div className="fixed inset-0 bg-white/70 z-40 flex xpo_justify-center xpo_items-center">
-                    <div className="text-primary-500 xpo_text-xl animate-pulse">
+                <div className="fixed inset-0 bg-white/70 z-40 flex justify-center items-center">
+                    <div className="text-primary-500 text-xl animate-pulse">
                         {__('Loading...')}
                     </div>
                 </div>

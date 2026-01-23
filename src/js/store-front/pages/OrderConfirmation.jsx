@@ -15,7 +15,7 @@ export default function PageBody() {
   return (
     <div>
       <SiteHeader />
-      <div className="xpo_container xpo_relative xpo_mx-auto xpo_px-4 xpo_py-8 xpo_z-10">
+      <div className="container relative mx-auto px-4 py-8 z-10">
         <OrderConfirmation />
       </div>
       <SiteFooter />
@@ -34,10 +34,10 @@ export const OrderConfirmation = () => {
   useEffect(() => {
     if (order_id) {
       api.get(`/orders/${order_id}`)
-      .then(res => res.data)
-      .then(data => setOrder(data))
-      .catch(err => notify.error(err))
-      .finally(() => setLoading(false));
+        .then(res => res.data)
+        .then(data => setOrder(data))
+        .catch(err => notify.error(err))
+        .finally(() => setLoading(false));
     } else {
       setLoading(false);
     }
@@ -45,17 +45,17 @@ export const OrderConfirmation = () => {
 
   if (loading) {
     return (
-      <div className="xpo_flex xpo_items-center xpo_justify-center xpo_min-h-96">
-        <div className="xpo_animate-spin xpo_w-8 xpo_h-8 xpo_border-4 xpo_border-scprimary xpo_border-t-transparent xpo_rounded-full"></div>
+      <div className="flex items-center justify-center min-h-96">
+        <div className="animate-spin w-8 h-8 border-4 border-scprimary border-t-transparent rounded-full"></div>
       </div>
     );
   }
 
   if (!order) {
     return (
-      <div className="xpo_text-center xpo_py-12">
-        <h1 className="xpo_text-2xl xpo_font-bold xpo_text-gray-900 dark:xpo_text-scwhite-600">{__('Order not found', 'site-core')}</h1>
-        <Link to="/" className="xpo_mt-4 xpo_inline-block xpo_text-scprimary hover:xpo_underline">
+      <div className="text-center py-12">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-scwhite-600">{__('Order not found', 'site-core')}</h1>
+        <Link to="/" className="mt-4 inline-block text-scprimary hover:underline">
           {__('Continue Shopping', 'site-core')}
         </Link>
       </div>
@@ -68,101 +68,101 @@ export const OrderConfirmation = () => {
   const total = parseFloat(order.total || 0);
 
   return (
-    <div className="xpo_container xpo_mx-auto xpo_px-4">
-      <div className="xpo_mb-8">
-        <Link to="/" className="xpo_flex xpo_items-center xpo_gap-2 xpo_text-gray-600 dark:xpo_text-scwhite-600 hover:xpo_text-gray-900 dark:hover:xpo_text-scwhite-900 xpo_transition-colors">
-          <ArrowLeft className="xpo_w-5 xpo_h-5" />
+    <div className="container mx-auto px-4">
+      <div className="mb-8">
+        <Link to="/" className="flex items-center gap-2 text-gray-600 dark:text-scwhite-600 hover:text-gray-900 dark:hover:text-scwhite-900 transition-colors">
+          <ArrowLeft className="w-5 h-5" />
           <span>{__('Back to Home', 'site-core')}</span>
         </Link>
       </div>
 
-      <div className="xpo_text-center xpo_mb-12">
-        <div className="xpo_mx-auto xpo_w-20 xpo_h-20 xpo_bg-green-100 xpo_rounded-full xpo_flex xpo_items-center xpo_justify-center xpo_mb-4">
-          <CheckCircle className="xpo_w-12 xpo_h-12 xpo_text-green-600" />
+      <div className="text-center mb-12">
+        <div className="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-4">
+          <CheckCircle className="w-12 h-12 text-green-600" />
         </div>
-        <h1 className="xpo_text-3xl xpo_font-bold xpo_text-gray-900 dark:xpo_text-scwhite-600 xpo_mb-2">{__('Order Confirmed!', 'site-core')}</h1>
-        <p className="xpo_text-lg xpo_text-gray-600 dark:xpo_text-scwhite-600">{__('Thank you for your purchase. Your order has been confirmed.', 'site-core')}</p>
-        <p className="xpo_text-sm xpo_text-gray-500 dark:xpo_text-scwhite-600 xpo_mt-2">
-          {__('Order ID:', 'site-core')} <span className="xpo_font-semibold xpo_text-gray-900 dark:xpo_text-scwhite-600">#{order.id}</span>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-scwhite-600 mb-2">{__('Order Confirmed!', 'site-core')}</h1>
+        <p className="text-lg text-gray-600 dark:text-scwhite-600">{__('Thank you for your purchase. Your order has been confirmed.', 'site-core')}</p>
+        <p className="text-sm text-gray-500 dark:text-scwhite-600 mt-2">
+          {__('Order ID:', 'site-core')} <span className="font-semibold text-gray-900 dark:text-scwhite-600">#{order.id}</span>
         </p>
       </div>
 
-      <div className="xpo_grid xpo_grid-cols-1 lg:xpo_grid-cols-2 xpo_gap-8 xpo_mb-12">
-        <div className="xpo_bg-scwhite/70 xpo_rounded-2xl xpo_shadow-lg xpo_p-6">
-          <h2 className="xpo_text-xl xpo_font-bold xpo_text-gray-900 dark:xpo_text-scprimary-600 xpo_mb-6 xpo_flex xpo_items-center xpo_gap-3">
-            <Package className="xpo_w-6 xpo_h-6" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div className="bg-scwhite/70 rounded-2xl shadow-lg p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-scprimary-600 mb-6 flex items-center gap-3">
+            <Package className="w-6 h-6" />
             {__('Order Details', 'site-core')}
           </h2>
-          <div className="xpo_space-y-4">
+          <div className="space-y-4">
             {order.items.map((item, itemIndex) => (
-              <div key={itemIndex} className="xpo_flex xpo_justify-between xpo_items-center xpo_border-b xpo_border-gray-200 xpo_pb-4 last:xpo_border-b-0 last:xpo_pb-0">
+              <div key={itemIndex} className="flex justify-between items-center border-b border-gray-200 pb-4 last:border-b-0 last:pb-0">
                 <div>
-                  <p className="xpo_text-md xpo_text-gray-900 dark:xpo_text-scprimary-600">{item?.title??item.product_name}</p>
-                  <p className="xpo_text-sm xpo_text-gray-600">{sprintf(__('Qty: %d', 'site-core'), item.quantity || 1)}</p>
+                  <p className="text-md text-gray-900 dark:text-scprimary-600">{item?.title ?? item.product_name}</p>
+                  <p className="text-sm text-gray-600">{sprintf(__('Qty: %d', 'site-core'), item.quantity || 1)}</p>
                 </div>
-                <p className="xpo_font-medium">{money(item.price * item.quantity || 1)}</p>
+                <p className="font-medium">{money(item.price * item.quantity || 1)}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="xpo_bg-scwhite/70 xpo_rounded-2xl xpo_shadow-lg xpo_p-6">
-          <h2 className="xpo_text-xl xpo_font-bold xpo_text-gray-900 dark:xpo_text-scprimary-600 xpo_mb-6 xpo_flex xpo_items-center xpo_gap-3">
-            <Truck className="xpo_w-6 xpo_h-6" />
+        <div className="bg-scwhite/70 rounded-2xl shadow-lg p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-scprimary-600 mb-6 flex items-center gap-3">
+            <Truck className="w-6 h-6" />
             {__('Delivery Information', 'site-core')}
           </h2>
-          <div className="xpo_space-y-3">
-            <p className="xpo_text-gray-900 dark:xpo_text-scwhite-600 xpo_font-medium">{order.shipping_data?.name || `${order.billing_address?.firstName || ''} ${order.billing_address?.lastName || ''}`}</p>
-            <p className="xpo_text-gray-600">{order.shipping_data?.address || order.billing_address?.address || ''}</p>
-            <p className="xpo_text-gray-600">{order.shipping_data?.city || order.billing_address?.city || ''}, {order.shipping_data?.zipCode || order.billing_address?.zipCode || ''}</p>
-            <p className="xpo_text-gray-600">{order.shipping_data?.phone || order.billing_address?.phone || ''}</p>
-            <p className="xpo_text-sm xpo_text-gray-500 dark:xpo_text-scprimary-500 xpo_mt-2">
+          <div className="space-y-3">
+            <p className="text-gray-900 dark:text-scwhite-600 font-medium">{order.shipping_data?.name || `${order.billing_address?.firstName || ''} ${order.billing_address?.lastName || ''}`}</p>
+            <p className="text-gray-600">{order.shipping_data?.address || order.billing_address?.address || ''}</p>
+            <p className="text-gray-600">{order.shipping_data?.city || order.billing_address?.city || ''}, {order.shipping_data?.zipCode || order.billing_address?.zipCode || ''}</p>
+            <p className="text-gray-600">{order.shipping_data?.phone || order.billing_address?.phone || ''}</p>
+            <p className="text-sm text-gray-500 dark:text-scprimary-500 mt-2">
               {__('Estimated delivery: 5-7 business days', 'site-core')}
             </p>
           </div>
         </div>
       </div>
 
-      <div className="xpo_bg-scwhite/70 xpo_rounded-2xl xpo_shadow-lg xpo_p-6 xpo_mb-8">
-        <h2 className="xpo_text-xl xpo_font-bold xpo_text-gray-900 dark:xpo_text-scprimary-600 xpo_mb-6">{__('Payment Summary', 'site-core')}</h2>
-        <div className="xpo_grid xpo_grid-cols-1 md:xpo_grid-cols-2 xpo_gap-8">
-          <div className="xpo_w-full xpo_p-4 xpo_border xpo_border-2 xpo_rounded-2xl">
-            <div className="xpo_flex xpo_justify-between">
-              <span className="xpo_text-gray-600">{__('Subtotal', 'site-core')}</span>
+      <div className="bg-scwhite/70 rounded-2xl shadow-lg p-6 mb-8">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-scprimary-600 mb-6">{__('Payment Summary', 'site-core')}</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="w-full p-4 border border-2 rounded-2xl">
+            <div className="flex justify-between">
+              <span className="text-gray-600">{__('Subtotal', 'site-core')}</span>
               <span>{money(subtotal)}</span>
             </div>
-            <div className="xpo_flex xpo_justify-between">
-              <span className="xpo_text-gray-600">{__('Shipping', 'site-core')}</span>
+            <div className="flex justify-between">
+              <span className="text-gray-600">{__('Shipping', 'site-core')}</span>
               <span>{money(shipping)}</span>
             </div>
-            <div className="xpo_flex xpo_justify-between">
-              <span className="xpo_text-gray-600">{__('Tax', 'site-core')}</span>
+            <div className="flex justify-between">
+              <span className="text-gray-600">{__('Tax', 'site-core')}</span>
               <span>{money(tax)}</span>
             </div>
-            <div className="xpo_border-t xpo_border-gray-200 xpo_pt-3 xpo_flex xpo_justify-between xpo_text-lg xpo_font-bold">
+            <div className="border-t border-gray-200 pt-3 flex justify-between text-lg font-bold">
               <span>{__('Total', 'site-core')}</span>
               <span>{money(total)}</span>
             </div>
           </div>
-          <div className="xpo_w-full xpo_p-4 xpo_border xpo_border-2 xpo_rounded-2xl">
+          <div className="w-full p-4 border border-2 rounded-2xl">
             <PaymentBlock order={order} />
           </div>
         </div>
-        <div className="xpo_text-center xpo_mt-6 xpo_text-sm xpo_text-gray-500 dark:xpo_text-scprimary-600">
-          <p>{__('Paid with:', 'site-core')} <span className="xpo_font-medium xpo_capitalize xpo_text-gray-900 dark:xpo_text-scprimary-600">{order.payment_method}</span></p>
+        <div className="text-center mt-6 text-sm text-gray-500 dark:text-scprimary-600">
+          <p>{__('Paid with:', 'site-core')} <span className="font-medium capitalize text-gray-900 dark:text-scprimary-600">{order.payment_method}</span></p>
         </div>
       </div>
 
-      <div className="xpo_text-center">
-        <Link to="/collections/special" className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_bg-scprimary xpo_text-scwhite xpo_px-8 xpo_py-3 xpo_rounded-xl xpo_font-medium hover:xpo_bg-scprimary-800 xpo_transition-colors dark:xpo_border dark:xpo_border-2 xpo_border-solid xpo_border-scwhite">
-          <Home className="xpo_w-5 xpo_h-5" />
+      <div className="text-center">
+        <Link to="/collections/special" className="inline-flex items-center gap-2 bg-scprimary text-scwhite px-8 py-3 rounded-xl font-medium hover:bg-scprimary-800 transition-colors dark:border dark:border-2 border-solid border-scwhite">
+          <Home className="w-5 h-5" />
           {__('Continue Shopping', 'site-core')}
         </Link>
       </div>
 
-      <div className="xpo_mt-12 xpo_text-center xpo_text-sm xpo_text-gray-500 dark:xpo_text-scwhite-500">
+      <div className="mt-12 text-center text-sm text-gray-500 dark:text-scwhite-500">
         <p>{__('You will receive an order confirmation email with all details shortly.', 'site-core')}</p>
-        <p className="xpo_mt-2">{__('Need help? Contact our support team anytime.', 'site-core')}</p>
+        <p className="mt-2">{__('Need help? Contact our support team anytime.', 'site-core')}</p>
       </div>
     </div>
   );

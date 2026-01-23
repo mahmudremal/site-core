@@ -3,12 +3,12 @@ import React, { useEffect, useRef, useState } from "react";
 
 export const Popup = ({ onClose, children }) => {
   return (
-    <div className="xpo_fixed xpo_inset-0 xpo_z-50 xpo_flex xpo_items-center xpo_justify-center" aria-modal="true" role="dialog">
-      <div className="xpo_absolute xpo_inset-0 xpo_bg-black/40 xpo_bg-opacity-30" onClick={onClose} aria-label={__('Close popup')} />
-      <div className="xpo_relative xpo_z-10 xpo_bg-white xpo_rounded-xl xpo_shadow-lg xpo_p-6 xpo_max-w-full xpo_w-[90vw] md:xpo_w-[28rem]">
-        {/* xpo_-translate-x-1 xpo_-translate-y-1 */}
-        <div className="xpo_absolute xpo_top-1 xpo_right-1">
-          <button type="button" className="xpo_p-0 xpo_border-none xpo_bg-transparent" onClick={(e) => onClose()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center" aria-modal="true" role="dialog">
+      <div className="absolute inset-0 bg-black/40 bg-opacity-30" onClick={onClose} aria-label={__('Close popup')} />
+      <div className="relative z-10 bg-white rounded-xl shadow-lg p-6 max-w-full w-[90vw] md:w-[28rem]">
+        {/* -translate-x-1 -translate-y-1 */}
+        <div className="absolute top-1 right-1">
+          <button type="button" className="p-0 border-none bg-transparent" onClick={(e) => onClose()}>
             <X size={16} />
           </button>
         </div>
@@ -25,16 +25,16 @@ export const ClipboardInput = ({ text }) => {
   const inputRef = useRef(null);
 
   return (
-    <section className="xpo_bg-white dark:xpo_bg-primary">
-      <div className="xpo_w-full">
-        <div className="xpo_mx-auto xpo_w-full">
-          <div className="xpo_relative">
+    <section className="bg-white dark:bg-primary">
+      <div className="w-full">
+        <div className="mx-auto w-full">
+          <div className="relative">
             <input
               disabled
               type="text"
               value={text}
               ref={inputRef}
-              className="xpo_h-12 xpo_w-full xpo_rounded-lg xpo_border xpo_border-stroke xpo_bg-gray-1 xpo_py-3 xpo_pl-5 xpo_pr-14 xpo_text-primary xpo_outline-none xpo_duration-200 selection:xpo_bg-transparent focus:xpo_border-primary dark:xpo_border-primary-3 dark:xpo_bg-primary-2 dark:xpo_text-white"
+              className="h-12 w-full rounded-lg border border-stroke bg-gray-1 py-3 pl-5 pr-14 text-primary outline-none duration-200 selection:bg-transparent focus:border-primary dark:border-primary-3 dark:bg-primary-2 dark:text-white"
             />
             <button
               type="button"
@@ -43,13 +43,13 @@ export const ClipboardInput = ({ text }) => {
                 if (inputRef.current) {
                   // inputRef.current.select();
                   // document.execCommand("copy");
-                  const clipboardItem = new ClipboardItem({'text/plain': text});
+                  const clipboardItem = new ClipboardItem({ 'text/plain': text });
                   await navigator.clipboard.write([clipboardItem]);
                   setCopySuccess("Copied!");
                   setTimeout(() => setCopySuccess(''), 2000);
                 }
               }}
-              className="xpo_absolute xpo_right-2 xpo_top-1/2 xpo_inline-flex xpo_h-8 xpo_-translate-y-1/2 xpo_items-center xpo_justify-center xpo_gap-1 xpo_rounded-md xpo_bg-primary xpo_px-2.5 xpo_py-1.5 xpo_text-sm xpo_font-medium xpo_text-white xpo_duration-200 hover:xpo_bg-primary/90"
+              className="absolute right-2 top-1/2 inline-flex h-8 -translate-y-1/2 items-center justify-center gap-1 rounded-md bg-primary px-2.5 py-1.5 text-sm font-medium text-white duration-200 hover:bg-primary/90"
             >
               <span>
                 {copySuccess ? (
@@ -105,7 +105,7 @@ export const ClipboardInput = ({ text }) => {
 }
 
 export const ellipsis = (text, start = 0, end = 30) => {
-  if (typeof text !== 'string') {return text;}
+  if (typeof text !== 'string') { return text; }
   if (text?.length >= start + end) {
     return text.substring(start, end);
   }

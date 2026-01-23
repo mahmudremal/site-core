@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { 
-  Mail, 
-  MessageSquare, 
-  CheckCircle, 
-  XCircle, 
-  Loader2, 
+import {
+  Mail,
+  MessageSquare,
+  CheckCircle,
+  XCircle,
+  Loader2,
   RefreshCw,
   Shield,
   ArrowLeft
@@ -29,16 +29,16 @@ const AuthVerify = () => {
   // Handle automatic verification if token is provided
   useEffect(() => {
     if (token && token !== '0') {
-        setLoading(true);
-        api.post(`user/auth/${user_id}/verify`, { token })
+      setLoading(true);
+      api.post(`user/auth/${user_id}/verify`, { token })
         .then(() => {
-            setVerificationStatus('success');
+          setVerificationStatus('success');
         })
         .catch(() => {
-            setVerificationStatus('failed');
+          setVerificationStatus('failed');
         })
         .finally(() => {
-            setLoading(false);
+          setLoading(false);
         });
     }
   }, [user_id, token]);
@@ -53,7 +53,7 @@ const AuthVerify = () => {
 
   const handleOtpChange = (index, value) => {
     if (value.length > 1) return; // Only allow single digit
-    
+
     const newOtp = [...otpCode];
     newOtp[index] = value;
     setOtpCode(newOtp);
@@ -79,19 +79,19 @@ const AuthVerify = () => {
     if (code.length !== 6) return;
 
     setLoading(true);
-    api.post(`user/auth/${user_id}/verify`, { 
-      token: code, 
-      method: verificationMethod 
+    api.post(`user/auth/${user_id}/verify`, {
+      token: code,
+      method: verificationMethod
     })
-    .then(() => {
+      .then(() => {
         setVerificationStatus('success');
-    })
-    .catch(() => {
+      })
+      .catch(() => {
         setVerificationStatus('failed');
-    })
-    .finally(() => {
+      })
+      .finally(() => {
         setLoading(false);
-    });
+      });
   };
 
   const handleResendCode = () => {
@@ -118,19 +118,19 @@ const AuthVerify = () => {
   // Success Screen
   if (verificationStatus === 'success') {
     return (
-      <div className="xpo_bg-scwhite/70 xpo_rounded-3xl xpo_shadow-2xl xpo_p-8 xpo_text-center">
-        <div className="xpo_mb-6">
-          <CheckCircle className="xpo_w-16 xpo_h-16 xpo_text-green-500 xpo_mx-auto xpo_mb-4" />
-          <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-900 xpo_mb-2">
+      <div className="bg-scwhite/70 rounded-3xl shadow-2xl p-8 text-center">
+        <div className="mb-6">
+          <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
             {__('Verification Successful!', 'site-core')}
           </h2>
-          <p className="xpo_text-gray-600">
+          <p className="text-gray-600">
             {__('Your account has been verified successfully. You can now access all features.', 'site-core')}
           </p>
         </div>
         <button
           onClick={() => window.location.href = '/'}
-          className="xpo_bg-gradient-to-r xpo_from-green-600 xpo_to-green-700 xpo_text-scwhite xpo_py-3 xpo_px-6 xpo_rounded-xl xpo_font-medium hover:xpo_from-green-700 hover:xpo_to-green-800 xpo_transition-all"
+          className="bg-gradient-to-r from-green-600 to-green-700 text-scwhite py-3 px-6 rounded-xl font-medium hover:from-green-700 hover:to-green-800 transition-all"
         >
           {__('Continue to Dashboard', 'site-core')}
         </button>
@@ -141,31 +141,31 @@ const AuthVerify = () => {
   // Failed Screen
   if (verificationStatus === 'failed') {
     return (
-      <div className="xpo_bg-scwhite/70 xpo_rounded-3xl xpo_shadow-2xl xpo_p-8 xpo_text-center">
-        <div className="xpo_mb-6">
-          <XCircle className="xpo_w-16 xpo_h-16 xpo_text-red-500 xpo_mx-auto xpo_mb-4" />
-          <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-900 xpo_mb-2">
+      <div className="bg-scwhite/70 rounded-3xl shadow-2xl p-8 text-center">
+        <div className="mb-6">
+          <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
             {__('Verification Failed', 'site-core')}
           </h2>
-          <p className="xpo_text-gray-600 xpo_mb-6">
+          <p className="text-gray-600 mb-6">
             {__('The verification link has expired or is invalid. Please try again.', 'site-core')}
           </p>
         </div>
-        <div className="xpo_space-y-4">
+        <div className="space-y-4">
           <button
             onClick={() => {
               setVerificationStatus(null);
               setShowManualEntry(true);
             }}
-            className="xpo_w-full xpo_bg-gradient-to-r xpo_from-scprimary-600 xpo_to-scwhite-600 xpo_text-scwhite xpo_py-3 xpo_px-6 xpo_rounded-xl xpo_font-medium hover:xpo_from-scprimary-700 hover:xpo_to-scwhite-700 xpo_transition-all"
+            className="w-full bg-gradient-to-r from-scprimary-600 to-scwhite-600 text-scwhite py-3 px-6 rounded-xl font-medium hover:from-scprimary-700 hover:to-scwhite-700 transition-all"
           >
             {__('Try Manual Verification', 'site-core')}
           </button>
           <button
             onClick={() => window.location.href = '/auth/signin'}
-            className="xpo_w-full xpo_border xpo_border-gray-300 xpo_py-3 xpo_px-6 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-50 xpo_transition-colors xpo_flex xpo_items-center xpo_justify-center xpo_gap-2"
+            className="w-full border border-gray-300 py-3 px-6 rounded-xl font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
           >
-            <ArrowLeft className="xpo_w-4 xpo_h-4" />
+            <ArrowLeft className="w-4 h-4" />
             {__('Back to Sign In', 'site-core')}
           </button>
         </div>
@@ -176,13 +176,13 @@ const AuthVerify = () => {
   // Loading Screen
   if (loading && !showManualEntry) {
     return (
-      <div className="xpo_bg-scwhite/70 xpo_rounded-3xl xpo_shadow-2xl xpo_p-8 xpo_text-center">
-        <div className="xpo_mb-6">
-          <Loader2 className="xpo_w-16 xpo_h-16 xpo_text-scprimary-600 xpo_mx-auto xpo_mb-4 xpo_animate-spin" />
-          <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-900 xpo_mb-2">
+      <div className="bg-scwhite/70 rounded-3xl shadow-2xl p-8 text-center">
+        <div className="mb-6">
+          <Loader2 className="w-16 h-16 text-scprimary-600 mx-auto mb-4 animate-spin" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
             {__('Verifying Account', 'site-core')}
           </h2>
-          <p className="xpo_text-gray-600">
+          <p className="text-gray-600">
             {__('Please wait while we verify your account...', 'site-core')}
           </p>
         </div>
@@ -192,46 +192,44 @@ const AuthVerify = () => {
 
   // Manual Verification Screen
   return (
-    <div className="xpo_bg-scwhite/70 xpo_rounded-3xl xpo_shadow-2xl xpo_p-8">
-      <div className="xpo_text-center xpo_mb-8">
-        <Shield className="xpo_w-16 xpo_h-16 xpo_text-scprimary-600 xpo_mx-auto xpo_mb-4" />
-        <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-900 xpo_mb-2">
+    <div className="bg-scwhite/70 rounded-3xl shadow-2xl p-8">
+      <div className="text-center mb-8">
+        <Shield className="w-16 h-16 text-scprimary-600 mx-auto mb-4" />
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
           {__('Verify Your Account', 'site-core')}
         </h2>
-        <p className="xpo_text-gray-600">
+        <p className="text-gray-600">
           {verificationMethod === 'email' ? __('Enter the verification code sent to your email address', 'site-core') : __('Enter the verification code sent to your phone number', 'site-core')}
         </p>
       </div>
 
       {/* Verification Method Toggle */}
-      <div className="xpo_flex xpo_bg-gray-100 xpo_rounded-xl xpo_p-1 xpo_mb-8">
+      <div className="flex bg-gray-100 rounded-xl p-1 mb-8">
         <button
           onClick={() => switchVerificationMethod('email')}
-          className={`xpo_flex-1 xpo_flex xpo_items-center xpo_justify-center xpo_gap-2 xpo_py-3 xpo_px-4 xpo_rounded-lg xpo_font-medium xpo_transition-all ${
-            verificationMethod === 'email'
-              ? 'xpo_bg-scwhite xpo_text-scprimary-600 xpo_shadow-sm'
-              : 'xpo_text-gray-600 hover:xpo_text-gray-800'
-          }`}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-all ${verificationMethod === 'email'
+              ? 'bg-scwhite text-scprimary-600 shadow-sm'
+              : 'text-gray-600 hover:text-gray-800'
+            }`}
         >
-          <Mail className="xpo_w-4 xpo_h-4" />
+          <Mail className="w-4 h-4" />
           {__('Email', 'site-core')}
         </button>
         <button
           onClick={() => switchVerificationMethod('sms')}
-          className={`xpo_flex-1 xpo_flex xpo_items-center xpo_justify-center xpo_gap-2 xpo_py-3 xpo_px-4 xpo_rounded-lg xpo_font-medium xpo_transition-all ${
-            verificationMethod === 'sms'
-              ? 'xpo_bg-scwhite xpo_text-scprimary-600 xpo_shadow-sm'
-              : 'xpo_text-gray-600 hover:xpo_text-gray-800'
-          }`}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-all ${verificationMethod === 'sms'
+              ? 'bg-scwhite text-scprimary-600 shadow-sm'
+              : 'text-gray-600 hover:text-gray-800'
+            }`}
         >
-          <MessageSquare className="xpo_w-4 xpo_h-4" />
+          <MessageSquare className="w-4 h-4" />
           {__('SMS', 'site-core')}
         </button>
       </div>
 
       {/* OTP Input Form */}
-      <form onSubmit={handleOtpSubmit} className="xpo_space-y-6">
-        <div className="xpo_flex xpo_justify-center xpo_gap-3">
+      <form onSubmit={handleOtpSubmit} className="space-y-6">
+        <div className="flex justify-center gap-3">
           {otpCode.map((digit, index) => (
             <input
               key={index}
@@ -241,7 +239,7 @@ const AuthVerify = () => {
               onChange={(e) => handleOtpChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
               maxLength={1}
-              className="xpo_w-12 xpo_h-12 xpo_text-center xpo_text-xl xpo_font-bold xpo_border xpo_border-gray-300 xpo_rounded-xl focus:xpo_ring-2 focus:xpo_ring-scaccent-500 focus:xpo_border-transparent xpo_transition-all"
+              className="w-12 h-12 text-center text-xl font-bold border border-gray-300 rounded-xl focus:ring-2 focus:ring-scaccent-500 focus:border-transparent transition-all"
             />
           ))}
         </div>
@@ -249,11 +247,11 @@ const AuthVerify = () => {
         <button
           type="submit"
           disabled={loading || otpCode.join('').length !== 6}
-          className="xpo_w-full xpo_bg-gradient-to-r xpo_from-scprimary-600 xpo_to-scwhite-600 xpo_text-scwhite xpo_py-3 xpo_px-6 xpo_rounded-xl xpo_font-medium hover:xpo_from-scprimary-700 hover:xpo_to-scwhite-700 xpo_transition-all disabled:xpo_opacity-50 disabled:xpo_cursor-not-allowed xpo_flex xpo_items-center xpo_justify-center xpo_gap-2"
+          className="w-full bg-gradient-to-r from-scprimary-600 to-scwhite-600 text-scwhite py-3 px-6 rounded-xl font-medium hover:from-scprimary-700 hover:to-scwhite-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {loading ? (
             <>
-              <Loader2 className="xpo_w-4 xpo_h-4 xpo_animate-spin" />
+              <Loader2 className="w-4 h-4 animate-spin" />
               {__('Verifying...', 'site-core')}
             </>
           ) : (
@@ -263,25 +261,25 @@ const AuthVerify = () => {
       </form>
 
       {/* Resend Code */}
-      <div className="xpo_text-center xpo_mt-6">
-        <p className="xpo_text-gray-600 xpo_mb-4">
+      <div className="text-center mt-6">
+        <p className="text-gray-600 mb-4">
           {__("Didn't receive the code?", 'site-core')}
         </p>
         <button
           onClick={handleResendCode}
           disabled={resendCountdown > 0 || resendLoading}
-          className="xpo_text-scaccent-600 hover:xpo_text-scaccent-800 xpo_font-medium xpo_underline disabled:xpo_opacity-50 disabled:xpo_cursor-not-allowed disabled:xpo_no-underline xpo_flex xpo_items-center xpo_justify-center xpo_gap-2 xpo_mx-auto"
+          className="text-scaccent-600 hover:text-scaccent-800 font-medium underline disabled:opacity-50 disabled:cursor-not-allowed disabled:no-underline flex items-center justify-center gap-2 mx-auto"
         >
           {resendLoading ? (
             <>
-              <Loader2 className="xpo_w-4 xpo_h-4 xpo_animate-spin" />
+              <Loader2 className="w-4 h-4 animate-spin" />
               {__('Sending...', 'site-core')}
             </>
           ) : resendCountdown > 0 ? (
             `${__('Resend Code in', 'site-core')} ${resendCountdown}s`
           ) : (
             <>
-              <RefreshCw className="xpo_w-4 xpo_h-4" />
+              <RefreshCw className="w-4 h-4" />
               {__('Resend Code', 'site-core')}
             </>
           )}
@@ -289,12 +287,12 @@ const AuthVerify = () => {
       </div>
 
       {/* Back to Sign In */}
-      <div className="xpo_text-center xpo_mt-8 xpo_pt-6 xpo_border-t xpo_border-gray-200">
+      <div className="text-center mt-8 pt-6 border-t border-gray-200">
         <button
           onClick={() => window.location.href = '/auth/signin'}
-          className="xpo_text-gray-600 hover:xpo_text-gray-800 xpo_flex xpo_items-center xpo_justify-center xpo_gap-2 xpo_mx-auto"
+          className="text-gray-600 hover:text-gray-800 flex items-center justify-center gap-2 mx-auto"
         >
-          <ArrowLeft className="xpo_w-4 xpo_h-4" />
+          <ArrowLeft className="w-4 h-4" />
           {__('Back to Sign In', 'site-core')}
         </button>
       </div>

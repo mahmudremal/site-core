@@ -14,8 +14,8 @@ export default function PageBody() {
   return (
     <div>
       <SiteHeader />
-      <div className="xpo_bg-scwhite-50 xpo_relative xpo_min-h-screen xpo_py-8">
-        <div className="xpo_container xpo_mx-auto">
+      <div className="bg-scwhite-50 relative min-h-screen py-8">
+        <div className="container mx-auto">
           <SharedPayment />
         </div>
       </div>
@@ -73,17 +73,17 @@ export const SharedPayment = () => {
 
   if (loading) {
     return (
-      <div className="xpo_flex xpo_items-center xpo_justify-center xpo_min-h-96">
-        <Loader2 className="xpo_w-8 xpo_h-8 xpo_animate-spin xpo_text-scprimary" />
+      <div className="flex items-center justify-center min-h-96">
+        <Loader2 className="w-8 h-8 animate-spin text-scprimary" />
       </div>
     );
   }
 
   if (!order || !orderId) {
     return (
-      <div className="xpo_text-center xpo_py-12">
-        <h1 className="xpo_text-2xl xpo_font-bold xpo_text-gray-900">{__('Payment link not valid', 'site-core')}</h1>
-        <Link to="/" className="xpo_mt-4 xpo_inline-block xpo_text-scprimary xpo_hover:underline">
+      <div className="text-center py-12">
+        <h1 className="text-2xl font-bold text-gray-900">{__('Payment link not valid', 'site-core')}</h1>
+        <Link to="/" className="mt-4 inline-block text-scprimary hover:underline">
           {__('Continue Shopping', 'site-core')}
         </Link>
       </div>
@@ -103,99 +103,99 @@ export const SharedPayment = () => {
   };
 
   return (
-    <div className="xpo_max-w-4xl xpo_mx-auto xpo_px-4">
-      <div className="xpo_mb-8">
-        <Link to="/" className="xpo_flex xpo_items-center xpo_gap-2 xpo_text-gray-600 hover:xpo_text-gray-900 xpo_transition-colors">
-          <ArrowLeft className="xpo_w-5 xpo_h-5" />
+    <div className="max-w-4xl mx-auto px-4">
+      <div className="mb-8">
+        <Link to="/" className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
+          <ArrowLeft className="w-5 h-5" />
           <span>{__('Back to Home', 'site-core')}</span>
         </Link>
       </div>
 
-      <div className="xpo_text-center xpo_mb-8">
-        <h1 className="xpo_text-3xl xpo_font-bold xpo_text-gray-900 xpo_mb-4">{__('Complete Payment', 'site-core')}</h1>
-        <p className="xpo_text-lg xpo_text-gray-600">{__('You are paying for order #')} <span className="xpo_font-semibold">{order.id}</span></p>
-        <p className="xpo_text-sm xpo_text-gray-500 xpo_mt-2">
-          {__('Amount due:')} <span className="xpo_font-bold xpo_text-scprimary">{money(total)}</span>
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">{__('Complete Payment', 'site-core')}</h1>
+        <p className="text-lg text-gray-600">{__('You are paying for order #')} <span className="font-semibold">{order.id}</span></p>
+        <p className="text-sm text-gray-500 mt-2">
+          {__('Amount due:')} <span className="font-bold text-scprimary">{money(total)}</span>
         </p>
       </div>
 
-      <div className="xpo_grid xpo_grid-cols-1 lg:xpo_grid-cols-3 xpo_gap-8 xpo_mb-8">
-        <div className="lg:xpo_col-span-2">
-          <div className="xpo_bg-scwhite xpo_rounded-2xl xpo_shadow-lg xpo_p-6 xpo_mb-6">
-            <h2 className="xpo_text-xl xpo_font-bold xpo_text-gray-900 xpo_mb-6 xpo_flex xpo_items-center xpo_gap-3">
-              <Package className="xpo_w-6 xpo_h-6 xpo_text-gray-700" />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        <div className="lg:col-span-2">
+          <div className="bg-scwhite rounded-2xl shadow-lg p-6 mb-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+              <Package className="w-6 h-6 text-gray-700" />
               {__('Order Items', 'site-core')}
             </h2>
-            <div className="xpo_space-y-4">
+            <div className="space-y-4">
               {order.items.map((item) => (
-                <div key={item.id} className="xpo_flex xpo_gap-4 xpo_items-center xpo_p-4 xpo_border xpo_border-gray-200 xpo_rounded-lg">
-                  <div className="xpo_w-16 xpo_h-16 xpo_bg-gray-100 xpo_rounded-lg xpo_flex xpo_items-center xpo_justify-center">
-                    <Package className="xpo_w-8 xpo_h-8 xpo_text-gray-500" />
+                <div key={item.id} className="flex gap-4 items-center p-4 border border-gray-200 rounded-lg">
+                  <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <Package className="w-8 h-8 text-gray-500" />
                   </div>
-                  <div className="xpo_flex-1">
-                    <h3 className="xpo_font-medium xpo_text-gray-900 xpo_text-sm">{item.product_name}</h3>
-                    <p className="xpo_text-gray-600 xpo_text-sm">Qty: {item.quantity} × {money(item.price)}</p>
+                  <div className="flex-1">
+                    <h3 className="font-medium text-gray-900 text-sm">{item.product_name}</h3>
+                    <p className="text-gray-600 text-sm">Qty: {item.quantity} × {money(item.price)}</p>
                   </div>
-                  <div className="xpo_text-right">
-                    <p className="xpo_font-medium">{money(item.price * item.quantity)}</p>
+                  <div className="text-right">
+                    <p className="font-medium">{money(item.price * item.quantity)}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="xpo_bg-scwhite xpo_rounded-2xl xpo_shadow-lg xpo_p-6">
-            <h2 className="xpo_text-xl xpo_font-bold xpo_text-gray-900 xpo_mb-6 xpo_flex xpo_items-center xpo_gap-3">
-              <User className="xpo_w-6 xpo_h-6 xpo_text-gray-700" />
+          <div className="bg-scwhite rounded-2xl shadow-lg p-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+              <User className="w-6 h-6 text-gray-700" />
               {__('Recipient Information', 'site-core')}
             </h2>
-            <div className="xpo_space-y-3">
-              <div className="xpo_flex xpo_items-center xpo_gap-3">
-                <Mail className="xpo_w-5 xpo_h-5 xpo_text-gray-500" />
-                <span className="xpo_text-gray-600">{customerData.email}</span>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <Mail className="w-5 h-5 text-gray-500" />
+                <span className="text-gray-600">{customerData.email}</span>
               </div>
-              <div className="xpo_flex xpo_items-center xpo_gap-3">
-                <Phone className="xpo_w-5 xpo_h-5 xpo_text-gray-500" />
-                <span className="xpo_text-gray-600">{customerData.phone}</span>
+              <div className="flex items-center gap-3">
+                <Phone className="w-5 h-5 text-gray-500" />
+                <span className="text-gray-600">{customerData.phone}</span>
               </div>
-              <div className="xpo_flex xpo_items-start xpo_gap-3">
-                <MapPin className="xpo_w-5 xpo_h-5 xpo_text-gray-500 xpo_mt-1" />
+              <div className="flex items-start gap-3">
+                <MapPin className="w-5 h-5 text-gray-500 mt-1" />
                 <div>
-                  <p className="xpo_text-gray-900 xpo_font-medium">{customerData.name}</p>
-                  <p className="xpo_text-gray-600 xpo_text-sm">{customerData.address}</p>
-                  <p className="xpo_text-gray-600 xpo_text-sm">{order.shipping_address?.city || order.billing_address?.city}, {order.shipping_address?.zipCode || order.billing_address?.zipCode}</p>
+                  <p className="text-gray-900 font-medium">{customerData.name}</p>
+                  <p className="text-gray-600 text-sm">{customerData.address}</p>
+                  <p className="text-gray-600 text-sm">{order.shipping_address?.city || order.billing_address?.city}, {order.shipping_address?.zipCode || order.billing_address?.zipCode}</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="xpo_bg-scwhite xpo_rounded-2xl xpo_shadow-lg xpo_p-6 xpo_sticky xpo_top-8">
-          <h2 className="xpo_text-xl xpo_font-bold xpo_text-gray-900 xpo_mb-6">{__('Payment Summary', 'site-core')}</h2>
-          
-          <div className="xpo_space-y-3 xpo_mb-6 xpo_border-t xpo_border-gray-200 xpo_pt-6">
-            <div className="xpo_flex xpo_justify-between xpo_text-sm">
-              <span className="xpo_text-gray-600">{__('Subtotal', 'site-core')}</span>
-              <span className="xpo_font-medium">{money(subtotal)}</span>
+        <div className="bg-scwhite rounded-2xl shadow-lg p-6 sticky top-8">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">{__('Payment Summary', 'site-core')}</h2>
+
+          <div className="space-y-3 mb-6 border-t border-gray-200 pt-6">
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600">{__('Subtotal', 'site-core')}</span>
+              <span className="font-medium">{money(subtotal)}</span>
             </div>
-            <div className="xpo_flex xpo_justify-between xpo_text-sm">
-              <span className="xpo_text-gray-600">{__('Shipping', 'site-core')}</span>
-              <span className="xpo_font-medium">{shipping === 0 ? __('Free', 'site-core') : money(shipping)}</span>
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600">{__('Shipping', 'site-core')}</span>
+              <span className="font-medium">{shipping === 0 ? __('Free', 'site-core') : money(shipping)}</span>
             </div>
-            <div className="xpo_flex xpo_justify-between xpo_text-sm">
-              <span className="xpo_text-gray-600">{__('Tax', 'site-core')}</span>
-              <span className="xpo_font-medium">{money(tax)}</span>
-            </div>
-          </div>
-          
-          <div className="xpo_border-t xpo_border-gray-200 xpo_pt-4 xpo_mb-6">
-            <div className="xpo_flex xpo_justify-between xpo_text-lg xpo_font-bold">
-              <span className="xpo_text-gray-900">{__('Total', 'site-core')}</span>
-              <span className="xpo_text-gray-900">{money(total)}</span>
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600">{__('Tax', 'site-core')}</span>
+              <span className="font-medium">{money(tax)}</span>
             </div>
           </div>
 
-          <div className="xpo_bg-scwhite/70 xpo_rounded-2xl xpo_border xpo_border-gray-200 xpo_p-4 xpo_mb-4">
+          <div className="border-t border-gray-200 pt-4 mb-6">
+            <div className="flex justify-between text-lg font-bold">
+              <span className="text-gray-900">{__('Total', 'site-core')}</span>
+              <span className="text-gray-900">{money(total)}</span>
+            </div>
+          </div>
+
+          <div className="bg-scwhite/70 rounded-2xl border border-gray-200 p-4 mb-4">
             {/* <PaymentComponent
               method={order.payment_method || 'card'}
               orderId={order.id}
@@ -208,22 +208,22 @@ export const SharedPayment = () => {
           </div>
 
           {processing && (
-            <div className="xpo_text-center xpo_p-4">
-              <Loader2 className="xpo_w-6 xpo_h-6 xpo_animate-spin xpo_mx-auto xpo_mb-2" />
-              <p className="xpo_text-sm xpo_text-gray-600">{__('Finalizing order...', 'site-core')}</p>
+            <div className="text-center p-4">
+              <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
+              <p className="text-sm text-gray-600">{__('Finalizing order...', 'site-core')}</p>
             </div>
           )}
 
-          <div className="xpo_text-center xpo_mt-4 xpo_text-xs xpo_text-gray-500">
+          <div className="text-center mt-4 text-xs text-gray-500">
             <p>{__('Secure payment powered by Stripe, PayPal, and more')}</p>
           </div>
         </div>
       </div>
 
-      <div className="xpo_text-center xpo_mb-8">
+      <div className="text-center mb-8">
         <Link
           to="/"
-          className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_text-gray-600 hover:xpo_text-gray-900 xpo_transition-colors"
+          className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
         >
           {__('Or continue shopping without paying', 'site-core')}
         </Link>

@@ -11,7 +11,7 @@ export default function ShopManager() {
   return (
     <HashRouter>
       <Toaster />
-      <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...', 'site-core')}</div>}>
+      <Suspense fallback={<div className="text-center p-4">{__('Loading...', 'site-core')}</div>}>
         <Routes>
           <Route path="/" element={<VendorList />} />
           <Route path="/vendors" element={<VendorList />} />

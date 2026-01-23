@@ -24,7 +24,7 @@ export default function ServiceMetaBox({ config, input }) {
         const delay = setTimeout(() => {
             input.value = JSON.stringify(formdata);
         }, 2000);
-        
+
         return () => clearTimeout(delay);
     }, [formdata]);
 
@@ -52,7 +52,7 @@ export default function ServiceMetaBox({ config, input }) {
     const updateConditional = (index, field, value) => {
         setFormdata(prev => ({
             ...prev,
-            conditionals: prev.conditionals.map((item, i) => 
+            conditionals: prev.conditionals.map((item, i) =>
                 i === index ? { ...item, [field]: value } : item
             )
         }));
@@ -61,8 +61,8 @@ export default function ServiceMetaBox({ config, input }) {
     const addCondition = (conditionalIndex) => {
         setFormdata(prev => ({
             ...prev,
-            conditionals: prev.conditionals.map((item, i) => 
-                i === conditionalIndex 
+            conditionals: prev.conditionals.map((item, i) =>
+                i === conditionalIndex
                     ? { ...item, condition: [...item.condition, { single: true }] }
                     : item
             )
@@ -72,8 +72,8 @@ export default function ServiceMetaBox({ config, input }) {
     const removeCondition = (conditionalIndex, conditionIndex) => {
         setFormdata(prev => ({
             ...prev,
-            conditionals: prev.conditionals.map((item, i) => 
-                i === conditionalIndex 
+            conditionals: prev.conditionals.map((item, i) =>
+                i === conditionalIndex
                     ? { ...item, condition: item.condition.filter((_, j) => j !== conditionIndex) }
                     : item
             )
@@ -83,12 +83,12 @@ export default function ServiceMetaBox({ config, input }) {
     const updateCondition = (conditionalIndex, conditionIndex, method, value) => {
         setFormdata(prev => ({
             ...prev,
-            conditionals: prev.conditionals.map((item, i) => 
-                i === conditionalIndex 
+            conditionals: prev.conditionals.map((item, i) =>
+                i === conditionalIndex
                     ? {
                         ...item,
-                        condition: item.condition.map((cond, j) => 
-                            j === conditionIndex 
+                        condition: item.condition.map((cond, j) =>
+                            j === conditionIndex
                                 ? { [method]: value }
                                 : cond
                         )
@@ -104,54 +104,54 @@ export default function ServiceMetaBox({ config, input }) {
     };
 
     return (
-        <div className="xpo_mx-auto xpo_bg-white xpo_rounded-xl xpo_shadow-lg xpo_overflow-hidden">
+        <div className="mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
             {/* Header */}
-            <div className="xpo_bg-gradient-to-r xpo_from-agreements-600 xpo_to-agreements-600 xpo_px-8 xpo_py-6 xpo_text-white">
-                <div className="xpo_flex xpo_items-center xpo_gap-3 xpo_mb-2">
+            <div className="bg-gradient-to-r from-agreements-600 to-agreements-600 px-8 py-6 text-white">
+                <div className="flex items-center gap-3 mb-2">
                     <Settings size={28} />
-                    <h2 className="xpo_text-xl xpo_font-bold xpo_text-white">Service Configuration</h2>
+                    <h2 className="text-xl font-bold text-white">Service Configuration</h2>
                 </div>
-                <p className="xpo_text-agreements-100">Configure pricing, agreements, and conditional rules for your service</p>
+                <p className="text-agreements-100">Configure pricing, agreements, and conditional rules for your service</p>
             </div>
 
-            <div className="xpo_p-8 xpo_space-y-8">
+            <div className="p-8 space-y-8">
                 {/* Basic Configuration */}
-                <div className="xpo_space-y-6">
-                    <h3 className="xpo_text-xl xpo_font-semibold xpo_text-gray-800 xpo_flex xpo_items-center xpo_gap-2">
-                        <DollarSign className="xpo_text-agreements-600" size={24} />
+                <div className="space-y-6">
+                    <h3 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                        <DollarSign className="text-agreements-600" size={24} />
                         Basic Pricing & Agreement
                     </h3>
 
-                    <div className="xpo_grid xpo_grid-cols-1 lg:xpo_grid-cols-2 xpo_gap-6">
-                        <div className="xpo_space-y-2">
-                            <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700">
                                 {__('Base Price')}
                             </label>
-                            <div className="xpo_relative">
-                                <DollarSign className="xpo_absolute xpo_left-3 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_text-gray-400" size={20} />
+                            <div className="relative">
+                                <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                                 <input
                                     min={0}
                                     type="number"
-                                    className="xpo_w-full !xpo_pl-10 xpo_pr-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg focus:xpo_ring-2 focus:xpo_ring-agreements-500 focus:xpo_border-transparent xpo_transition-all"
+                                    className="w-full !pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-agreements-500 focus:border-transparent transition-all"
                                     value={formdata?.primary ?? ''}
                                     placeholder={__('Enter base price')}
-                                    onChange={(e) => setFormdata(prev => ({...prev, primary: e.target.value}))}
+                                    onChange={(e) => setFormdata(prev => ({ ...prev, primary: e.target.value }))}
                                 />
                             </div>
                         </div>
 
-                        <div className="xpo_space-y-2">
-                            <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700">
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700">
                                 {__('Base Agreement Terms')}
                             </label>
-                            <div className="xpo_relative">
-                                <FileText className="xpo_absolute xpo_left-3 xpo_top-3 xpo_text-gray-400" size={20} />
+                            <div className="relative">
+                                <FileText className="absolute left-3 top-3 text-gray-400" size={20} />
                                 <textarea
                                     rows={4}
-                                    className="xpo_w-full !xpo_pl-10 xpo_pr-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg focus:xpo_ring-2 focus:xpo_ring-agreements-500 focus:xpo_border-transparent xpo_transition-all xpo_resize-none"
+                                    className="w-full !pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-agreements-500 focus:border-transparent transition-all resize-none"
                                     placeholder={__('Enter base agreement terms')}
                                     value={formdata?.primary_agreement ?? ''}
-                                    onChange={(e) => setFormdata(prev => ({...prev, primary_agreement: e.target.value}))}
+                                    onChange={(e) => setFormdata(prev => ({ ...prev, primary_agreement: e.target.value }))}
                                 />
                             </div>
                         </div>
@@ -159,15 +159,15 @@ export default function ServiceMetaBox({ config, input }) {
                 </div>
 
                 {/* Conditional Agreements */}
-                <div className="xpo_space-y-6">
-                    <div className="xpo_flex xpo_items-center xpo_justify-between">
-                        <h3 className="xpo_text-xl xpo_font-semibold xpo_text-gray-800 xpo_flex xpo_items-center xpo_gap-2">
-                            <Filter className="xpo_text-agreements-600" size={24} />
+                <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                        <h3 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                            <Filter className="text-agreements-600" size={24} />
                             Conditional Agreements
                         </h3>
                         <button
                             onClick={addConditional}
-                            className="xpo_flex xpo_items-center xpo_gap-2 xpo_px-4 xpo_py-2 xpo_bg-agreements-600 hover:xpo_bg-agreements-700 xpo_text-white xpo_rounded-lg xpo_transition-colors xpo_duration-200"
+                            className="flex items-center gap-2 px-4 py-2 bg-agreements-600 hover:bg-agreements-700 text-white rounded-lg transition-colors duration-200"
                         >
                             <Plus size={16} />
                             Add Conditional Rule
@@ -175,56 +175,56 @@ export default function ServiceMetaBox({ config, input }) {
                     </div>
 
                     {formdata.conditionals.length === 0 ? (
-                        <div className="xpo_bg-gray-50 xpo_border-2 xpo_border-dashed xpo_border-gray-300 xpo_rounded-lg xpo_p-8 xpo_text-center">
-                            <Filter className="xpo_mx-auto xpo_text-gray-400 xpo_mb-4" size={48} />
-                            <h4 className="xpo_text-lg xpo_font-medium xpo_text-gray-600 xpo_mb-2">No Conditional Rules</h4>
-                            <p className="xpo_text-gray-500 xpo_mb-4">Create conditional pricing and agreement rules based on specific criteria</p>
-                            <button onClick={addConditional} className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_px-4 xpo_py-2 xpo_bg-agreements-600 hover:xpo_bg-agreements-700 xpo_text-white xpo_rounded-lg xpo_transition-colors">
+                        <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                            <Filter className="mx-auto text-gray-400 mb-4" size={48} />
+                            <h4 className="text-lg font-medium text-gray-600 mb-2">No Conditional Rules</h4>
+                            <p className="text-gray-500 mb-4">Create conditional pricing and agreement rules based on specific criteria</p>
+                            <button onClick={addConditional} className="inline-flex items-center gap-2 px-4 py-2 bg-agreements-600 hover:bg-agreements-700 text-white rounded-lg transition-colors">
                                 <Plus size={16} />
                                 Create First Rule
                             </button>
                         </div>
                     ) : (
-                        <div className="xpo_space-y-6">
+                        <div className="space-y-6">
                             {formdata.conditionals.map((conditional, conditionalIndex) => (
-                                <div key={conditionalIndex} className="xpo_bg-gray-50 xpo_border xpo_border-gray-200 xpo_rounded-lg xpo_p-6">
-                                    <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-4">
-                                        <h4 className="xpo_text-lg xpo_font-semibold xpo_text-gray-800">
+                                <div key={conditionalIndex} className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h4 className="text-lg font-semibold text-gray-800">
                                             Rule #{conditionalIndex + 1}
                                         </h4>
                                         <button
                                             onClick={() => removeConditional(conditionalIndex)}
-                                            className="xpo_p-2 xpo_text-red-600 hover:xpo_bg-red-100 xpo_rounded-lg xpo_transition-colors"
+                                            className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
                                         >
                                             <Trash2 size={16} />
                                         </button>
                                     </div>
 
                                     {/* Conditions */}
-                                    <div className="xpo_space-y-4 xpo_mb-6">
-                                        <div className="xpo_flex xpo_items-center xpo_justify-between">
-                                            <label className="xpo_text-sm xpo_font-medium xpo_text-gray-700">Conditions (All must match)</label>
+                                    <div className="space-y-4 mb-6">
+                                        <div className="flex items-center justify-between">
+                                            <label className="text-sm font-medium text-gray-700">Conditions (All must match)</label>
                                             <button
                                                 onClick={() => addCondition(conditionalIndex)}
-                                                className="xpo_flex xpo_items-center xpo_gap-1 xpo_px-3 xpo_py-1 xpo_text-sm xpo_bg-agreements-100 hover:xpo_bg-agreements-200 xpo_text-agreements-700 xpo_rounded"
+                                                className="flex items-center gap-1 px-3 py-1 text-sm bg-agreements-100 hover:bg-agreements-200 text-agreements-700 rounded"
                                             >
                                                 <Plus size={14} />
                                                 Add Condition
                                             </button>
                                         </div>
 
-                                        <div className="xpo_space-y-3">
+                                        <div className="space-y-3">
                                             {conditional.condition.map((condition, conditionIndex) => {
                                                 const currentMethod = Object.keys(condition)[0];
                                                 const currentValue = condition[currentMethod];
                                                 const methodType = getConditionMethodType(currentMethod);
 
                                                 return (
-                                                    <div key={conditionIndex} className="xpo_flex xpo_items-center xpo_gap-3 xpo_bg-white xpo_border xpo_border-gray-200 xpo_rounded-lg xpo_p-4">
+                                                    <div key={conditionIndex} className="flex items-center gap-3 bg-white border border-gray-200 rounded-lg p-4">
                                                         <select
                                                             value={currentMethod}
                                                             onChange={(e) => updateCondition(conditionalIndex, conditionIndex, e.target.value, methodType === 'boolean' ? true : '')}
-                                                            className="xpo_px-3 xpo_py-2 xpo_border xpo_border-gray-300 xpo_rounded focus:xpo_ring-2 focus:xpo_ring-agreements-500 focus:xpo_border-transparent"
+                                                            className="px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-agreements-500 focus:border-transparent"
                                                         >
                                                             {conditionMethods.map(method => (
                                                                 <option key={method.value} value={method.value}>
@@ -233,13 +233,13 @@ export default function ServiceMetaBox({ config, input }) {
                                                             ))}
                                                         </select>
 
-                                                        <span className="xpo_text-gray-500">=</span>
+                                                        <span className="text-gray-500">=</span>
 
                                                         {methodType === 'boolean' ? (
                                                             <select
                                                                 value={currentValue.toString()}
                                                                 onChange={(e) => updateCondition(conditionalIndex, conditionIndex, currentMethod, e.target.value === 'true')}
-                                                                className="xpo_px-3 xpo_py-2 xpo_border xpo_border-gray-300 xpo_rounded focus:xpo_ring-2 focus:xpo_ring-agreements-500 focus:xpo_border-transparent"
+                                                                className="px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-agreements-500 focus:border-transparent"
                                                             >
                                                                 <option value="true">True</option>
                                                                 <option value="false">False</option>
@@ -249,7 +249,7 @@ export default function ServiceMetaBox({ config, input }) {
                                                                 type={methodType}
                                                                 value={currentValue}
                                                                 onChange={(e) => updateCondition(conditionalIndex, conditionIndex, currentMethod, methodType === 'number' ? parseFloat(e.target.value) || 0 : e.target.value)}
-                                                                className="xpo_flex-1 xpo_px-3 xpo_py-2 xpo_border xpo_border-gray-300 xpo_rounded focus:xpo_ring-2 focus:xpo_ring-agreements-500 focus:xpo_border-transparent"
+                                                                className="flex-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-agreements-500 focus:border-transparent"
                                                                 placeholder={`Enter ${currentMethod}`}
                                                             />
                                                         )}
@@ -257,7 +257,7 @@ export default function ServiceMetaBox({ config, input }) {
                                                         {conditional.condition.length > 1 && (
                                                             <button
                                                                 onClick={() => removeCondition(conditionalIndex, conditionIndex)}
-                                                                className="xpo_p-1 xpo_text-red-600 hover:xpo_bg-red-100 xpo_rounded"
+                                                                className="p-1 text-red-600 hover:bg-red-100 rounded"
                                                             >
                                                                 <X size={14} />
                                                             </button>
@@ -269,33 +269,33 @@ export default function ServiceMetaBox({ config, input }) {
                                     </div>
 
                                     {/* Price and Agreement for this conditional */}
-                                    <div className="xpo_grid xpo_grid-cols-1 lg:xpo_grid-cols-2 xpo_gap-4">
-                                        <div className="xpo_space-y-2">
-                                            <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700">
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <label className="block text-sm font-medium text-gray-700">
                                                 Conditional Price
                                             </label>
-                                            <div className="xpo_relative">
-                                                <DollarSign className="xpo_absolute xpo_left-3 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_text-gray-400" size={16} />
+                                            <div className="relative">
+                                                <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
                                                 <input
                                                     min={0}
                                                     type="number"
                                                     value={conditional.price}
                                                     onChange={(e) => updateConditional(conditionalIndex, 'price', parseFloat(e.target.value) || 0)}
-                                                    className="xpo_w-full !xpo_pl-9 xpo_pr-3 xpo_py-2 xpo_border xpo_border-gray-300 xpo_rounded focus:xpo_ring-2 focus:xpo_ring-agreements-500 focus:xpo_border-transparent"
+                                                    className="w-full !pl-9 pr-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-agreements-500 focus:border-transparent"
                                                     placeholder="0"
                                                 />
                                             </div>
                                         </div>
 
-                                        <div className="xpo_space-y-2">
-                                            <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700">
+                                        <div className="space-y-2">
+                                            <label className="block text-sm font-medium text-gray-700">
                                                 Conditional Agreement
                                             </label>
                                             <textarea
                                                 rows={3}
                                                 value={conditional.agreement}
                                                 onChange={(e) => updateConditional(conditionalIndex, 'agreement', e.target.value)}
-                                                className="xpo_w-full xpo_px-3 xpo_py-2 xpo_border xpo_border-gray-300 xpo_rounded focus:xpo_ring-2 focus:xpo_ring-agreements-500 focus:xpo_border-transparent xpo_resize-none"
+                                                className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-agreements-500 focus:border-transparent resize-none"
                                                 placeholder="Enter conditional agreement terms"
                                             />
                                         </div>
@@ -307,13 +307,13 @@ export default function ServiceMetaBox({ config, input }) {
                 </div>
 
                 {/* Preview */}
-                <div className="xpo_bg-agreements-50 xpo_border xpo_border-agreements-200 xpo_rounded-lg xpo_p-6">
-                    <h3 className="xpo_text-lg xpo_font-semibold xpo_text-gray-800 xpo_mb-4 xpo_flex xpo_items-center xpo_gap-2">
-                        <Check className="xpo_text-agreements-600" size={20} />
+                <div className="bg-agreements-50 border border-agreements-200 rounded-lg p-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <Check className="text-agreements-600" size={20} />
                         Configuration Preview
                     </h3>
-                    <div className="xpo_bg-white xpo_rounded-lg xpo_p-4 xpo_max-h-64 xpo_overflow-auto">
-                        <pre className="xpo_text-sm xpo_text-gray-700">
+                    <div className="bg-white rounded-lg p-4 max-h-64 overflow-auto">
+                        <pre className="text-sm text-gray-700">
                             {JSON.stringify(formdata, null, 2)}
                         </pre>
                     </div>

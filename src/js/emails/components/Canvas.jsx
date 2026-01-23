@@ -25,16 +25,16 @@ const Canvas = () => {
     };
 
     return (
-        <div className="xpo_flex-1 xpo_flex xpo_items-start xpo_justify-center xpo_p-8">
+        <div className="flex-1 flex items-start justify-center p-8">
             <div
-                className="xpo_transition-all xpo_duration-300 xpo_bg-white xpo_shadow-lg xpo_rounded-lg"
+                className="transition-all duration-300 bg-white shadow-lg rounded-lg"
                 style={{
                     width: '100%',
                     minHeight: '800px',
                     maxWidth: getCanvasMaxWidth()
                 }}
             >
-                <div ref={canvasRef} onClick={e => handleCanvasClick(e)} className="xpo_relative xpo_min-h-full xpo_p-6">
+                <div ref={canvasRef} onClick={e => handleCanvasClick(e)} className="relative min-h-full p-6">
                     {Object.keys(template.elements).length === 0 ? (
                         <EmptyCanvas onDrop={drop_element} />
                     ) : (
@@ -42,7 +42,7 @@ const Canvas = () => {
                     )}
                     {Object.keys(template.elements).length > 0 && (
                         <DropZone onDrop={drop_element}>
-                            <div className="xpo_min-h-16 xpo_flex xpo_items-center xpo_justify-center xpo_text-gray-400 xpo_text-sm">
+                            <div className="min-h-16 flex items-center justify-center text-gray-400 text-sm">
                                 Drop elements here
                             </div>
                         </DropZone>

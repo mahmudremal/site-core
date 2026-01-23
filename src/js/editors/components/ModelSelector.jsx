@@ -22,18 +22,18 @@ export default function ModelSelector({ selectedModel, setSelectedModel }) {
 
   if (loading) {
     return (
-      <div className="xpo_w-full">
-        <div className="xpo_h-10 xpo_bg-gray-200 xpo_rounded-lg dark:xpo_bg-gray-700 xpo_w-full"></div>
+      <div className="w-full">
+        <div className="h-10 bg-gray-200 rounded-lg dark:bg-gray-700 w-full"></div>
       </div>
     );
   }
 
   return (
-    <div className="xpo_relative xpo_w-full">
+    <div className="relative w-full">
       <select
         value={selectedModel}
         onChange={(e) => setSelectedModel(e.target.value)}
-        className="xpo_w-full xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_px-4 xpo_py-2 focus:xpo_outline-none focus:xpo_ring-2 focus:xpo_ring-blue-500"
+        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         <option value="">{__('Select a model')}</option>
         {models.map((model) => (

@@ -121,39 +121,39 @@ const ReturnsOrdersPage = () => {
   const getStatusInfo = (status) => {
     switch (status) {
       case 'pending':
-        return { 
-          icon: Clock, 
-          color: 'xpo_text-yellow-600 xpo_bg-yellow-100', 
+        return {
+          icon: Clock,
+          color: 'text-yellow-600 bg-yellow-100',
           label: 'Pending',
           message: 'Your order has been received and is waiting to be processed.'
         };
       case 'processing':
-        return { 
-          icon: RefreshCw, 
-          color: 'xpo_text-scaccent-600 xpo_bg-scaccent-100', 
+        return {
+          icon: RefreshCw,
+          color: 'text-scaccent-600 bg-scaccent-100',
           label: 'Processing',
           message: 'We are preparing your order for shipment. This usually takes 1-2 business days.',
           attachment: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=300&h=200&fit=crop'
         };
       case 'fulfilled':
-        return { 
-          icon: Truck, 
-          color: 'xpo_text-purple-600 xpo_bg-purple-100', 
+        return {
+          icon: Truck,
+          color: 'text-purple-600 bg-purple-100',
           label: 'Fulfilled',
           message: 'Your order has been shipped and is on its way to you!'
         };
       case 'completed':
-        return { 
-          icon: CheckCircle, 
-          color: 'xpo_text-green-600 xpo_bg-green-100', 
+        return {
+          icon: CheckCircle,
+          color: 'text-green-600 bg-green-100',
           label: 'Completed',
           message: 'Your order has been successfully delivered. Thank you for shopping with us!'
         };
       default:
-        return { 
-          icon: AlertCircle, 
-          color: 'xpo_text-gray-600 xpo_bg-gray-100', 
-          label: 'Unknown' 
+        return {
+          icon: AlertCircle,
+          color: 'text-gray-600 bg-gray-100',
+          label: 'Unknown'
         };
     }
   };
@@ -172,87 +172,87 @@ const ReturnsOrdersPage = () => {
     const StatusIcon = statusInfo.icon;
 
     return (
-      <div className="xpo_w-full xpo_max-w-2xl">
-        <div className="xpo_flex xpo_justify-between xpo_items-center xpo_mb-6">
-          <h3 className="xpo_text-xl xpo_font-bold xpo_text-gray-900 dark:xpo_text-scwhite">{__('Order Tracking', 'site-core')}</h3>
+      <div className="w-full max-w-2xl">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-scwhite">{__('Order Tracking', 'site-core')}</h3>
         </div>
 
-        <div className="xpo_bg-scwhite/50 xpo_rounded-xl xpo_p-4 xpo_mb-6">
-          <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-4">
+        <div className="bg-scwhite/50 rounded-xl p-4 mb-6">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h4 className="xpo_font-semibold xpo_text-gray-900">{sprintf(__('Order #%s', 'site-core'), order.order_number)}</h4>
-              <p className="xpo_text-sm xpo_text-gray-600">Placed on {new Date(order.created_at).toLocaleDateString()}</p>
+              <h4 className="font-semibold text-gray-900">{sprintf(__('Order #%s', 'site-core'), order.order_number)}</h4>
+              <p className="text-sm text-gray-600">Placed on {new Date(order.created_at).toLocaleDateString()}</p>
             </div>
-            <div className={`xpo_flex xpo_items-center xpo_gap-2 xpo_px-3 xpo_py-2 xpo_rounded-full ${statusInfo.color}`}>
-              <StatusIcon className="xpo_w-4 xpo_h-4" />
-              <span className="xpo_text-sm xpo_font-medium">{statusInfo.label}</span>
+            <div className={`flex items-center gap-2 px-3 py-2 rounded-full ${statusInfo.color}`}>
+              <StatusIcon className="w-4 h-4" />
+              <span className="text-sm font-medium">{statusInfo.label}</span>
             </div>
           </div>
 
-          <div className="xpo_grid xpo_grid-cols-3 xpo_gap-4 xpo_text-sm">
+          <div className="grid grid-cols-3 gap-4 text-sm">
             <div>
-              <span className="xpo_text-gray-600">{__('Total:', 'site-core')}</span>
-              <span className="xpo_font-semibold xpo_ml-1">{money(order.total_amount)}</span>
+              <span className="text-gray-600">{__('Total:', 'site-core')}</span>
+              <span className="font-semibold ml-1">{money(order.total_amount)}</span>
             </div>
             <div>
-              <span className="xpo_text-gray-600">{__('Tax:', 'site-core')}</span>
-              <span className="xpo_font-semibold xpo_ml-1">{money(order.tax_amount)}</span>
+              <span className="text-gray-600">{__('Tax:', 'site-core')}</span>
+              <span className="font-semibold ml-1">{money(order.tax_amount)}</span>
             </div>
             <div>
-              <span className="xpo_text-gray-600">{__('Shipping:', 'site-core')}</span>
-              <span className="xpo_font-semibold xpo_ml-1">{order.shipping === 0 ? __('Free', 'site-core') : money(order.shipping)}</span>
+              <span className="text-gray-600">{__('Shipping:', 'site-core')}</span>
+              <span className="font-semibold ml-1">{order.shipping === 0 ? __('Free', 'site-core') : money(order.shipping)}</span>
             </div>
           </div>
         </div>
 
-        <div className="xpo_mb-6">
-          <h5 className="xpo_font-semibold xpo_text-gray-900 dark:xpo_text-scwhite xpo_mb-3">{__('Delivery Address', 'site-core')}</h5>
-          <div className="xpo_bg-scwhite/70 xpo_border xpo_border-gray-200 xpo_rounded-lg xpo_p-4">
-            <div className="xpo_flex xpo_items-start xpo_gap-3">
-              <MapPin className="xpo_w-5 xpo_h-5 xpo_text-gray-400 xpo_mt-0.5" />
+        <div className="mb-6">
+          <h5 className="font-semibold text-gray-900 dark:text-scwhite mb-3">{__('Delivery Address', 'site-core')}</h5>
+          <div className="bg-scwhite/70 border border-gray-200 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <MapPin className="w-5 h-5 text-gray-400 mt-0.5" />
               <div>
-                <p className="xpo_font-medium xpo_text-gray-900">{order.shipping_data.name}</p>
-                <p className="xpo_text-sm xpo_text-gray-600">{order.shipping_data.address}</p>
-                <p className="xpo_text-sm xpo_text-gray-600">{order.shipping_data.city}</p>
-                <p className="xpo_text-sm xpo_text-gray-600">{order.shipping_data.phone}</p>
+                <p className="font-medium text-gray-900">{order.shipping_data.name}</p>
+                <p className="text-sm text-gray-600">{order.shipping_data.address}</p>
+                <p className="text-sm text-gray-600">{order.shipping_data.city}</p>
+                <p className="text-sm text-gray-600">{order.shipping_data.phone}</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="xpo_bg-scwhite/70 xpo_border xpo_border-gray-200 xpo_rounded-lg xpo_p-6">
-          <div className="xpo_flex xpo_items-start xpo_gap-4">
-            <div className={`xpo_p-3 xpo_rounded-full ${statusInfo.color}`}>
-              <StatusIcon className="xpo_w-6 xpo_h-6" />
+        <div className="bg-scwhite/70 border border-gray-200 rounded-lg p-6">
+          <div className="flex items-start gap-4">
+            <div className={`p-3 rounded-full ${statusInfo.color}`}>
+              <StatusIcon className="w-6 h-6" />
             </div>
-            <div className="xpo_flex-1">
-              <h6 className="xpo_font-semibold xpo_text-gray-900 xpo_mb-2">{statusInfo.label}</h6>
-              <p className="xpo_text-gray-600 xpo_mb-4">{statusInfo.message}</p>
+            <div className="flex-1">
+              <h6 className="font-semibold text-gray-900 mb-2">{statusInfo.label}</h6>
+              <p className="text-gray-600 mb-4">{statusInfo.message}</p>
 
               {statusInfo.attachment && (
-                <img src={statusInfo.attachment} alt={__('Order processing', 'site-core')} className="xpo_w-full xpo_h-32 xpo_object-cover xpo_rounded-lg xpo_mb-4" />
+                <img src={statusInfo.attachment} alt={__('Order processing', 'site-core')} className="w-full h-32 object-cover rounded-lg mb-4" />
               )}
 
               {order.status === 'fulfilled' && order.trackingInfo && (
-                <div className="xpo_space-y-4">
-                  <div className="xpo_bg-scaccent-50 xpo_rounded-lg xpo_p-4">
-                    <h6 className="xpo_font-semibold xpo_text-scaccent-900 xpo_mb-2">{__('Current Location', 'site-core')}</h6>
-                    <p className="xpo_text-sm xpo_text-scaccent-700 xpo_mb-2">{order.trackingInfo.currentLocation.address}</p>
-                    <a target="_blank" rel="noopener noreferrer" href={order.trackingInfo.mapLink} className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_text-sm xpo_text-scaccent-600 hover:xpo_text-scaccent-800">
-                      <MapPin className="xpo_w-4 xpo_h-4" />
+                <div className="space-y-4">
+                  <div className="bg-scaccent-50 rounded-lg p-4">
+                    <h6 className="font-semibold text-scaccent-900 mb-2">{__('Current Location', 'site-core')}</h6>
+                    <p className="text-sm text-scaccent-700 mb-2">{order.trackingInfo.currentLocation.address}</p>
+                    <a target="_blank" rel="noopener noreferrer" href={order.trackingInfo.mapLink} className="inline-flex items-center gap-2 text-sm text-scaccent-600 hover:text-scaccent-800">
+                      <MapPin className="w-4 h-4" />
                       {__('View on Google Maps', 'site-core')}
                     </a>
                   </div>
 
-                  <div className="xpo_bg-scwhite/50 xpo_rounded-lg xpo_p-4">
-                    <h6 className="xpo_font-semibold xpo_text-gray-900 xpo_mb-2">{__('Delivery Contact', 'site-core')}</h6>
-                    <div className="xpo_flex xpo_items-center xpo_gap-2 xpo_mb-1">
-                      <User className="xpo_w-4 xpo_h-4 xpo_text-gray-500" />
-                      <span className="xpo_text-sm xpo_text-gray-700">{order.trackingInfo.deliveryBoy.name}</span>
+                  <div className="bg-scwhite/50 rounded-lg p-4">
+                    <h6 className="font-semibold text-gray-900 mb-2">{__('Delivery Contact', 'site-core')}</h6>
+                    <div className="flex items-center gap-2 mb-1">
+                      <User className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-700">{order.trackingInfo.deliveryBoy.name}</span>
                     </div>
-                    <div className="xpo_flex xpo_items-center xpo_gap-2">
-                      <Phone className="xpo_w-4 xpo_h-4 xpo_text-gray-500" />
-                      <span className="xpo_text-sm xpo_text-gray-700">{order.trackingInfo.deliveryBoy.phone}</span>
+                    <div className="flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-700">{order.trackingInfo.deliveryBoy.phone}</span>
                     </div>
                   </div>
                 </div>
@@ -271,8 +271,8 @@ const ReturnsOrdersPage = () => {
     const [submitting, setSubmitting] = useState(false);
 
     const handleItemToggle = (itemId) => {
-      setSelectedItems(prev => 
-        prev.includes(itemId) 
+      setSelectedItems(prev =>
+        prev.includes(itemId)
           ? prev.filter(id => id !== itemId)
           : [...prev, itemId]
       );
@@ -289,47 +289,47 @@ const ReturnsOrdersPage = () => {
 
     if (step === 1) {
       return (
-        <div className="xpo_w-full xpo_max-w-2xl">
-          <div className="xpo_flex xpo_justify-between xpo_items-center xpo_mb-6">
-            <h3 className="xpo_text-xl xpo_font-bold xpo_text-gray-900">
+        <div className="w-full max-w-2xl">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-bold text-gray-900">
               {isReturn ? __('Return Request', 'site-core') : __('Refund Request', 'site-core')}
             </h3>
           </div>
 
-          <div className="xpo_bg-scwhite/50 xpo_rounded-xl xpo_p-6 xpo_mb-6">
-            <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-4">
+          <div className="bg-scwhite/50 rounded-xl p-6 mb-6">
+            <div className="flex items-center justify-between mb-4">
               <div>
-                <h4 className="xpo_font-semibold xpo_text-gray-900">{sprintf(__('Order #%s', 'site-core'), order.id)}</h4>
-                <p className="xpo_text-sm xpo_text-gray-600">{sprintf(__('Placed on %s', 'site-core'), new Date(order.created_at).toLocaleDateString())}</p>
+                <h4 className="font-semibold text-gray-900">{sprintf(__('Order #%s', 'site-core'), order.id)}</h4>
+                <p className="text-sm text-gray-600">{sprintf(__('Placed on %s', 'site-core'), new Date(order.created_at).toLocaleDateString())}</p>
                 {order.deliveredDate && (
-                  <p className="xpo_text-sm xpo_text-gray-600">{sprintf(__('Delivered on %s', 'site-core'), new Date(order.deliveredDate).toLocaleDateString())}</p>
+                  <p className="text-sm text-gray-600">{sprintf(__('Delivered on %s', 'site-core'), new Date(order.deliveredDate).toLocaleDateString())}</p>
                 )}
               </div>
             </div>
 
-            <div className="xpo_grid xpo_grid-cols-2 xpo_gap-4 xpo_text-sm xpo_mb-4">
+            <div className="grid grid-cols-2 gap-4 text-sm mb-4">
               <div>
-                <span className="xpo_text-gray-600">{__('Total:', 'site-core')}</span>
-                <span className="xpo_font-semibold xpo_ml-1">{money(order.total_amount)}</span>
+                <span className="text-gray-600">{__('Total:', 'site-core')}</span>
+                <span className="font-semibold ml-1">{money(order.total_amount)}</span>
               </div>
               <div>
-                <span className="xpo_text-gray-600">{__('Delivery:', 'site-core')}</span>
-                <span className="xpo_font-semibold xpo_ml-1">{order.deliveryMethod}</span>
+                <span className="text-gray-600">{__('Delivery:', 'site-core')}</span>
+                <span className="font-semibold ml-1">{order.deliveryMethod}</span>
               </div>
             </div>
 
-            <div className="xpo_space-y-3">
+            <div className="space-y-3">
               {order.items.map((item) => (
-                <div key={item.id} className="xpo_flex xpo_gap-3 xpo_bg-scwhite/70 xpo_rounded-lg xpo_p-3">
+                <div key={item.id} className="flex gap-3 bg-scwhite/70 rounded-lg p-3">
                   <img
                     alt={item.name} src={item.image}
-                    className="xpo_w-12 xpo_h-12 xpo_object-cover xpo_rounded-lg"
+                    className="w-12 h-12 object-cover rounded-lg"
                   />
-                  <div className="xpo_flex-1">
-                    <h5 className="xpo_font-medium xpo_text-gray-900 xpo_text-sm">{item.name}</h5>
-                    <div className="xpo_flex xpo_justify-between xpo_items-center xpo_mt-1">
-                      <span className="xpo_text-sm xpo_text-gray-600">{sprintf(__('Qty: %s', 'site-core'), item.quantity)}</span>
-                      <span className="xpo_font-semibold xpo_text-gray-900">{money(item.price, item.currency)}</span>
+                  <div className="flex-1">
+                    <h5 className="font-medium text-gray-900 text-sm">{item.name}</h5>
+                    <div className="flex justify-between items-center mt-1">
+                      <span className="text-sm text-gray-600">{sprintf(__('Qty: %s', 'site-core'), item.quantity)}</span>
+                      <span className="font-semibold text-gray-900">{money(item.price, item.currency)}</span>
                     </div>
                   </div>
                 </div>
@@ -339,7 +339,7 @@ const ReturnsOrdersPage = () => {
 
           <button
             onClick={() => setStep(2)}
-            className="xpo_w-full xpo_bg-red-600 xpo_text-scwhite xpo_py-4 xpo_px-6 xpo_rounded-xl xpo_font-medium hover:xpo_bg-red-700 xpo_transition-colors"
+            className="w-full bg-red-600 text-scwhite py-4 px-6 rounded-xl font-medium hover:bg-red-700 transition-colors"
           >
             {isReturn ? __('I want to get Return', 'site-core') : __('I want to get Refund', 'site-core')}
           </button>
@@ -349,50 +349,49 @@ const ReturnsOrdersPage = () => {
 
     if (step === 2) {
       return (
-        <div className="xpo_w-full xpo_max-w-2xl">
-          <div className="xpo_flex xpo_justify-between xpo_items-center xpo_mb-6">
-            <div className="xpo_flex xpo_items-center xpo_gap-3">
+        <div className="w-full max-w-2xl">
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => setStep(1)}
-                className="xpo_p-1 hover:xpo_bg-gray-100 xpo_rounded"
+                className="p-1 hover:bg-gray-100 rounded"
               >
-                <ArrowLeft className="xpo_w-5 xpo_h-5" />
+                <ArrowLeft className="w-5 h-5" />
               </button>
-              <h3 className="xpo_text-xl xpo_font-bold xpo_text-gray-900">
+              <h3 className="text-xl font-bold text-gray-900">
                 {isReturn ? __('Select Items to Return', 'site-core') : __('Select Items to Refund', 'site-core')}
               </h3>
             </div>
           </div>
 
-          <div className="xpo_space-y-4 xpo_mb-6">
+          <div className="space-y-4 mb-6">
             {order.items.map((item) => (
-              <div 
-                key={item.id} 
-                className={`xpo_border-2 xpo_rounded-lg xpo_p-4 xpo_cursor-pointer xpo_transition-all ${
-                  selectedItems.includes(item.id)
-                    ? 'xpo_border-red-500 xpo_bg-red-50'
-                    : 'xpo_border-gray-200 hover:xpo_border-gray-300'
-                }`}
+              <div
+                key={item.id}
+                className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${selectedItems.includes(item.id)
+                    ? 'border-red-500 bg-red-50'
+                    : 'border-gray-200 hover:border-gray-300'
+                  }`}
                 onClick={() => handleItemToggle(item.id)}
               >
-                <div className="xpo_flex xpo_gap-4">
-                  <div className="xpo_flex-shrink-0">
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0">
                     <input
                       type="checkbox"
                       checked={selectedItems.includes(item.id)}
                       onChange={() => handleItemToggle(item.id)}
-                      className="xpo_w-5 xpo_h-5 xpo_text-red-600 xpo_rounded"
+                      className="w-5 h-5 text-red-600 rounded"
                     />
                   </div>
                   <img
                     alt={item.name} src={item.image}
-                    className="xpo_w-16 xpo_h-16 xpo_object-cover xpo_rounded-lg"
+                    className="w-16 h-16 object-cover rounded-lg"
                   />
-                  <div className="xpo_flex-1">
-                    <h5 className="xpo_font-medium xpo_text-gray-900">{item.name}</h5>
-                    <div className="xpo_flex xpo_justify-between xpo_items-center xpo_mt-2">
-                      <span className="xpo_text-sm xpo_text-gray-600">{sprintf(__('Quantity: %s', 'site-core'), item.quantity)}</span>
-                      <span className="xpo_font-semibold xpo_text-gray-900">{money(item.price, item.currency)}</span>
+                  <div className="flex-1">
+                    <h5 className="font-medium text-gray-900">{item.name}</h5>
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="text-sm text-gray-600">{sprintf(__('Quantity: %s', 'site-core'), item.quantity)}</span>
+                      <span className="font-semibold text-gray-900">{money(item.price, item.currency)}</span>
                     </div>
                   </div>
                 </div>
@@ -400,15 +399,15 @@ const ReturnsOrdersPage = () => {
             ))}
           </div>
 
-          <div className="xpo_mb-6">
-            <label className="xpo_block xpo_text-sm xpo_font-medium xpo_text-gray-700 xpo_mb-2">
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               {isReturn ? __('Reason for Return (Optional)', 'site-core') : __('Reason for Refund (Optional)', 'site-core')}
             </label>
             <textarea
               rows={4}
               value={refundReason}
               onChange={(e) => setRefundReason(e.target.value)}
-              className="xpo_w-full xpo_px-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_focus:ring-2 xpo_focus:ring-red-500 xpo_focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
               placeholder={isReturn ? __('Please tell us why you want to return these items...', 'site-core') : __('Please tell us why you want to refund these items...', 'site-core')}
             />
           </div>
@@ -416,11 +415,10 @@ const ReturnsOrdersPage = () => {
           <button
             onClick={handleRefundSubmit}
             disabled={selectedItems.length === 0 || submitting}
-            className={`xpo_w-full xpo_py-4 xpo_px-6 xpo_rounded-xl xpo_font-medium xpo_transition-colors ${
-              selectedItems.length === 0 || submitting
-                ? 'xpo_bg-gray-300 xpo_text-gray-500 xpo_cursor-not-allowed'
-                : 'xpo_bg-red-600 xpo_text-scwhite hover:xpo_bg-red-700'
-            }`}
+            className={`w-full py-4 px-6 rounded-xl font-medium transition-colors ${selectedItems.length === 0 || submitting
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-red-600 text-scwhite hover:bg-red-700'
+              }`}
           >
             {submitting ? __('Submitting Request...', 'site-core') : isReturn ? __('Submit Return Request', 'site-core') : __('Submit Refund Request', 'site-core')}
           </button>
@@ -430,20 +428,20 @@ const ReturnsOrdersPage = () => {
 
     if (step === 3) {
       return (
-        <div className="xpo_w-full xpo_max-w-md xpo_text-center">
-          <div className="xpo_mb-6">
-            <div className="xpo_w-16 xpo_h-16 xpo_bg-green-100 xpo_rounded-full xpo_flex xpo_items-center xpo_justify-center xpo_mx-auto xpo_mb-4">
-              <CheckCircle className="xpo_w-8 xpo_h-8 xpo_text-green-600" />
+        <div className="w-full max-w-md text-center">
+          <div className="mb-6">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="w-8 h-8 text-green-600" />
             </div>
-            <h3 className="xpo_text-xl xpo_font-bold xpo_text-gray-900 xpo_mb-2">{__('Request Submitted!', 'site-core')}</h3>
-            <p className="xpo_text-gray-600">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">{__('Request Submitted!', 'site-core')}</h3>
+            <p className="text-gray-600">
               {__("I got your request. Shortly we'll review your request and further details will be sent to your email/phone SMS.", 'site-core')}
             </p>
           </div>
 
           <button
             onClick={() => setPopup(null)}
-            className="xpo_w-full xpo_bg-gray-900 xpo_text-scwhite xpo_py-3 xpo_px-6 xpo_rounded-xl xpo_font-medium hover:xpo_bg-gray-800 xpo_transition-colors"
+            className="w-full bg-gray-900 text-scwhite py-3 px-6 rounded-xl font-medium hover:bg-gray-800 transition-colors"
           >
             {__('Close', 'site-core')}
           </button>
@@ -457,10 +455,10 @@ const ReturnsOrdersPage = () => {
 
     const handleTrackOrder = async () => {
       if (!trackingOrderId.trim()) return;
-      
+
       setSubmitting(true);
       await sleep(1500);
-      
+
       const order = orders.find(o => o.id.toLowerCase() === trackingOrderId.toLowerCase());
       if (order) {
         setPopup(<TrackingModal order={order} />);
@@ -471,32 +469,31 @@ const ReturnsOrdersPage = () => {
     };
 
     return (
-      <div className="xpo_bg-scwhite/70 xpo_rounded-2xl xpo_shadow-lg xpo_p-8 xpo_text-center xpo_max-w-md xpo_mx-auto">
-        <div className="xpo_mb-6">
-          <div className="xpo_w-16 xpo_h-16 xpo_bg-scaccent-100 xpo_rounded-full xpo_flex xpo_items-center xpo_justify-center xpo_mx-auto xpo_mb-4">
-            <Package className="xpo_w-8 xpo_h-8 xpo_text-scaccent-600" />
+      <div className="bg-scwhite/70 rounded-2xl shadow-lg p-8 text-center max-w-md mx-auto">
+        <div className="mb-6">
+          <div className="w-16 h-16 bg-scaccent-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Package className="w-8 h-8 text-scaccent-600" />
           </div>
-          <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-900 xpo_mb-2">{__('Track Your Order', 'site-core')}</h2>
-          <p className="xpo_text-gray-600">{__('Enter your order ID to track your package', 'site-core')}</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">{__('Track Your Order', 'site-core')}</h2>
+          <p className="text-gray-600">{__('Enter your order ID to track your package', 'site-core')}</p>
         </div>
 
-        <div className="xpo_space-y-4">
+        <div className="space-y-4">
           <input
             type="text"
             defaultValue={trackingOrderId}
             onChange={(e) => setTrackingOrderId(e.target.value)}
             placeholder={__('Enter Order ID (e.g., XPO-2024-001)', 'site-core')}
-            className="xpo_w-full xpo_px-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_focus:ring-2 xpo_focus:ring-scaccent-500 xpo_focus:border-transparent"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-scaccent-500 focus:border-transparent"
           />
 
           <button
             onClick={handleTrackOrder}
             disabled={!trackingOrderId.trim() || submitting}
-            className={`xpo_w-full xpo_py-3 xpo_px-6 xpo_rounded-lg xpo_font-medium xpo_transition-colors ${
-              !trackingOrderId.trim() || submitting
-                ? 'xpo_bg-gray-300 xpo_text-gray-500 xpo_cursor-not-allowed'
-                : 'xpo_bg-scaccent-600 xpo_text-scwhite hover:xpo_bg-scaccent-700'
-            }`}
+            className={`w-full py-3 px-6 rounded-lg font-medium transition-colors ${!trackingOrderId.trim() || submitting
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-scaccent-600 text-scwhite hover:bg-scaccent-700'
+              }`}
           >
             {submitting ? __('Tracking...', 'site-core') : __('Track Order', 'site-core')}
           </button>
@@ -507,19 +504,19 @@ const ReturnsOrdersPage = () => {
 
   const OrdersTable = () => {
     return (
-      <div className="xpo_bg-scwhite/70 xpo_rounded-2xl xpo_shadow-lg xpo_overflow-hidden">
-        <div className="xpo_bg-gray-50/80 xpo_px-6 xpo_py-4 xpo_border-b xpo_border-gray-200">
-          <div className="xpo_grid xpo_grid-cols-12 xpo_gap-4 xpo_items-center xpo_text-sm xpo_font-semibold xpo_text-gray-700 xpo_uppercase xpo_tracking-wide">
-            <div className="xpo_col-span-3">{__('Order Details', 'site-core')}</div>
-            <div className="xpo_col-span-2">{__('Date', 'site-core')}</div>
-            <div className="xpo_col-span-2">{__('Status', 'site-core')}</div>
-            <div className="xpo_col-span-2">{__('Items', 'site-core')}</div>
-            <div className="xpo_col-span-2">{__('Total', 'site-core')}</div>
-            <div className="xpo_col-span-1">{__('Actions', 'site-core')}</div>
+      <div className="bg-scwhite/70 rounded-2xl shadow-lg overflow-hidden">
+        <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200">
+          <div className="grid grid-cols-12 gap-4 items-center text-sm font-semibold text-gray-700 uppercase tracking-wide">
+            <div className="col-span-3">{__('Order Details', 'site-core')}</div>
+            <div className="col-span-2">{__('Date', 'site-core')}</div>
+            <div className="col-span-2">{__('Status', 'site-core')}</div>
+            <div className="col-span-2">{__('Items', 'site-core')}</div>
+            <div className="col-span-2">{__('Total', 'site-core')}</div>
+            <div className="col-span-1">{__('Actions', 'site-core')}</div>
           </div>
         </div>
 
-        <div className="xpo_divide-y xpo_divide-gray-200">
+        <div className="divide-y divide-gray-200">
           {orders.map((order) => {
             const statusInfo = getStatusInfo(order.status);
             const StatusIcon = statusInfo.icon;
@@ -529,54 +526,54 @@ const ReturnsOrdersPage = () => {
             const canTrack = order.status !== 'completed';
 
             return (
-              <div key={order.id} className="xpo_px-6 xpo_py-5 hover:xpo_bg-gray-50/50 xpo_transition-colors">
-                <div className="xpo_grid xpo_grid-cols-12 xpo_gap-4 xpo_items-center">
-                  <div className="xpo_col-span-3">
-                    <div className="xpo_flex xpo_items-center xpo_gap-3">
-                      <div className="xpo_w-10 xpo_h-10 xpo_bg-scaccent-100 xpo_rounded-lg xpo_flex xpo_items-center xpo_justify-center xpo_flex-shrink-0">
-                        <Package className="xpo_w-5 xpo_h-5 xpo_text-scaccent-600" />
+              <div key={order.id} className="px-6 py-5 hover:bg-gray-50/50 transition-colors">
+                <div className="grid grid-cols-12 gap-4 items-center">
+                  <div className="col-span-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-scaccent-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Package className="w-5 h-5 text-scaccent-600" />
                       </div>
                       <div>
-                        <h3 className="xpo_font-semibold xpo_text-gray-900">{order?.order_number || ''}</h3>
-                        <p className="xpo_text-sm xpo_text-gray-500">{order?.shipping_method || ''}</p>
+                        <h3 className="font-semibold text-gray-900">{order?.order_number || ''}</h3>
+                        <p className="text-sm text-gray-500">{order?.shipping_method || ''}</p>
                       </div>
                     </div>
                   </div>
 
-                  <div className="xpo_col-span-2">
-                    <div className="xpo_text-sm">
-                      <p className="xpo_text-gray-900">{new Date(order.created_at).toLocaleDateString()}</p>
+                  <div className="col-span-2">
+                    <div className="text-sm">
+                      <p className="text-gray-900">{new Date(order.created_at).toLocaleDateString()}</p>
                       {order.delivered_date && (
-                        <p className="xpo_text-gray-500 xpo_flex xpo_items-center xpo_gap-1 xpo_mt-1">
-                          <CheckCircle className="xpo_w-3 xpo_h-3" />
+                        <p className="text-gray-500 flex items-center gap-1 mt-1">
+                          <CheckCircle className="w-3 h-3" />
                           {new Date(order.delivered_date).toLocaleDateString()}
                         </p>
                       )}
                     </div>
                   </div>
 
-                  <div className="xpo_col-span-2">
-                    <div className={`xpo_inline-flex xpo_items-center xpo_gap-2 xpo_px-3 xpo_py-1.5 xpo_rounded-full xpo_text-xs xpo_font-medium ${statusInfo.color}`}>
-                      <StatusIcon className="xpo_w-3.5 xpo_h-3.5" />
+                  <div className="col-span-2">
+                    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium ${statusInfo.color}`}>
+                      <StatusIcon className="w-3.5 h-3.5" />
                       {statusInfo.label}
                     </div>
                   </div>
 
-                  <div className="xpo_col-span-2">
-                    <div className="xpo_flex xpo_items-center xpo_gap-2">
-                      <div className="xpo_flex xpo_-space-x-2">
+                  <div className="col-span-2">
+                    <div className="flex items-center gap-2">
+                      <div className="flex -space-x-2">
                         {order.items.slice(0, 3).map((item, index) => (
                           <img
                             key={item.id}
                             src={item.image}
                             alt={item.name}
-                            className="xpo_w-8 xpo_h-8 xpo_rounded-md xpo_object-cover xpo_border-2 xpo_border-white xpo_shadow-sm"
+                            className="w-8 h-8 rounded-md object-cover border-2 border-white shadow-sm"
                             style={{ zIndex: order.items.length - index }}
                           />
                         ))}
                       </div>
-                      <div className="xpo_text-sm xpo_text-gray-600">
-                        {order.items.length === 1 
+                      <div className="text-sm text-gray-600">
+                        {order.items.length === 1
                           ? __('1 item', 'site-core')
                           : sprintf(__('%s items', 'site-core'), order.items.length || '-')
                         }
@@ -584,52 +581,52 @@ const ReturnsOrdersPage = () => {
                     </div>
                   </div>
 
-                  <div className="xpo_col-span-2">
-                    <div className="xpo_text-right">
-                      <p className="xpo_font-bold xpo_text-gray-900 xpo_text-lg">{money(order.total_amount)}</p>
-                      <p className="xpo_text-sm xpo_text-gray-500">
+                  <div className="col-span-2">
+                    <div className="text-right">
+                      <p className="font-bold text-gray-900 text-lg">{money(order.total_amount)}</p>
+                      <p className="text-sm text-gray-500">
                         {__('Tax:', 'site-core')} {money(order.tax_amount)}
                       </p>
                     </div>
                   </div>
 
-                  <div className="xpo_col-span-1">
+                  <div className="col-span-1">
                     <Dropdown
                       button={
-                        <button className="xpo_w-8 xpo_h-8 xpo_flex xpo_items-center xpo_justify-center xpo_text-gray-400 hover:xpo_text-gray-600 hover:xpo_bg-gray-100 xpo_rounded-lg xpo_transition-colors">
-                          <ChevronDown className="xpo_w-4 xpo_h-4" />
+                        <button className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                          <ChevronDown className="w-4 h-4" />
                         </button>
                       }
                     >
-                      <div className="xpo_py-1 xpo_min-w-[160px]">
+                      <div className="py-1 min-w-[160px]">
                         <button
                           onClick={() => setPopup(<TrackingModal order={order} />)}
-                          className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 hover:xpo_bg-gray-50 xpo_flex xpo_items-center xpo_gap-2"
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                         >
-                          <Package className="xpo_w-4 xpo_h-4" />
+                          <Package className="w-4 h-4" />
                           {__('View Details', 'site-core')}
                         </button>
 
                         {canTrack && (
                           <button
                             onClick={() => setPopup(<TrackingModal order={order} />)}
-                            className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 hover:xpo_bg-gray-50 xpo_flex xpo_items-center xpo_gap-2"
+                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                           >
-                            <Truck className="xpo_w-4 xpo_h-4" />
+                            <Truck className="w-4 h-4" />
                             {__('Track Order', 'site-core')}
                           </button>
                         )}
 
                         {(canRefund || canReturn) && (
-                          <div className="xpo_border-t xpo_border-gray-100 xpo_my-1"></div>
+                          <div className="border-t border-gray-100 my-1"></div>
                         )}
 
                         {canRefund && (
                           <button
                             onClick={() => setPopup(<RefundModal order={order} />)}
-                            className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-red-600 hover:xpo_bg-red-50 xpo_flex xpo_items-center xpo_gap-2"
+                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
                           >
-                            <CreditCard className="xpo_w-4 xpo_h-4" />
+                            <CreditCard className="w-4 h-4" />
                             {__('Request Refund', 'site-core')}
                           </button>
                         )}
@@ -637,18 +634,18 @@ const ReturnsOrdersPage = () => {
                         {canReturn && (
                           <button
                             onClick={() => setPopup(<RefundModal order={order} />)}
-                            className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-orange-600 hover:xpo_bg-orange-50 xpo_flex xpo_items-center xpo_gap-2"
+                            className="w-full text-left px-4 py-2 text-sm text-orange-600 hover:bg-orange-50 flex items-center gap-2"
                           >
-                            <Package className="xpo_w-4 xpo_h-4" />
+                            <Package className="w-4 h-4" />
                             {__('Request Return', 'site-core')}
                           </button>
                         )}
 
                         {order.status === 'completed' && (
                           <>
-                            <div className="xpo_border-t xpo_border-gray-100 xpo_my-1"></div>
-                            <Link to={`/reviews/${order.id}/`} className="xpo_w-full xpo_text-left xpo_px-4 xpo_py-2 xpo_text-sm xpo_text-gray-700 hover:xpo_bg-gray-50 xpo_flex xpo_items-center xpo_gap-2">
-                              <Star className="xpo_w-4 xpo_h-4" />
+                            <div className="border-t border-gray-100 my-1"></div>
+                            <Link to={`/reviews/${order.id}/`} className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                              <Star className="w-4 h-4" />
                               {__('Rate Order', 'site-core')}
                             </Link>
                           </>
@@ -664,17 +661,17 @@ const ReturnsOrdersPage = () => {
         </div>
 
         {orders.length === 0 && (
-          <div className="xpo_px-6 xpo_py-12 xpo_text-center">
-            <div className="xpo_w-16 xpo_h-16 xpo_bg-gray-100 xpo_rounded-full xpo_flex xpo_items-center xpo_justify-center xpo_mx-auto xpo_mb-4">
-              <Package className="xpo_w-8 xpo_h-8 xpo_text-gray-400" />
+          <div className="px-6 py-12 text-center">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Package className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="xpo_text-lg xpo_font-semibold xpo_text-gray-900 xpo_mb-2">{__('No Orders Found', 'site-core')}</h3>
-            <p className="xpo_text-gray-600 xpo_mb-6">{__("You haven't placed any orders yet.", 'site-core')}</p>
-            <Link 
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{__('No Orders Found', 'site-core')}</h3>
+            <p className="text-gray-600 mb-6">{__("You haven't placed any orders yet.", 'site-core')}</p>
+            <Link
               to="/collections/special"
-              className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_bg-scaccent-600 xpo_text-scwhite xpo_px-6 xpo_py-3 xpo_rounded-lg xpo_font-medium hover:xpo_bg-scaccent-700 xpo_transition-colors"
+              className="inline-flex items-center gap-2 bg-scaccent-600 text-scwhite px-6 py-3 rounded-lg font-medium hover:bg-scaccent-700 transition-colors"
             >
-              <Package className="xpo_w-4 xpo_h-4" />
+              <Package className="w-4 h-4" />
               {__('Start Shopping', 'site-core')}
             </Link>
           </div>
@@ -687,46 +684,46 @@ const ReturnsOrdersPage = () => {
   useEffect(() => {
     const delay = setTimeout(() => {
       api.get('orders').then(res => res.data)
-      .then(data => setOrders(data))
-      .catch(err => notify.error(err))
-      .finally(() => setLoading(false));
+        .then(data => setOrders(data))
+        .catch(err => notify.error(err))
+        .finally(() => setLoading(false));
     }, 500);
-  
+
     return () => clearTimeout(delay);
   }, []);
-  
+
 
   if (loading) {
     return (
       <div>Loading...</div>
     )
   }
-  
+
 
   if (!loggedin) {
     return (
-      <div className="xpo_py-12">
+      <div className="py-12">
         <OrderTrackingForm />
       </div>
     )
   }
-  
+
   return (
-    <div className="xpo_space-y-6">
+    <div className="space-y-6">
       <OrdersTable />
 
       {/* {orders.length === 0 && (
-        <div className="xpo_bg-scwhite/70 xpo_rounded-2xl xpo_shadow-lg xpo_p-12 xpo_text-center">
-          <div className="xpo_w-16 xpo_h-16 xpo_bg-gray-100 xpo_rounded-full xpo_flex xpo_items-center xpo_justify-center xpo_mx-auto xpo_mb-4">
-            <Package className="xpo_w-8 xpo_h-8 xpo_text-gray-400" />
+        <div className="bg-scwhite/70 rounded-2xl shadow-lg p-12 text-center">
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Package className="w-8 h-8 text-gray-400" />
           </div>
-          <h3 className="xpo_text-lg xpo_font-semibold xpo_text-gray-900 xpo_mb-2">{__('No Orders Found', 'site-core')}</h3>
-          <p className="xpo_text-gray-600 xpo_mb-6">{__("You haven't placed any orders yet.", 'site-core')}</p>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">{__('No Orders Found', 'site-core')}</h3>
+          <p className="text-gray-600 mb-6">{__("You haven't placed any orders yet.", 'site-core')}</p>
           <Link 
             to="/collections/special"
-            className="xpo_inline-flex xpo_items-center xpo_gap-2 xpo_bg-scaccent-600 xpo_text-scwhite xpo_px-6 xpo_py-3 xpo_rounded-lg xpo_font-medium hover:xpo_bg-scaccent-700 xpo_transition-colors"
+            className="inline-flex items-center gap-2 bg-scaccent-600 text-scwhite px-6 py-3 rounded-lg font-medium hover:bg-scaccent-700 transition-colors"
           >
-            <Package className="xpo_w-4 xpo_h-4" />
+            <Package className="w-4 h-4" />
             {__('Start Shopping', 'site-core')}
           </Link>
         </div>
@@ -740,15 +737,15 @@ export default function PageBody() {
   return (
     <div>
       <SiteHeader />
-      <div className="xpo_container xpo_relative xpo_m-auto xpo_z-10 xpo_pb-12 xpo_min-h-screen">
-        <div className="xpo_flex xpo_items-center xpo_justify-between xpo_pt-6 xpo_mb-8">
-          <h1 className="xpo_text-3xl xpo_font-bold xpo_text-gray-900 dark:xpo_text-scwhite">{__('Returns & Orders', 'site-core')}</h1>
+      <div className="container relative m-auto z-10 pb-12 min-h-screen">
+        <div className="flex items-center justify-between pt-6 mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-scwhite">{__('Returns & Orders', 'site-core')}</h1>
         </div>
 
         <OrdersPageHelmet />
 
         <ReturnsOrdersPage />
-        
+
       </div>
       <SiteFooter />
     </div>

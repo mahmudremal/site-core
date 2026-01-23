@@ -39,12 +39,12 @@ export const UserCard = ({ user, index }) => {
                 className="w-100 object-fit-cover"
             />
 
-            <div className="dropdown position-absolute top-0 end-0 me-16 xpo_mt-16">
+            <div className="dropdown position-absolute top-0 end-0 me-16 mt-16">
                 <button
                     ref={buttonRef}
                     type="button"
                     onClick={toggleDropdown}
-                    className="bg-white-gradient-light xpo_w-32-px xpo_h-32-px radius-8 border border-light-white flex xpo_justify-content-center xpo_items-center xpo_text-white"
+                    className="bg-white-gradient-light w-32-px h-32-px radius-8 border border-light-white flex justify-content-center items-center text-white"
                 >
                     <EllipsisVertical className="icon" />
                 </button>
@@ -52,12 +52,12 @@ export const UserCard = ({ user, index }) => {
                 {menuOpened && (
                     <ul
                         ref={dropdownRef}
-                        className="dropdown-menu show xpo_p-12 border bg-base shadow"
+                        className="dropdown-menu show p-12 border bg-base shadow"
                     >
                         <li>
                             <Link
-                                to={ home_url(`/users/${user.id}/edit`) }
-                                className="dropdown-item px-16 py-8 rounded xpo_text-secondary-light bg-hover-neutral-200 xpo_text-hover-neutral-900 flex xpo_items-center xpo_gap-10"
+                                to={home_url(`/users/${user.id}/edit`)}
+                                className="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 flex items-center gap-10"
                             >
                                 {__('Edit')}
                             </Link>
@@ -65,7 +65,7 @@ export const UserCard = ({ user, index }) => {
                         <li>
                             <button
                                 type="button"
-                                className="delete-btn dropdown-item px-16 py-8 rounded xpo_text-secondary-light bg-hover-danger-100 xpo_text-hover-danger-600 flex xpo_items-center xpo_gap-10"
+                                className="delete-btn dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-danger-100 text-hover-danger-600 flex items-center gap-10"
                             >
                                 {__('Delete')}
                             </button>
@@ -74,31 +74,31 @@ export const UserCard = ({ user, index }) => {
                 )}
             </div>
 
-            <div className="ps-16 xpo_pb-16 pe-16 xpo_text-center xpo_mt--50">
+            <div className="ps-16 pb-16 pe-16 text-center mt--50">
                 <div className="relative">
-                    <img src={ user?.avater??'' } alt={__('User Avatar')} className="border br-white border-width-2-px xpo_w-100-px xpo_h-100-px rounded-circle object-fit-cover" />
-                    <div className="absolute top-0 right-0 xpo_w-full xpo_h-full"></div>
+                    <img src={user?.avater ?? ''} alt={__('User Avatar')} className="border br-white border-width-2-px w-100-px h-100-px rounded-circle object-fit-cover" />
+                    <div className="absolute top-0 right-0 w-full h-full"></div>
                 </div>
-                <h6 className="text-lg xpo_mb-0 xpo_mt-4">{user.name}</h6>
-                <span className="text-secondary-light xpo_mb-16">{user.email}</span>
+                <h6 className="text-lg mb-0 mt-4">{user.name}</h6>
+                <span className="text-secondary-light mb-16">{user.email}</span>
 
-                <div className="center-border position-relative bg-danger-gradient-light radius-8 xpo_p-12 flex xpo_items-center xpo_gap-4">
-                    <div className="text-center xpo_w-50">
-                        <h6 className="text-md xpo_mb-0">{user.department}</h6>
-                        <span className="text-secondary-light xpo_text-sm xpo_mb-0">Department</span>
+                <div className="center-border position-relative bg-danger-gradient-light radius-8 p-12 flex items-center gap-4">
+                    <div className="text-center w-50">
+                        <h6 className="text-md mb-0">{user.department}</h6>
+                        <span className="text-secondary-light text-sm mb-0">Department</span>
                     </div>
-                    <div className="text-center xpo_w-50">
-                        <h6 className="text-md xpo_mb-0">{user.designation}</h6>
-                        <span className="text-secondary-light xpo_text-sm xpo_mb-0">Designation</span>
+                    <div className="text-center w-50">
+                        <h6 className="text-md mb-0">{user.designation}</h6>
+                        <span className="text-secondary-light text-sm mb-0">Designation</span>
                     </div>
                 </div>
 
                 <Link
                     to={home_url(`/users/${user.id}/view`)}
-                    className="bg-primary-50 xpo_text-primary-600 bg-hover-primary-600 hover-text-white xpo_p-10 xpo_text-sm btn-sm px-12 py-12 radius-8 flex xpo_items-center xpo_justify-content-center xpo_mt-16 fw-medium xpo_gap-2 xpo_w-100"
+                    className="bg-primary-50 text-primary-600 bg-hover-primary-600 hover-text-white p-10 text-sm btn-sm px-12 py-12 radius-8 flex items-center justify-content-center mt-16 fw-medium gap-2 w-100"
                 >
                     {__('View Profile')}
-                    <ChevronRight className="icon xpo_text-xl line-height-1" />
+                    <ChevronRight className="icon text-xl line-height-1" />
                 </Link>
             </div>
         </div>

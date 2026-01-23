@@ -36,12 +36,10 @@ class TaskEditor {
         const root = createRoot(container);
         root.render(
           <Suspense
-            fallback={
-              <div className="xpo_text-center xpo_p-4">{__("Loading...")}</div>
-            }
+            fallback={<div className="text-center p-4">{__("Loading...")}</div>}
           >
             <Editor trigger={trigger} config={this.config} />
-          </Suspense>
+          </Suspense>,
         );
       }
     });

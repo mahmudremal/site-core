@@ -74,42 +74,42 @@ const LocationPopup = ({ isOpen, onClose, onLocationSelect }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="xpo_fixed xpo_inset-0 xpo_z-50 xpo_flex xpo_items-center xpo_justify-center xpo_p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div 
-        className="xpo_absolute xpo_inset-0 xpo_bg-black xpo_bg-opacity-50 xpo_backdrop-blur-sm"
+      <div
+        className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
         onClick={onClose}
       />
-      
+
       {/* Popup */}
-      <div className="xpo_relative xpo_bg-white xpo_rounded-2xl xpo_shadow-2xl xpo_w-full xpo_max-w-md xpo_max-h-[90vh] xpo_overflow-hidden">
+      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="xpo_flex xpo_items-center xpo_justify-between xpo_p-6 xpo_border-b xpo_border-gray-200">
-          <h2 className="xpo_text-xl xpo_font-semibold xpo_text-gray-900">Select Location</h2>
+        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900">Select Location</h2>
           <button
             onClick={onClose}
-            className="xpo_p-2 xpo_rounded-full xpo_hover:bg-gray-100 xpo_transition-colors"
+            className="p-2 rounded-full hover:bg-gray-100 transition-colors"
           >
-            <X className="xpo_w-5 xpo_h-5 xpo_text-gray-500" />
+            <X className="w-5 h-5 text-gray-500" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="xpo_p-6 xpo_space-y-4">
+        <div className="p-6 space-y-4">
           {/* GPS Location Button */}
           <button
             onClick={handleGPSLocation}
             disabled={isLoadingGPS}
-            className="xpo_w-full xpo_flex xpo_items-center xpo_justify-center xpo_gap-3 xpo_px-4 xpo_py-3 xpo_bg-blue-600 xpo_text-white xpo_rounded-lg xpo_hover:bg-blue-700 xpo_transition-colors xpo_font-medium disabled:xpo_bg-blue-400 disabled:xpo_cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:bg-blue-400 disabled:cursor-not-allowed"
           >
             {isLoadingGPS ? (
               <>
-                <Loader2 className="xpo_w-5 xpo_h-5 xpo_animate-spin" />
+                <Loader2 className="w-5 h-5 animate-spin" />
                 <span>Getting location...</span>
               </>
             ) : (
               <>
-                <Navigation className="xpo_w-5 xpo_h-5" />
+                <Navigation className="w-5 h-5" />
                 <span>Use Current Location</span>
               </>
             )}
@@ -117,42 +117,42 @@ const LocationPopup = ({ isOpen, onClose, onLocationSelect }) => {
 
           {/* Error Message */}
           {error && (
-            <div className="xpo_p-3 xpo_bg-red-50 xpo_border xpo_border-red-200 xpo_rounded-lg xpo_text-red-700 xpo_text-sm">
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
               {error}
             </div>
           )}
 
           {/* Divider */}
-          <div className="xpo_relative xpo_flex xpo_items-center xpo_gap-4">
-            <div className="xpo_flex-1 xpo_h-px xpo_bg-gray-200" />
-            <span className="xpo_text-sm xpo_text-gray-500 xpo_font-medium">OR</span>
-            <div className="xpo_flex-1 xpo_h-px xpo_bg-gray-200" />
+          <div className="relative flex items-center gap-4">
+            <div className="flex-1 h-px bg-gray-200" />
+            <span className="text-sm text-gray-500 font-medium">OR</span>
+            <div className="flex-1 h-px bg-gray-200" />
           </div>
 
           {/* Search Input */}
-          <div className="xpo_relative">
-            <Search className="xpo_absolute xpo_left-3 xpo_top-1/2 xpo_-translate-y-1/2 xpo_w-5 xpo_h-5 xpo_text-gray-400" />
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               ref={inputRef}
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search for a city or address"
-              className="xpo_w-full xpo_pl-10 xpo_pr-4 xpo_py-3 xpo_border xpo_border-gray-300 xpo_rounded-lg focus:xpo_outline-none focus:xpo_ring-2 focus:xpo_ring-blue-500 focus:xpo_border-transparent"
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
           {/* Suggestions List */}
           {suggestions.length > 0 && (
-            <div className="xpo_max-h-64 xpo_overflow-y-auto xpo_border xpo_border-gray-200 xpo_rounded-lg">
+            <div className="max-h-64 overflow-y-auto border border-gray-200 rounded-lg">
               {suggestions.map((location) => (
                 <button
                   key={location.id}
                   onClick={() => handleSelectLocation(location)}
-                  className="xpo_w-full xpo_flex xpo_items-center xpo_gap-3 xpo_px-4 xpo_py-3 xpo_hover:bg-gray-50 xpo_transition-colors xpo_text-left xpo_border-b xpo_border-gray-100 last:xpo_border-b-0"
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left border-b border-gray-100 last:border-b-0"
                 >
-                  <MapPin className="xpo_w-5 xpo_h-5 xpo_text-gray-400 xpo_flex-shrink-0" />
-                  <span className="xpo_text-gray-700">{location.name}</span>
+                  <MapPin className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                  <span className="text-gray-700">{location.name}</span>
                 </button>
               ))}
             </div>
@@ -160,7 +160,7 @@ const LocationPopup = ({ isOpen, onClose, onLocationSelect }) => {
 
           {/* No results message */}
           {searchQuery.length > 0 && suggestions.length === 0 && (
-            <div className="xpo_text-center xpo_py-8 xpo_text-gray-500">
+            <div className="text-center py-8 text-gray-500">
               No locations found for "{searchQuery}"
             </div>
           )}
@@ -181,25 +181,25 @@ export default function Location() {
   };
 
   return (
-    <div className="xpo_min-h-screen xpo_bg-gray-100 xpo_flex xpo_items-center xpo_justify-center xpo_p-4">
-      <div className="xpo_bg-white xpo_rounded-lg xpo_shadow-lg xpo_p-8 xpo_max-w-md xpo_w-full">
-        <h1 className="xpo_text-2xl xpo_font-bold xpo_mb-4 xpo_text-gray-900">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+        <h1 className="text-2xl font-bold mb-4 text-gray-900">
           Location Demo
         </h1>
-        
+
         <button
           onClick={() => setIsPopupOpen(true)}
-          className="xpo_w-full xpo_flex xpo_items-center xpo_justify-center xpo_gap-2 xpo_px-6 xpo_py-3 xpo_bg-blue-600 xpo_text-white xpo_rounded-lg xpo_hover:bg-blue-700 xpo_transition-colors xpo_font-medium"
+          className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
         >
-          <MapPin className="xpo_w-5 xpo_h-5" />
+          <MapPin className="w-5 h-5" />
           Select Location
         </button>
 
         {selectedLocation && (
-          <div className="xpo_mt-6 xpo_p-4 xpo_bg-green-50 xpo_border xpo_border-green-200 xpo_rounded-lg">
-            <p className="xpo_font-medium xpo_text-green-900 xpo_mb-2">Selected Location:</p>
-            <p className="xpo_text-green-700">{selectedLocation.name}</p>
-            <p className="xpo_text-sm xpo_text-green-600 xpo_mt-1">
+          <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <p className="font-medium text-green-900 mb-2">Selected Location:</p>
+            <p className="text-green-700">{selectedLocation.name}</p>
+            <p className="text-sm text-green-600 mt-1">
               Lat: {selectedLocation.lat.toFixed(4)}, Lng: {selectedLocation.lng.toFixed(4)}
             </p>
           </div>

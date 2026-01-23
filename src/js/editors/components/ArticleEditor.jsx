@@ -1,5 +1,6 @@
 import React from 'react';
 import InlineEditor from '../inlineeditor';
+import PromptBlock from './PromptBlock';
 import { __ } from '../utils';
 
 export default function ArticleEditor({
@@ -10,67 +11,97 @@ export default function ArticleEditor({
   metadata,
   setMetadata,
   loading,
+  planner,
+  onProcessAI,
+  onOpenMedia
 }) {
+  const renderLiveContent = () => {
+    const hasPending = planner?.prompts?.some((p) => !p.output);
+
+    if (!planner || !planner.text || !hasPending) {
+      return <InlineEditor content={[content, setContent]} />;
+    }
+
+    const parts = planner.text.split(/(@@PROMPT_\d+@@)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith('@@PROMPT_')) {
+        const data = planner.prompts?.find((p) => p.id === part);
+        if (data?.output) {
+          return <div key={i} className="block" dangerouslySetInnerHTML={{ __html: data.output }} />;
+        }
+        return (
+          <PromptBlock
+            key={i}
+            data={data}
+            onProcessAI={() => onProcessAI(data.id)}
+            onOpenMedia={() => onOpenMedia(data.id)}
+          />
+        );
+      }
+      return <div key={i} className="block" dangerouslySetInnerHTML={{ __html: part }} />;
+    });
+  };
+
   return (
-    <div className="xpo_relative xpo_w-full xpo_h-full xpo_p-5 xpo_shadow-sm">
-      <div className="xpo_py-3 xpo_w-full">
+    <div className="relative w-full h-full p-5 shadow-sm">
+      <div className="py-3 w-full">
         {!title && loading ? (
-          <div role="status" className="xpo_animate-pulse">
-            <div className="xpo_h-8 xpo_bg-gray-200 xpo_rounded-full dark:xpo_bg-gray-700 xpo_w-full xpo_mb-4"></div>
-            <span className="xpo_sr-only">Loading...</span>
+          <div role="status" className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-4"></div>
+            <span className="sr-only">Loading...</span>
           </div>
         ) : (
           <div>
             <h1
               onChange={(e) => setTitle(e.target.value)}
-              className="xpo_w-full xpo_mb-4 xpo_text-xl xpo_font-extrabold xpo_leading-none xpo_tracking-tight xpo_text-gray-900 md:xpo_text-2xl lg:xpo_text-3xl dark:xpo_text-white"
+              className="w-full mb-4 text-xl font-extrabold leading-none tracking-tight text-gray-900 md:text-2xl lg:text-3xl dark:text-white"
               dangerouslySetInnerHTML={{ __html: title }}
             ></h1>
           </div>
         )}
       </div>
-      <div className="xpo_flex xpo_flex-col xpo_gap-10 xpo_w-full xpo_pt-6 xpo_pb-0 xpo_mb-0 xpo_min-h-screen">
+      <div className="flex flex-col gap-1 w-full pt-6 pb-0 mb-0 min-h-screen">
         {loading && !content?.length ? (
-          <div role="status" className="xpo_animate-pulse">
-            <div className="xpo_h-2.5 xpo_bg-gray-200 xpo_rounded-full dark:xpo_bg-gray-700 xpo_w-48 xpo_mb-4"></div>
-            <div className="xpo_h-2 xpo_bg-gray-200 xpo_rounded-full dark:xpo_bg-gray-700 xpo_max-w-[360px] xpo_mb-2.5"></div>
-            <div className="xpo_h-2 xpo_bg-gray-200 xpo_rounded-full dark:xpo_bg-gray-700 xpo_mb-2.5"></div>
-            <div className="xpo_h-2 xpo_bg-gray-200 xpo_rounded-full dark:xpo_bg-gray-700 xpo_max-w-[330px] xpo_mb-2.5"></div>
-            <div className="xpo_h-2 xpo_bg-gray-200 xpo_rounded-full dark:xpo_bg-gray-700 xpo_max-w-[300px] xpo_mb-2.5"></div>
-            <div className="xpo_h-2 xpo_bg-gray-200 xpo_rounded-full dark:xpo_bg-gray-700 xpo_max-w-[360px]"></div>
-            <span className="xpo_sr-only">Loading...</span>
+          <div role="status" className="animate-pulse">
+            <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
+            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px] mb-2.5"></div>
+            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
+            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[330px] mb-2.5"></div>
+            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[300px] mb-2.5"></div>
+            <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px]"></div>
+            <span className="sr-only">Loading...</span>
           </div>
         ) : (
-          <div className="xpo_block markdown-preview">
-            <InlineEditor content={[content, setContent]} />
+          <div className="block markdown-preview space-y-4">
+            {renderLiveContent()}
           </div>
         )}
         {!metadata?.description || !metadata?.keywords ? (
-          <div role="status" className="xpo_animate-pulse">
-            <div className="xpo_h-16 xpo_bg-gray-200 xpo_rounded-none dark:xpo_bg-gray-700 xpo_w-full xpo_mb-4"></div>
-            <span className="xpo_sr-only">Loading...</span>
+          <div role="status" className="animate-pulse">
+            <div className="h-16 bg-gray-200 rounded-none dark:bg-gray-700 w-full mb-4"></div>
+            <span className="sr-only">Loading...</span>
           </div>
         ) : (
-          <div className="xpo_w-full xpo_border-none xpo_border-t-2 xpo_p-3 xpo_pt-4">
-            <div className="xpo_flex xpo_flex-col xpo_w-full">
-              <div className="xpo_relative xpo_z-0 xpo_w-full xpo_mb-5 group">
+          <div className="w-full border-none border-t-2 p-3 pt-4">
+            <div className="flex flex-col w-full">
+              <div className="relative z-0 w-full mb-5 group">
                 <textarea
                   required
                   placeholder=" "
                   id="seo_meta_description"
                   value={metadata?.description}
                   onChange={(e) => setMetadata((prev) => ({ ...prev, description: e.target.value }))}
-                  className="xpo_block xpo_py-2.5 xpo_px-0 xpo_w-full xpo_text-sm xpo_text-gray-900 xpo_bg-transparent xpo_border-0 xpo_border-b-2 xpo_border-gray-300 xpo_appearance-none dark:xpo_text-white dark:xpo_border-gray-600 dark:focus:xpo_xpo_border-blue-500 focus:xpo_outline-none focus:xpo_ring-0 focus:xpo_border-blue-600 peer"
+                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 ></textarea>
                 <label
                   htmlFor="seo_meta_description"
-                  className="peer-focus:xpo_font-medium xpo_absolute xpo_text-sm xpo_text-gray-500 dark:xpo_text-gray-400 xpo_duration-300 xpo_transform xpo_-translate-y-6 xpo_scale-75 xpo_top-3 xpo_-z-10 xpo_origin-[0] peer-focus:xpo_start-0 rtl:peer-focus:xpo_translate-x-1/4 rtl:peer-focus:xpo_left-auto peer-focus:xpo_text-blue-600 peer-focus:dark:xpo_text-blue-500 peer-placeholder-shown:xpo_scale-100 peer-placeholder-shown:xpo_translate-y-0 peer-focus:xpo_scale-75 peer-focus:xpo_-translate-y-6"
+                  className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                 >
                   {__('Meta Description')}
                 </label>
               </div>
 
-              <div className="xpo_relative xpo_z-0 xpo_w-full xpo_mb-5 group">
+              <div className="relative z-0 w-full mb-5 group">
                 <textarea
                   required
                   placeholder=" "
@@ -82,11 +113,11 @@ export default function ArticleEditor({
                       keywords: e.target.value.split(',').map((i) => i.trim()),
                     }))
                   }
-                  className="xpo_block xpo_py-2.5 xpo_px-0 xpo_w-full xpo_text-sm xpo_text-gray-900 xpo_bg-transparent xpo_border-0 xpo_border-b-2 xpo_border-gray-300 xpo_appearance-none dark:xpo_text-white dark:xpo_border-gray-600 dark:focus:xpo_xpo_border-blue-500 focus:xpo_outline-none focus:xpo_ring-0 focus:xpo_border-blue-600 peer"
+                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 ></textarea>
                 <label
                   htmlFor="seo_meta_keywords"
-                  className="peer-focus:xpo_font-medium xpo_absolute xpo_text-sm xpo_text-gray-500 dark:xpo_text-gray-400 xpo_duration-300 xpo_transform xpo_-translate-y-6 xpo_scale-75 xpo_top-3 xpo_-z-10 xpo_origin-[0] peer-focus:xpo_start-0 rtl:peer-focus:xpo_translate-x-1/4 rtl:peer-focus:xpo_left-auto peer-focus:xpo_text-blue-600 peer-focus:dark:xpo_text-blue-500 peer-placeholder-shown:xpo_scale-100 peer-placeholder-shown:xpo_translate-y-0 peer-focus:xpo_scale-75 peer-focus:xpo_-translate-y-6"
+                  className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                 >
                   {__('Meta Keywords')}
                 </label>

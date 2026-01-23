@@ -17,39 +17,39 @@ if ( have_posts() ) :
         $categories = get_the_terms( get_the_ID(), 'sc_product_category' );
         $tags = get_the_terms( get_the_ID(), 'sc_product_tag' );
         ?>
-        <div id="primary" class="xpo_container xpo_mx-auto xpo_p-4 md:xpo_p-6 lg:xpo_p-8">
+        <div id="primary" class="container mx-auto p-4 md:p-6 lg:p-8">
             <main id="main" class="site-main">
-                <div class="xpo_grid xpo_grid-cols-1 lg:xpo_grid-cols-12 xpo_gap-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <!-- Image Gallery -->
-                    <div class="lg:xpo_col-span-1">
+                    <div class="lg:col-span-1">
                         <!-- Placeholder for image slides -->
-                        <div class="xpo_space-y-2">
+                        <div class="space-y-2">
                             <?php for ($i = 0; $i < 4; $i++) : ?>
-                                <img src="https://placehold.co/100" alt="Product Thumbnail" class="xpo_w-full xpo_cursor-pointer xpo_border-2 xpo_border-transparent hover:xpo_border-blue-500">
+                                <img src="https://placehold.co/100" alt="Product Thumbnail" class="w-full cursor-pointer border-2 border-transparent hover:border-blue-500">
                             <?php endfor; ?>
                         </div>
                     </div>
 
                     <!-- Main Image -->
-                    <div class="lg:xpo_col-span-5">
+                    <div class="lg:col-span-5">
                         <?php 
                         if ( has_post_thumbnail() ) {
-                            the_post_thumbnail('large', ['class' => 'xpo_w-full xpo_rounded-lg']);
+                            the_post_thumbnail('large', ['class' => 'w-full rounded-lg']);
                         } else {
-                            echo '<img src="https://placehold.co/600x600" alt="No product image" class="xpo_w-full xpo_rounded-lg">';
+                            echo '<img src="https://placehold.co/600x600" alt="No product image" class="w-full rounded-lg">';
                         }
                         ?>
                     </div>
 
                     <!-- Product Info & Sidebar -->
-                    <div class="lg:xpo_col-span-6">
-                        <h1 class="xpo_text-3xl xpo_font-bold xpo_mb-2"><?php the_title(); ?></h1>
-                        <div class="xpo_flex xpo_items-center xpo_mb-4">
-                            <span class="xpo_text-yellow-500"><?php echo do_shortcode('[svg icon="star-filled"] [svg icon="star-filled"] [svg icon="star-filled"] [svg icon="star-filled"] [svg icon="star-half"]'); ?></span>
-                            <span class="xpo_ml-2 xpo_text-gray-600">(4.5)</span>
+                    <div class="lg:col-span-6">
+                        <h1 class="text-3xl font-bold mb-2"><?php the_title(); ?></h1>
+                        <div class="flex items-center mb-4">
+                            <span class="text-yellow-500"><?php echo do_shortcode('[svg icon="star-filled"] [svg icon="star-filled"] [svg icon="star-filled"] [svg icon="star-filled"] [svg icon="star-half"]'); ?></span>
+                            <span class="ml-2 text-gray-600">(4.5)</span>
                         </div>
                         
-                        <div class="xpo_text-4xl xpo_font-bold xpo_mb-4">
+                        <div class="text-4xl font-bold mb-4">
                             <?php
                             $price = get_post_meta(get_the_ID(), 'price', true);
                             if ( $price ) {
@@ -58,61 +58,61 @@ if ( have_posts() ) :
                             ?>
                         </div>
 
-                        <div class="xpo_mb-6">
-                            <button class="xpo_w-full xpo_bg-blue-600 xpo_text-white xpo_font-bold xpo_py-3 xpo_px-6 xpo_rounded-lg hover:xpo_bg-blue-700">Add to Cart</button>
+                        <div class="mb-6">
+                            <button class="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700">Add to Cart</button>
                         </div>
 
                         <!-- Shipping Info -->
-                        <div class="xpo_border-t xpo_border-b xpo_py-4 xpo_mb-6">
-                            <div class="xpo_flex xpo_justify-between xpo_text-sm">
+                        <div class="border-t border-b py-4 mb-6">
+                            <div class="flex justify-between text-sm">
                                 <span>Standard shipping</span>
                                 <span>$5.00</span>
                             </div>
-                            <div class="xpo_text-xs xpo_text-gray-500">Est. delivery: Sep 14 - Oct 18</div>
+                            <div class="text-xs text-gray-500">Est. delivery: Sep 14 - Oct 18</div>
                         </div>
 
                         <!-- Shop with confidence -->
-                        <div class="xpo_mb-6">
-                            <h3 class="xpo_font-bold xpo_mb-2">Shop with confidence</h3>
-                            <ul class="xpo_list-disc xpo_list-inside xpo_text-sm xpo_space-y-1">
+                        <div class="mb-6">
+                            <h3 class="font-bold mb-2">Shop with confidence</h3>
+                            <ul class="list-disc list-inside text-sm space-y-1">
                                 <li>Buyer Protection</li>
                                 <li>30 day returns</li>
                                 <li>Easy access to support</li>
                                 <li>Secure, flexible payment options</li>
                             </ul>
-                            <a href="#" class="xpo_text-blue-600 xpo_text-sm">[Learn more]</a>
+                            <a href="#" class="text-blue-600 text-sm">[Learn more]</a>
                         </div>
                         
-                        <div class="xpo_text-sm xpo_text-gray-600 xpo_mb-6">Items are sold and shipped by Unique Bargains</div>
+                        <div class="text-sm text-gray-600 mb-6">Items are sold and shipped by Unique Bargains</div>
                     </div>
                 </div>
 
                 <!-- Additional Product Details -->
-                <div class="xpo_mt-12">
+                <div class="mt-12">
                     <!-- Customer Reviews -->
-                    <div class="xpo_border-t xpo_pt-8 xpo_mb-8">
-                        <h2 class="xpo_text-2xl xpo_font-bold xpo_mb-4">Customer Reviews</h2>
+                    <div class="border-t pt-8 mb-8">
+                        <h2 class="text-2xl font-bold mb-4">Customer Reviews</h2>
                         <!-- Review list placeholder -->
                     </div>
 
                     <!-- Description -->
-                    <div class="xpo_border-t xpo_pt-8 xpo_mb-8">
-                        <h2 class="xpo_text-2xl xpo_font-bold xpo_mb-4">Description</h2>
-                        <div class="xpo_prose xpo_max-w-none">
+                    <div class="border-t pt-8 mb-8">
+                        <h2 class="text-2xl font-bold mb-4">Description</h2>
+                        <div class="prose max-w-none">
                             <?php the_content(); ?>
                         </div>
                     </div>
 
                     <!-- Sold By -->
-                    <div class="xpo_border-t xpo_pt-8 xpo_mb-8">
-                        <h2 class="xpo_text-2xl xpo_font-bold xpo_mb-4">Sold By</h2>
+                    <div class="border-t pt-8 mb-8">
+                        <h2 class="text-2xl font-bold mb-4">Sold By</h2>
                         <!-- Seller info placeholder -->
                     </div>
 
                     <!-- Related Products -->
-                    <div class="xpo_border-t xpo_pt-8">
-                        <h2 class="xpo_text-2xl xpo_font-bold xpo_mb-4">Related Products</h2>
-                        <div class="xpo_grid xpo_grid-cols-2 md:xpo_grid-cols-4 lg:xpo_grid-cols-5 xpo_gap-6">
+                    <div class="border-t pt-8">
+                        <h2 class="text-2xl font-bold mb-4">Related Products</h2>
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
                             <?php
                             // Example query for related products
                             $related_args = [

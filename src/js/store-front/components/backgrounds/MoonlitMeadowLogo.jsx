@@ -30,8 +30,8 @@ const MoonlitMeadowLogo = () => {
 
     // Subtle icon glow on hover state
     gsap.set(iconRef.current, {
-      filter: theme === 'dark' 
-        ? 'drop-shadow(0 0 2px rgba(108, 93, 211, 0.3))' 
+      filter: theme === 'dark'
+        ? 'drop-shadow(0 0 2px rgba(108, 93, 211, 0.3))'
         : 'drop-shadow(0 1px 2px rgba(10, 29, 55, 0.1))'
     });
 
@@ -45,13 +45,13 @@ const MoonlitMeadowLogo = () => {
   ];
 
   return (
-    <div className="xpo_relative xpo_flex xpo_items-center xpo_h-9">
-      <svg 
+    <div className="relative flex items-center h-9">
+      <svg
         ref={containerRef}
         // 0 0 242 36
-        viewBox="0 0 202 36" 
-        // xpo_w-full
-        className="xpo_h-full"
+        viewBox="0 0 202 36"
+        // w-full
+        className="h-full"
       >
         <defs>
           {/* Enterprise-grade gradients */}
@@ -59,7 +59,7 @@ const MoonlitMeadowLogo = () => {
             <stop offset="0%" stopColor={theme === 'dark' ? '#F5F7FA' : '#0A1D37'} />
             <stop offset="100%" stopColor={theme === 'dark' ? '#DCE2EB' : '#37567f'} />
           </linearGradient>
-          
+
           <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#8D7AE5" />
             <stop offset="50%" stopColor="#6C5DD3" />
@@ -72,16 +72,16 @@ const MoonlitMeadowLogo = () => {
           </linearGradient>
 
           <filter id="subtleGlow">
-            <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
-            <feMerge> 
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
+            <feGaussianBlur stdDeviation="1" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
         </defs>
 
         {/* Icon section with geometric design */}
-        <g ref={iconRef} className="xpo_transition-all xpo_duration-300">
+        <g ref={iconRef} className="transition-all duration-300">
           {/* Background circle */}
           <circle
             cx="18"
@@ -92,7 +92,7 @@ const MoonlitMeadowLogo = () => {
             stroke="url(#accentGradient)"
             strokeWidth="0.5"
           />
-          
+
           {/* Stylized 'M' incorporating meadow/nature theme */}
           <path
             d="M8 24 L8 12 L12 20 L16 12 L20 12 L20 20 L28 12 L28 24"
@@ -102,7 +102,7 @@ const MoonlitMeadowLogo = () => {
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-          
+
           {/* Small decorative elements */}
           <path
             d="M10 26 Q12 25 14 26 Q16 25 18 26"
@@ -122,7 +122,7 @@ const MoonlitMeadowLogo = () => {
               cy={star.cy}
               r={star.r}
               fill={theme === 'dark' ? '#F5F7FA' : '#6C5DD3'}
-              className="xpo_transition-colors xpo_duration-500"
+              className="transition-colors duration-500"
               opacity="0.7"
             />
           ))}
@@ -138,11 +138,11 @@ const MoonlitMeadowLogo = () => {
           strokeWidth="1"
           ref={separatorRef}
           stroke={theme === 'dark' ? '#37567f' : '#DCE2EB'}
-          className="xpo_transition-colors xpo_duration-500"
+          className="transition-colors duration-500"
         />
 
         {/* Main text - horizontal layout */}
-        <g ref={textRef} className="xpo_transition-all xpo_duration-500">
+        <g ref={textRef} className="transition-all duration-500">
           {/* Company name in single line */}
           <text
             x="54"
@@ -151,12 +151,12 @@ const MoonlitMeadowLogo = () => {
             fontWeight="600"
             fontFamily="'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
             fill="url(#primaryTextGradient)"
-            className="xpo_transition-colors xpo_duration-500"
+            className="transition-colors duration-500"
             style={{ letterSpacing: '0.02em' }}
           >
             MoonlitMeadow
           </text>
-          
+
           {/* Subtle tagline */}
           <text
             x="54"
@@ -165,7 +165,7 @@ const MoonlitMeadowLogo = () => {
             fontWeight="400"
             fontFamily="'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
             fill={theme === 'dark' ? '#9FA8B4' : '#597b9a'}
-            className="xpo_transition-colors xpo_duration-500"
+            className="transition-colors duration-500"
             opacity="0.8"
             style={{ letterSpacing: '0.05em' }}
           >
@@ -180,7 +180,7 @@ const MoonlitMeadowLogo = () => {
           cx="238"
           opacity="0.6"
           fill="url(#accentGradient)"
-          className="xpo_transition-opacity xpo_duration-500"
+          className="transition-opacity duration-500"
         /> */}
       </svg>
     </div>

@@ -41,37 +41,37 @@ const Breadcrumb = () => {
 
 
   // Utility to match a path against a dynamic route pattern
-    const findRouteMatch = (path) => {
-        return _routes.find(({ route }) => {
-            const pattern = '^' + route.replace(/:[^/]+/g, '[^/]+') + '$';
-            
-            const matches = new RegExp(pattern).test(path);
-            return matches;
-        });
-    };
+  const findRouteMatch = (path) => {
+    return _routes.find(({ route }) => {
+      const pattern = '^' + route.replace(/:[^/]+/g, '[^/]+') + '$';
+
+      const matches = new RegExp(pattern).test(path);
+      return matches;
+    });
+  };
 
   // Build breadcrumb items by matching routes
   const breadcrumbItems = allPaths
     .map(path => {
-        const match = findRouteMatch(path);
-        if (match && match.dynamic) {
-            console.log(match);
-            // match.label = 'Is from dynamic'
-        }
-        return match ? { path, label: match.label } : null;
+      const match = findRouteMatch(path);
+      if (match && match.dynamic) {
+        console.log(match);
+        // match.label = 'Is from dynamic'
+      }
+      return match ? { path, label: match.label } : null;
     })
     .filter(Boolean); // Remove nulls (invalid segments like 'partnership-dashboard')
 
   return (
-    <div className="xpo_flex xpo_flex-wrap xpo_items-center xpo_justify-between xpo_gap-3 xpo_mb-24">
-      <h6 className="fw-semibold xpo_mb-0">
+    <div className="flex flex-wrap items-center justify-between gap-3 mb-24">
+      <h6 className="fw-semibold mb-0">
         {breadcrumbItems.length === 0 ? 'Home' : breadcrumbItems[breadcrumbItems.length - 1].label}
       </h6>
 
-      <ul className="xpo_flex xpo_items-center xpo_gap-2">
+      <ul className="flex items-center gap-2">
         <li className="fw-medium">
-          <Link to={home_url('/')} className="xpo_flex xpo_items-center xpo_gap-1 hover-text-primary">
-            <Home className="icon xpo_text-lg" />
+          <Link to={home_url('/')} className="flex items-center gap-1 hover-text-primary">
+            <Home className="icon text-lg" />
             Home
           </Link>
         </li>
@@ -80,14 +80,14 @@ const Breadcrumb = () => {
 
         {breadcrumbItems.map((item, index) => {
           const isLast = index === breadcrumbItems.length - 1;
-          
+
           return (
             <React.Fragment key={item.path}>
               <li className="fw-medium">
                 {isLast ? (
                   item.label
                 ) : (
-                  <Link to={home_url(item.path)} className="xpo_flex xpo_items-center xpo_gap-1 hover-text-primary">
+                  <Link to={home_url(item.path)} className="flex items-center gap-1 hover-text-primary">
                     {item.label}
                   </Link>
                 )}

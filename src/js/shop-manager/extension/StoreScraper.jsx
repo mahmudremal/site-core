@@ -89,13 +89,13 @@ export default function StoreScraper({ schema: schemaStruct = {} }) {
 
   return (
     <>
-      <button onClick={start_scraping} className="xpo_btn xpo_px-4 xpo_py-2 xpo_bg-blue-600 xpo_text-white xpo_rounded xpo_fixed xpo_bottom-4 xpo_right-4 xpo_z-50">
-        <Play className="xpo_text-green-500" />
-        <span className="xpo_text-sm xpo_text-gray-700">{__('Start Listing', 'site-core')}</span>
+      <button onClick={start_scraping} className="btn px-4 py-2 bg-blue-600 text-white rounded fixed bottom-4 right-4 z-50">
+        <Play className="text-green-500" />
+        <span className="text-sm text-gray-700">{__('Start Listing', 'site-core')}</span>
       </button>
-      <div className="xpo_fixed xpo_bottom-4 xpo_left-4 xpo_z-50 xpo_flex xpo_items-center xpo_gap-2">
-        <Play className="xpo_text-green-500" />
-        <span className="xpo_text-sm xpo_text-gray-700">{status}</span>
+      <div className="fixed bottom-4 left-4 z-50 flex items-center gap-2">
+        <Play className="text-green-500" />
+        <span className="text-sm text-gray-700">{status}</span>
       </div>
     </>
   )

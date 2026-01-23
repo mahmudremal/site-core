@@ -109,12 +109,12 @@ export default function Butterflies({ count = 6 }) {
   return (
     <div
       ref={containerRef}
-      className="xpo_pointer-events-none xpo_absolute xpo_inset-0"
+      className="pointer-events-none absolute inset-0"
     >
       {butterflies.map((b, i) => (
         <div
           key={i}
-          className="butterfly xpo_absolute"
+          className="butterfly absolute"
           style={{
             top: b.start.top,
             left: b.start.left,

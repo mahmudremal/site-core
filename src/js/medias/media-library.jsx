@@ -19,7 +19,7 @@ export const install_media_tab = () => {
 					priority: 20,
 					toolbar: 'main-insert',
 					filterable: 'all',
-					library: wp.media.query({type: 'image'}),
+					library: wp.media.query({ type: 'image' }),
 					multiple: false,
 					editable: false
 				})
@@ -47,12 +47,12 @@ export const install_media_tab = () => {
 				render: function () {
 					this.$el.empty();
 					const reactRoot = document.createElement('div');
-					this.el.innerHTML = '';this.el.appendChild(reactRoot);
+					this.el.innerHTML = ''; this.el.appendChild(reactRoot);
 
 					const root = createRoot(reactRoot);
 					root.render(
-						<Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...')}</div>}>
-							<InstantImage config={{}} />
+						<Suspense fallback={<div className="text-center p-4">{__('Loading...')}</div>}>
+							<InstantImage config={window.media_config || {}} />
 						</Suspense>
 					);
 

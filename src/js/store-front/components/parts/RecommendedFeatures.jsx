@@ -14,34 +14,34 @@ export default function RecommendedFeatures() {
     recentlyViewed: [1, 3, 5],
     priceRange: "100-300"
   });
-  
+
   return (
-    <div className="xpo_bg-white xpo_rounded-2xl xpo_shadow-lg xpo_p-6 xpo_mb-8">
-      <div className="xpo_flex xpo_items-center xpo_gap-3 xpo_mb-6">
-        <Users className="xpo_w-6 xpo_h-6 xpo_text-blue-600" />
-        <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-900">{__('Recommended for You', 'site-core')}</h2>
+    <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+      <div className="flex items-center gap-3 mb-6">
+        <Users className="w-6 h-6 text-blue-600" />
+        <h2 className="text-2xl font-bold text-gray-900">{__('Recommended for You', 'site-core')}</h2>
       </div>
-      <div className="xpo_grid xpo_grid-cols-1 sm:xpo_grid-cols-2 md:xpo_grid-cols-3 xpo_gap-4 xpo_mb-6">
-        <div className="xpo_bg-blue-50 xpo_p-4 xpo_rounded-xl">
-          <div className="xpo_flex xpo_items-center xpo_gap-2 xpo_mb-2">
-            <Clock className="xpo_w-5 xpo_h-5 xpo_text-blue-600" />
-            <span className="xpo_font-medium xpo_text-blue-900">{__('Recently Viewed', 'site-core')}</span>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+        <div className="bg-blue-50 p-4 rounded-xl">
+          <div className="flex items-center gap-2 mb-2">
+            <Clock className="w-5 h-5 text-blue-600" />
+            <span className="font-medium text-blue-900">{__('Recently Viewed', 'site-core')}</span>
           </div>
-          <p className="xpo_text-sm xpo_text-blue-700">{sprintf(__('%d products', 'site-core'), userActivity.recentlyViewed.length)}</p>
+          <p className="text-sm text-blue-700">{sprintf(__('%d products', 'site-core'), userActivity.recentlyViewed.length)}</p>
         </div>
-        <div className="xpo_bg-green-50 xpo_p-4 xpo_rounded-xl">
-          <div className="xpo_flex xpo_items-center xpo_gap-2 xpo_mb-2">
-            <TrendingUp className="xpo_w-5 xpo_h-5 xpo_text-green-600" />
-            <span className="xpo_font-medium xpo_text-green-900">{__('Top Categories', 'site-core')}</span>
+        <div className="bg-green-50 p-4 rounded-xl">
+          <div className="flex items-center gap-2 mb-2">
+            <TrendingUp className="w-5 h-5 text-green-600" />
+            <span className="font-medium text-green-900">{__('Top Categories', 'site-core')}</span>
           </div>
-          <p className="xpo_text-sm xpo_text-green-700">{userActivity.categories.join(', ')}</p>
+          <p className="text-sm text-green-700">{userActivity.categories.join(', ')}</p>
         </div>
-        <div className="xpo_bg-purple-50 xpo_p-4 xpo_rounded-xl">
-          <div className="xpo_flex xpo_items-center xpo_gap-2 xpo_mb-2">
-            <Heart className="xpo_w-5 xpo_h-5 xpo_text-purple-600" />
-            <span className="xpo_font-medium xpo_text-purple-900">{__('Preferred Brands', 'site-core')}</span>
+        <div className="bg-purple-50 p-4 rounded-xl">
+          <div className="flex items-center gap-2 mb-2">
+            <Heart className="w-5 h-5 text-purple-600" />
+            <span className="font-medium text-purple-900">{__('Preferred Brands', 'site-core')}</span>
           </div>
-          <p className="xpo_text-sm xpo_text-purple-700">{userActivity.brands.join(', ')}</p>
+          <p className="text-sm text-purple-700">{userActivity.brands.join(', ')}</p>
         </div>
       </div>
     </div>

@@ -14,19 +14,19 @@ const BottomStatusBar = () => {
     };
 
     return (
-        <div className="xpo_bg-white xpo_border-t xpo_border-gray-200 xpo_px-6 xpo_py-3">
-            <div className="xpo_flex xpo_items-center xpo_justify-between xpo_text-sm xpo_text-gray-600">
-                <div className="xpo_flex xpo_items-center xpo_gap-4">
+        <div className="bg-white border-t border-gray-200 px-6 py-3">
+            <div className="flex items-center justify-between text-sm text-gray-600">
+                <div className="flex items-center gap-4">
                     <span>Elements: {Object.keys(template.elements).length}</span>
                     {sidebar?.element && (
-                        <span className="xpo_text-blue-600">
-                            Selected: {sidebar.element.type?.replace('-', ' ')??''}
+                        <span className="text-blue-600">
+                            Selected: {sidebar.element.type?.replace('-', ' ') ?? ''}
                         </span>
                     )}
                 </div>
-                <div className="xpo_flex xpo_items-center xpo_gap-2">
+                <div className="flex items-center gap-2">
                     <span>Preview:</span>
-                    <span className="xpo_capitalize xpo_font-medium">{previewMode}</span>
+                    <span className="capitalize font-medium">{previewMode}</span>
                     <span>({getCanvasMaxWidth()})</span>
                 </div>
             </div>

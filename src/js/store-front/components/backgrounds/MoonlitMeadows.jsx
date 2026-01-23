@@ -6,7 +6,7 @@ const GrassBlade = ({ x, height, width, hue, leafCount }) => {
 
   useEffect(() => {
     const blade = grassRef.current;
-    
+
     gsap.to(blade, {
       rotation: () => gsap.utils.random(-8, 8),
       transformOrigin: "bottom center",
@@ -36,7 +36,7 @@ const GrassBlade = ({ x, height, width, hue, leafCount }) => {
   return (
     <div
       ref={grassRef}
-      className="xpo_absolute"
+      className="absolute"
       style={{
         left: `${x}%`,
         bottom: '0px',
@@ -44,7 +44,7 @@ const GrassBlade = ({ x, height, width, hue, leafCount }) => {
       }}
     >
       <div
-        className="xpo_relative"
+        className="relative"
         style={{
           width: `${width}px`,
           height: `${height}px`,
@@ -55,7 +55,7 @@ const GrassBlade = ({ x, height, width, hue, leafCount }) => {
         {leafPositions.map((leaf, i) => (
           <div
             key={i}
-            className="xpo_absolute"
+            className="absolute"
             style={{
               width: `${leaf.size}px`,
               height: `${leaf.size * 0.6}px`,
@@ -78,7 +78,7 @@ const TallGrass = ({ x, height, thickness }) => {
 
   useEffect(() => {
     const grass = grassRef.current;
-    
+
     gsap.to(grass, {
       rotation: () => gsap.utils.random(-12, 12),
       transformOrigin: "bottom center",
@@ -93,7 +93,7 @@ const TallGrass = ({ x, height, thickness }) => {
   return (
     <div
       ref={grassRef}
-      className="xpo_absolute"
+      className="absolute"
       style={{
         left: `${x}%`,
         bottom: '0px',
@@ -112,7 +112,7 @@ const SmallPlant = ({ x, stemHeight, leafSize }) => {
 
   useEffect(() => {
     const plant = plantRef.current;
-    
+
     gsap.to(plant, {
       rotation: () => gsap.utils.random(-6, 6),
       transformOrigin: "bottom center",
@@ -127,7 +127,7 @@ const SmallPlant = ({ x, stemHeight, leafSize }) => {
   return (
     <div
       ref={plantRef}
-      className="xpo_absolute"
+      className="absolute"
       style={{
         left: `${x}%`,
         bottom: '0px',
@@ -176,7 +176,7 @@ const WildFlower = ({ x, color, stemHeight }) => {
 
   useEffect(() => {
     const flower = flowerRef.current;
-    
+
     gsap.to(flower, {
       rotation: () => gsap.utils.random(-8, 8),
       transformOrigin: "bottom center",
@@ -191,7 +191,7 @@ const WildFlower = ({ x, color, stemHeight }) => {
   return (
     <div
       ref={flowerRef}
-      className="xpo_absolute"
+      className="absolute"
       style={{
         left: `${x}%`,
         bottom: '0px',
@@ -228,7 +228,7 @@ const Firefly = ({ x, y, glowColor = '#fef08a' }) => {
 
   useEffect(() => {
     const firefly = fireflyRef.current;
-    
+
     gsap.to(firefly, {
       motionPath: {
         path: `M0,0 Q${gsap.utils.random(-30, 30)},${gsap.utils.random(-20, 20)} ${gsap.utils.random(-50, 50)},${gsap.utils.random(-30, 30)} T${gsap.utils.random(-40, 40)},${gsap.utils.random(-25, 25)}`,
@@ -257,25 +257,25 @@ const Firefly = ({ x, y, glowColor = '#fef08a' }) => {
       duration: gsap.utils.random(1, 2),
       ease: "power1.inOut",
     })
-    .to(firefly, {
-      x: `+=${gsap.utils.random(-8, 8)}`,
-      y: `+=${gsap.utils.random(-6, 6)}`,
-      duration: gsap.utils.random(1, 2),
-      ease: "power1.inOut",
-    })
-    .to(firefly, {
-      x: `+=${gsap.utils.random(-12, 12)}`,
-      y: `+=${gsap.utils.random(-8, 8)}`,
-      duration: gsap.utils.random(2, 3),
-      ease: "power1.inOut",
-    });
+      .to(firefly, {
+        x: `+=${gsap.utils.random(-8, 8)}`,
+        y: `+=${gsap.utils.random(-6, 6)}`,
+        duration: gsap.utils.random(1, 2),
+        ease: "power1.inOut",
+      })
+      .to(firefly, {
+        x: `+=${gsap.utils.random(-12, 12)}`,
+        y: `+=${gsap.utils.random(-8, 8)}`,
+        duration: gsap.utils.random(2, 3),
+        ease: "power1.inOut",
+      });
 
   }, []);
 
   return (
     <div
       ref={fireflyRef}
-      className="xpo_absolute xpo_w-1 xpo_h-1 xpo_bg-yellow-300 xpo_rounded-full xpo_pointer-events-none"
+      className="absolute w-1 h-1 bg-yellow-300 rounded-full pointer-events-none"
       style={{
         left: `${x}%`,
         top: `${y}%`,
@@ -328,7 +328,7 @@ export default function MoonlitMeadow() {
 
   useEffect(() => {
     const container = meadowRef.current;
-    
+
     gsap.set(container, {
       opacity: 0,
     });
@@ -341,7 +341,7 @@ export default function MoonlitMeadow() {
 
     const windInterval = setInterval(() => {
       const allElements = container.querySelectorAll('.absolute');
-      
+
       gsap.to(allElements, {
         rotation: () => gsap.utils.random(-15, 15),
         duration: 1.2,
@@ -356,9 +356,9 @@ export default function MoonlitMeadow() {
   }, []);
 
   return (
-    <div 
+    <div
       ref={meadowRef}
-      className="xpo_relative xpo_h-full xpo_overflow-hidden"
+      className="relative h-full overflow-hidden"
       style={{ backgroundColor: 'transparent' }}
     >
       {grassBlades.map((grass) => (
@@ -399,7 +399,7 @@ export default function MoonlitMeadow() {
         />
       ))}
 
-      <div className="xpo_absolute xpo_inset-0 xpo_pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none">
         {Array.from({ length: 15 }).map((_, i) => (
           <Firefly
             key={`firefly-${i}`}

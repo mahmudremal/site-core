@@ -16,18 +16,18 @@ $grid_columns = 5;
 
 ?>
 
-<div class="xpo_container xpo_flex xpo_mx-auto xpo_p-4 md:xpo_p-6 lg:xpo_p-8">
+<div class="container flex mx-auto p-4 md:p-6 lg:p-8">
     <!-- Sidebar Filters Section -->
-    <aside class="xpo_w-1/4 lg:xpo_w-1/5 xpo_pr-4 md:xpo_pr-6 lg:xpo_pr-8">
+    <aside class="w-1/4 lg:w-1/5 pr-4 md:pr-6 lg:pr-8">
         <?php include WP_SITECORE_DIR_PATH . '/templates/theme/template-parts/sidebar-filters.php'; ?>
     </aside>
 
     <!-- Main Content -->
-    <main class="xpo_w-3/4 lg:xpo_w-4/5">
-        <h1 class="xpo_text-2xl md:xpo_text-3xl lg:xpo_text-4xl xpo_font-bold xpo_mb-4"><?php echo esc_html($term->name); ?></h1>
+    <main class="w-3/4 lg:w-4/5">
+        <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4"><?php echo esc_html($term->name); ?></h1>
         
         <?php if (!empty($term->description)) : ?>
-            <div class="xpo_prose xpo_max-w-none xpo_mb-6">
+            <div class="prose max-w-none mb-6">
                 <?php echo wpautop($term->description); ?>
             </div>
         <?php endif; ?>
@@ -47,7 +47,7 @@ $grid_columns = 5;
         $query = new WP_Query($args);
 
         if ($query->have_posts()) : ?>
-            <div class="xpo_grid xpo_grid-cols-<?php echo $grid_columns; ?> xpo_gap-4 md:xpo_gap-6">
+            <div class="grid grid-cols-<?php echo $grid_columns; ?> gap-4 md:gap-6">
                 <?php
                 while ($query->have_posts()) : $query->the_post(); ?>
                     <?php include WP_SITECORE_DIR_PATH . '/templates/theme/template-parts/product-card.php'; ?>
@@ -55,7 +55,7 @@ $grid_columns = 5;
             </div>
 
             <!-- Pagination -->
-            <div class="xpo_mt-8">
+            <div class="mt-8">
                 <?php
                 echo paginate_links([
                     'total' => $query->max_num_pages,
@@ -66,7 +66,7 @@ $grid_columns = 5;
             </div>
 
         <?php else : ?>
-            <p class="xpo_text-center xpo_text-gray-500">No products found in this category.</p>
+            <p class="text-center text-gray-500">No products found in this category.</p>
         <?php endif;
 
         wp_reset_postdata();

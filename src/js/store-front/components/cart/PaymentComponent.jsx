@@ -75,8 +75,8 @@ const CardPaymentForm = ({ orderId, onSuccess, onFailed }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="xpo_space-y-6">
-      <div className="xpo_p-4 xpo_bg-scwhite/50 dark:xpo_bg-scwhite-900/30 xpo_border xpo_border-gray-200 dark:xpo_border-scwhite-700 xpo_rounded-xl">
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="p-4 bg-scwhite/50 dark:bg-scwhite-900/30 border border-gray-200 dark:border-scwhite-700 rounded-xl">
         <CardElement
           options={{
             style: {
@@ -95,24 +95,24 @@ const CardPaymentForm = ({ orderId, onSuccess, onFailed }) => {
         />
       </div>
       {error && (
-        <div className="xpo_flex xpo_items-center xpo_gap-2 xpo_p-3 xpo_bg-red-50 dark:xpo_bg-red-900/20 xpo_border xpo_border-red-200 dark:xpo_border-red-800 xpo_rounded-lg">
-          <AlertCircle className="xpo_w-4 xpo_h-4 xpo_text-red-600 dark:xpo_text-red-400 xpo_flex-shrink-0" />
-          <p className="xpo_text-sm xpo_text-red-600 dark:xpo_text-red-400">{error}</p>
+        <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 flex-shrink-0" />
+          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
         </div>
       )}
       <button
         type="submit"
         disabled={!stripe || loading}
-        className="xpo_w-full xpo_bg-gradient-to-r xpo_from-scprimary xpo_to-scprimary-700 xpo_text-scwhite xpo_py-4 xpo_rounded-xl xpo_font-medium xpo_shadow-lg xpo_shadow-scprimary/30 hover:xpo_shadow-xl hover:xpo_shadow-scprimary/40 xpo_transition-all disabled:xpo_opacity-50 disabled:xpo_cursor-not-allowed xpo_flex xpo_items-center xpo_justify-center xpo_gap-2"
+        className="w-full bg-gradient-to-r from-scprimary to-scprimary-700 text-scwhite py-4 rounded-xl font-medium shadow-lg shadow-scprimary/30 hover:shadow-xl hover:shadow-scprimary/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {loading ? (
           <>
-            <Loader2 className="xpo_w-5 xpo_h-5 xpo_animate-spin" />
+            <Loader2 className="w-5 h-5 animate-spin" />
             <span>Processing Payment...</span>
           </>
         ) : (
           <>
-            <CreditCard className="xpo_w-5 xpo_h-5" />
+            <CreditCard className="w-5 h-5" />
             <span>Pay Securely</span>
           </>
         )}
@@ -142,7 +142,7 @@ const PayPalPayment = ({ orderId, onSuccess, onFailed }) => {
   };
 
   return (
-    <div className="xpo_space-y-4">
+    <div className="space-y-4">
       <PayPalScriptProvider options={{ 'client-id': 'your_paypal_client_id', currency: 'USD', intent: 'capture' }}>
         <PayPalButtons
           createOrder={createOrder}
@@ -170,14 +170,14 @@ const ApplePayPayment = ({ orderId, onSuccess, onFailed, amount, currency }) => 
     setLoading(true);
     try {
       const { data: merchantSession } = await api.post(`/payments/apple-pay/validate/${orderId}`);
-      
+
       const appleSession = new window.ApplePaySession(3, {
         countryCode: 'BD',
         currencyCode: currency || 'BDT',
         supportedNetworks: ['visa', 'masterCard', 'amex'],
         merchantCapabilities: ['supports3DS'],
-        total: { 
-          label: 'Your Store', 
+        total: {
+          label: 'Your Store',
           amount: amount.toString()
         },
       });
@@ -188,9 +188,9 @@ const ApplePayPayment = ({ orderId, onSuccess, onFailed, amount, currency }) => 
 
       appleSession.onpaymentauthorized = async (event) => {
         try {
-          const { data } = await api.post(`/payments/apple-pay/process/${orderId}`, { 
+          const { data } = await api.post(`/payments/apple-pay/process/${orderId}`, {
             paymentData: event.payment.paymentData,
-            token: event.payment.token 
+            token: event.payment.token
           });
 
           if (data.success) {
@@ -220,9 +220,9 @@ const ApplePayPayment = ({ orderId, onSuccess, onFailed, amount, currency }) => 
 
   if (!available) {
     return (
-      <div className="xpo_p-6 xpo_bg-gray-50 dark:xpo_bg-scwhite-900/30 xpo_rounded-xl xpo_text-center">
-        <Apple className="xpo_w-12 xpo_h-12 xpo_mx-auto xpo_mb-3 xpo_text-gray-400" />
-        <p className="xpo_text-gray-600 dark:xpo_text-gray-400">Apple Pay is not available on this device</p>
+      <div className="p-6 bg-gray-50 dark:bg-scwhite-900/30 rounded-xl text-center">
+        <Apple className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+        <p className="text-gray-600 dark:text-gray-400">Apple Pay is not available on this device</p>
       </div>
     );
   }
@@ -231,14 +231,14 @@ const ApplePayPayment = ({ orderId, onSuccess, onFailed, amount, currency }) => 
     <button
       onClick={startPayment}
       disabled={loading}
-      className="xpo_w-full xpo_bg-black xpo_text-scwhite xpo_py-4 xpo_rounded-xl xpo_font-medium xpo_shadow-lg hover:xpo_shadow-xl xpo_transition-all disabled:xpo_opacity-50 xpo_flex xpo_items-center xpo_justify-center xpo_gap-3"
+      className="w-full bg-black text-scwhite py-4 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all disabled:opacity-50 flex items-center justify-center gap-3"
     >
       {loading ? (
-        <Loader2 className="xpo_w-5 xpo_h-5 xpo_animate-spin" />
+        <Loader2 className="w-5 h-5 animate-spin" />
       ) : (
-        <Apple className="xpo_w-6 xpo_h-6" />
+        <Apple className="w-6 h-6" />
       )}
-      <span className="xpo_text-lg">{loading ? 'Processing...' : 'Pay with Apple Pay'}</span>
+      <span className="text-lg">{loading ? 'Processing...' : 'Pay with Apple Pay'}</span>
     </button>
   );
 };
@@ -296,8 +296,8 @@ const GooglePayPayment = ({ orderId, onSuccess, onFailed, amount, currency }) =>
       };
 
       const paymentData = await paymentsClient.loadPaymentData(paymentDataRequest);
-      const { data } = await api.post(`/payments/google-pay/process/${orderId}`, { 
-        paymentToken: paymentData.paymentMethodData.tokenizationData.token 
+      const { data } = await api.post(`/payments/google-pay/process/${orderId}`, {
+        paymentToken: paymentData.paymentMethodData.tokenizationData.token
       });
 
       if (data.success) {
@@ -316,8 +316,8 @@ const GooglePayPayment = ({ orderId, onSuccess, onFailed, amount, currency }) =>
 
   if (!loaded) {
     return (
-      <div className="xpo_flex xpo_justify-center xpo_py-8">
-        <Loader2 className="xpo_w-8 xpo_h-8 xpo_animate-spin xpo_text-scprimary" />
+      <div className="flex justify-center py-8">
+        <Loader2 className="w-8 h-8 animate-spin text-scprimary" />
       </div>
     );
   }
@@ -326,14 +326,14 @@ const GooglePayPayment = ({ orderId, onSuccess, onFailed, amount, currency }) =>
     <button
       onClick={handlePayment}
       disabled={loading}
-      className="xpo_w-full xpo_bg-scwhite xpo_text-gray-900 xpo_border-2 xpo_border-gray-300 xpo_py-4 xpo_rounded-xl xpo_font-medium xpo_shadow-lg hover:xpo_shadow-xl xpo_transition-all disabled:xpo_opacity-50 xpo_flex xpo_items-center xpo_justify-center xpo_gap-3"
+      className="w-full bg-scwhite text-gray-900 border-2 border-gray-300 py-4 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all disabled:opacity-50 flex items-center justify-center gap-3"
     >
       {loading ? (
-        <Loader2 className="xpo_w-5 xpo_h-5 xpo_animate-spin" />
+        <Loader2 className="w-5 h-5 animate-spin" />
       ) : (
-        <Smartphone className="xpo_w-6 xpo_h-6 xpo_text-blue-600" />
+        <Smartphone className="w-6 h-6 text-blue-600" />
       )}
-      <span className="xpo_text-lg">{loading ? 'Processing...' : 'Pay with Google Pay'}</span>
+      <span className="text-lg">{loading ? 'Processing...' : 'Pay with Google Pay'}</span>
     </button>
   );
 };
@@ -365,9 +365,9 @@ const SSLCommerzPayment = ({ orderId, onSuccess, onFailed, amount, customerData 
           ...data,
           onSuccess: (response) => {
             if (response.status === 'VALID' || response.status === 'VALIDATED') {
-              onSuccess({ 
-                paymentId: response.tran_id, 
-                amount: response.amount, 
+              onSuccess({
+                paymentId: response.tran_id,
+                amount: response.amount,
                 status: 'succeeded',
                 method: 'sslcommerz'
               });
@@ -391,19 +391,19 @@ const SSLCommerzPayment = ({ orderId, onSuccess, onFailed, amount, customerData 
 
   if (error) {
     return (
-      <div className="xpo_p-6 xpo_bg-red-50 dark:xpo_bg-red-900/20 xpo_rounded-xl xpo_text-center">
-        <AlertCircle className="xpo_w-12 xpo_h-12 xpo_mx-auto xpo_mb-3 xpo_text-red-600 dark:xpo_text-red-400" />
-        <p className="xpo_text-red-600 dark:xpo_text-red-400">{error}</p>
+      <div className="p-6 bg-red-50 dark:bg-red-900/20 rounded-xl text-center">
+        <AlertCircle className="w-12 h-12 mx-auto mb-3 text-red-600 dark:text-red-400" />
+        <p className="text-red-600 dark:text-red-400">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="xpo_space-y-6">
-      <div className="xpo_text-center xpo_py-8">
-        <Loader2 className="xpo_w-12 xpo_h-12 xpo_mx-auto xpo_mb-4 xpo_animate-spin xpo_text-scprimary" />
-        <p className="xpo_text-gray-600 dark:xpo_text-gray-400">Redirecting to SSLCommerz payment gateway...</p>
-        <p className="xpo_text-sm xpo_text-gray-500 dark:xpo_text-gray-500 xpo_mt-2">Please wait</p>
+    <div className="space-y-6">
+      <div className="text-center py-8">
+        <Loader2 className="w-12 h-12 mx-auto mb-4 animate-spin text-scprimary" />
+        <p className="text-gray-600 dark:text-gray-400">Redirecting to SSLCommerz payment gateway...</p>
+        <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">Please wait</p>
       </div>
     </div>
   );
@@ -415,7 +415,7 @@ const PaymentComponent = ({ method, orderId, amount, currency, customerData, onS
   useEffect(() => {
     stripePromise.current = loadStripe('pk_test_your_stripe_publishable_key_here');
   }, []);
-  
+
   const getMethodIcon = () => {
     switch (method) {
       case 'card': return CreditCard;
@@ -456,16 +456,16 @@ const PaymentComponent = ({ method, orderId, amount, currency, customerData, onS
         return <SSLCommerzPayment customerData={customerData} orderId={orderId} amount={amount} currency={currency} onSuccess={onSuccess} onFailed={onFailed} />;
       case 'cod':
         return (
-          <div className="xpo_p-6 xpo_bg-scaccent-50 dark:xpo_bg-scaccent-900/20 xpo_rounded-xl xpo_text-center">
-            <DollarSignIcon className="xpo_w-12 xpo_h-12 xpo_mx-auto xpo_mb-3 xpo_text-scaccent-600" />
-            <p className="xpo_text-scaccent-600">Pay upon delivery</p>
+          <div className="p-6 bg-scaccent-50 dark:bg-scaccent-900/20 rounded-xl text-center">
+            <DollarSignIcon className="w-12 h-12 mx-auto mb-3 text-scaccent-600" />
+            <p className="text-scaccent-600">Pay upon delivery</p>
           </div>
         );
       default:
         return (
-          <div className="xpo_p-6 xpo_bg-red-50 dark:xpo_bg-red-900/20 xpo_rounded-xl xpo_text-center">
-            <AlertCircle className="xpo_w-12 xpo_h-12 xpo_mx-auto xpo_mb-3 xpo_text-red-600" />
-            <p className="xpo_text-red-600">Unsupported payment method {method}</p>
+          <div className="p-6 bg-red-50 dark:bg-red-900/20 rounded-xl text-center">
+            <AlertCircle className="w-12 h-12 mx-auto mb-3 text-red-600" />
+            <p className="text-red-600">Unsupported payment method {method}</p>
           </div>
         );
     }
@@ -474,32 +474,32 @@ const PaymentComponent = ({ method, orderId, amount, currency, customerData, onS
   const Icon = getMethodIcon();
 
   return (
-    <div className="xpo_w-full xpo_max-w-lg">
-      <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-6 xpo_pb-4 xpo_border-b xpo_border-gray-200 dark:xpo_border-scwhite-700">
-        <div className="xpo_flex xpo_items-center xpo_gap-3">
-          <div className="xpo_p-2 xpo_bg-scprimary/10 xpo_rounded-xl">
-            <Icon className="xpo_w-6 xpo_h-6 xpo_text-scprimary" />
+    <div className="w-full max-w-lg">
+      <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200 dark:border-scwhite-700">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-scprimary/10 rounded-xl">
+            <Icon className="w-6 h-6 text-scprimary" />
           </div>
           <div>
-            <h3 className="xpo_text-xl xpo_font-bold xpo_text-gray-900 dark:xpo_text-scprimary">{getMethodName()}</h3>
-            <p className="xpo_text-sm xpo_text-gray-600 dark:xpo_text-scprimary-600">Complete your payment securely</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-scprimary">{getMethodName()}</h3>
+            <p className="text-sm text-gray-600 dark:text-scprimary-600">Complete your payment securely</p>
           </div>
         </div>
         {/* <button 
           onClick={() => onFailed({ reason: 'cancelled', message: 'Payment cancelled' })} 
-          className="xpo_p-2 hover:xpo_bg-gray-100 dark:hover:xpo_bg-scwhite-800 xpo_rounded-lg xpo_transition-colors"
+          className="p-2 hover:bg-gray-100 dark:hover:bg-scwhite-800 rounded-lg transition-colors"
         >
-          <X className="xpo_w-5 xpo_h-5 xpo_text-gray-500 dark:xpo_text-gray-400" />
+          <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
         </button> */}
       </div>
 
-      <div className="xpo_mb-6">
+      <div className="mb-6">
         {renderPaymentMethod()}
       </div>
 
-      <div className="xpo_flex xpo_items-center xpo_gap-2 xpo_p-4 xpo_bg-blue-50 dark:xpo_bg-blue-900/20 xpo_border xpo_border-blue-200 dark:xpo_border-blue-800 xpo_rounded-xl">
-        <CheckCircle className="xpo_w-5 xpo_h-5 xpo_text-blue-600 dark:xpo_text-blue-900 xpo_flex-shrink-0" />
-        <p className="xpo_text-sm xpo_text-blue-900 dark:xpo_text-blue-900">Your payment information is encrypted and secure</p>
+      <div className="flex items-center gap-2 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+        <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-900 flex-shrink-0" />
+        <p className="text-sm text-blue-900 dark:text-blue-900">Your payment information is encrypted and secure</p>
       </div>
     </div>
   );

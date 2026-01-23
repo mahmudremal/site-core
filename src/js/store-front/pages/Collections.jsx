@@ -27,10 +27,10 @@ const PageBody = () => {
   return (
     <div>
       <SiteHeader />
-      <div className="xpo_container xpo_relative xpo_z-10 xpo_mx-auto xpo_px-4 xpo_pt-8 xpo_pb-12">
-        <div className="xpo_mb-8">
-          <h1 className="xpo_text-4xl xpo_font-bold xpo_mb-4 xpo_text-scprimary dark:xpo_text-scwhite">{__('Collections', 'site-core')}</h1>
-          <p className="xpo_text-lg xpo_text-scprimary-400 dark:xpo_text-scwhite-600">{__('Discover curated collections and products tailored just for you', 'site-core')}</p>
+      <div className="container relative z-10 mx-auto px-4 pt-8 pb-12">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold mb-4 text-scprimary dark:text-scwhite">{__('Collections', 'site-core')}</h1>
+          <p className="text-lg text-scprimary-400 dark:text-scwhite-600">{__('Discover curated collections and products tailored just for you', 'site-core')}</p>
         </div>
         <CollectionsPage />
       </div>

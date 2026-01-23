@@ -24,7 +24,7 @@ function App() {
   const { __ } = useLocale();
   return (
     <div>
-      <Suspense fallback={<div className="xpo_text-center xpo_p-4">{__('Loading...', 'site-core')}</div>}>
+      <Suspense fallback={<div className="text-center p-4">{__('Loading...', 'site-core')}</div>}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="carry" element={<CartPage />} />

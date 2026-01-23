@@ -3,14 +3,14 @@ import { motion } from "framer-motion";
 
 const MoonlitBanner = () => {
   return (
-    <div className="xpo_relative xpo_w-full xpo_h-[360px] xpo_overflow-hidden xpo_bg-gradient-to-b xpo_from-[#0a1d37] xpo_to-[#1a2b40]">
-      
+    <div className="relative w-full h-[360px] overflow-hidden bg-gradient-to-b from-[#0a1d37] to-[#1a2b40]">
+
       {/* Moon Glow */}
-      <div className="xpo_absolute xpo_right-24 xpo_top-16">
+      <div className="absolute right-24 top-16">
         <motion.div
           animate={{ scale: [1, 1.05, 1], opacity: [0.9, 1, 0.9] }}
           transition={{ duration: 6, repeat: Infinity }}
-          className="xpo_w-32 xpo_h-32 xpo_bg-white xpo_rounded-full xpo_shadow-[0_0_60px_20px_rgba(255,255,255,0.5)]"
+          className="w-32 h-32 bg-white rounded-full shadow-[0_0_60px_20px_rgba(255,255,255,0.5)]"
         />
       </div>
 
@@ -21,7 +21,7 @@ const MoonlitBanner = () => {
           initial={{ opacity: 0.6 }}
           animate={{ opacity: [0.4, 1, 0.4] }}
           transition={{ duration: 3 + Math.random() * 4, repeat: Infinity }}
-          className="xpo_absolute xpo_bg-white xpo_rounded-full"
+          className="absolute bg-white rounded-full"
           style={{
             width: "2px",
             height: "2px",
@@ -35,7 +35,7 @@ const MoonlitBanner = () => {
       {Array.from({ length: 12 }).map((_, i) => (
         <motion.div
           key={`firefly-${i}`}
-          className="xpo_absolute xpo_w-2 xpo_h-2 xpo_bg-yellow-300 xpo_rounded-full xpo_shadow-[0_0_6px_2px_rgba(255,235,59,0.8)]"
+          className="absolute w-2 h-2 bg-yellow-300 rounded-full shadow-[0_0_6px_2px_rgba(255,235,59,0.8)]"
           style={{
             left: `${Math.random() * 100}%`,
             top: `${50 + Math.random() * 40}%`,
@@ -54,12 +54,12 @@ const MoonlitBanner = () => {
       ))}
 
       {/* Meadow Grass Silhouette */}
-      <div className="xpo_absolute xpo_bottom-0 xpo_left-0 xpo_w-full xpo_h-28 xpo_bg-gradient-to-t xpo_from-[#0b241f] xpo_to-transparent" />
+      <div className="absolute bottom-0 left-0 w-full h-28 bg-gradient-to-t from-[#0b241f] to-transparent" />
 
       {/* Girl Silhouette sitting */}
       <motion.svg
         viewBox="0 0 200 200"
-        className="xpo_absolute xpo_bottom-0 xpo_left-1/4 xpo_h-48 xpo_w-auto xpo_fill-[#0c1629]"
+        className="absolute bottom-0 left-1/4 h-48 w-auto fill-[#0c1629]"
         initial={{ y: 0 }}
         animate={{ y: [0, -2, 0] }}
         transition={{ duration: 4, repeat: Infinity }}
@@ -70,16 +70,16 @@ const MoonlitBanner = () => {
       </motion.svg>
 
       {/* Title Text */}
-      <div className="xpo_absolute xpo_bottom-6 xpo_left-8">
+      <div className="absolute bottom-6 left-8">
         <motion.h1
-          className="xpo_text-white xpo_text-3xl xpo_font-bold xpo_drop-shadow-lg"
+          className="text-white text-3xl font-bold drop-shadow-lg"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 2 }}
         >
           MoonlitMeadow
         </motion.h1>
-        <p className="xpo_text-gray-300 xpo_text-sm">
+        <p className="text-gray-300 text-sm">
           All-in-One Solution for Your Daily Needs
         </p>
       </div>

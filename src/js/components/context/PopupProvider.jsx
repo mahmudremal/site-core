@@ -3,14 +3,14 @@ import { X } from 'lucide-react';
 const PopupContext = createContext();
 
 export const PopupProvider = ({ children }) => {
-    const [backdrop, setBackdrop] = useState({close: false});
+    const [backdrop, setBackdrop] = useState({ close: false });
     const [popup, setPopup] = useState(null);
     const popupRef = useRef(null);
 
     const closePopup = () => setPopup(null);
 
     useEffect(() => {
-        if (!backdrop.close) {return;}
+        if (!backdrop.close) { return; }
         const handleClickOutside = (event) => {
             if (popupRef.current && !popupRef.current.contains(event.target)) {
                 setPopup(null);
@@ -22,18 +22,18 @@ export const PopupProvider = ({ children }) => {
         };
     }, []);
 
-    
+
     return (
         <PopupContext.Provider value={{ popup, setPopup }}>
             {children}
             {popup && (
-                <div className="xpo_fixed xpo_inset-0 xpo_bg-black/40 xpo_flex xpo_justify-center xpo_items-center xpo_z-50">
-                    <div className="xpo_relative card xpo_rounded-2xl xpo_p-6 xpo_shadow-lg xpo_min-w-[300px] xpo_max-w-[90vw]" ref={popupRef}>
+                <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
+                    <div className="relative card rounded-2xl p-6 shadow-lg min-w-[300px] max-w-[90vw]" ref={popupRef}>
                         <button
                             onClick={closePopup}
-                            className="xpo_absolute xpo_top-2 xpo_right-2 xpo_text-gray-500 hover:xpo_text-black"
+                            className="absolute top-2 right-2 text-gray-500 hover:text-black"
                         >
-                            <X className="xpo_w-5 xpo_h-5" />
+                            <X className="w-5 h-5" />
                         </button>
                         <div className="card-body">
                             {popup}

@@ -35,26 +35,26 @@ export default function ProductsGrid() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [loadingMore, products]);
 
-  
+
   return (
-      <section className="xpo_just_for_you">
-        <h2 className="xpo_text-2xl xpo_font-bold xpo_mb-6">Just For You</h2>
-        <div className="xpo_grid xpo_grid-cols-2 sm:xpo_grid-cols-3 md:xpo_grid-cols-4 xpo_gap-6">
-          {products.map((product) => (
-            <Link key={product.id} to={product?.permalink??`/products/${product.slug}/`} className="xpo_bg-scwhite/70 xpo_rounded-lg xpo_shadow-md xpo_p-4 hover:xpo_shadow-xl xpo_transition-shadow">
-              <img
-                src={product.image}
-                alt={product.name}
-                className="xpo_w-full xpo_h-40 xpo_object-cover xpo_rounded"
-              />
-              <h3 className="xpo_mt-2 xpo_font-semibold">{product.name}</h3>
-              <p className="xpo_text-gray-700">${product.price}</p>
-            </Link>
-          ))}
-        </div>
-        {loadingMore && (
-          <p className="xpo_text-center xpo_mt-4 xpo_text-gray-500">Loading more products...</p>
-        )}
-      </section>
+    <section className="just_for_you">
+      <h2 className="text-2xl font-bold mb-6">Just For You</h2>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+        {products.map((product) => (
+          <Link key={product.id} to={product?.permalink ?? `/products/${product.slug}/`} className="bg-scwhite/70 rounded-lg shadow-md p-4 hover:shadow-xl transition-shadow">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-40 object-cover rounded"
+            />
+            <h3 className="mt-2 font-semibold">{product.name}</h3>
+            <p className="text-gray-700">${product.price}</p>
+          </Link>
+        ))}
+      </div>
+      {loadingMore && (
+        <p className="text-center mt-4 text-gray-500">Loading more products...</p>
+      )}
+    </section>
   )
 }

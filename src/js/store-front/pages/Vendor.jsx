@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
-import { 
-  Star, 
-  MapPin, 
-  Clock, 
-  Phone, 
-  Mail, 
-  Globe, 
-  Users, 
-  Package, 
-  Award, 
+import {
+  Star,
+  MapPin,
+  Clock,
+  Phone,
+  Mail,
+  Globe,
+  Users,
+  Package,
+  Award,
   Filter,
   Grid3X3,
   List,
@@ -62,7 +62,7 @@ const api = {
         }
       });
     }
-    
+
     if (url.includes('products')) {
       return Promise.resolve({
         data: Array.from({ length: 12 }, (_, i) => ({
@@ -144,13 +144,12 @@ const VendorPage = () => {
       stars.push(
         <Star
           key={i}
-          className={`${size} ${
-            i < fullStars
-              ? 'xpo_text-yellow-400 xpo_fill-yellow-400'
+          className={`${size} ${i < fullStars
+              ? 'text-yellow-400 fill-yellow-400'
               : i === fullStars && hasHalfStar
-              ? 'xpo_text-yellow-400 xpo_fill-yellow-400'
-              : 'xpo_text-gray-300'
-          }`}
+                ? 'text-yellow-400 fill-yellow-400'
+                : 'text-gray-300'
+            }`}
         />
       );
     }
@@ -164,10 +163,10 @@ const VendorPage = () => {
 
   if (loading) {
     return (
-      <div className="xpo_min-h-screen xpo_bg-gray-50 xpo_flex xpo_items-center xpo_justify-center">
-        <div className="xpo_text-center">
-          <div className="xpo_animate-spin xpo_rounded-full xpo_h-12 xpo_w-12 xpo_border-b-2 xpo_border-indigo-600 xpo_mx-auto"></div>
-          <p className="xpo_mt-4 xpo_text-gray-600">Loading vendor store...</p>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading vendor store...</p>
         </div>
       </div>
     );
@@ -175,85 +174,84 @@ const VendorPage = () => {
 
   if (!vendor) {
     return (
-      <div className="xpo_min-h-screen xpo_bg-gray-50 xpo_flex xpo_items-center xpo_justify-center">
-        <div className="xpo_text-center">
-          <Store className="xpo_w-16 xpo_h-16 xpo_text-gray-400 xpo_mx-auto xpo_mb-4" />
-          <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-800 xpo_mb-2">Store Not Found</h2>
-          <p className="xpo_text-gray-600">The vendor store you're looking for doesn't exist.</p>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Store className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Store Not Found</h2>
+          <p className="text-gray-600">The vendor store you're looking for doesn't exist.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="xpo_min-h-screen xpo_bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Vendor Header */}
-      <div className="xpo_relative">
+      <div className="relative">
         {/* Banner Image */}
-        <div className="xpo_h-64 md:xpo_h-80 xpo_bg-gradient-to-r xpo_from-indigo-600 xpo_to-purple-600 xpo_relative xpo_overflow-hidden">
+        <div className="h-64 md:h-80 bg-gradient-to-r from-indigo-600 to-purple-600 relative overflow-hidden">
           {vendor.banner && (
             <img
               src={vendor.banner}
               alt={vendor.name}
-              className="xpo_w-full xpo_h-full xpo_object-cover xpo_opacity-30"
+              className="w-full h-full object-cover opacity-30"
             />
           )}
-          <div className="xpo_absolute xpo_inset-0 xpo_bg-black xpo_bg-opacity-40"></div>
+          <div className="absolute inset-0 bg-black bg-opacity-40"></div>
         </div>
 
         {/* Vendor Info Overlay */}
-        <div className="xpo_absolute xpo_bottom-0 xpo_left-0 xpo_right-0 xpo_bg-gradient-to-t xpo_from-black xpo_via-black/70 xpo_to-transparent xpo_p-6">
-          <div className="xpo_container xpo_mx-auto">
-            <div className="xpo_flex xpo_flex-col md:xpo_flex-row xpo_items-start md:xpo_items-end xpo_space-y-4 md:xpo_space-y-0 md:xpo_space-x-6">
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/70 to-transparent p-6">
+          <div className="container mx-auto">
+            <div className="flex flex-col md:flex-row items-start md:items-end space-y-4 md:space-y-0 md:space-x-6">
               {/* Logo */}
-              <div className="xpo_flex-shrink-0">
+              <div className="flex-shrink-0">
                 <img
                   src={vendor.logo}
                   alt={vendor.name}
-                  className="xpo_w-24 xpo_h-24 md:xpo_w-32 md:xpo_h-32 xpo_rounded-full xpo_border-4 xpo_border-white xpo_shadow-lg xpo_object-cover"
+                  className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white shadow-lg object-cover"
                 />
               </div>
 
               {/* Vendor Details */}
-              <div className="xpo_flex-1 xpo_text-white">
-                <h1 className="xpo_text-2xl md:xpo_text-4xl xpo_font-bold xpo_mb-2">
+              <div className="flex-1 text-white">
+                <h1 className="text-2xl md:text-4xl font-bold mb-2">
                   {vendor.name}
                 </h1>
-                <div className="xpo_flex xpo_flex-wrap xpo_items-center xpo_space-x-6 xpo_text-sm md:xpo_text-base">
-                  <div className="xpo_flex xpo_items-center xpo_space-x-1">
+                <div className="flex flex-wrap items-center space-x-6 text-sm md:text-base">
+                  <div className="flex items-center space-x-1">
                     {renderStars(vendor.rating)}
-                    <span className="xpo_ml-2">{vendor.rating}</span>
-                    <span className="xpo_text-gray-300">({vendor.reviews_count.toLocaleString()} reviews)</span>
+                    <span className="ml-2">{vendor.rating}</span>
+                    <span className="text-gray-300">({vendor.reviews_count.toLocaleString()} reviews)</span>
                   </div>
-                  <div className="xpo_flex xpo_items-center xpo_space-x-1">
-                    <Users className="xpo_w-4 xpo_h-4" />
+                  <div className="flex items-center space-x-1">
+                    <Users className="w-4 h-4" />
                     <span>{vendor.followers.toLocaleString()} followers</span>
                   </div>
-                  <div className="xpo_flex xpo_items-center xpo_space-x-1">
-                    <Package className="xpo_w-4 xpo_h-4" />
+                  <div className="flex items-center space-x-1">
+                    <Package className="w-4 h-4" />
                     <span>{vendor.total_products} products</span>
                   </div>
-                  <div className="xpo_flex xpo_items-center xpo_space-x-1">
-                    <Calendar className="xpo_w-4 xpo_h-4" />
+                  <div className="flex items-center space-x-1">
+                    <Calendar className="w-4 h-4" />
                     <span>Since {vendor.founded_year}</span>
                   </div>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="xpo_flex xpo_space-x-3">
+              <div className="flex space-x-3">
                 <button
                   onClick={handleFollowToggle}
-                  className={`xpo_px-6 xpo_py-2 xpo_rounded-lg xpo_font-semibold xpo_transition-colors ${
-                    isFollowing
-                      ? 'xpo_bg-gray-600 xpo_text-white hover:xpo_bg-gray-700'
-                      : 'xpo_bg-indigo-600 xpo_text-white hover:xpo_bg-indigo-700'
-                  }`}
+                  className={`px-6 py-2 rounded-lg font-semibold transition-colors ${isFollowing
+                      ? 'bg-gray-600 text-white hover:bg-gray-700'
+                      : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                    }`}
                 >
                   {isFollowing ? 'Following' : 'Follow Store'}
                 </button>
-                <button className="xpo_bg-white xpo_text-gray-800 xpo_px-6 xpo_py-2 xpo_rounded-lg xpo_font-semibold hover:xpo_bg-gray-100 xpo_transition-colors">
-                  <MessageCircle className="xpo_w-4 xpo_h-4 xpo_inline xpo_mr-2" />
+                <button className="bg-white text-gray-800 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                  <MessageCircle className="w-4 h-4 inline mr-2" />
                   Contact
                 </button>
               </div>
@@ -263,40 +261,40 @@ const VendorPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="xpo_container xpo_mx-auto xpo_px-4 xpo_py-8">
-        <div className="xpo_grid xpo_grid-cols-1 lg:xpo_grid-cols-4 xpo_gap-8">
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
-          <div className="lg:xpo_col-span-1">
+          <div className="lg:col-span-1">
             {/* Vendor Info Card */}
-            <div className="xpo_bg-white xpo_rounded-lg xpo_shadow-lg xpo_p-6 xpo_mb-6">
-              <h3 className="xpo_text-lg xpo_font-semibold xpo_mb-4 xpo_text-gray-800">Store Information</h3>
-              
-              <div className="xpo_space-y-3 xpo_text-sm">
+            <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">Store Information</h3>
+
+              <div className="space-y-3 text-sm">
                 {vendor.contact.address && (
-                  <div className="xpo_flex xpo_items-start xpo_space-x-2">
-                    <MapPin className="xpo_w-4 xpo_h-4 xpo_text-gray-500 xpo_mt-0.5 xpo_flex-shrink-0" />
-                    <span className="xpo_text-gray-600">{vendor.contact.address}</span>
+                  <div className="flex items-start space-x-2">
+                    <MapPin className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                    <span className="text-gray-600">{vendor.contact.address}</span>
                   </div>
                 )}
-                
+
                 {vendor.contact.phone && (
-                  <div className="xpo_flex xpo_items-center xpo_space-x-2">
-                    <Phone className="xpo_w-4 xpo_h-4 xpo_text-gray-500" />
-                    <span className="xpo_text-gray-600">{vendor.contact.phone}</span>
+                  <div className="flex items-center space-x-2">
+                    <Phone className="w-4 h-4 text-gray-500" />
+                    <span className="text-gray-600">{vendor.contact.phone}</span>
                   </div>
                 )}
-                
+
                 {vendor.contact.email && (
-                  <div className="xpo_flex xpo_items-center xpo_space-x-2">
-                    <Mail className="xpo_w-4 xpo_h-4 xpo_text-gray-500" />
-                    <span className="xpo_text-gray-600">{vendor.contact.email}</span>
+                  <div className="flex items-center space-x-2">
+                    <Mail className="w-4 h-4 text-gray-500" />
+                    <span className="text-gray-600">{vendor.contact.email}</span>
                   </div>
                 )}
-                
+
                 {vendor.contact.website && (
-                  <div className="xpo_flex xpo_items-center xpo_space-x-2">
-                    <Globe className="xpo_w-4 xpo_h-4 xpo_text-gray-500" />
-                    <a href={vendor.contact.website} className="xpo_text-indigo-600 hover:xpo_underline" target="_blank" rel="noopener noreferrer">
+                  <div className="flex items-center space-x-2">
+                    <Globe className="w-4 h-4 text-gray-500" />
+                    <a href={vendor.contact.website} className="text-indigo-600 hover:underline" target="_blank" rel="noopener noreferrer">
                       Visit Website
                     </a>
                   </div>
@@ -305,68 +303,67 @@ const VendorPage = () => {
             </div>
 
             {/* Stats Card */}
-            <div className="xpo_bg-white xpo_rounded-lg xpo_shadow-lg xpo_p-6 xpo_mb-6">
-              <h3 className="xpo_text-lg xpo_font-semibold xpo_mb-4 xpo_text-gray-800">Performance Stats</h3>
-              
-              <div className="xpo_space-y-4">
-                <div className="xpo_flex xpo_justify-between xpo_items-center">
-                  <div className="xpo_flex xpo_items-center xpo_space-x-2">
-                    <TrendingUp className="xpo_w-4 xpo_h-4 xpo_text-green-500" />
-                    <span className="xpo_text-sm xpo_text-gray-600">Total Sales</span>
+            <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">Performance Stats</h3>
+
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-2">
+                    <TrendingUp className="w-4 h-4 text-green-500" />
+                    <span className="text-sm text-gray-600">Total Sales</span>
                   </div>
-                  <span className="xpo_font-semibold">{vendor.stats.total_sales.toLocaleString()}</span>
+                  <span className="font-semibold">{vendor.stats.total_sales.toLocaleString()}</span>
                 </div>
-                
-                <div className="xpo_flex xpo_justify-between xpo_items-center">
-                  <div className="xpo_flex xpo_items-center xpo_space-x-2">
-                    <MessageCircle className="xpo_w-4 xpo_h-4 xpo_text-blue-500" />
-                    <span className="xpo_text-sm xpo_text-gray-600">Response Rate</span>
+
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-2">
+                    <MessageCircle className="w-4 h-4 text-blue-500" />
+                    <span className="text-sm text-gray-600">Response Rate</span>
                   </div>
-                  <span className="xpo_font-semibold">{vendor.stats.response_rate}%</span>
+                  <span className="font-semibold">{vendor.stats.response_rate}%</span>
                 </div>
-                
-                <div className="xpo_flex xpo_justify-between xpo_items-center">
-                  <div className="xpo_flex xpo_items-center xpo_space-x-2">
-                    <Truck className="xpo_w-4 xpo_h-4 xpo_text-orange-500" />
-                    <span className="xpo_text-sm xpo_text-gray-600">Shipping Time</span>
+
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-2">
+                    <Truck className="w-4 h-4 text-orange-500" />
+                    <span className="text-sm text-gray-600">Shipping Time</span>
                   </div>
-                  <span className="xpo_font-semibold">{vendor.stats.shipping_time}</span>
+                  <span className="font-semibold">{vendor.stats.shipping_time}</span>
                 </div>
-                
-                <div className="xpo_flex xpo_justify-between xpo_items-center">
-                  <div className="xpo_flex xpo_items-center xpo_space-x-2">
-                    <Shield className="xpo_w-4 xpo_h-4 xpo_text-purple-500" />
-                    <span className="xpo_text-sm xpo_text-gray-600">Return Policy</span>
+
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-2">
+                    <Shield className="w-4 h-4 text-purple-500" />
+                    <span className="text-sm text-gray-600">Return Policy</span>
                   </div>
-                  <span className="xpo_font-semibold">{vendor.stats.return_policy}</span>
+                  <span className="font-semibold">{vendor.stats.return_policy}</span>
                 </div>
               </div>
             </div>
 
             {/* Certifications */}
-            <div className="xpo_bg-white xpo_rounded-lg xpo_shadow-lg xpo_p-6 xpo_mb-6">
-              <h3 className="xpo_text-lg xpo_font-semibold xpo_mb-4 xpo_text-gray-800">Certifications</h3>
-              <div className="xpo_space-y-2">
+            <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">Certifications</h3>
+              <div className="space-y-2">
                 {vendor.certifications.map((cert, index) => (
-                  <div key={index} className="xpo_flex xpo_items-center xpo_space-x-2">
-                    <Award className="xpo_w-4 xpo_h-4 xpo_text-green-500" />
-                    <span className="xpo_text-sm xpo_text-gray-600">{cert}</span>
+                  <div key={index} className="flex items-center space-x-2">
+                    <Award className="w-4 h-4 text-green-500" />
+                    <span className="text-sm text-gray-600">{cert}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Categories Filter */}
-            <div className="xpo_bg-white xpo_rounded-lg xpo_shadow-lg xpo_p-6">
-              <h3 className="xpo_text-lg xpo_font-semibold xpo_mb-4 xpo_text-gray-800">Categories</h3>
-              <div className="xpo_space-y-2">
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">Categories</h3>
+              <div className="space-y-2">
                 <button
                   onClick={() => setFilterCategory('all')}
-                  className={`xpo_w-full xpo_text-left xpo_px-3 xpo_py-2 xpo_rounded-md xpo_text-sm xpo_transition-colors ${
-                    filterCategory === 'all'
-                      ? 'xpo_bg-indigo-100 xpo_text-indigo-700'
-                      : 'hover:xpo_bg-gray-100 xpo_text-gray-600'
-                  }`}
+                  className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${filterCategory === 'all'
+                      ? 'bg-indigo-100 text-indigo-700'
+                      : 'hover:bg-gray-100 text-gray-600'
+                    }`}
                 >
                   All Categories
                 </button>
@@ -374,11 +371,10 @@ const VendorPage = () => {
                   <button
                     key={index}
                     onClick={() => setFilterCategory(category.toLowerCase())}
-                    className={`xpo_w-full xpo_text-left xpo_px-3 xpo_py-2 xpo_rounded-md xpo_text-sm xpo_transition-colors ${
-                      filterCategory === category.toLowerCase()
-                        ? 'xpo_bg-indigo-100 xpo_text-indigo-700'
-                        : 'hover:xpo_bg-gray-100 xpo_text-gray-600'
-                    }`}
+                    className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${filterCategory === category.toLowerCase()
+                        ? 'bg-indigo-100 text-indigo-700'
+                        : 'hover:bg-gray-100 text-gray-600'
+                      }`}
                   >
                     {category}
                   </button>
@@ -388,40 +384,40 @@ const VendorPage = () => {
           </div>
 
           {/* Main Content */}
-          <div className="lg:xpo_col-span-3">
+          <div className="lg:col-span-3">
             {/* About Section */}
-            <div className="xpo_bg-white xpo_rounded-lg xpo_shadow-lg xpo_p-6 xpo_mb-8">
-              <h2 className="xpo_text-2xl xpo_font-bold xpo_mb-4 xpo_text-gray-800">About {vendor.name}</h2>
-              <p className="xpo_text-gray-600 xpo_leading-relaxed">{vendor.description}</p>
+            <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+              <h2 className="text-2xl font-bold mb-4 text-gray-800">About {vendor.name}</h2>
+              <p className="text-gray-600 leading-relaxed">{vendor.description}</p>
             </div>
 
             {/* Products Section */}
-            <div className="xpo_bg-white xpo_rounded-lg xpo_shadow-lg xpo_overflow-hidden">
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
               {/* Products Header */}
-              <div className="xpo_p-6 xpo_border-b xpo_border-gray-200">
-                <div className="xpo_flex xpo_flex-col md:xpo_flex-row md:xpo_items-center xpo_justify-between xpo_space-y-4 md:xpo_space-y-0">
-                  <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-800">Products</h2>
-                  
+              <div className="p-6 border-b border-gray-200">
+                <div className="flex flex-col md:flex-row md:items-center justify-between space-y-4 md:space-y-0">
+                  <h2 className="text-2xl font-bold text-gray-800">Products</h2>
+
                   {/* Search and Controls */}
-                  <div className="xpo_flex xpo_flex-col sm:xpo_flex-row xpo_space-y-2 sm:xpo_space-y-0 sm:xpo_space-x-4">
+                  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                     {/* Search */}
-                    <div className="xpo_relative">
-                      <Search className="xpo_absolute xpo_left-3 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_w-4 xpo_h-4 xpo_text-gray-400" />
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                       <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder={__('Search anything...', 'site-core')}
-                        className="xpo_pl-10 xpo_pr-4 xpo_py-2 xpo_border xpo_border-gray-300 xpo_rounded-lg focus:xpo_ring-2 focus:xpo_ring-indigo-500 focus:xpo_border-transparent"
+                        className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                       />
                     </div>
-                    
+
                     {/* Sort */}
-                    <div className="xpo_relative">
+                    <div className="relative">
                       <select
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
-                        className="xpo_appearance-none xpo_bg-white xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_px-4 xpo_py-2 xpo_pr-8 focus:xpo_ring-2 focus:xpo_ring-indigo-500 focus:xpo_border-transparent"
+                        className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                       >
                         <option value="featured">{__('Featured', 'site-core')}</option>
                         <option value="price-low">{__('Price: Low to High', 'site-core')}</option>
@@ -429,30 +425,28 @@ const VendorPage = () => {
                         <option value="rating">{__('Highest Rated', 'site-core')}</option>
                         <option value="newest">{__('Newest', 'site-core')}</option>
                       </select>
-                      <ChevronDown className="xpo_absolute xpo_right-2 xpo_top-1/2 xpo_transform xpo_-translate-y-1/2 xpo_w-4 xpo_h-4 xpo_text-gray-400 xpo_pointer-events-none" />
+                      <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                     </div>
-                    
+
                     {/* View Mode */}
-                    <div className="xpo_flex xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_overflow-hidden">
+                    <div className="flex border border-gray-300 rounded-lg overflow-hidden">
                       <button
                         onClick={() => setViewMode('grid')}
-                        className={`xpo_p-2 ${
-                          viewMode === 'grid'
-                            ? 'xpo_bg-indigo-100 xpo_text-indigo-600'
-                            : 'xpo_bg-white xpo_text-gray-600 hover:xpo_bg-gray-50'
-                        }`}
+                        className={`p-2 ${viewMode === 'grid'
+                            ? 'bg-indigo-100 text-indigo-600'
+                            : 'bg-white text-gray-600 hover:bg-gray-50'
+                          }`}
                       >
-                        <Grid3X3 className="xpo_w-4 xpo_h-4" />
+                        <Grid3X3 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => setViewMode('list')}
-                        className={`xpo_p-2 ${
-                          viewMode === 'list'
-                            ? 'xpo_bg-indigo-100 xpo_text-indigo-600'
-                            : 'xpo_bg-white xpo_text-gray-600 hover:xpo_bg-gray-50'
-                        }`}
+                        className={`p-2 ${viewMode === 'list'
+                            ? 'bg-indigo-100 text-indigo-600'
+                            : 'bg-white text-gray-600 hover:bg-gray-50'
+                          }`}
                       >
-                        <List className="xpo_w-4 xpo_h-4" />
+                        <List className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
@@ -460,105 +454,103 @@ const VendorPage = () => {
               </div>
 
               {/* Products Grid/List */}
-              <div className="xpo_p-6">
+              <div className="p-6">
                 {productsLoading ? (
-                  <div className="xpo_grid xpo_grid-cols-1 sm:xpo_grid-cols-2 lg:xpo_grid-cols-3 xpo_gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {[...Array(6)].map((_, index) => (
-                      <div key={index} className="xpo_animate-pulse">
-                        <div className="xpo_bg-gray-300 xpo_h-48 xpo_rounded-lg xpo_mb-4"></div>
-                        <div className="xpo_h-4 xpo_bg-gray-300 xpo_rounded xpo_mb-2"></div>
-                        <div className="xpo_h-4 xpo_bg-gray-300 xpo_rounded xpo_w-3/4"></div>
+                      <div key={index} className="animate-pulse">
+                        <div className="bg-gray-300 h-48 rounded-lg mb-4"></div>
+                        <div className="h-4 bg-gray-300 rounded mb-2"></div>
+                        <div className="h-4 bg-gray-300 rounded w-3/4"></div>
                       </div>
                     ))}
                   </div>
                 ) : (
                   <div className={
                     viewMode === 'grid'
-                      ? 'xpo_grid xpo_grid-cols-1 sm:xpo_grid-cols-2 lg:xpo_grid-cols-3 xpo_gap-6'
-                      : 'xpo_space-y-4'
+                      ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'
+                      : 'space-y-4'
                   }>
                     {products?.length && products.map((product) => (
                       <div
                         key={product.id}
                         className={
                           viewMode === 'grid'
-                            ? 'xpo_group xpo_cursor-pointer xpo_transition-transform hover:xpo_scale-105'
-                            : 'xpo_flex xpo_items-center xpo_space-x-4 xpo_p-4 xpo_border xpo_border-gray-200 xpo_rounded-lg hover:xpo_shadow-md xpo_transition-shadow'
+                            ? 'group cursor-pointer transition-transform hover:scale-105'
+                            : 'flex items-center space-x-4 p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow'
                         }
                       >
                         {/* Product Image */}
                         <div className={
                           viewMode === 'grid'
-                            ? 'xpo_relative xpo_overflow-hidden xpo_rounded-lg xpo_bg-gray-200 xpo_aspect-square'
-                            : 'xpo_flex-shrink-0'
+                            ? 'relative overflow-hidden rounded-lg bg-gray-200 aspect-square'
+                            : 'flex-shrink-0'
                         }>
                           <img
                             src={product.thumbnail}
                             alt={product.title}
                             className={
                               viewMode === 'grid'
-                                ? 'xpo_w-full xpo_h-full xpo_object-cover group-hover:xpo_scale-110 xpo_transition-transform xpo_duration-300'
-                                : 'xpo_w-24 xpo_h-24 xpo_object-cover xpo_rounded-lg'
+                                ? 'w-full h-full object-cover group-hover:scale-110 transition-transform duration-300'
+                                : 'w-24 h-24 object-cover rounded-lg'
                             }
                           />
-                          
+
                           {/* Grid Mode Overlay */}
                           {viewMode === 'grid' && (
-                            <div className="xpo_absolute xpo_top-2 xpo_right-2 xpo_opacity-0 group-hover:xpo_opacity-100 xpo_transition-opacity">
-                              <button className="xpo_bg-white xpo_p-2 xpo_rounded-full xpo_shadow-lg xpo_mb-2 hover:xpo_bg-gray-50">
-                                <Heart className="xpo_w-4 xpo_h-4 xpo_text-gray-600" />
+                            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button className="bg-white p-2 rounded-full shadow-lg mb-2 hover:bg-gray-50">
+                                <Heart className="w-4 h-4 text-gray-600" />
                               </button>
                             </div>
                           )}
                         </div>
 
                         {/* Product Info */}
-                        <div className={viewMode === 'grid' ? 'xpo_p-4' : 'xpo_flex-1'}>
-                          <h3 className={`xpo_font-semibold xpo_text-gray-800 xpo_mb-2 ${
-                            viewMode === 'grid' ? 'xpo_text-lg' : 'xpo_text-base'
-                          }`}>
+                        <div className={viewMode === 'grid' ? 'p-4' : 'flex-1'}>
+                          <h3 className={`font-semibold text-gray-800 mb-2 ${viewMode === 'grid' ? 'text-lg' : 'text-base'
+                            }`}>
                             {product.title}
                           </h3>
-                          
-                          <div className="xpo_flex xpo_items-center xpo_space-x-1 xpo_mb-2">
+
+                          <div className="flex items-center space-x-1 mb-2">
                             {renderStars(product.average_rating)}
-                            <span className="xpo_text-sm xpo_text-gray-600">
+                            <span className="text-sm text-gray-600">
                               ({product.reviews_count})
                             </span>
                           </div>
-                          
-                          <div className="xpo_flex xpo_items-center xpo_justify-between">
+
+                          <div className="flex items-center justify-between">
                             <div>
-                              <span className="xpo_text-lg xpo_font-bold xpo_text-indigo-600">
+                              <span className="text-lg font-bold text-indigo-600">
                                 ${product.metadata.sale_price}
                               </span>
                               {product.metadata.price !== product.metadata.sale_price && (
-                                <span className="xpo_text-sm xpo_text-gray-500 xpo_line-through xpo_ml-2">
+                                <span className="text-sm text-gray-500 line-through ml-2">
                                   ${product.metadata.price}
                                 </span>
                               )}
                             </div>
-                            
+
                             {viewMode === 'list' && (
-                              <div className="xpo_flex xpo_space-x-2">
-                                <button className="xpo_bg-gray-100 xpo_p-2 xpo_rounded-lg hover:xpo_bg-gray-200 xpo_transition-colors">
-                                  <Heart className="xpo_w-4 xpo_h-4 xpo_text-gray-600" />
+                              <div className="flex space-x-2">
+                                <button className="bg-gray-100 p-2 rounded-lg hover:bg-gray-200 transition-colors">
+                                  <Heart className="w-4 h-4 text-gray-600" />
                                 </button>
-                                <button className="xpo_bg-indigo-600 xpo_text-white xpo_px-4 xpo_py-2 xpo_rounded-lg hover:xpo_bg-indigo-700 xpo_transition-colors">
-                                  <ShoppingCart className="xpo_w-4 xpo_h-4 xpo_inline xpo_mr-2" />
+                                <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                                  <ShoppingCart className="w-4 h-4 inline mr-2" />
                                   {__('Add to Cart', 'site-core')}
                                 </button>
                               </div>
                             )}
                           </div>
-                          
+
                           {/* Stock Status */}
-                          <div className="xpo_mt-2">
-                            <span className={`xpo_text-xs xpo_px-2 xpo_py-1 xpo_rounded-full ${
-                              product.in_stock
-                                ? 'xpo_bg-green-100 xpo_text-green-700'
-                                : 'xpo_bg-red-100 xpo_text-red-700'
-                            }`}>
+                          <div className="mt-2">
+                            <span className={`text-xs px-2 py-1 rounded-full ${product.in_stock
+                                ? 'bg-green-100 text-green-700'
+                                : 'bg-red-100 text-red-700'
+                              }`}>
                               {product.in_stock ? __('In Stock', 'site-core') : __('Out of Stock', 'site-core')}
                             </span>
                           </div>
@@ -570,21 +562,21 @@ const VendorPage = () => {
 
                 {/* Pagination */}
                 {!productsLoading && products.length > 0 && (
-                  <div className="xpo_flex xpo_justify-center xpo_mt-8">
-                    <div className="xpo_flex xpo_space-x-2">
-                      <button className="xpo_px-4 xpo_py-2 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_text-gray-600 hover:xpo_bg-gray-50 xpo_disabled:opacity-50 xpo_disabled:cursor-not-allowed" disabled>
+                  <div className="flex justify-center mt-8">
+                    <div className="flex space-x-2">
+                      <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                         {__('Previous', 'site-core')}
                       </button>
-                      <button className="xpo_px-4 xpo_py-2 xpo_bg-indigo-600 xpo_text-white xpo_rounded-lg">
+                      <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg">
                         1
                       </button>
-                      <button className="xpo_px-4 xpo_py-2 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_text-gray-600 hover:xpo_bg-gray-50">
+                      <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">
                         2
                       </button>
-                      <button className="xpo_px-4 xpo_py-2 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_text-gray-600 hover:xpo_bg-gray-50">
+                      <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">
                         3
                       </button>
-                      <button className="xpo_px-4 xpo_py-2 xpo_border xpo_border-gray-300 xpo_rounded-lg xpo_text-gray-600 hover:xpo_bg-gray-50">
+                      <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">
                         {__('Next', 'site-core')}
                       </button>
                     </div>
@@ -593,15 +585,15 @@ const VendorPage = () => {
 
                 {/* Empty State */}
                 {!productsLoading && products.length === 0 && (
-                  <div className="xpo_text-center xpo_py-12">
-                    <Package className="xpo_w-16 xpo_h-16 xpo_text-gray-400 xpo_mx-auto xpo_mb-4" />
-                    <h3 className="xpo_text-lg xpo_font-semibold xpo_text-gray-800 xpo_mb-2">No Products Found</h3>
-                    <p className="xpo_text-gray-600">
+                  <div className="text-center py-12">
+                    <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-gray-800 mb-2">No Products Found</h3>
+                    <p className="text-gray-600">
                       {searchQuery
                         ? sprintf(__('No products match "%s"', 'site-core'), searchQuery)
                         : filterCategory !== 'all'
-                        ? sprintf(__('No products in "%s" category', 'site-core'), filterCategory)
-                        : __('This vendor has no products yet', 'site-core')
+                          ? sprintf(__('No products in "%s" category', 'site-core'), filterCategory)
+                          : __('This vendor has no products yet', 'site-core')
                       }
                     </p>
                     {(searchQuery || filterCategory !== 'all') && (
@@ -610,7 +602,7 @@ const VendorPage = () => {
                           setSearchQuery('');
                           setFilterCategory('all');
                         }}
-                        className="xpo_mt-4 xpo_text-indigo-600 hover:xpo_underline"
+                        className="mt-4 text-indigo-600 hover:underline"
                       >
                         {__('Clear filters', 'site-core')}
                       </button>
@@ -623,22 +615,22 @@ const VendorPage = () => {
         </div>
 
         {/* Reviews Section */}
-        <div className="xpo_mt-8 xpo_bg-white xpo_rounded-lg xpo_shadow-lg xpo_p-6">
-          <div className="xpo_flex xpo_items-center xpo_justify-between xpo_mb-6">
-            <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-800">{__('Customer Reviews', 'site-core')}</h2>
-            <div className="xpo_flex xpo_items-center xpo_space-x-4">
-              <div className="xpo_flex xpo_items-center xpo_space-x-2">
-                <div className="xpo_flex xpo_items-center">
+        <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-800">{__('Customer Reviews', 'site-core')}</h2>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <div className="flex items-center">
                   {renderStars(vendor.rating, 'w-5 h-5')}
                 </div>
-                <span className="xpo_text-lg xpo_font-semibold">{vendor.rating}</span>
-                <span className="xpo_text-gray-600">{sprintf(__('(%s reviews)', 'site-core'), vendor.reviews_count.toLocaleString())}</span>
+                <span className="text-lg font-semibold">{vendor.rating}</span>
+                <span className="text-gray-600">{sprintf(__('(%s reviews)', 'site-core'), vendor.reviews_count.toLocaleString())}</span>
               </div>
             </div>
           </div>
 
           {/* Sample Reviews */}
-          <div className="xpo_space-y-6">
+          <div className="space-y-6">
             {[
               {
                 author: "Sarah Johnson",
@@ -659,42 +651,42 @@ const VendorPage = () => {
                 comment: "Amazing vendor! Quick responses to messages and the packaging was perfect. Highly recommend this store to anyone looking for quality electronics."
               }
             ].map((review, index) => (
-              <div key={index} className="xpo_border-b xpo_border-gray-200 xpo_pb-6 last:xpo_border-b-0 last:xpo_pb-0">
-                <div className="xpo_flex xpo_items-start xpo_space-x-4">
-                  <div className="xpo_flex-shrink-0">
-                    <div className="xpo_w-10 xpo_h-10 xpo_bg-indigo-100 xpo_rounded-full xpo_flex xpo_items-center xpo_justify-center">
-                      <span className="xpo_text-indigo-600 xpo_font-semibold">
+              <div key={index} className="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0">
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0">
+                    <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                      <span className="text-indigo-600 font-semibold">
                         {review.author.split(' ').map(n => n[0]).join('')}
                       </span>
                     </div>
                   </div>
-                  <div className="xpo_flex-1">
-                    <div className="xpo_flex xpo_items-center xpo_space-x-2 xpo_mb-2">
-                      <h4 className="xpo_font-semibold xpo_text-gray-800">{review.author}</h4>
-                      <div className="xpo_flex xpo_items-center">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <h4 className="font-semibold text-gray-800">{review.author}</h4>
+                      <div className="flex items-center">
                         {renderStars(review.rating)}
                       </div>
-                      <span className="xpo_text-sm xpo_text-gray-500">{review.date}</span>
+                      <span className="text-sm text-gray-500">{review.date}</span>
                     </div>
-                    <p className="xpo_text-gray-600 xpo_leading-relaxed">{review.comment}</p>
+                    <p className="text-gray-600 leading-relaxed">{review.comment}</p>
                   </div>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="xpo_text-center xpo_mt-6">
-            <button className="xpo_text-indigo-600 xpo_font-semibold hover:xpo_underline">
+          <div className="text-center mt-6">
+            <button className="text-indigo-600 font-semibold hover:underline">
               {__('View All Reviews', 'site-core')}
             </button>
           </div>
         </div>
 
         {/* FAQ Section */}
-        <div className="xpo_mt-8 xpo_bg-white xpo_rounded-lg xpo_shadow-lg xpo_p-6">
-          <h2 className="xpo_text-2xl xpo_font-bold xpo_text-gray-800 xpo_mb-6">{__('Frequently Asked Questions', 'site-core')}</h2>
-          
-          <div className="xpo_space-y-4">
+        <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">{__('Frequently Asked Questions', 'site-core')}</h2>
+
+          <div className="space-y-4">
             {[
               {
                 question: "What are your shipping options?",
@@ -713,12 +705,12 @@ const VendorPage = () => {
                 answer: "Once your order ships, you'll receive a tracking number via email. You can also track your order in your account dashboard."
               }
             ].map((faq, index) => (
-              <div key={index} className="xpo_border xpo_border-gray-200 xpo_rounded-lg xpo_p-4">
-                <button className="xpo_w-full xpo_text-left xpo_flex xpo_justify-between xpo_items-center">
-                  <h3 className="xpo_font-semibold xpo_text-gray-800">{faq.question}</h3>
-                  <ChevronDown className="xpo_w-5 xpo_h-5 xpo_text-gray-500" />
+              <div key={index} className="border border-gray-200 rounded-lg p-4">
+                <button className="w-full text-left flex justify-between items-center">
+                  <h3 className="font-semibold text-gray-800">{faq.question}</h3>
+                  <ChevronDown className="w-5 h-5 text-gray-500" />
                 </button>
-                <div className="xpo_mt-2 xpo_text-gray-600">
+                <div className="mt-2 text-gray-600">
                   <p>{faq.answer}</p>
                 </div>
               </div>
@@ -727,18 +719,18 @@ const VendorPage = () => {
         </div>
 
         {/* Contact CTA */}
-        <div className="xpo_mt-8 xpo_bg-gradient-to-r xpo_from-indigo-600 xpo_to-purple-600 xpo_rounded-lg xpo_p-8 xpo_text-center xpo_text-white">
-          <h2 className="xpo_text-2xl xpo_font-bold xpo_mb-4">{__('Have Questions?', 'site-core')}</h2>
-          <p className="xpo_text-indigo-100 xpo_mb-6">
+        <div className="mt-8 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg p-8 text-center text-white">
+          <h2 className="text-2xl font-bold mb-4">{__('Have Questions?', 'site-core')}</h2>
+          <p className="text-indigo-100 mb-6">
             {__('Our customer support team is here to help you with any questions about our products or services.', 'site-core')}
           </p>
-          <div className="xpo_flex xpo_justify-center xpo_space-x-4">
-            <button className="xpo_bg-white xpo_text-indigo-600 xpo_px-6 xpo_py-3 xpo_rounded-lg xpo_font-semibold hover:xpo_bg-gray-100 xpo_transition-colors">
-              <MessageCircle className="xpo_w-5 xpo_h-5 xpo_inline xpo_mr-2" />
+          <div className="flex justify-center space-x-4">
+            <button className="bg-white text-indigo-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+              <MessageCircle className="w-5 h-5 inline mr-2" />
               {__('Send Message', 'site-core')}
             </button>
-            <button className="xpo_bg-indigo-500 xpo_text-white xpo_px-6 xpo_py-3 xpo_rounded-lg xpo_font-semibold hover:xpo_bg-indigo-400 xpo_transition-colors">
-              <Phone className="xpo_w-5 xpo_h-5 xpo_inline xpo_mr-2" />
+            <button className="bg-indigo-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-400 transition-colors">
+              <Phone className="w-5 h-5 inline mr-2" />
               {__('Call Now', 'site-core')}
             </button>
           </div>
