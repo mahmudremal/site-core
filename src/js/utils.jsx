@@ -2,10 +2,10 @@ import { X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
 export const Popup = ({ onClose = null, showCross = true, backdrop = true, backdropClose = true, className = null, crossClassName = null, bodyClassName = null, backdropClassName = null, children }) => {
-  if (!className) {className = "fixed inset-0 z-50 flex items-center justify-center";}
-  if (!bodyClassName) {bodyClassName = "relative z-10 bg-white rounded-xl shadow-lg p-6 max-w-full min-w-[90vw] md:min-w-[28rem]";}
-  if (!crossClassName) {crossClassName = "p-2 hover:bg-gray-100 rounded-lg";}
-  if (!backdropClassName) {backdropClassName = "absolute inset-0 bg-black/40 bg-opacity-30";}
+  if (!className) { className = "fixed inset-0 z-50 flex items-center justify-center"; }
+  if (!bodyClassName) { bodyClassName = "relative z-10 bg-white rounded-xl shadow-lg p-6 max-w-full min-w-[90vw] md:min-w-[28rem] max-h-[90vh] overflow-auto"; }
+  if (!crossClassName) { crossClassName = "p-2 hover:bg-gray-100 rounded-lg"; }
+  if (!backdropClassName) { backdropClassName = "absolute inset-0 bg-black/40 bg-opacity-30"; }
   // 
   return (
     <div className={className} aria-modal="true" role="dialog">
@@ -56,7 +56,7 @@ export const ClipboardInput = ({ text }) => {
                 if (inputRef.current) {
                   // inputRef.current.select();
                   // document.execCommand("copy");
-                  const clipboardItem = new ClipboardItem({'text/plain': text});
+                  const clipboardItem = new ClipboardItem({ 'text/plain': text });
                   await navigator.clipboard.write([clipboardItem]);
                   setCopySuccess("Copied!");
                   setTimeout(() => setCopySuccess(''), 2000);
@@ -118,7 +118,7 @@ export const ClipboardInput = ({ text }) => {
 }
 
 export const ellipsis = (text, start = 0, end = 30) => {
-  if (typeof text !== 'string') {return text;}
+  if (typeof text !== 'string') { return text; }
   if (text?.length >= start + end) {
     return text.substring(start, end);
   }
@@ -188,7 +188,7 @@ export const tailwind_install = () => {
               //   900: "#01171A",
               // },
               agreements: {
-                50:  "#FFFBEA",
+                50: "#FFFBEA",
                 100: "#FFF3C4",
                 200: "#FCE588",
                 300: "#FADB5F",
@@ -202,7 +202,7 @@ export const tailwind_install = () => {
               },
               scprimary: {
                 DEFAULT: "#0A1D37",
-                50:  "#e1e5ec",
+                50: "#e1e5ec",
                 100: "#bcc7d8",
                 200: "#8ba1b9",
                 300: "#597b9a",
@@ -215,7 +215,7 @@ export const tailwind_install = () => {
               },
               scwhite: {
                 DEFAULT: "#F5F7FA",
-                50:  "#FFFFFF",
+                50: "#FFFFFF",
                 100: "#FDFEFF",
                 200: "#F9FAFC",
                 300: "#F5F7FA",
@@ -228,7 +228,7 @@ export const tailwind_install = () => {
               },
               scaccent: {
                 DEFAULT: "#6C5DD3",
-                50:  "#F0EEFC",
+                50: "#F0EEFC",
                 100: "#DCD8F7",
                 200: "#C1B8F2",
                 300: "#A697ED",
@@ -239,8 +239,8 @@ export const tailwind_install = () => {
                 800: "#393172",
                 900: "#28234F"
               },
-              
-              
+
+
               'brand-dark': '#1D2327',
               'primary-dark': '#0F172A',
               'primary-light': '#1E293B',

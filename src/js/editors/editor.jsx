@@ -169,11 +169,11 @@ export default function Editor({ trigger, config = {} }) {
       .join('\n\n')
       .slice(-4000);
 
-    const replacerPrompt = promptsService.article.refine(promptsService.article.replacer.prompt, {
+    const replacerPrompt = promptsService.article.refine(await promptsService.tools.margePrompt(promptsService.article.replacer.prompt), {
       '{{title}}': title,
-      '{{keywords}}': metadata.keywords?.join(', ') || '',
       '{{plan}}': planner.text,
       '{{current_section}}': item.prompt,
+      '{{keywords}}': metadata.keywords?.join(', ') || '',
       '{{previous_content}}': previousContent || 'This is the first section. Start with a captivating and relevant introduction.'
     });
 
@@ -188,7 +188,7 @@ export default function Editor({ trigger, config = {} }) {
           prompts: prev.prompts.map(p => p.id === id ? { ...p, markdown, output: marked.parse(markdown, { sanitize: false }) } : p)
         }));
       },
-      { stream: true, model: selectedModel, onStatus: (msg) => setLogMessage(msg) }
+      { stream: false, model: selectedModel, onStatus: (msg) => setLogMessage(msg) }
     );
 
     setLogMessage('');
@@ -238,18 +238,18 @@ export default function Editor({ trigger, config = {} }) {
       // 1. SEO Generation
       let seoCompletions = '';
       const seoResponse = await promptsService.run(
-        [{ role: 'system', content: promptsService.article.seo.prompt }, { role: 'user', content: prompt }],
+        [{ role: 'system', content: await promptsService.tools.margePrompt(promptsService.article.seo.prompt) }, { role: 'user', content: prompt }],
         (chunk) => {
           seoCompletions += chunk;
           update_metadata(promptsService.article.seo.parse(seoCompletions));
         },
-        { model: selectedModel, onStatus: (msg) => setLogMessage(msg) }
+        { stream: false, model: selectedModel, onStatus: (msg) => setLogMessage(msg) }
       );
       const seoData = update_metadata(promptsService.article.seo.parse(seoResponse));
 
       // 2. Article Planning
       let plannerCompletions = '';
-      const plannerPrompt = promptsService.article.refine(promptsService.article.planner.prompt, {
+      const plannerPrompt = promptsService.article.refine(await promptsService.tools.margePrompt(promptsService.article.planner.prompt), {
         '{{user_prompt}}': prompt,
         '{{title}}': seoData?.title || 'TBD',
         '{{meta_desc}}': seoData?.meta_desc || 'TBD',
@@ -263,7 +263,7 @@ export default function Editor({ trigger, config = {} }) {
           plannerCompletions += chunk;
           setContent(`<div class="flex items-center gap-3 p-6 bg-slate-50 rounded-2xl border border-slate-100 animate-pulse text-slate-500"><div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div> ${__('Drafting article blueprint...')}</div>`);
         },
-        { model: selectedModel, onStatus: (msg) => setLogMessage(msg) }
+        { stream: false, model: selectedModel, onStatus: (msg) => setLogMessage(msg) }
       );
 
       setLogMessage('');

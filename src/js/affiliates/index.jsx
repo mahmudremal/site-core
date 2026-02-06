@@ -245,7 +245,7 @@ const Affiliates = () => {
     }, [filters]);
 
     return (
-        <div className="container mx-auto p-6 bg-white min-h-screen">
+        <div className="mx-auto p-6 bg-white min-h-screen">
             <div className="mb-8">
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">
                     {__('Affiliate Links', 'site-core')}

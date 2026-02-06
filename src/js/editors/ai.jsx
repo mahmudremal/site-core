@@ -33,19 +33,27 @@ export const chat = (messages = [], onChunk = null, args = {}) => {
     return new Promise(async (resolve, reject) => {
         try {
             args = {
-                stream: true,
+                stream: false,
                 model: 'gemma3:1b',
                 messages: messages,
                 ...args
             };
 
-            const response = await ollama.chat(args); let fullResponse = '';
-            if (!args?.stream) { return response?.message?.content; }
-            for await (const chunk of response) {
-                const message = chunk?.message?.content || "";
-                fullResponse += message;
-                if (message && typeof onChunk === 'function') { onChunk(message); }
+            const response = await ollama.chat(args);
+            let fullResponse = '';
+
+            if (args.stream) {
+                for await (const chunk of response) {
+                    const message = chunk?.message?.content || "";
+                    fullResponse += message;
+                    if (message && typeof onChunk === 'function') {
+                        onChunk(message);
+                    }
+                }
+            } else {
+                fullResponse = response?.message?.content || "";
             }
+
             resolve(fullResponse);
         } catch (error) {
             reject(error);
@@ -88,22 +96,23 @@ Do NOT include any conversational filler, explanation, or text before/after the 
 - search_terms(keyword, taxonomy): Search categories or tags. taxonomy can be 'category', 'post_tag', etc.`,
                 parse: (text) => {
                     const tools = [];
-                    const matches = text.matchAll(/\[TOOL_CALL:\s*(\w+).*?[\-\(\:\|]\s*(.*?)[\)\]]/gi);
+                    const matches = text.matchAll(/\[TOOL_CALL:\s*(\w+)\s*[|:\-(\[]?\s*(.*?)\]/gi);
                     for (const match of matches) {
                         const func = match[1].toLowerCase();
                         if (!['search_posts', 'search_terms'].includes(func)) continue;
-                        let args = match[2].trim().split(/[\|:\-]/);
-                        if (args.length === 1) {
-                            args = match[2].trim().split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                        }
-                        const params = args.map(p => p.trim().replace(/^["']|["']$/g, '').trim()).filter(i => i !== '');
-                        tools.push({ func, params });
+
+                        let rawArgs = match[2].trim();
+                        if (rawArgs.endsWith(')')) rawArgs = rawArgs.slice(0, -1);
+
+                        // Split by primary delimiters or comma
+                        const args = rawArgs.split(/[|]|\s*,\s*(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(p => p.trim().replace(/^["']|["']$/g, '').trim()).filter(Boolean);
+                        tools.push({ func, params: args });
                     }
                     return tools;
                 },
                 call: async (func, ...params) => {
                     const keyword = params[0] || '';
-                    const type = params[1] || (func === 'search_posts' ? 'post' : 'category');
+                    const type = params.slice(1).join(',') || (func === 'search_posts' ? 'post' : 'category');
                     const endpoint = func === 'search_posts' ? 'search/posts' : 'search/terms';
                     const paramKey = func === 'search_posts' ? 'post_type' : 'taxonomy';
 
@@ -127,12 +136,16 @@ Do NOT include any conversational filler, explanation, or text before/after the 
 - open_website(url): Opens a specific URL.`,
                 parse: (text) => {
                     const tools = [];
-                    const matches = text.matchAll(/\[TOOL_CALL:\s*(\w+).*?[\-\(\:\|]\s*(.*?)[\)\]]/gi);
+                    const matches = text.matchAll(/\[TOOL_CALL:\s*(\w+)\s*[|:\-(\[]?\s*(.*?)\]/gi);
                     for (const match of matches) {
                         const func = match[1].toLowerCase();
                         if (!['google_search', 'open_website'].includes(func)) continue;
-                        const params = match[2].trim().split(/[\|:\-]/).map(p => p.trim().replace(/^["']|["']$/g, '').trim()).filter(i => i !== '');
-                        tools.push({ func, params });
+
+                        let rawArgs = match[2].trim();
+                        if (rawArgs.endsWith(')')) rawArgs = rawArgs.slice(0, -1);
+
+                        const args = rawArgs.split(/[|]|\s*,\s*(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(p => p.trim().replace(/^["']|["']$/g, '').trim()).filter(Boolean);
+                        tools.push({ func, params: args });
                     }
                     return tools;
                 },
@@ -161,6 +174,25 @@ Do NOT include any conversational filler, explanation, or text before/after the 
                         }, 10000);
                     });
                 }
+            },
+            toString: async ({ prompt = false, mcp = true, inwebtools = true, browser = true }) => {
+                let text = '';
+                if (prompt) text += `### TOOL USAGE RULES:\n\t1. When you need to gather information, research, or perform an action, use a tool.\n\t2. Output ONLY the [TOOL_CALL: tool_name | { "arg1": "value" }] block. NEVER add descriptions, headers, or dashes to the function name or format.\n\t3. Once you receive the [TOOL_RESULT: ...], you MUST use the provided information to continue your generation or provide the final answer.\n\t4. If you have enough information, generate the final content directly. Do NOT repeat tool calls for the same information.`
+                if (mcp) {
+                    const mcpTools = await loadTools();
+                    const mcpToolsList = Object.entries(mcpTools).map(([name, tool]) => `- ${name}: ${tool.description}`).join('\n');
+                    text += `${this.tools.mcp.prompt}\n${mcpToolsList}`
+                }
+                if (inwebtools) text += '\n\n' + this.tools.inwebtools.prompt;
+                if (browser) text += '\n\n' + this.tools.browser.prompt;
+                return text;
+            },
+            margePrompt: async (text, prompt = true) => {
+                if (prompt) text += this.tools.toString({ prompt: true, mcp: false, inwebtools: false, browser: false });
+                if (text.includes('{{mcp_tools}}')) text = text.replaceAll('{{mcp_tools}}', await this.tools.toString({ prompt: false, mcp: true, inwebtools: false, browser: false }));
+                if (text.includes('{{inweb_tools}}')) text = text.replaceAll('{{inweb_tools}}', await this.tools.toString({ prompt: false, mcp: false, inwebtools: true, browser: false }));
+                if (text.includes('{{browser_tools}}')) text = text.replaceAll('{{browser_tools}}', await this.tools.toString({ prompt: false, mcp: false, inwebtools: true, browser: false }));
+                return text;
             }
         };
 
@@ -181,6 +213,8 @@ Before finalizing the fields, you are ENCOURAGED to:
 2. Use 'search_terms' (taxonomy: 'post_tag' or 'category') to see which tags and categories already exist on our site to maintain consistency.
 3. Use 'search_posts' to see what related content we've already published.
 
+{{mcp_tools}}
+
 ### Final Output Requirements:
 When you have completed your research, generate ONLY these three fields:
 1. Title - A compelling and relevant headline.
@@ -192,25 +226,14 @@ When you have completed your research, generate ONLY these three fields:
 Format:
 **Title:** [Generated Title]
 **Meta Description:** [Generated Meta Description]
-**SEO Keywords:** [Keyword1, Keyword2, Keyword3]`,
+**SEO Keywords:** [Keyword1, Keyword2, Keyword3]
+`,
                 parse: (text) => {
-                    const lines = text.split('\n').filter(line => line.trim() !== '');
                     const result = {
-                        title: null,
-                        meta_desc: null,
-                        keywords: []
+                        title: (text.match(/\*\*Title:\*\*\s*(.+)/i) || text.match(/Title:\s*(.+)/i))?.[1]?.trim() || null,
+                        meta_desc: (text.match(/\*\*Meta Description:\*\*\s*(.+)/i) || text.match(/Meta Description:\s*(.+)/i))?.[1]?.trim() || null,
+                        keywords: (text.match(/\*\*SEO Keywords:\*\*\s*(.+)/i) || text.match(/SEO Keywords:\s*(.+)/i))?.[1]?.trim()?.split(',')?.map(k => k.trim())?.filter(Boolean) || []
                     };
-                    lines.forEach((line) => {
-                        line = line.startsWith('- ') ? line.substring(2) : line;
-                        if (line.startsWith('**Title:** ')) {
-                            result.title = line.substring(11).trim();
-                        } else if (line.startsWith('**Meta Description:** ')) {
-                            result.meta_desc = line.substring(22).trim();
-                        } else if (line.startsWith('**SEO Keywords:** ')) {
-                            result.keywords = line.substring(18).trim().split(',').map(i => i.trim());
-                        }
-                    });
-
                     return result;
                 }
             },
@@ -318,42 +341,29 @@ Act as a elite content writer. Your mission is to generate ONLY the specific sec
         };
     }
 
-    async getToolPrompt() {
-        const mcpTools = await loadTools();
-        const mcpToolsList = Object.entries(mcpTools).map(([name, tool]) => `- ${name}: ${tool.description}`).join('\n');
-
-        let prompt = `### TOOL USAGE RULES:
-1. When you need to gather information, research, or perform an action, use a tool.
-2. Output ONLY the [TOOL_CALL: ...] block. NEVER add descriptions, headers, or dashes to the function name or format.
-3. Once you receive the [TOOL_RESULT: ...], proceed with your task or call another tool.
-4. If you have enough information, generate the final content directly.
-
-` + this.tools.mcp.prompt.replace('{{mcp_tools}}', mcpToolsList);
-        prompt += '\n\n' + this.tools.inwebtools.prompt;
-        prompt += '\n\n' + this.tools.browser.prompt;
-        return prompt;
-    }
-
     async run(messages = [], onChunk = null, args = {}) {
         let currentMessages = [...messages];
-        const toolPrompt = await this.getToolPrompt();
+        // const toolPrompt = await this.tools.toString();
         const onStatus = args.onStatus || (() => { });
+        const history = new Set();
 
-        let systemIdx = currentMessages.findIndex(m => m.role === 'system');
-        if (systemIdx > -1) {
-            currentMessages[systemIdx].content += `\n\n${toolPrompt}`;
-        } else {
-            currentMessages.unshift({ role: 'system', content: toolPrompt });
-        }
+        // let systemIdx = currentMessages.findIndex(m => m.role === 'system');
+        // if (systemIdx > -1) {
+        //     currentMessages[systemIdx].content += `\n\n${toolPrompt}`;
+        // } else {
+        //     currentMessages.unshift({ role: 'system', content: toolPrompt });
+        // }
 
-        while (true) {
+        let loopCount = 0;
+        while (loopCount < 10) {
+            loopCount++;
             let fullResponse = '';
             let buffer = '';
-            const response = await chat(currentMessages, (chunk) => {
+
+            const responseText = await chat(currentMessages, (chunk) => {
                 fullResponse += chunk;
                 buffer += chunk;
 
-                // Stop UI update if we see the start of a tool call
                 if (buffer.includes('[TOOL_CALL:')) {
                     const parts = buffer.split('[TOOL_CALL:');
                     if (parts[0] && onChunk) onChunk(parts[0]);
@@ -363,6 +373,15 @@ Act as a elite content writer. Your mission is to generate ONLY the specific sec
                     buffer = '';
                 }
             }, args);
+
+            fullResponse = responseText;
+
+            // If not streaming, we might still want to signal the content to onChunk
+            // but filtered to remove tool calls for consistent UI behavior
+            if (!args?.stream && onChunk) {
+                const cleanText = fullResponse.split('[TOOL_CALL:')[0];
+                if (cleanText) onChunk(cleanText);
+            }
 
             currentMessages.push({ role: 'assistant', content: fullResponse });
 
@@ -379,15 +398,28 @@ Act as a elite content writer. Your mission is to generate ONLY the specific sec
                 return fullResponse;
             }
 
-            onStatus(`Executing research tools...`);
+            let results = [];
             for (const entry of detectedTools) {
                 for (const tool of entry.tools) {
+                    const callId = `${tool.func}:${JSON.stringify(tool.params)}`;
+                    if (history.has(callId)) {
+                        results.push(`[TOOL_RESULT: ${tool.func}] ERROR: You already called this tool with these parameters. Please use the previous result or try a different approach.`);
+                        continue;
+                    }
+                    history.add(callId);
                     onStatus(`Calling ${tool.func}(${tool.params[0]})...`);
                     const result = await this.tools[entry.key].call(tool.func, ...tool.params);
-                    currentMessages.push({ role: 'user', content: result });
+                    results.push(result);
                 }
             }
+
+            if (results.length > 0) {
+                currentMessages.push({ role: 'user', content: results.join('\n\n') });
+            } else {
+                return fullResponse;
+            }
         }
+        return `[ERROR] Tool calling loop exceeded maximum iterations.`;
     }
 }
 
