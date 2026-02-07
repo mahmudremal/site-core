@@ -125,9 +125,9 @@ export const ellipsis = (text, start = 0, end = 30) => {
   return text;
 }
 
-export const tailwind_install = () => {
+export const tailwind_install = ({ config = {} }) => {
   return new Promise((resolve, reject) => {
-    return resolve(true);
+    // return resolve(true);
     const script = document.createElement("script");
     script.src = 'https://cdn.tailwindcss.com';
     script.onload = () => {
@@ -254,6 +254,7 @@ export const tailwind_install = () => {
             },
           },
         },
+        ...config
       };
       resolve(true);
     }

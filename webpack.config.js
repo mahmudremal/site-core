@@ -36,6 +36,7 @@ module.exports = {
     setting: JS_DIR + "/setting.js",
     core: JS_DIR + "/core.js",
     media: JS_DIR + "/media.js",
+    elementor: JS_DIR + "/elementor.js",
 
     // server: JS_DIR + '/server.js',
     // admin: JS_DIR + "/admin.js",

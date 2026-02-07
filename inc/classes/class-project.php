@@ -43,6 +43,7 @@ class Project {
 		Ecommerce::get_instance();
 		Affiliate::get_instance();
 		Translations::get_instance();
+		Elementor_Ai::get_instance();
 		Store_Manager::get_instance();
 		Instant_Images::get_instance();
 		add_action('init', [$this, 'init'], 1, 0);
