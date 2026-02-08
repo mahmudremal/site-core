@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePopup } from '@context/PopupProvider';
 import { Copy, Share2, MoreHorizontal, Mail } from 'lucide-react';
 import { useTranslation } from "@context/LanguageProvider";

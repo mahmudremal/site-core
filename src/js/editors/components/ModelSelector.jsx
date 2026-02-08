@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { get_models } from '../ai';
 import { __ } from '../utils';
 

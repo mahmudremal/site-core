@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 import { roles } from '@functions';
 import request from '@common/request';
 const SessionContext = createContext();
@@ -9,7 +9,7 @@ export default function SessionProvider({ children, initial = {} }) {
     const parsed = saved ? JSON.parse(saved) : initial
     const { user = {} } = parsed;
     roles.set_abilitites(
-      (user?.roles??[]).map(r => r?.capabilities??{}).find(r => r)
+      (user?.roles ?? []).map(r => r?.capabilities ?? {}).find(r => r)
     );
     return parsed;
   });
@@ -22,7 +22,7 @@ export default function SessionProvider({ children, initial = {} }) {
       }
       const { user = {} } = session;
       roles.set_abilitites(
-        (user?.roles??[]).map(r => r?.capabilities??{}).find(r => r)
+        (user?.roles ?? []).map(r => r?.capabilities ?? {}).find(r => r)
       );
     } catch (error) {
       console.error(error);

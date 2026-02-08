@@ -1,7 +1,7 @@
 // productCarousel: lazy(() => import('../product/ProductCarousel')),
 
 
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { ProductCard2 } from './ProductCard';
 import api from '../../services/api';
@@ -255,8 +255,8 @@ const ProductCarousel = ({ category, recommendationType, filters = {}, title, cl
                 key={index}
                 onClick={() => !isTransitioning && setCurrentIndex(index)}
                 className={`w-2 h-2 rounded-full transition-colors duration-200 ${index === currentIndex
-                    ? 'bg-blue-600'
-                    : 'bg-gray-300 hover:bg-gray-400'
+                  ? 'bg-blue-600'
+                  : 'bg-gray-300 hover:bg-gray-400'
                   }`}
                 aria-label={`Go to slide ${index + 1}`}
               />

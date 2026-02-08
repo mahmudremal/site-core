@@ -1,6 +1,6 @@
 import { __ } from './utils';
 import { createPopper } from '@popperjs/core';
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Bold, Italic, List, Heading1, Heading2, Heading3, Heading4, Heading5, Heading6, ListOrdered as NumberedList, Heading, Type } from 'lucide-react';
 
 const InlineEditor = ({ content: [content, setContent] }) => {

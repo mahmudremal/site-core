@@ -4,18 +4,18 @@ module.exports = {
   // prefix: "", // /hunting
   content: [
     [
-      "./server/app.jsx",
-      "./inc/widgets/ecommerce/ProductMetabox.jsx",
-      ...Array(10),
+      // "./server/app.jsx",
+      // "./inc/widgets/ecommerce/ProductMetabox.jsx",
+      ...Array(15),
     ].map(
       (u, i) =>
         `./src/js/${[...Array(i + 1)].map((o) => "**/").join("")}*.{js,jsx,ts,tsx}`,
     ),
     [
-      "!./src/js/backend/**/*.{js,jsx,ts,tsx}",
-      "!./src/js/hunting/**/*.{js,jsx,ts,tsx}",
-      "!./src/js/sandbox/**/*.{js,jsx,ts,tsx}",
-      "!./src/js/interface/**/*.{js,jsx,ts,tsx}",
+      // "!./src/js/backend/**/*.{js,jsx,ts,tsx}",
+      // "!./src/js/hunting/**/*.{js,jsx,ts,tsx}",
+      // "!./src/js/sandbox/**/*.{js,jsx,ts,tsx}",
+      // "!./src/js/interface/**/*.{js,jsx,ts,tsx}",
     ],
   ].flatMap((i) => i),
   theme: {

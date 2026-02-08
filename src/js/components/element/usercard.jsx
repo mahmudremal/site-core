@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { createPopper } from '@popperjs/core';
 import { Link } from 'react-router-dom';
 import { ChevronRight, EllipsisVertical } from 'lucide-react';

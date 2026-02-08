@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { Edit, Trash2, Plus } from "lucide-react";
 import { sleep } from '@functions';

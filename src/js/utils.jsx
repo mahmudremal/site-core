@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const Popup = ({ onClose = null, showCross = true, backdrop = true, backdropClose = true, className = null, crossClassName = null, bodyClassName = null, backdropClassName = null, children }) => {
   if (!className) { className = "fixed inset-0 z-50 flex items-center justify-center"; }

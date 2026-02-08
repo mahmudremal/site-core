@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { Search, Edit, Trash2, ChevronUp, ChevronDown, PlusIcon, FileText, Layers, Settings2, Loader2 } from 'lucide-react';
 import { BuilderProvider, useBuilder } from './context';
 import { ElementPreview } from './renderer';
@@ -470,8 +470,8 @@ const EmailTemplates = () => {
                       key={pageNum}
                       onClick={() => setFilters(prev => ({ ...prev, page: Math.max(1, pageNum) }))}
                       className={`px-3 py-1 rounded-md text-sm font-medium ${filters.page === pageNum
-                          ? 'bg-blue-600 text-white'
-                          : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
+                        ? 'bg-blue-600 text-white'
+                        : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
                         }`}
                     >
                       {pageNum}

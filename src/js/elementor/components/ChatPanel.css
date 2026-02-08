@@ -1,0 +1,100 @@
+.prose-sm h1 {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin: 0.5em 0 0.25em;
+  color: #495157;
+}
+
+.prose-sm h2 {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin: 0.5em 0 0.25em;
+  color: #495157;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 0.25em;
+}
+
+.prose-sm h3 {
+  font-size: 1em;
+  font-weight: bold;
+  margin: 0.4em 0 0.2em;
+  color: #6d7882;
+}
+
+.prose-sm p {
+  margin: 0.25em 0;
+  line-height: 1.6;
+}
+
+.prose-sm ul,
+.prose-sm ol {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+}
+
+.prose-sm li {
+  margin: 0.2em 0;
+}
+
+.prose-sm strong {
+  font-weight: 600;
+  color: #495157;
+}
+
+.prose-sm code {
+  background: #f8f9fa;
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  font-size: 0.9em;
+  color: #e83e8c;
+}
+
+.prose-sm pre {
+  background: #f8f9fa;
+  padding: 0.5em;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 0.5em 0;
+}
+
+.prose-sm pre code {
+  background: none;
+  padding: 0;
+  color: #495157;
+}
+
+.prose-sm a {
+  color: #5bc0de;
+  text-decoration: none;
+}
+
+.prose-sm a:hover {
+  text-decoration: underline;
+}
+
+.prose-sm blockquote {
+  border-left: 3px solid #5bc0de;
+  padding-left: 0.75em;
+  margin: 0.5em 0;
+  color: #6d7882;
+  font-style: italic;
+}
+
+.prose-sm table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.5em 0;
+  font-size: 0.95em;
+}
+
+.prose-sm th,
+.prose-sm td {
+  border: 1px solid #e9ecef;
+  padding: 0.4em 0.6em;
+  text-align: left;
+}
+
+.prose-sm th {
+  background: #f8f9fa;
+  font-weight: 600;
+}

@@ -1,40 +1,92 @@
 import { useAi } from '../context';
-import { History, ChevronRight, Sparkles } from 'lucide-react';
+import { History, ChevronRight, Trash2, MessageSquare, Clock, Plus } from 'lucide-react';
 
-const HistoryPanel = () => {
-    const { history, insertToEditor } = useAi();
+const HistoryPanel = ({ setActiveTab }) => {
+    const { history, loadSession, deleteSession, currentSessionId, createNewSession } = useAi();
+
+    const formatDate = (timestamp) => {
+        const date = new Date(timestamp);
+        return date.toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    };
+
+    const handleNewChat = () => {
+        createNewSession();
+        if (setActiveTab) setActiveTab('new');
+    };
+
+    const handleLoadSession = (id) => {
+        loadSession(id);
+        if (setActiveTab) setActiveTab('new');
+    };
 
     return (
-        <div className="sc-flex-1 sc-flex sc-flex-col sc-bg-[#f1f3f5] sc-h-full">
-            <main className="sc-flex-1 sc-overflow-y-auto sc-p-4 sc-space-y-4">
+        <div className="flex-1 flex flex-col bg-[#f1f3f5] h-full">
+            <header className="p-4 bg-white border-b border-[#d5dadf]">
+                <h3 className="text-[12px] font-bold text-[#6d7882] uppercase flex items-center gap-2">
+                    <History className="w-4 h-4" />
+                    Chat History
+                </h3>
+            </header>
+
+            <main className="flex-1 overflow-y-auto p-4 space-y-3">
                 {history.length === 0 ? (
-                    <div className="sc-h-full sc-flex sc-flex-col sc-items-center sc-justify-center sc-text-[#a4afb7] sc-space-y-3">
-                        <History className="sc-w-10 sc-h-10 sc-text-[#d5dadf]" />
-                        <p className="sc-text-[11px] sc-uppercase sc-font-bold sc-tracking-wider">No history records</p>
+                    <div className="h-full flex flex-col items-center justify-center text-[#a4afb7] space-y-4">
+                        <History className="w-10 h-10 text-[#d5dadf]" />
+                        <p className="text-[11px] uppercase font-bold tracking-wider">No history records</p>
+                        <button
+                            onClick={handleNewChat}
+                            className="flex items-center gap-2 px-4 py-2 bg-[#5bc0de] text-white rounded text-[11px] font-bold hover:bg-[#46b8da] transition-colors"
+                        >
+                            <Plus className="w-4 h-4" />
+                            New Chat
+                        </button>
                     </div>
                 ) : (
-                    <div className="sc-grid sc-gap-3">
-                        {history.map((item, index) => (
-                            <div
-                                key={item.id || index}
-                                className="sc-bg-white sc-border sc-border-[#d5dadf] sc-rounded sc-p-3 hover:sc-border-[#5bc0de] sc-transition-all sc-shadow-sm"
-                            >
-                                <div className="sc-prose sc-prose-sm sc-max-w-none sc-max-h-20 sc-overflow-hidden sc-relative">
-                                    <p className="sc-text-[11px] sc-text-[#6d7882] sc-leading-relaxed sc-m-0">"{item.content}"</p>
-                                    <div className="sc-absolute sc-bottom-0 sc-left-0 sc-right-0 sc-h-6 sc-bg-gradient-to-t sc-from-white sc-to-transparent" />
+                    <>
+                        <button
+                            onClick={handleNewChat}
+                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[#5bc0de] text-white rounded text-[11px] font-bold hover:bg-[#46b8da] transition-colors"
+                        >
+                            <Plus className="w-4 h-4" />
+                            New Chat
+                        </button>
+                        <div className="grid gap-2">
+                            {history.map((item) => (
+                                <div
+                                    key={item.id}
+                                    onClick={() => handleLoadSession(item.id)}
+                                    className={`group relative bg-white border rounded p-3 cursor-pointer transition-all shadow-sm flex flex-col gap-1 ${item.id === currentSessionId ? 'border-[#5bc0de] bg-blue-50/10' : 'border-[#d5dadf] hover:border-[#ced4da]'}`}
+                                >
+                                    <div className="flex items-start justify-between gap-4">
+                                        <div className="flex gap-2 items-start">
+                                            <MessageSquare className={`w-3.5 h-3.5 mt-0.5 ${item.id === currentSessionId ? 'text-[#5bc0de]' : 'text-[#a4afb7]'}`} />
+                                            <h4 className={`text-[12px] font-bold m-0 leading-tight ${item.id === currentSessionId ? 'text-[#5bc0de]' : 'text-[#495157]'}`}>
+                                                {item.title || 'Untitled Session'}
+                                            </h4>
+                                        </div>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                deleteSession(item.id);
+                                            }}
+                                            className="opacity-0 group-hover:opacity-100 p-1 text-[#a4afb7] hover:text-[#ff4d4d] transition-all"
+                                        >
+                                            <Trash2 className="w-3.5 h-3.5" />
+                                        </button>
+                                    </div>
+
+                                    <div className="flex items-center gap-1.5 mt-1 text-[10px] text-[#a4afb7]">
+                                        <Clock className="w-3 h-3" />
+                                        {formatDate(item.timestamp)}
+                                    </div>
+
+                                    {item.id === currentSessionId && (
+                                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#5bc0de] rounded-l" />
+                                    )}
                                 </div>
-                                <div className="sc-mt-3 sc-flex sc-justify-end sc-border-t sc-border-[#f1f3f5] sc-pt-2">
-                                    <button
-                                        onClick={() => insertToEditor(item.elementor_json)}
-                                        className="sc-text-[10px] sc-font-bold sc-text-[#5bc0de] hover:sc-text-[#45a4bf] sc-flex sc-items-center sc-gap-1 sc-uppercase"
-                                    >
-                                        Re-apply
-                                        <ChevronRight className="sc-w-3 sc-h-3" />
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    </>
                 )}
             </main>
         </div>

@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 import { __, tailwind_install } from '@js/utils';
 import { install_media_tab } from './media-library';

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import {
   ChevronsLeft,
@@ -580,8 +580,8 @@ export default function TaskApplication({ config = {} }) {
               href={`#${key},${filters.search},${filters.status},${filters.priority},${filters.orderby},${filters.order}`}
               onClick={() => setFilters(prev => ({ ...prev, task_type: key, page: 1 }))}
               className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-all ${filters.task_type === key
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-white text-gray-700 hover:bg-blue-50 border border-gray-200'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'bg-white text-gray-700 hover:bg-blue-50 border border-gray-200'
                 }`}
             >
               {label}
@@ -858,8 +858,8 @@ export default function TaskApplication({ config = {} }) {
                     key={pageNum}
                     onClick={() => setFilters(prev => ({ ...prev, page: pageNum }))}
                     className={`px-3 py-2 text-sm font-medium rounded-lg ${filters.page === pageNum
-                        ? 'bg-blue-600 text-white'
-                        : 'text-gray-700 hover:bg-gray-100'
+                      ? 'bg-blue-600 text-white'
+                      : 'text-gray-700 hover:bg-gray-100'
                       }`}
                   >
                     {pageNum}

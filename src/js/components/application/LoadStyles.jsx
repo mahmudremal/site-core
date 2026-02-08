@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { app_url } from '@functions';
 
 const LoadStyles = () => {
@@ -34,7 +34,7 @@ const LoadStyles = () => {
     });
 
     const scripts = [];
-    
+
     scripts.forEach((src) => {
       const script = document.createElement("script");
       script.src = src;

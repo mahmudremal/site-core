@@ -20,19 +20,19 @@ const ModelSelector = () => {
     }, []);
 
     return (
-        <div className="sc-relative" ref={dropdownRef}>
+        <div className="relative" ref={dropdownRef}>
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className={`sc-p-2 sc-rounded-md sc-transition-all ${isOpen ? 'sc-bg-[#e9ecef] sc-text-[#5bc0de]' : 'sc-text-[#a4afb7] hover:sc-bg-[#e9ecef] hover:sc-text-[#6d7882]'}`}
+                className={`p-2 rounded-md transition-all ${isOpen ? 'bg-[#e9ecef] text-[#5bc0de]' : 'text-[#a4afb7] hover:bg-[#e9ecef] hover:text-[#6d7882]'}`}
                 title={currentModel?.name || 'Select Model'}
             >
-                <Cpu className="sc-w-4 sc-h-4" />
+                <Cpu className="w-4 h-4" />
             </button>
 
             {isOpen && (
-                <div className="sc-absolute sc-bottom-full sc-left-0 sc-mb-2 sc-w-48 sc-bg-white sc-border sc-border-[#d5dadf] sc-rounded-md sc-shadow-lg sc-z-[1000] sc-max-h-60 sc-overflow-y-auto sc-p-1 sc-animate-in sc-fade-in sc-slide-in-from-bottom-2">
-                    <div className="sc-px-2 sc-py-1.5 sc-text-[10px] sc-font-bold sc-text-[#a4afb7] sc-uppercase sc-tracking-wider">
+                <div className="absolute bottom-full left-0 mb-2 w-48 bg-white border border-[#d5dadf] rounded-md shadow-lg z-[1000] max-h-60 overflow-y-auto p-1 animate-in fade-in slide-in-from-bottom-2">
+                    <div className="px-2 py-1.5 text-[10px] font-bold text-[#a4afb7] uppercase tracking-wider">
                         Ollama Engine
                     </div>
                     {availableModels.map((model) => (
@@ -43,14 +43,14 @@ const ModelSelector = () => {
                                 setSelectedModel(model.id);
                                 setIsOpen(false);
                             }}
-                            className={`sc-w-full sc-flex sc-items-center sc-justify-between sc-px-3 sc-py-2 sc-rounded sc-text-[11px] sc-transition-all ${selectedModel === model.id ? 'sc-bg-[#f1f3f5] sc-text-[#5bc0de] sc-font-bold' : 'sc-text-[#6d7882] hover:sc-bg-[#f8f9fa] hover:sc-text-[#495157]'}`}
+                            className={`w-full flex items-center justify-between px-3 py-2 rounded text-[11px] transition-all ${selectedModel === model.id ? 'bg-[#f1f3f5] text-[#5bc0de] font-bold' : 'text-[#6d7882] hover:bg-[#f8f9fa] hover:text-[#495157]'}`}
                         >
-                            <span className="sc-truncate">{model.name}</span>
-                            {selectedModel === model.id && <Check className="sc-w-3 sc-h-3" />}
+                            <span className="truncate">{model.name}</span>
+                            {selectedModel === model.id && <Check className="w-3 h-3" />}
                         </button>
                     ))}
                     {availableModels.length === 0 && (
-                        <p className="sc-text-[10px] sc-text-[#a4afb7] sc-p-2 sc-text-center">No models found</p>
+                        <p className="text-[10px] text-[#a4afb7] p-2 text-center">No models found</p>
                     )}
                 </div>
             )}

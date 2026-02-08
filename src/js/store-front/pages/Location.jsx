@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { MapPin, Navigation, X, Search, Loader2 } from 'lucide-react';
 
 const LocationPopup = ({ isOpen, onClose, onLocationSelect }) => {

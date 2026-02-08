@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "@context/LanguageProvider";
 import { sprintf } from "sprintf-js";
 

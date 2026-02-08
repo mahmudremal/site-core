@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Mail, Lock, User, Eye, EyeOff, ArrowRight, Loader2, CheckCircle2, XCircle, Sparkles, Shield, Zap } from 'lucide-react';
 import axios from 'axios';
 
@@ -236,8 +236,8 @@ const LoginRegistration = () => {
                 setMessage({ type: '', text: '' });
               }}
               className={`flex-1 py-3 px-4 text-sm font-medium rounded-lg transition-all ${isLogin
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-white text-gray-900 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
                 }`}
             >
               Login
@@ -248,8 +248,8 @@ const LoginRegistration = () => {
                 setMessage({ type: '', text: '' });
               }}
               className={`flex-1 py-3 px-4 text-sm font-medium rounded-lg transition-all ${!isLogin
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-white text-gray-900 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
                 }`}
             >
               Register
@@ -259,8 +259,8 @@ const LoginRegistration = () => {
           {/* Message Display */}
           {message.text && (
             <div className={`mb-6 p-4 rounded-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2 ${message.type === 'success'
-                ? 'bg-green-50 text-green-800 border border-green-200'
-                : 'bg-red-50 text-red-800 border border-red-200'
+              ? 'bg-green-50 text-green-800 border border-green-200'
+              : 'bg-red-50 text-red-800 border border-red-200'
               }`}>
               {message.type === 'success' ? (
                 <CheckCircle2 className="w-5 h-5 flex-shrink-0" />

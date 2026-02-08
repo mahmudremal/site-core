@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from "@context/LanguageProvider";
 import { createPopper } from '@popperjs/core';
 import request from '@common/request';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowRight, Shield, CheckCircle } from 'lucide-react';
 
 const LoginPage = () => {

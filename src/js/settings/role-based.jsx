@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import 'react-phone-input-2/lib/style.css';
 import { __ } from '@js/utils';

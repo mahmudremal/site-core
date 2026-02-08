@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { CreditCard, Truck, MapPin, User, Mail, Phone, Lock, Calendar, Eye, EyeOff, Check, Shield, ArrowLeft } from 'lucide-react';
 import { Helmet } from 'react-helmet';
 import CheckoutPageHelmet from '../components/helmets/CheckoutPageHelmet';

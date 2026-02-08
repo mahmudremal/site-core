@@ -1,10 +1,10 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 import { useSession } from '@context/SessionProvider';
 const ThemeContext = createContext();
 
 export default function ThemeProvider({ children, initial = {} }) {
   const { session, setSession } = useSession();
-  const [theme, setTheme] = useState(session?.themeMode??null);
+  const [theme, setTheme] = useState(session?.themeMode ?? null);
 
   useEffect(() => {
     const mode = session?.themeMode || 'light';

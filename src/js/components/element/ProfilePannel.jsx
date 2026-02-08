@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from '@common/link';
 import { useAuth } from "@context/AuthProvider";
 import { useSession } from "@context/SessionProvider";

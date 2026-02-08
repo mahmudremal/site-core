@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect } from 'react';
 // import { fetchRecommendations } from '../services/recommendation';
 
 export const RecommendationContext = createContext();
@@ -93,7 +93,7 @@ function DynamicPageRenderer({ config }) {
 
 ```js
 // RecommendationContext.js
-import React, { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect } from 'react';
 import { fetchRecommendations } from '../services/recommendation';
 
 export const RecommendationContext = createContext();

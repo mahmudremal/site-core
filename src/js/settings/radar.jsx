@@ -1,6 +1,6 @@
 //  I want to make an anti mosquito radar. so for this I primarily use webcam and react. This is the application I'm struggling.
 
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import Webcam from 'react-webcam';
 import * as tf from '@tensorflow/tfjs';
 import * as cocossd from '@tensorflow-models/coco-ssd';

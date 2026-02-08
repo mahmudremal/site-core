@@ -10,7 +10,8 @@
 - [x] Tag-filtered UI display (hides raw JSON).
 - [x] Global history & threaded message persistence.
 - [x] Streaming chat bubbles & auto-scroll.
-- [ ] Advanced Tool-calling (Widgets control).
+- [x] Advanced Tool-calling (Widgets control).
+- [x] Context optimization & two-phase planning architecture.
 
 - [x] Elementor Dark UI Branding & Theming.
 - [x] Draggable Modal with Header-less design.
@@ -18,6 +19,6 @@
 
 ## UX & Refinement
 
-- [ ] Improve prompt suggestions/templates.
-- [ ] Add loading skeletons for better feedback.
-- [ ] Implement undo/redo integration for AI actions.
+- [x] Improve prompt suggestions/templates.
+- [x] Add loading skeletons for better feedback.
+- [x] Implement undo/redo integration for AI actions.

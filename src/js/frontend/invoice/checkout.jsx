@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
@@ -378,8 +378,8 @@ const Checkout = ({ config }) => {
                         <div
                           onClick={() => setProvider(isActiveProvider(g.id) ? null : g.id)}
                           className={`cursor-pointer flex items-center justify-between w-full py-2 font-medium rtl:text-right ${isActiveProvider(g.id)
-                              ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white'
-                              : 'text-gray-500 dark:text-gray-400'
+                            ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white'
+                            : 'text-gray-500 dark:text-gray-400'
                             } gap-3`}
                           aria-expanded="true"
                         >

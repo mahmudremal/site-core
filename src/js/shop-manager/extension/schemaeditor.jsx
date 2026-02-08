@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Edit3, X, Save, Eye, EyeOff, Settings } from 'lucide-react';
 import { JsonEditor } from 'json-edit-react';
@@ -330,8 +330,8 @@ const SchemaEditorExtension = () => {
                 <button
                   onClick={toggleHighlightMode}
                   className={`px-4 py-2 rounded-lg font-medium transition-colors ${isHighlightMode
-                      ? 'bg-yellow-500 text-black hover:bg-yellow-600'
-                      : 'bg-blue-500 text-white hover:bg-blue-600'
+                    ? 'bg-yellow-500 text-black hover:bg-yellow-600'
+                    : 'bg-blue-500 text-white hover:bg-blue-600'
                     }`}
                 >
                   <Eye className="w-4 h-4 mr-2 inline" />
