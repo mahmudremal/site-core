@@ -526,9 +526,9 @@ class Task {
     
     protected function setup_job_seeking_hooks() {
         if (apply_filters('pm_project/system/isactive', 'task-paused')) {return;}
-        add_action('post_inserted',function($a,$b,$c,$d){if(!$c){do_action('sitecore/create_task','post_seo',['post_id'=>$a,'type'=>$b->post_type],sprintf('Review the SEO for the new %s titled "%s". Analyze the title, meta description, URL slug, headings (H1-H6), image alt text, and internal/external linking. Ensure they are optimized for relevant keywords, readability, and align with SEO best practices to improve search engine visibility and organic traffic potential for this content type.',$b->post_type,$b->post_title));}},10,4);
-        add_action('wp_insert_post', function($a,$b,$c){if(!$c){do_action('sitecore/create_task','seo_improvements',['post_id'=>$a],sprintf('Analyze the newly created post titled "%s" for SEO. Content, etc., will be fetched via API. Review title, metadata (date, cats, tags). Suggest title improvements, relevant keywords, categories, tags.',esc_html($b->post_title)));}},10,3);
-        add_action('add_attachment',function($a){$b=get_post_mime_type($a);$c=basename(get_attached_file($a));$d=wp_get_attachment_metadata($a);do_action('sitecore/create_task','media_seo',['post_id'=>$a,'mime'=>$b,'metadata'=>$d,'file'=>$c],sprintf('Review the SEO details for the newly uploaded media file "%s" (MIME type: %s). Ensure a descriptive title, relevant caption, appropriate alt text, and a comprehensive description are set. Optimize these elements with relevant keywords to enhance search engine indexing and accessibility. Consider the visual content and its context within the site.',$c,$b));},10,1);
+        add_action('post_inserted', function ($post_id, $post, $update, $post_before) {if ($update ||wp_is_post_revision($post_id) ||wp_is_post_autosave($post_id) ||in_array($post->post_status, ['auto-draft', 'draft'], true)) {return;}do_action('sitecore/create_task','post_seo',['post_id' => $post_id, 'type' => $post->post_type],sprintf('Review the SEO for the new %s titled "%s". Analyze the title, meta description, URL slug, headings (H1-H6), image alt text, and internal/external linking. Ensure they are optimized for relevant keywords, readability, and align with SEO best practices.',$post->post_type,$post->post_title));}, 10, 4);
+        add_action('wp_insert_post', function ($post_id, $post, $update) {if ($update ||wp_is_post_revision($post_id) ||wp_is_post_autosave($post_id) ||in_array($post->post_status, ['auto-draft', 'draft'], true)) {return;}do_action('sitecore/create_task','seo_improvements',['post_id' => $post_id],sprintf('Analyze the newly created post titled "%s" for SEO. Review title, metadata, categories, tags, and keywords.',esc_html($post->post_title)));}, 10, 3);
+        add_action('add_attachment', function ($attachment_id) {if (wp_is_post_revision($attachment_id) || wp_is_post_autosave($attachment_id)) {return;}$mime     = get_post_mime_type($attachment_id);$file     = basename(get_attached_file($attachment_id));$metadata = wp_get_attachment_metadata($attachment_id);do_action('sitecore/create_task','media_seo',['post_id'  => $attachment_id,'mime'     => $mime,'metadata' => $metadata,'file'     => $file,],sprintf('Review the SEO details for the newly uploaded media file "%s" (MIME type: %s). Ensure proper title, caption, alt text, and description optimized for search and accessibility.',$file,$mime));}, 10);
         add_action('comment_post',function($a,$b,$c){do_action('sitecore/create_task','comment_moderation',['post_id'=>$a,'content'=>$c['comment'],'email'=>$c['comment_author_email'],'author'=>$c['comment_author'],'ip'=>$c['comment_author_IP']],sprintf('Review the newly posted comment (ID: %d) by "%s" (%s) with IP address %s. Analyze the content for spam, hate speech, profanity, irrelevant links, or any violation of community guidelines. Determine if the comment should be approved, held for moderation, or marked as spam. Content: "%s"',$a,$c['comment_author'],$c['comment_author_email'],$c['comment_author_IP'],$c['comment']));},10,3);
         add_action('user_register',function($a){$b=get_userdata($a);if($b){do_action('sitecore/create_task','new_user_onboarding',['post_id'=>$a,'login'=>$b->user_login,'email'=>$b->user_email,'name'=>$b->display_name],sprintf('Initiate the onboarding process for the new user "%s" (username: %s, email: %s). This may involve sending a welcome email with essential information, guiding them to complete their profile details, explaining key website features, and assigning any necessary initial roles or permissions based on their registration context.',$b->display_name,$b->user_login,$b->user_email));}},10,1);
         // WooCommerece
@@ -672,15 +672,16 @@ class Task {
                     if (isset($post['post_title'])) {
                         $post_update['post_title'] = wp_strip_all_tags($post['post_title']);
                     }
-                    if (isset($post['post_content'])) {
-                        $post_update['post_content'] = $post['post_content'];
-                    }
+                    // if (isset($post['post_content'])) {
+                    //     $post_update['post_content'] = $post['post_content'];
+                    // }
                     if (isset($post['post_status'])) {
                         $post_update['post_status'] = $post['post_status'];
                     }
                     if (isset($post['post_date'])) {
                         $post_update['post_date'] = $post['post_date'];
                     }
+                    
                     // Update the post
                     $result = wp_update_post($post_update, true);
                     if (is_wp_error($result)) {

@@ -190,16 +190,22 @@ class AIAgent {
   }
 
   async submitTask(taskId, submissionData) {
+    let data =
+      typeof submissionData === "string"
+        ? JSON.parse(submissionData)
+        : submissionData;
+
+    // if (data?.post) {
+    //   data = data.post;
+    // }
+
     return fetch(`${this.baseUrl}/tasks/${taskId}/submit`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        data:
-          typeof submissionData === "string"
-            ? JSON.parse(submissionData)
-            : submissionData,
+        data: data,
       }),
     })
       .then((response) => {

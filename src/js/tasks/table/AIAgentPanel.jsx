@@ -208,16 +208,18 @@ export default function AIAgentPanel({ filters = {} }) {
       <TaskProgress currentTask={currentTask} progress={processingProgress} />
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        <div className="lg:col-span-3">
-          <ModerationList
-            tasks={pendingTasks}
-            onEdit={editPendingTask}
-            onUpdate={updatePendingTaskResult}
-            onSubmit={submitPendingTask}
-          />
-        </div>
+        {(!isRunning || moderate) && (
+          <div className="lg:col-span-3">
+            <ModerationList
+              tasks={pendingTasks}
+              onEdit={editPendingTask}
+              onUpdate={updatePendingTaskResult}
+              onSubmit={submitPendingTask}
+            />
+          </div>
+        )}
 
-        <div className="lg:col-span-2">
+        <div className={(!isRunning || moderate) ? `lg:col-span-2` : `lg:col-span-5`}>
           <ActivityLogs
             logs={logs}
             onClear={() => setLogs([])}

@@ -1,4 +1,8 @@
 import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { getWidgetInfo, extractWidgetNamesFromText } from './schemas/widget-registry.js';
+import { getCommonControlsSchema } from './schemas/common-controls.js';
+import { expandElementorJson } from './utils.js';
+
 
 const STORAGE_KEY_PREFIX = 'eai_chat_history_';
 const STORAGE_KEY_INDEX = 'eai_chat_index';
@@ -10,9 +14,9 @@ export const AiProvider = ({ children }) => {
     const [prompt, setPrompt] = useState('');
     const [loading, setLoading] = useState(false);
     const [history, setHistory] = useState([]); // List of { id, title, timestamp }
-    const [currentSessionId, setCurrentSessionId] = useState(null);
-    const [selectedModel, setSelectedModel] = useState('gemma3:270m');
+    const [selectedModel, setSelectedModel] = useState(null);
     const [availableModels, setAvailableModels] = useState([]);
+    const [currentSessionId, setCurrentSessionId] = useState(null);
 
     // Initialize history index from localStorage
     useEffect(() => {
@@ -161,79 +165,120 @@ export const AiProvider = ({ children }) => {
         const assistantId = Date.now();
         setMessages(prev => [...prev, { id: assistantId, role: 'assistant', content: '', status: 'thinking' }]);
 
-        const CORE_CONCEPT = `
-        ELEMENTOR CORE CONCEPTS:
-        - Dynamic Page Composition
-        - Advanced Recommendation Engine Integration
-        - Content Management & Personalization
-        - Scalable State Management & Contexts
-        - Performance Optimization & Offline Support`;
+        const CORE_CONCEPT = `Elementor AI Assistant (Dynamic Layouts, Performance, UX).`;
 
         try {
-            const { getWidgetInfo, extractWidgetNamesFromText } = await import('./schemas/widget-registry.js');
-            const { getCommonControlsSchema } = await import('./schemas/common-controls.js');
-
             const fullThreadContext = updatedMessages.map(m => m.content).join(' ');
             const mentionedWidgets = extractWidgetNamesFromText(fullThreadContext);
             const lastUserMsg = updatedMessages[updatedMessages.length - 1].content;
 
-            // Phase Logic
-            const hasPlanInHistory = fullThreadContext.includes("## Widget Plan");
-            const hasBuildCommand = /build|generate|apply|proceed|go|do it|final/i.test(lastUserMsg);
+            // Contextual Phase Detection (Smarter than word matching)
+            const lastAssistantMsg = messages.filter(m => m.role === 'assistant').pop()?.content || '';
+            const isPlanAlreadyDrawn = fullThreadContext.includes("## Widget Plan");
+            const isUserAffirmative = /yes|ok|build|proceed|go|do it|looks good|correct|generate/i.test(lastUserMsg);
+
+            // Smarter Intent Detection
+            const designKeywords = ['create', 'build', 'design', 'add', 'section', 'hero', 'footer', 'header', 'page', 'layout'];
+            const hasDesignIntent = designKeywords.some(kw => lastUserMsg.toLowerCase().includes(kw));
 
             let phase = 'CONVERSATION';
-            if (hasPlanInHistory && (hasBuildCommand || mentionedWidgets.length > 0)) {
-                phase = 'EXECUTION';
-            } else if (hasPlanInHistory || /create|design|build|layout|section|page|pricing|hero|footer|header|table|grid/i.test(lastUserMsg)) {
-                phase = 'PLANNING';
+
+            if (isPlanAlreadyDrawn) {
+                // We have a plan. We are either refining it (PLANNING) or building it (EXECUTION)
+                if (isUserAffirmative && !lastUserMsg.toLowerCase().includes('wait') && !lastUserMsg.toLowerCase().includes('change')) phase = 'EXECUTION';
+                else phase = 'PLANNING';
+            } else if (hasDesignIntent) {
+                // If it's a direct command, skip conversation and go to plan request via conversation trigger
+                phase = 'CONVERSATION';
             }
 
             let systemMsg;
+            const BASE_INSTRUCTIONS = `You are an Elementor AI. ${CORE_CONCEPT}`;
+
             if (phase === 'CONVERSATION') {
                 systemMsg = {
                     role: 'system',
-                    content: `${CORE_CONCEPT}
-                    You are a friendly Elementor assistant. Chat normally.
-                    If the user wants to build or design something, ALWAYS state: "[ACTION:PLAN_REQ] Task Summary" as the last line of your message.`
+                    content: `${BASE_INSTRUCTIONS}
+                    [MODE]: CONVERSATION
+                    [TASK]: Acknowledge the user's request and provide immediate design value. 
+                    [CRITICAL]: If the user wants to build/create something, you MUST end your message with exactly: "[ACTION:PLAN_REQ] Summary of task"
+                    
+                    Example: "Sure! I can design that hero section for you. [ACTION:PLAN_REQ] Modern Hero Section with title and button"`
                 };
             } else if (phase === 'PLANNING') {
                 const widgetList = getWidgetInfo('names');
                 const widgetDesc = widgetList.map(w => `${w.name} - ${w.description}`).join('\n');
                 systemMsg = {
                     role: 'system',
-                    content: `${CORE_CONCEPT}
-                    You are in PLANNING mode. Create a detailed layout plan.
-                    
+                    content: `${BASE_INSTRUCTIONS}
+                    MODE: ARCHITECT (Technical Planning)
+                    GOAL: Create a semantic Architectural Blueprint for the layout.
+
                     AVAILABLE WIDGETS:
                     ${widgetDesc}
 
-                    OUTPUT FORMAT:
-                    ## Widget Plan
-                    1. **widget-name** - Purpose
-                    ...
-                    Ask the user to "build" or "modify" the plan.`
+                    OUTPUT REQUIREMENTS:
+                    1. Start with "## Widget Plan".
+                    2. Define structure using a numbered list: **widget-name** - Technical purpose & Content.
+                    3. Explain the "Why" behind the layout (UX rationale).
+                    4. Explicitly ask for confirmation to move to BUILDER mode.
+                    
+                    Do NOT generate JSON yet.`
                 };
             } else {
                 const selectiveWidgets = getWidgetInfo('selective', mentionedWidgets);
                 const widgetControlsSummary = Object.entries(selectiveWidgets).map(([name, widget]) => {
                     const controls = Object.keys(widget.controls).length > 0
                         ? Object.entries(widget.controls).map(([k, c]) => `${k} (${c.type})`).join(', ')
-                        : 'Common controls only';
+                        : 'Standard Elementor Style & Advanced controls only';
                     return `**${name}**: ${controls}`;
                 }).join('\n');
 
+                const SIMPLIFIED_SCHEMA = `
+                SIMPLIFIED ELEMENTOR JSON SCHEMA (TRAINING):
+                You only need to output a simplified structure. I will expand it to full Elementor JSON.
+                
+                EXAMPLE:
+                [JSON]
+                {
+                  "elType": "container",
+                  "settings": { "background_color": "#f9f9f9", "padding": { "top": "50", "bottom": "50", "unit": "px" } },
+                  "elements": [
+                    {
+                      "elType": "widget",
+                      "widgetType": "heading",
+                      "settings": { "title": "Section Title", "align": "center" }
+                    },
+                    {
+                      "elType": "widget",
+                      "widgetType": "text-editor",
+                      "settings": { "editor": "<p>Description content here...</p>" }
+                    }
+                  ]
+                }
+                [/JSON]
+                
+                Nesting: Widgets go inside Container "elements" array. 
+                Keep it slim. ONLY include properties that you want to set.
+                `;
+
                 systemMsg = {
                     role: 'system',
-                    content: `${CORE_CONCEPT}
-                    EXECUTION MODE. Generate valid Elementor JSON.
-                    
-                    WIDGETS:
+                    content: `${BASE_INSTRUCTIONS}
+                    MODE: BUILDER (Code Execution)
+                    GOAL: Transform the Blueprint into high-performance Elementor JSON.
+
+                    VERIFIED CONTROLS FOR THIS TASK:
                     ${widgetControlsSummary}
 
-                    RULES:
+                    ${SIMPLIFIED_SCHEMA}
+
+                    STRICT PROTOCOLS:
                     1. ONLY output JSON wrapped in [JSON]...[/JSON].
-                    2. Icons: Use 'icon' widget.
-                    3. No conversational filler.`
+                    2. Use property names from the controls listed above.
+                    3. Structure: { "elType": "container", "elements": [...] }.
+                    4. No conversational filler.
+                    5. Ensure widgets are styled according to the Blueprint.`
                 };
             }
 
@@ -248,29 +293,45 @@ export const AiProvider = ({ children }) => {
                 setMessages(prev => prev.map(m => m.id === assistantId ? { ...m, content: fullResponse } : m));
             });
 
-            // HANDLE TRANSITIONS
-            if (fullResponse.includes('[ACTION:PLAN_REQ]')) {
-                const summary = fullResponse.split('[ACTION:PLAN_REQ]')[1].trim();
-                // Clean up trigger and auto-trigger next phase
-                setMessages(prev => prev.map(m => m.id === assistantId ? {
-                    ...m,
-                    status: 'thinking',
-                    content: fullResponse.split('[ACTION:PLAN_REQ]')[0].trim()
-                } : m));
-                await sendMessage(`[SYSTEM_AUTO]: Plan the requested layout for: ${summary}`);
+            // HANDLE TRANSITIONS & STUCK AI FALLBACK
+            const hasTrigger = fullResponse.includes('[ACTION:PLAN_REQ]');
+            const isEchoing = fullResponse.includes('MODE: CONVERSATION') || fullResponse.includes('AGENT IDENTITY');
+
+            if (hasTrigger || (hasDesignIntent && (fullResponse.length < 100 || isEchoing))) {
+                let summary = hasTrigger ? fullResponse.split('[ACTION:PLAN_REQ]')[1].trim() : lastUserMsg;
+                // If it was echoing or too short, we don't want that garbage in history
+                const cleanContent = hasTrigger ? fullResponse.split('[ACTION:PLAN_REQ]')[0].trim() : 'Understood. Let me plan that hero section for you.';
+
+                // Update history to remove trigger/echo before auto-triggering next phase
+                setMessages(prev => {
+                    const filtered = prev.map(m => m.id === assistantId ? {
+                        ...m,
+                        status: 'done',
+                        content: cleanContent || 'Starting plan...'
+                    } : m);
+                    return filtered;
+                });
+
+                setTimeout(() => {
+                    sendMessage(`[SYSTEM_AUTO]: Plan the requested layout for: ${summary}\n\nBe technical.`);
+                }, 100);
                 return;
             }
 
             const jsonMatch = fullResponse.match(/\[JSON\]([\s\S]*?)\[\/JSON\]/);
             if (jsonMatch) {
                 try {
-                    const elementor_json = JSON.parse(jsonMatch[1].trim());
+                    const simplified_json = JSON.parse(jsonMatch[1].trim());
+                    // Expand the simplified JSON to full Elementor JSON
+                    const elementor_json = expandElementorJson(simplified_json);
+
                     setMessages(prev => prev.map(m => m.id === assistantId ? { ...m, status: 'done', elementor_json } : m));
                     insertToEditor(elementor_json);
-                } catch (e) { console.error(e); }
+                } catch (e) { console.error('JSON Expansion/Insertion Failed:', e); }
             }
             setMessages(prev => prev.map(m => m.id === assistantId ? { ...m, status: 'done' } : m));
         } catch (error) {
+            alert(error?.message)
             setMessages(prev => prev.map(m => m.id === assistantId ? { ...m, status: 'error', content: 'Connection to Ollama failed. Make sure it is running.' } : m));
         } finally {
             setLoading(false);
